@@ -58,5 +58,13 @@ then
 	cp -a auto source/live
 fi
 
+# Creating readme file
+cat > source/live/README.txt << EOF
+The config files in this directory are a copy of those that were used by the
+live-build tool to build this disc and the "live" disc for which this "source"
+disc is a companion. (This disc contains the source code corresponding to the
+packages used in the "live" disc).
+EOF
+
 # Creating stage file
 Create_stagefile .build/source_live
