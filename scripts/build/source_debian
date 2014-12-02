@@ -52,14 +52,10 @@ Chroot chroot "dpkg --get-selections" | awk '{ print $1 }' > source-selection.tx
 echo "${LB_BOOTLOADERS}" | \
 while IFS="," read -r BOOTLOADER
 do
-  cat >> source-selection.txt << EOF
-  ${BOOTLOADER}
-EOF
+	echo "${BOOTLOADER}" >> source-selection.txt
 done
 
-cat >> source-selection.txt << EOF
-live-build
-EOF
+echo "live-build" >> source-selection.txt
 
 case "${LB_BINARY_IMAGES}" in
 	iso*)
@@ -89,12 +85,9 @@ esac
 
 case "${LB_ARCHITECTURES}" in
 	amd64|i386)
-
-cat >> source-selection.txt << EOF
-mtools
-syslinux
-grub
-EOF
+		echo "mtools" >> source-selection.txt
+		echo "syslinux" >> source-selection.txt
+		echo "grub" >> source-selection.txt
 
 		if [ "${LB_MEMTEST}" != "none" ]; then
 			echo "${LB_MEMTEST}" >> source-selection.txt
@@ -123,7 +116,7 @@ case "${LB_MODE}" in
 				then
 					cp chroot/etc/apt/sources.list.d/progress-linux.list chroot/etc/apt/sources.list.d/progress-linux.list.orig
 
-					while read _LINE
+					while read -r _LINE
 					do
 						if echo "${_LINE}" | grep -qs ${LB_DISTRIBUTION_BINARY}-backports
 						then
@@ -139,21 +132,23 @@ case "${LB_MODE}" in
 esac
 
 MISSING=""
-
-grep . source-selection.txt | \
-while read PACKAGE
+while read -r PACKAGE
 do
 	if ! Chroot chroot "apt-get ${APT_OPTIONS} --download-only source ${PACKAGE}"
 	then
 		MISSING="${MISSING} ${PACKAGE}"
 	fi
-done
+done < source-selection.txt
+rm -f source-selection.txt
 
 if [ -n "${MISSING}" ]
 then
 	cat > source/missing-source.txt << EOF
-This file contains the list of binary packages that are installed on this live
-system that do not have a corresponding source package.
+This file contains the list of binary packages that are installed on the "live"
+system (to which this source disc is a companion) for which a corresponding
+source package is not included on this disc. This may be because the binary
+package does not have a corresponding source package, or because the version of
+the source package available was not the same as that of the binary.
 
 EOF
 
@@ -162,8 +157,6 @@ EOF
 		Chroot chroot "dpkg -l ${PACKAGE}" | tail -n1 >> source/missing-source.txt
 	done
 fi
-
-rm -f source-selection.txt
 
 # Sort sources
 for DSC in chroot/*.dsc
