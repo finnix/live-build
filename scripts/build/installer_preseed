@@ -27,7 +27,7 @@ Set_defaults
 
 # Check d-i configuration
 case "${LB_DEBIAN_INSTALLER}" in
-	false)
+	none)
 		exit 0
 		;;
 esac

@@ -576,7 +576,17 @@ Set_defaults ()
 	LB_BUILD_WITH_TMPFS="${LB_BUILD_WITH_TMPFS:-false}"
 
 	# Setting debian-installer option
-	LB_DEBIAN_INSTALLER="${LB_DEBIAN_INSTALLER:-false}"
+	LB_DEBIAN_INSTALLER="${LB_DEBIAN_INSTALLER:-none}"
+	if [ "${LB_DEBIAN_INSTALLER}" = "false" ]
+	then
+		LB_DEBIAN_INSTALLER="none"
+		Echo_warning "A value of 'false' for option LB_DEBIAN_INSTALLER is deprecated, please use 'none' in future."
+	fi
+	if [ "${LB_DEBIAN_INSTALLER}" = "true" ]
+	then
+		LB_DEBIAN_INSTALLER="netinst"
+		Echo_warning "A value of 'true' for option LB_DEBIAN_INSTALLER is deprecated, please use 'netinst' in future."
+	fi
 
 	LB_DEBIAN_INSTALLER_DISTRIBUTION="${LB_DEBIAN_INSTALLER_DISTRIBUTION:-${LB_DISTRIBUTION}}"
 
@@ -715,7 +725,7 @@ Set_defaults ()
 		*)
 			case "${LB_ARCHITECTURES}" in
 				amd64|i386)
-					if [ "${LB_DEBIAN_INSTALLER}" != "false" ]
+					if [ "${LB_DEBIAN_INSTALLER}" != "none" ]
 					then
 						LB_LOADLIN="${LB_LOADLIN:-true}"
 					else
@@ -739,7 +749,7 @@ Set_defaults ()
 		*)
 			case "${LB_ARCHITECTURES}" in
 				amd64|i386)
-					if [ "${LB_DEBIAN_INSTALLER}" != "false" ]
+					if [ "${LB_DEBIAN_INSTALLER}" != "none" ]
 					then
 						LB_WIN32_LOADER="${LB_WIN32_LOADER:-true}"
 					else
@@ -823,7 +833,7 @@ Check_defaults ()
 		exit 1
 	fi
 
-	if [ "${LB_DEBIAN_INSTALLER}" != "false" ]
+	if [ "${LB_DEBIAN_INSTALLER}" != "none" ]
 	then
 		# d-i true, no caching
 		if ! echo ${LB_CACHE_STAGES} | grep -qs "bootstrap\b" || [ "${LB_CACHE}" != "true" ] || [ "${LB_CACHE_PACKAGES}" != "true" ]

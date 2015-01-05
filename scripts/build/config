@@ -53,7 +53,7 @@ USAGE="${PROGRAM}   [--apt apt|aptitude]\n\
 \t    [--config GIT_URL::GIT_BRANCH]\n\
 \t    [--debconf-frontend dialog|editor|noninteractive|readline]\n\
 \t    [--debconf-priority low|medium|high|critical]\n\
-\t    [--debian-installer true|cdrom|netinst|netboot|businesscard|live|false]\n\
+\t    [--debian-installer cdrom|netinst|netboot|businesscard|live|none]\n\
 \t    [--debian-installer-distribution daily|CODENAME]\n\
 \t    [--debian-installer-gui true|false]\n\
 \t    [--debian-installer-preseedfile FILE|URL]\n\

@@ -88,7 +88,7 @@ PictureFiles=false
 VideoFiles=false
 EOF
 
-		if [ "${LB_DEBIAN_INSTALLER}" != "false" ]
+		if [ "${LB_DEBIAN_INSTALLER}" != "none" ]
 		then
 
 cat > binary/win32-loader.ini << EOF

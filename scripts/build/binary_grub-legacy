@@ -202,7 +202,7 @@ done
 LINUX_LIVE="$(/bin/echo ${LINUX_LIVE} | sed -e 's|binary||g' -e 's|//|/|g')"
 
 # Assembling debian-installer configuration
-if [ "${LB_DEBIAN_INSTALLER}" != "false" ]
+if [ "${LB_DEBIAN_INSTALLER}" != "none" ]
 then
 	LINUX_LIVE="title\t\tLive:\nroot\n\n${LINUX_LIVE}"
 	LINUX_INSTALL="title\t\tInstaller:\nroot"

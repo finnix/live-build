@@ -36,10 +36,10 @@ fi
 
 # Check d-i configuration
 case "${LB_DEBIAN_INSTALLER}" in
-	true|cdrom|netinst|netboot|businesscard|live)
+	cdrom|netinst|netboot|businesscard|live)
 		;;
 
-	false)
+	none)
 		exit 0
 		;;
 
