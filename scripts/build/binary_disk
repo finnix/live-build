@@ -148,6 +148,11 @@ case "${LB_DEBIAN_INSTALLER}" in
 		fi
 		;;
 
+	netboot)
+		#FIXME incomplete?
+		echo "${TITLE} ${VERSION} \"${DISTRIBUTION}\" - ${STRING} LIVE/NETBOOT Binary $(date +%Y%m%d-%H:%M)" > binary/.disk/info
+		;;
+
 	businesscard)
 		echo "main" > binary/.disk/base_components
 
