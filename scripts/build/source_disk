@@ -106,6 +106,10 @@ case "${LB_DEBIAN_INSTALLER}" in
 		echo "${TITLE} ${VERSION} \"${DISTRIBUTION}\" - ${STRING} LIVE/NETINST Source $(date +%Y%m%d-%H:%M)" > source/.disk/info
 		;;
 
+	netboot)
+		echo "${TITLE} ${VERSION} \"${DISTRIBUTION}\" - ${STRING} LIVE/NETBOOT Source $(date +%Y%m%d-%H:%M)" > source/.disk/info
+		;;
+
 	live)
 		echo "${TITLE} ${VERSION} \"${DISTRIBUTION}\" - ${STRING} LIVE/INSTALL Source $(date +%Y%m%d-%H:%M)" > source/.disk/info
 		;;
