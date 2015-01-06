@@ -8,9 +8,9 @@
 ## under certain conditions; see COPYING for details.
 
 
-Restore_cache ()
+Restore_package_cache ()
 {
-	DIRECTORY="${1}"
+	DIRECTORY="cache/packages.${1}"
 
 	if [ "${LB_CACHE}" = "true" ] && [ "${LB_CACHE_PACKAGES}" = "true" ]
 	then
@@ -29,9 +29,9 @@ Restore_cache ()
 	fi
 }
 
-Save_cache ()
+Save_package_cache ()
 {
-	DIRECTORY="${1}"
+	DIRECTORY="cache/packages.${1}"
 
 	if [ "${LB_CACHE}" = "true" ] && [ "${LB_CACHE_PACKAGES}" = "true" ]
 	then

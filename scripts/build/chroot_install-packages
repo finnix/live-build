@@ -76,7 +76,7 @@ fi
 if [ -e chroot/root/packages.chroot ] && [ -s chroot/root/packages.chroot ]
 then
 	# Restoring cache
-	Restore_cache cache/packages.chroot
+	Restore_package_cache chroot
 
 	# Installing packages
 	case "${LB_APT}" in
@@ -93,7 +93,7 @@ then
 	rm -f chroot/root/packages.chroot
 
 	# Saving cache
-	Save_cache cache/packages.chroot
+	Save_package_cache chroot
 
 fi
 

@@ -81,7 +81,7 @@ fi
 if ls config/hooks/normal/*.chroot config/hooks/live/*.chroot > /dev/null 2>&1
 then
 	# Restoring cache
-	Restore_cache cache/packages.chroot
+	Restore_package_cache chroot
 
 	for HOOK in config/hooks/normal/*.chroot config/hooks/live/*.chroot
 	do
@@ -107,7 +107,7 @@ then
 	done
 
 	# Saving cache
-	Save_cache cache/packages.chroot
+	Save_package_cache chroot
 
 	# Creating stage file
 	Create_stagefile .build/chroot_hooks

@@ -84,7 +84,7 @@ case "${LB_CHROOT_FILESYSTEM}" in
 		Check_package chroot /sbin/mkfs.${LB_CHROOT_FILESYSTEM} e2fsprogs
 
 		# Restoring cache
-		Restore_cache cache/packages.binary
+		Restore_package_cache binary
 
 		# Installing depends
 		Install_package
@@ -196,7 +196,7 @@ case "${LB_CHROOT_FILESYSTEM}" in
 		esac
 
 		# Saving cache
-		Save_cache cache/packages.binary
+		Save_package_cache binary
 		;;
 
 	jffs2)
@@ -204,7 +204,7 @@ case "${LB_CHROOT_FILESYSTEM}" in
 		Check_package chroot /usr/sbin/mkfs.jffs2 mtd-tools
 
 		# Restoring cache
-		Restore_cache cache/packages.binary
+		Restore_package_cache binary
 
 		# Installing depends
 		Install_package
@@ -276,7 +276,7 @@ case "${LB_CHROOT_FILESYSTEM}" in
 		esac
 
 		# Saving cache
-		Save_cache cache/packages.binary
+		Save_package_cache binary
 		;;
 
 	plain)
@@ -301,7 +301,7 @@ case "${LB_CHROOT_FILESYSTEM}" in
 		Check_package chroot /usr/share/doc/squashfs-tools squashfs-tools
 
 		# Restoring cache
-		Restore_cache cache/packages.binary
+		Restore_package_cache binary
 
 		# Installing depends
 		Install_package
@@ -420,7 +420,7 @@ case "${LB_CHROOT_FILESYSTEM}" in
 		chmod 0644 binary/${INITFS}/filesystem.squashfs
 
 		# Saving cache
-		Save_cache cache/packages.binary
+		Save_package_cache binary
 		;;
 
 	none)

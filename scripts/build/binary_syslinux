@@ -126,7 +126,7 @@ then
 fi
 
 # Restoring cache
-Restore_cache cache/packages.binary
+Restore_package_cache binary
 
 # Installing depends
 Install_package
@@ -313,7 +313,7 @@ esac
 case "${LB_BUILD_WITH_CHROOT}" in
 	true)
 		# Saving cache
-		Save_cache cache/packages.binary
+		Save_package_cache binary
 
 		# Removing depends
 		Remove_package

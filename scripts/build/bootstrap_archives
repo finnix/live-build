@@ -46,7 +46,7 @@ Check_lockfile .lock
 Create_lockfile .lock
 
 # Restoring cache
-Restore_cache cache/packages.chroot
+Restore_package_cache chroot
 
 # Mount local repository
 if echo "${LB_PARENT_MIRROR_CHROOT}" | grep -q '^file:/'
@@ -158,7 +158,7 @@ Apt chroot "upgrade"
 Apt chroot "dist-upgrade"
 
 # Saving cache
-Save_cache cache/packages.chroot
+Save_package_cache chroot
 
 # Creating stage file
 Create_stagefile .build/bootstrap_archives

@@ -86,7 +86,7 @@ case ${LB_FIRST_BOOTLOADER} in
 esac
 
 # Restoring cache
-Restore_cache cache/packages.binary
+Restore_package_cache binary
 
 # Installing depends
 Install_package
@@ -352,7 +352,7 @@ fi
 mv chroot/binary.img ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.img
 
 # Saving cache
-Save_cache cache/packages.binary
+Save_package_cache binary
 
 # Removing depends
 Remove_package

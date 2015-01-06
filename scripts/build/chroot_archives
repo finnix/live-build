@@ -48,7 +48,7 @@ case "${1}" in
 		Create_lockfile .lock
 
 		# Restoring cache
-		Restore_cache cache/packages.chroot
+		Restore_package_cache chroot
 
 		# Mount local repository
 		if echo "${LB_PARENT_MIRROR_CHROOT}" | grep -q '^file:/'
@@ -315,7 +315,7 @@ case "${1}" in
 		fi
 
 		# Saving cache
-		Save_cache cache/packages.chroot
+		Save_package_cache chroot
 
 		# Creating stage file
 		Create_stagefile .build/chroot_archives

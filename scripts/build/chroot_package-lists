@@ -53,7 +53,7 @@ fi
 Check_package chroot /usr/bin/grep-aptavail dctrl-tools
 
 # Restoring cache
-Restore_cache cache/packages.chroot
+Restore_package_cache chroot
 
 # Installing depends
 Install_package
@@ -93,7 +93,7 @@ rm -f chroot/bin/Packages
 Remove_package
 
 # Saving cache
-Save_cache cache/packages.chroot
+Save_package_cache chroot
 
 # Creating stage file
 Create_stagefile .build/chroot_package-lists.${_PASS}
