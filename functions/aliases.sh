@@ -15,18 +15,15 @@ Find_files ()
 
 In_list ()
 {
-	NEEDLES="${1}"
+	local NEEDLE="${1}"
 	shift
 
 	for ITEM in ${@}
 	do
-		for NEEDLE in ${NEEDLES}
-		do
-			if [ "${NEEDLE}" = "${ITEM}" ]
-			then
-				return 0
-			fi
-		done
+		if [ "${NEEDLE}" = "${ITEM}" ]
+		then
+			return 0
+		fi
 	done
 
 	return 1
