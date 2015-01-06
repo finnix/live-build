@@ -45,7 +45,7 @@ Create_lockfile .lock
 
 if [ "${LB_ARCHITECTURES}" != "amd64" ] && [ "${LB_ARCHITECTURES}" != "i386" ]
 then
-	Echo_warning "skipping binary_memtest, foreign architecture."
+	Echo_warning "Skipping binary_memtest, foreign architecture."
 	exit 0
 fi
 

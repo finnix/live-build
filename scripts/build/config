@@ -818,7 +818,7 @@ Local_arguments ()
 				;;
 
 			*)
-				Echo_error "internal error %s" "${0}"
+				Echo_error "Internal error %s" "${0}"
 				exit 1
 				;;
 		esac

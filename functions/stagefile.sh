@@ -18,12 +18,12 @@ Check_stagefile ()
 	then
 		if [ "${_FORCE}" != "true" ]
 		then
-			# Skipping execution
-			Echo_warning "skipping %s, already done" "${NAME}"
+			# Skip execution
+			Echo_warning "Skipping %s, already done" "${NAME}"
 			exit 0
 		else
-			# Forcing execution
-			Echo_message "forcing %s" "${NAME}"
+			# Force execution
+			Echo_message "Forcing %s" "${NAME}"
 			rm -f "${FILE}"
 		fi
 	fi

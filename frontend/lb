@@ -50,7 +50,7 @@ case "${1}" in
 			# Checking user account
 			if [ "$(id -u)" -ne "0" ]
 			then
-				Echo_error "need root privileges"
+				Echo_error "Root privileges needed!"
 				exit 1
 			fi
 		fi
@@ -80,7 +80,7 @@ case "${1}" in
 			# User has live-build commands in path
 			SCRIPT="${COMMAND}"
 		else
-			Echo_error "no such script: ${COMMAND}"
+			Echo_error "No such script: ${COMMAND}"
 			exit 1
 		fi
 

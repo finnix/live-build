@@ -29,7 +29,7 @@ test:
 			echo -n "."; \
 		done; \
 	else \
-		echo "WARNING: skipping bashism test - you need to install devscripts."; \
+		echo "WARNING: Skipping bashism test - you need to install devscripts."; \
 	fi
 
 	@echo " done."
