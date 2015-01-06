@@ -821,8 +821,7 @@ Check_defaults ()
 		ntfs)
 			if [ ! -x "$(which ntfs-3g 2>/dev/null)" ]
 			then
-				Echo_error "Using ntfs as the binary filesystem is currently only supported"
-				Echo_error "if ntfs-3g is installed on the host system."
+				Echo_error "Using ntfs as the binary filesystem is currently only supported if ntfs-3g is installed on the host system."
 
 				exit 1
 			fi
