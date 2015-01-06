@@ -27,60 +27,59 @@ Set_defaults
 # Check architecture
 Check_crossarchitectures
 
-for STAGE in ${LB_CACHE_STAGES}
-do
-	if [ "${STAGE}" = "bootstrap" ]
-	then
-		case "${1}" in
-			restore)
-				# Checking stage file
-				Check_stagefile .build/bootstrap_cache.restore
+if ! In_list "bootstrap" ${LB_CACHE_STAGES}
+then
+	exit 0
+fi
 
-				if [ -d cache/bootstrap ]
-				then
-					Echo_message "Restoring bootstrap stage from cache..."
+case "${1}" in
+	restore)
+		# Checking stage file
+		Check_stagefile .build/bootstrap_cache.restore
 
-					# Checking lock file
-					Check_lockfile .lock
+		if [ -d cache/bootstrap ]
+		then
+			Echo_message "Restoring bootstrap stage from cache..."
 
-					# Creating lock file
-					Create_lockfile .lock
+			# Checking lock file
+			Check_lockfile .lock
 
-					# Removing old chroot
-					rm -rf chroot
+			# Creating lock file
+			Create_lockfile .lock
 
-					# Restoring old cache
-					cp -a cache/bootstrap chroot
+			# Removing old chroot
+			rm -rf chroot
 
-					# Creating stage file
-					Create_stagefile .build/bootstrap_cache.restore
-					Create_stagefile .build/bootstrap
+			# Restoring old cache
+			cp -a cache/bootstrap chroot
 
-					exit 0
-				fi
-				;;
+			# Creating stage file
+			Create_stagefile .build/bootstrap_cache.restore
+			Create_stagefile .build/bootstrap
 
-			save)
-				Echo_message "Saving bootstrap stage to cache..."
+			exit 0
+		fi
+		;;
 
-				# Checking stage file
-				Check_stagefile .build/bootstrap_cache.save
+	save)
+		Echo_message "Saving bootstrap stage to cache..."
 
-				# Checking lock file
-				Check_lockfile .lock
+		# Checking stage file
+		Check_stagefile .build/bootstrap_cache.save
 
-				# Creating lock file
-				Create_lockfile .lock
+		# Checking lock file
+		Check_lockfile .lock
 
-				rm -rf cache/bootstrap
+		# Creating lock file
+		Create_lockfile .lock
 
-				mkdir -p cache
+		rm -rf cache/bootstrap
 
-				cp -a chroot cache/bootstrap
+		mkdir -p cache
 
-				# Creating stage file
-				Create_stagefile .build/bootstrap_cache.save
-				;;
-		esac
-	fi
-done
+		cp -a chroot cache/bootstrap
+
+		# Creating stage file
+		Create_stagefile .build/bootstrap_cache.save
+		;;
+esac

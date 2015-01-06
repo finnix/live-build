@@ -61,22 +61,19 @@ esac
 # Creating directory
 mkdir -p binary/${INITFS}
 
-for STAGE in ${LB_CACHE_STAGES}
-do
-	if [ "${STAGE}" = "rootfs" ] && [ -d cache/binary_rootfs ]
-	then
-		# Removing old chroot
-		rm -rf binary/"${INITFS}"/filesystem.*
+if In_list "rootfs" ${LB_CACHE_STAGES} && [ -d cache/binary_rootfs ]
+then
+	# Removing old chroot
+	rm -rf binary/"${INITFS}"/filesystem.*
 
-		# Restoring old cache
-		mkdir -p binary/"${INITFS}"
-		cp -a cache/binary_rootfs/filesystem.* binary/"${INITFS}"
+	# Restoring old cache
+	mkdir -p binary/"${INITFS}"
+	cp -a cache/binary_rootfs/filesystem.* binary/"${INITFS}"
 
-		# Creating stage file
-		Create_stagefile .build/binary_rootfs
-		exit 0
-	fi
-done
+	# Creating stage file
+	Create_stagefile .build/binary_rootfs
+	exit 0
+fi
 
 case "${LB_CHROOT_FILESYSTEM}" in
 	ext2|ext3|ext4)
@@ -443,20 +440,17 @@ case "${LB_CHROOT_FILESYSTEM}" in
 
 esac
 
-for STAGE in ${LB_CACHE_STAGES}
-do
-	if [ "${STAGE}" = "rootfs" ]
+if In_list "rootfs" ${LB_CACHE_STAGES}
+then
+	rm -rf cache/binary_rootfs
+
+	mkdir -p cache/binary_rootfs
+
+	if [ "${LB_CHROOT_FILESYSTEM}" != "none" ]
 	then
-		rm -rf cache/binary_rootfs
-
-		mkdir -p cache/binary_rootfs
-
-		if [ "${LB_CHROOT_FILESYSTEM}" != "none" ]
-		then
-			cp -a binary/"${INITFS}"/filesystem.* cache/binary_rootfs
-		fi
+		cp -a binary/"${INITFS}"/filesystem.* cache/binary_rootfs
 	fi
-done
+fi
 
 # Creating stage file
 Create_stagefile .build/binary_rootfs

@@ -24,59 +24,58 @@ Arguments "${@}"
 Read_conffiles config/all config/common config/bootstrap config/chroot config/binary config/source
 Set_defaults
 
-for STAGE in ${LB_CACHE_STAGES}
-do
-	if [ "${STAGE}" = "chroot" ]
-	then
-		case "${1}" in
-			restore)
-				Echo_message "Restoring chroot stage from cache..."
+if ! In_list "chroot" ${LB_CACHE_STAGES}
+then
+	exit 0
+fi
 
-				# Checking stage file
-				Check_stagefile .build/chroot_cache.restore
+case "${1}" in
+	restore)
+		Echo_message "Restoring chroot stage from cache..."
 
-				if [ -d cache/chroot ]
-				then
-					# Checking lock file
-					Check_lockfile .lock
+		# Checking stage file
+		Check_stagefile .build/chroot_cache.restore
 
-					# Creating lock file
-					Create_lockfile .lock
+		if [ -d cache/chroot ]
+		then
+			# Checking lock file
+			Check_lockfile .lock
 
-					# Removing old chroot
-					rm -rf chroot
+			# Creating lock file
+			Create_lockfile .lock
 
-					# Restoring old cache
-					cp -a cache/chroot chroot
+			# Removing old chroot
+			rm -rf chroot
 
-					# Creating stage file
-					Create_stagefile .build/chroot_cache.restore
+			# Restoring old cache
+			cp -a cache/chroot chroot
 
-					exit 0
-				fi
-				;;
+			# Creating stage file
+			Create_stagefile .build/chroot_cache.restore
 
-			save)
-				Echo_message "Saving chroot stage to cache..."
+			exit 0
+		fi
+		;;
 
-				# Checking stage file
-				Check_stagefile .build/chroot_cache.save
+	save)
+		Echo_message "Saving chroot stage to cache..."
 
-				# Checking lock file
-				Check_lockfile .lock
+		# Checking stage file
+		Check_stagefile .build/chroot_cache.save
 
-				# Creating lock file
-				Create_lockfile .lock
+		# Checking lock file
+		Check_lockfile .lock
 
-				rm -rf cache/chroot
+		# Creating lock file
+		Create_lockfile .lock
 
-				mkdir -p cache
+		rm -rf cache/chroot
 
-				cp -a chroot cache/chroot
+		mkdir -p cache
 
-				# Creating stage file
-				Create_stagefile .build/chroot_cache.save
-				;;
-		esac
-	fi
-done
+		cp -a chroot cache/chroot
+
+		# Creating stage file
+		Create_stagefile .build/chroot_cache.save
+		;;
+esac
