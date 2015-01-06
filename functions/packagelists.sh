@@ -33,7 +33,7 @@ Expand_packagelist ()
 
 		if [ -z "${_LB_LIST_LOCATION}" ]
 		then
-			echo "W: Unknown package list '${_LB_LIST_NAME}'" >&2
+			Echo_warning "Unknown package list '${_LB_LIST_NAME}'"
 			continue
 		fi
 
@@ -57,7 +57,7 @@ Expand_packagelist ()
 				\#if\ *)
 					if [ ${_LB_NESTED} -eq 1 ]
 					then
-						echo "E: Nesting conditionals is not supported" >&2
+						Echo_error "Nesting conditionals is not supported"
 						exit 1
 					fi
 					_LB_NESTED=1
@@ -81,7 +81,7 @@ Expand_packagelist ()
 				\#nif\ *)
 					if [ ${_LB_NESTED} -eq 1 ]
 					then
-						echo "E: Nesting conditionals is not supported" >&2
+						Echo_error "Nesting conditionals is not supported"
 						exit 1
 					fi
 					_LB_NESTED=1
