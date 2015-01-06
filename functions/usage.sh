@@ -10,22 +10,19 @@
 
 Usage ()
 {
-	printf "%s - %s\n" "${PROGRAM}" "${DESCRIPTION}"
-	echo
-	Echo "Usage:"
-	echo
+	printf "%s - %s\n\n" "${PROGRAM}" "${DESCRIPTION}"
+	printf "Usage:\n\n"
 
 	if [ -n "${USAGE}" ]
 	then
-		Echo " ${USAGE}"
-		echo
+		printf "  %s\n" "${USAGE}"
 	fi
 
 	printf "  %s [-h|--help]\n" "${PROGRAM}"
 	printf "  %s [-u|--usage]\n" "${PROGRAM}"
 	printf "  %s [-v|--version]\n" "${PROGRAM}"
-	echo
-	Echo "Try \"%s --help\" for more information." "${PROGRAM}"
+
+	printf "\nTry \"%s --help\" for more information.\n" "${PROGRAM}"
 
 	exit 1
 }

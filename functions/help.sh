@@ -10,27 +10,22 @@
 
 Help ()
 {
-	Echo "%s - %s" "${PROGRAM}" "${DESCRIPTION}"
-	echo
-	Echo "Usage:"
-	echo
+	printf "%s - %s\n\n" "${PROGRAM}" "${DESCRIPTION}"
+	printf "Usage:\n\n"
 
 	if [ -n "${USAGE}" ]
 	then
-		Echo "${USAGE}"
-		echo
+		printf "%s\n" "${USAGE}"
 	fi
-	Echo "  %s [-h|--help]" "${PROGRAM}"
-	Echo "  %s [-u|--usage]" "${PROGRAM}"
-	Echo "  %s [-v|--version]" "${PROGRAM}"
-	echo
+	printf "  %s [-h|--help]\n" "${PROGRAM}"
+	printf "  %s [-u|--usage]\n" "${PROGRAM}"
+	printf "  %s [-v|--version]\n\n" "${PROGRAM}"
 
 	if [ -n "${HELP}" ]
 	then
-		Echo "${HELP}"
-		echo
+		printf "%s\n\n" "${HELP}"
 	fi
 
-	Echo "Report bugs to the Live Systems project <https://wiki.debian.org/DebianLive>."
+	echo "Report bugs to the Live Systems project <https://wiki.debian.org/DebianLive>."
 	exit 0
 }
