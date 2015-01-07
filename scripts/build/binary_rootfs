@@ -403,8 +403,6 @@ case "${LB_CHROOT_FILESYSTEM}" in
 					# Removing depends
 					Remove_package
 				fi
-
-				chmod 0644 binary/${INITFS}/filesystem.squashfs
 				;;
 
 			false)
@@ -418,6 +416,8 @@ case "${LB_CHROOT_FILESYSTEM}" in
 				du -B 1 -s chroot | cut -f1 > binary/${INITFS}/filesystem.size
 				;;
 		esac
+
+		chmod 0644 binary/${INITFS}/filesystem.squashfs
 
 		# Saving cache
 		Save_cache cache/packages.binary
