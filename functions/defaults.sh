@@ -217,9 +217,16 @@ Set_defaults ()
 
 	# Setting cache option
 	LB_CACHE="${LB_CACHE:-true}"
-	LB_CACHE_INDICES="${LB_CACHE_INDICES:-false}"
-	LB_CACHE_PACKAGES="${LB_CACHE_PACKAGES:-true}"
-	LB_CACHE_STAGES="${LB_CACHE_STAGES:-bootstrap}"
+	if [ "${LB_CACHE}" = "false" ]
+	then
+		LB_CACHE_INDICES="false"
+		LB_CACHE_PACKAGES="false"
+		LB_CACHE_STAGES="bootstrap" #bootstrap caching currently required for process to work
+	else
+		LB_CACHE_INDICES="${LB_CACHE_INDICES:-false}"
+		LB_CACHE_PACKAGES="${LB_CACHE_PACKAGES:-true}"
+		LB_CACHE_STAGES="${LB_CACHE_STAGES:-bootstrap}"
+	fi
 
 	# Setting debconf frontend
 	LB_DEBCONF_FRONTEND="${LB_DEBCONF_FRONTEND:-noninteractive}"
