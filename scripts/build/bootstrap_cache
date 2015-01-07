@@ -33,13 +33,13 @@ do
 	then
 		case "${1}" in
 			restore)
-				Echo_message "Restoring bootstrap stage from cache..."
-
 				# Checking stage file
 				Check_stagefile .build/bootstrap_cache.restore
 
 				if [ -d cache/bootstrap ]
 				then
+					Echo_message "Restoring bootstrap stage from cache..."
+
 					# Checking lock file
 					Check_lockfile .lock
 
