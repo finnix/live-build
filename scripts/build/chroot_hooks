@@ -47,6 +47,7 @@ mount -o bind config chroot/live-build/config
 mount -o remount,ro,bind config chroot/live-build/config
 
 # Copying hooks
+mkdir -p chroot/root/lb_chroot_hooks
 for _HOOK in ${LB_CHROOT_HOOKS}
 do
 	for LOCATION in "${LIVE_BUILD}/hooks" /usr/share/live/build/hooks
@@ -55,7 +56,6 @@ do
 		do
 			if [ -e "${FILE}" ]
 			then
-				mkdir -p chroot/root/lb_chroot_hooks
 				cp "${FILE}" chroot/root/lb_chroot_hooks
 			fi
 		done
@@ -70,9 +70,9 @@ then
 		Chroot chroot "/root/lb_chroot_hooks/$(basename ${_HOOK})" || { Echo_error "${_HOOK} failed (exit non-zero). You should check for errors."; exit 1 ;}
 		rm -f chroot/root/lb_chroot_hooks/"$(basename ${_HOOK})"
 	done
-
-	rmdir chroot/root/lb_chroot_hooks
 fi
+rmdir chroot/root/lb_chroot_hooks
+rmdir --ignore-fail-on-non-empty chroot/root
 
 ## Processing local hooks
 if ls config/hooks/normal/*.chroot config/hooks/live/*.chroot > /dev/null 2>&1
