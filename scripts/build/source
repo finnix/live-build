@@ -60,7 +60,7 @@ lb source_tar ${@}
 lb source_hdd ${@}
 
 # Deconfiguring chroot
-lb chroot_archives chroot remove ${@}
+lb chroot_archives source remove ${@}
 lb chroot_hostname remove ${@}
 lb chroot_resolv remove ${@}
 lb chroot_hosts remove ${@}
