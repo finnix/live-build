@@ -73,19 +73,19 @@ Grub_install_entry ()
 	do
 		case "${TYPE}" in
 			Install)
-				TAPPEND="${APPEND} ${QAPPEND}"
+				TAPPEND="${APPEND} LB_BOOTAPPEND_INSTALL ${QAPPEND}"
 				;;
 
 			Expert)
-				TAPPEND="priority=low ${APPEND}"
+				TAPPEND="priority=low ${APPEND} LB_BOOTAPPEND_INSTALL"
 				;;
 
 			Rescue)
-				TAPPEND="rescue/enable=true ${APPEND} ${QAPPEND}"
+				TAPPEND="rescue/enable=true ${APPEND} LB_BOOTAPPEND_INSTALL ${QAPPEND}"
 				;;
 
 			Auto)
-				TAPPEND="auto=true priority=critical ${APPEND} ${QAPPEND}"
+				TAPPEND="auto=true priority=critical ${APPEND} LB_BOOTAPPEND_INSTALL ${QAPPEND}"
 				;;
 		esac
 
@@ -100,7 +100,7 @@ Grub_install_entry ()
 
 
 		LINUX_INSTALL="${LINUX_INSTALL}\ntitle\t\t${LABEL} ${TYPE}"
-		LINUX_INSTALL="${LINUX_INSTALL}\nkernel\t\t/${KERNEL} ${TAPPEND} ${LB_BOOTAPPEND_INSTALL}"
+		LINUX_INSTALL="${LINUX_INSTALL}\nkernel\t\t/${KERNEL} ${TAPPEND}"
 		LINUX_INSTALL="${LINUX_INSTALL}\ninitrd\t\t/${INITRD}"
 	done
 }
