@@ -72,9 +72,9 @@ Grub_install_entry ()
 	INITRD="${4}"
 	APPEND="${5}"
 
-	# Drop "quiet" kernel parameter for rescue entries
+	# Drop "quiet" kernel parameter for expert entries
 	case $TYPE in
-		rescue|rescuegui)
+		expert|expertgui)
 			APPEND=$(echo "$APPEND" | sed -e 's/ quiet//')
 			;;
 	esac
