@@ -75,7 +75,7 @@ Grub_install_entry ()
 	# Drop "quiet" kernel parameter for expert entries
 	case $TYPE in
 		expert|expertgui)
-			APPEND=$(echo "$APPEND" | sed -e 's/ quiet//')
+			APPEND=$(echo "$APPEND" | sed -e 's/ --- quiet//')
 			;;
 	esac
 
@@ -233,11 +233,11 @@ if [ "${LB_DEBIAN_INSTALLER}" != "none" ]
 then
 	KERNEL_DI="/install/vmlinuz"
 	INITRD_DI="/install/initrd.gz"
-	APPEND_DI="vga=normal ${LB_BOOTAPPEND_INSTALL} quiet"
+	APPEND_DI="vga=normal ${LB_BOOTAPPEND_INSTALL} --- quiet"
 
 	KERNEL_GI="/install/gtk/vmlinuz"
 	INITRD_GI="/install/gtk/initrd.gz"
-	APPEND_GI="video=vesa:ywrap,mtrr vga=788 ${LB_BOOTAPPEND_INSTALL} quiet"
+	APPEND_GI="video=vesa:ywrap,mtrr vga=788 ${LB_BOOTAPPEND_INSTALL} --- quiet"
 
 	if [ "${LB_DEBIAN_INSTALLER_GUI}" = "true" ]; then
 		Grub_install_entry "Start installer" "installgui" "${KERNEL_GI}" "${INITRD_GI}" "${APPEND_GI}"

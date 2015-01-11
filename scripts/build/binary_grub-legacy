@@ -67,7 +67,7 @@ Grub_install_entry ()
 	INITRD="${3}"
 	APPEND="${4}"
 
-	QAPPEND="quiet"
+	QAPPEND="--- quiet"
 
 	for TYPE in Install Expert Rescue Auto
 	do
@@ -97,7 +97,6 @@ Grub_install_entry ()
 				TYPE_SUFFIX="gui"
 				;;
 		esac
-
 
 		LINUX_INSTALL="${LINUX_INSTALL}\ntitle\t\t${LABEL} ${TYPE}"
 		LINUX_INSTALL="${LINUX_INSTALL}\nkernel\t\t/${KERNEL} ${TAPPEND}"
