@@ -67,41 +67,16 @@ Grub_install_entry ()
 	INITRD="${3}"
 	APPEND="${4}"
 
-	QAPPEND="--- quiet"
+	APPEND="${APPEND} LB_BOOTAPPEND_INSTALL"
 
-	for TYPE in Install Expert Rescue Auto
-	do
-		case "${TYPE}" in
-			Install)
-				TAPPEND="${APPEND} LB_BOOTAPPEND_INSTALL ${QAPPEND}"
-				;;
+	if [ "${LABEL}" != "expert" ] && [ "${LABEL}" != "expertgui" ]
+	then
+		APPEND="${APPEND} --- quiet"
+	fi
 
-			Expert)
-				TAPPEND="priority=low ${APPEND} LB_BOOTAPPEND_INSTALL"
-				;;
-
-			Rescue)
-				TAPPEND="rescue/enable=true ${APPEND} LB_BOOTAPPEND_INSTALL ${QAPPEND}"
-				;;
-
-			Auto)
-				TAPPEND="auto=true priority=critical ${APPEND} LB_BOOTAPPEND_INSTALL ${QAPPEND}"
-				;;
-		esac
-
-		case "${LABEL}" in
-			Text)
-				TYPE_SUFFIX=""
-				;;
-			GUI)
-				TYPE_SUFFIX="gui"
-				;;
-		esac
-
-		LINUX_INSTALL="${LINUX_INSTALL}\ntitle\t\t${LABEL} ${TYPE}"
-		LINUX_INSTALL="${LINUX_INSTALL}\nkernel\t\t/${KERNEL} ${TAPPEND}"
-		LINUX_INSTALL="${LINUX_INSTALL}\ninitrd\t\t/${INITRD}"
-	done
+	LINUX_INSTALL="${LINUX_INSTALL}\ntitle\t\tDebian GNU/Linux - ${LABEL}"
+	LINUX_INSTALL="${LINUX_INSTALL}\nkernel\t\t/${KERNEL} ${APPEND}"
+	LINUX_INSTALL="${LINUX_INSTALL}\ninitrd\t\t/${INITRD}"
 }
 
 if [ -e "config/bootloaders/grub-legacy" ]
@@ -208,12 +183,18 @@ then
 
 	if [ -f "binary/${VMLINUZ_GI}" ] && [ -f "binary/${INITRD_GI}" ]
 	then
-		Grub_install_entry "GUI" "${VMLINUZ_GI}" "${INITRD_GI}" "${APPEND_GI}"
+		Grub_install_entry "GUI Install" "${VMLINUZ_GI}" "${INITRD_GI}" "${APPEND_GI}"
+		Grub_install_entry "GUI Expert" "${VMLINUZ_GI}" "${INITRD_GI}" "priority=low ${APPEND_GI}"
+		Grub_install_entry "GUI Rescue" "${VMLINUZ_GI}" "${INITRD_GI}" "rescue/enable=true ${APPEND_GI}"
+		Grub_install_entry "GUI Auto" "${VMLINUZ_GI}" "${INITRD_GI}" "auto=true priority=critical ${APPEND_GI}"
 	fi
 
 	if [ -f "binary/${VMLINUZ_DI}" ] && [ -f "binary/${INITRD_DI}" ]
 	then
-		Grub_install_entry "Text" "${VMLINUZ_DI}" "${INITRD_DI}" "${APPEND_DI}"
+		Grub_install_entry "Text Install" "${VMLINUZ_DI}" "${INITRD_DI}" "${APPEND_DI}"
+		Grub_install_entry "Text Expert" "${VMLINUZ_DI}" "${INITRD_DI}" "priority=low ${APPEND_DI}"
+		Grub_install_entry "Text Rescue" "${VMLINUZ_DI}" "${INITRD_DI}" "rescue/enable=true ${APPEND_DI}"
+		Grub_install_entry "Text Auto" "${VMLINUZ_DI}" "${INITRD_DI}" "auto=true priority=critical ${APPEND_DI}"
 	fi
 fi
 
