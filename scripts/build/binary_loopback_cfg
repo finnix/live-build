@@ -250,6 +250,8 @@ then
 		Grub_install_entry "Automatic install in text mode" "auto" "${KERNEL_DI}" "${INITRD_DI}" "auto=true priority=critical ${APPEND_DI}"
 		Grub_install_entry "Rescue system in graphical mode" "rescuegui" "${KERNEL_GI}" "${INITRD_GI}" "rescue/enable=true ${APPEND_GI}"
 		Grub_install_entry "Rescue system in text mode" "rescue" "${KERNEL_DI}" "${INITRD_DI}" "rescue/enable=true ${APPEND_DI}"
+		# Note, the following speech synthesis entry deliberately uses graphical kernel, but normal video params, copying the official Debian install disc
+		Grub_install_entry "Install in graphical mode with speech synthesis" "${KERNEL_GI}" "${INITRD_GI}" "speakup.synth=soft ${APPEND_GI}"
 	else
 		Grub_install_entry "Start installer" "install" "${KERNEL_DI}" "${INITRD_DI}" "${APPEND_DI}"
 
