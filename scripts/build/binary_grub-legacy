@@ -175,7 +175,7 @@ DEFAULT_FLAVOUR="$(echo ${LB_LINUX_FLAVOURS} | awk '{ print $1 }')"
 DEFAULT_KERNEL="$(basename chroot/boot/vmlinuz-*${DEFAULT_FLAVOUR})"
 DEFAULT_INITRD="initrd.img-$(echo ${DEFAULT_KERNEL} | sed -e 's|vmlinuz-||')"
 
-Grub_live_entry "live" "$(basename ${DESTDIR_LIVE})/${DEFAULT_KERNEL}" "$(basename ${DESTDIR_LIVE})/${DEFAULT_INITRD}"
+Grub_live_entry "live" "$(basename ${DESTDIR_LIVE})/${DEFAULT_KERNEL}" "$(basename ${DESTDIR_LIVE})/${DEFAULT_INITRD}" "${LB_BOOTAPPEND_LIVE}"
 
 if [ "${LB_BOOTAPPEND_LIVE_FAILSAFE}" != "none" ]
 then
@@ -186,7 +186,7 @@ for KERNEL in chroot/boot/vmlinuz-*
 do
 	VERSION="$(basename ${KERNEL} | sed -e 's|vmlinuz-||')"
 
-	Grub_live_entry "live, kernel ${VERSION}" "$(basename ${DESTDIR_LIVE})/$(basename ${KERNEL})" "$(basename ${DESTDIR_LIVE})/initrd.img-${VERSION}"
+	Grub_live_entry "live, kernel ${VERSION}" "$(basename ${DESTDIR_LIVE})/$(basename ${KERNEL})" "$(basename ${DESTDIR_LIVE})/initrd.img-${VERSION}" "${LB_BOOTAPPEND_LIVE}"
 	Grub_live_entry "live, kernel ${VERSION} (fail-safe mode)" "$(basename ${DESTDIR_LIVE})/$(basename ${KERNEL})" "$(basename ${DESTDIR_LIVE})/initrd.img-${VERSION}" "${LB_BOOTAPPEND_LIVE_FAILSAFE}"
 done
 
@@ -250,7 +250,7 @@ fi
 cp ${FILES} binary/boot/grub
 
 sed -i -e "s|LINUX_LIVE|${LINUX_LIVE}|" -e "s|LINUX_INSTALL|${LINUX_INSTALL}|" -e "s|MEMTEST|${MEMTEST}|" binary/boot/grub/menu.lst
-sed -i -e "s#LB_BOOTAPPEND_INSTALL#${LB_BOOTAPPEND_INSTALL}#" -e "s#LB_BOOTAPPEND_LIVE#${LB_BOOTAPPEND_LIVE}#" binary/boot/grub/menu.lst
+sed -i -e "s#LB_BOOTAPPEND_INSTALL#${LB_BOOTAPPEND_INSTALL}#" binary/boot/grub/menu.lst
 
 sed -i -e 's|\ $||g' binary/boot/grub/menu.lst
 
