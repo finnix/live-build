@@ -266,6 +266,14 @@ do
 	fi
 done
 
+# Replace placeholder for optional install menu entries include
+if [ "${LB_DEBIAN_INSTALLER}" = "none" ]; then
+	rm -f "${_TARGET}"/install.cfg
+	sed -i "#@OPTIONAL_INSTALLER_INCLUDE@#d" "${_TARGET}"/menu.cfg
+else
+	sed -i "s#@OPTIONAL_INSTALLER_INCLUDE@#include install.cfg#g" "${_TARGET}"/menu.cfg
+fi
+
 if [ -e "${_TARGET}/splash.svg" ]
 then
 	case "${LB_BUILD_WITH_CHROOT}" in
