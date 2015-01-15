@@ -150,7 +150,7 @@ case "${LB_INITRAMFS}" in
 		;;
 
 	*)
-		INITFS=""
+		INITFS="boot"
 		;;
 esac
 
