@@ -274,6 +274,14 @@ else
 	sed -i "s#@OPTIONAL_INSTALLER_INCLUDE@#include install.cfg#g" "${_TARGET}"/menu.cfg
 fi
 
+# Replace placeholder for optional memtest menu entry include
+if [ ! -f "binary/${_INITRAMFS}/memtest" ]; then
+	rm -f "${_TARGET}"/memtest.cfg
+	sed -i -e "#@OPTIONAL_MEMTEST_INCLUDE@#d" "${_TARGET}"/advanced.cfg
+else
+	sed -i -e "s#@OPTIONAL_MEMTEST_INCLUDE@#include memtest.cfg#g" "${_TARGET}"/advanced.cfg
+fi
+
 if [ -e "${_TARGET}/splash.svg" ]
 then
 	case "${LB_BUILD_WITH_CHROOT}" in
