@@ -153,8 +153,6 @@ case "${LB_ARCHITECTURES}" in
 		;;
 esac
 
-Check_multiarchitectures
-
 Install_file() {
 	local FILE
 	FILE="${1}"

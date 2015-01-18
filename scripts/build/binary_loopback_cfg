@@ -151,8 +151,6 @@ case "${LB_INITRAMFS}" in
 		;;
 esac
 
-Check_multiarchitectures
-
 # Setting boot parameters
 if [ "${LB_UNION_FILESYSTEM}" != "overlay" ]
 then

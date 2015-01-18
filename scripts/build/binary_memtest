@@ -86,8 +86,6 @@ case "${LB_INITRAMFS}" in
 		;;
 esac
 
-Check_multiarchitectures
-
 # Creating directory
 mkdir -p "${DESTDIR}"
 

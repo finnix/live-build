@@ -155,8 +155,6 @@ case "${LIVE_IMAGE_TYPE}" in
 		;;
 esac
 
-Check_multiarchitectures
-
 # Creating directory
 mkdir -p "${DESTDIR_LIVE}"
 

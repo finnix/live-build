@@ -59,8 +59,6 @@ case "${LIVE_IMAGE_TYPE}" in
 		;;
 esac
 
-Check_multiarchitectures
-
 # Copying templates
 mkdir -p binary/boot/grub/i386-pc
 

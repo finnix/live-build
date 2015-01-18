@@ -60,8 +60,6 @@ case "${LB_ARCHITECTURES}" in
 		;;
 esac
 
-Check_multiarchitectures
-
 # Creating directory
 mkdir -p "${DESTDIR}"
 
