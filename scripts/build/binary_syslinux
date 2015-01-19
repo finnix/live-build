@@ -266,6 +266,9 @@ do
 	fi
 done
 
+MEMTEST_PATH="${_INITRAMFS}/memtest"
+sed -i -e "s#@MEMTEST_VERSION@#${LB_MEMTEST}#g" -e "s#@MEMTEST@#/${MEMTEST_PATH}#g" "${_TARGET}"/memtest.cfg
+
 # Replace placeholder for optional install menu entries include
 if [ "${LB_DEBIAN_INSTALLER}" = "none" ]; then
 	rm -f "${_TARGET}"/install.cfg
@@ -275,7 +278,7 @@ else
 fi
 
 # Replace placeholder for optional memtest menu entry include
-if [ ! -f "binary/${_INITRAMFS}/memtest" ]; then
+if [ ! -f "binary/${MEMTEST_PATH}" ]; then
 	rm -f "${_TARGET}"/memtest.cfg
 	sed -i -e "#@OPTIONAL_MEMTEST_INCLUDE@#d" "${_TARGET}"/advanced.cfg
 else
