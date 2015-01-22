@@ -668,6 +668,9 @@ EOF
 		rm -f chroot/etc/apt/sources.list.d/packages.list
 		rm -rf chroot/root/packages
 
+		# Ensure package list is removed
+		rm -f chroot/root/packages.chroot
+
 		# Removing stage file
 		rm -f .build/chroot_archives
 		;;
