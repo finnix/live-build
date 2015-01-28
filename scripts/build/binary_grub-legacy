@@ -178,7 +178,7 @@ then
 
 	VMLINUZ_GI="install/gtk/vmlinuz"
 	INITRD_GI="install/gtk/initrd.gz"
-	APPEND_GI="video=vesa:ywrap,mtrr vga=788"
+	APPEND_GI="vga=788"
 
 	if [ -f "binary/${VMLINUZ_GI}" ] && [ -f "binary/${INITRD_GI}" ]
 	then
