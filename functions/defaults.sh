@@ -644,9 +644,6 @@ Set_config_defaults ()
 
 	LB_BOOTAPPEND_INSTALL="$(echo ${LB_BOOTAPPEND_INSTALL} | sed -e 's/[ \t]*$//')"
 
-	# Setting grub splash
-	# LB_GRUB_SPLASH
-
 	# Setting iso author
 	case "${LB_MODE}" in
 		debian)

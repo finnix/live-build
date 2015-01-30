@@ -68,7 +68,6 @@ USAGE="${PROGRAM}   [--apt apt|aptitude]\n\
 \t    [--firmware-binary true|false]\n\
 \t    [--firmware-chroot true|false]\n\
 \t    [--force]\n\
-\t    [--grub-splash FILE]\n\
 \t    [--gzip-options OPTION|\"OPTIONS\"]\n\
 \t    [--hdd-label LABEL]\n\
 \t    [--hdd-partition-start START]\n\
@@ -596,7 +595,7 @@ Local_arguments ()
 				;;
 
 			--grub-splash)
-				LB_GRUB_SPLASH="${2}"
+				Echo_warning "--grub-splash is an obsolete option"
 				shift 2
 				;;
 
@@ -1287,10 +1286,6 @@ LB_DEBIAN_INSTALLER_PRESEEDFILE="${LB_DEBIAN_INSTALLER_PRESEEDFILE}"
 # \$LB_DEBIAN_INSTALLER_GUI: toggle use of GUI debian-installer
 # (Default: ${LB_DEBIAN_INSTALLER_GUI})
 LB_DEBIAN_INSTALLER_GUI="${LB_DEBIAN_INSTALLER_GUI}"
-
-# \$LB_GRUB_SPLASH: set custom grub splash
-# (Default: empty)
-LB_GRUB_SPLASH="${LB_GRUB_SPLASH}"
 
 # \$LB_HDD_LABEL: set hdd label
 # (Default: ${LB_HDD_LABEL})
