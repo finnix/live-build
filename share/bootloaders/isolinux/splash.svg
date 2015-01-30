@@ -254,7 +254,7 @@
          x="190.68135"
          sodipodi:role="line"
          style="font-size:19.99996948px;font-style:normal;font-weight:bold;-inkscape-font-specification:DejaVu Sans Bold"
-         id="tspan3039">Build: @YEAR@-@MONTH@-@DAY@ @HOUR@:@MINUTE@:@SECOND@</tspan><tspan
+         id="tspan3039">Built: @YEAR@-@MONTH@-@DAY@ @HOUR@:@MINUTE@:@SECOND@</tspan><tspan
          y="699.20673"
          x="190.68135"
          sodipodi:role="line"
