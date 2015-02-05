@@ -29,11 +29,8 @@ Require_stagefile .build/config .build/bootstrap .build/binary_chroot
 # Checking stage file
 Check_stagefile .build/binary_rootfs
 
-# Checking lock file
-Check_lockfile .lock
-
-# Creating lock file
-Create_lockfile .lock
+# Aquire lock file
+Acquire_lockfile
 
 case "${LB_ARCHITECTURES}" in
 	amd64|i386)
@@ -135,7 +132,7 @@ case "${LB_CHROOT_FILESYSTEM}" in
 
 				if [ -e chroot/chroot.cache ]
 				then
-					rm -f .lock
+					Remove_lockfile
 					mv chroot/chroot chroot.tmp
 
 					lb chroot_archives binary remove ${@}
@@ -223,7 +220,7 @@ case "${LB_CHROOT_FILESYSTEM}" in
 
 				if [ -e chroot/chroot.cache ]
 				then
-					rm -f .lock
+					Remove_lockfile
 					mv chroot/chroot chroot.tmp
 
 					lb chroot_archives binary remove ${@}
@@ -358,7 +355,7 @@ case "${LB_CHROOT_FILESYSTEM}" in
 
 				if [ -e chroot/chroot.cache ]
 				then
-					rm -f .lock
+					Remove_lockfile
 					mv chroot/chroot chroot.tmp
 
 					lb chroot_archives binary remove ${@}

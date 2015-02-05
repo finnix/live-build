@@ -31,11 +31,8 @@ Require_stagefile .build/config .build/bootstrap
 # Checking stage file
 Check_stagefile .build/binary_grub-efi
 
-# Checking lock file
-Check_lockfile .lock
-
-# Creating lock file
-Create_lockfile .lock
+# Aquire lock file
+Acquire_lockfile
 
 # Check architecture
 Check_architectures amd64 i386 arm64

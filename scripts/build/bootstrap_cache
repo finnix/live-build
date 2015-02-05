@@ -38,11 +38,8 @@ case "${1}" in
 		then
 			Echo_message "Restoring bootstrap stage from cache..."
 
-			# Checking lock file
-			Check_lockfile .lock
-
-			# Creating lock file
-			Create_lockfile .lock
+			# Aquire lock file
+			Acquire_lockfile
 
 			# Removing old chroot
 			rm -rf chroot
@@ -64,11 +61,8 @@ case "${1}" in
 		# Checking stage file
 		Check_stagefile .build/bootstrap_cache.save
 
-		# Checking lock file
-		Check_lockfile .lock
-
-		# Creating lock file
-		Create_lockfile .lock
+		# Aquire lock file
+		Acquire_lockfile
 
 		rm -rf cache/bootstrap
 

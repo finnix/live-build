@@ -40,11 +40,8 @@ Require_stagefile .build/config .build/source_debian
 # Checking stage file
 Check_stagefile .build/source_tar
 
-# Checking lock file
-Check_lockfile .lock
-
-# Creating lock file
-Create_lockfile .lock
+# Aquire lock file
+Acquire_lockfile
 
 # Remove old source
 rm -f ${LIVE_IMAGE_NAME}-source.debian.tar.bz2 ${LIVE_IMAGE_NAME}-source.debian.tar.gz ${LIVE_IMAGE_NAME}-source.debian.tar.lz ${LIVE_IMAGE_NAME}-source.debian.tar

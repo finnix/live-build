@@ -37,7 +37,7 @@ then
 	exit 1
 fi
 
-rm -f .lock
+Remove_lockfile
 
 if [ -z "${1}" ]
 then

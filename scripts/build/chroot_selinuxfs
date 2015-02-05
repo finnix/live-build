@@ -33,11 +33,8 @@ case "${1}" in
 			# Checking stage file
 			Check_stagefile .build/chroot_selinuxfs
 
-			# Checking lock file
-			Check_lockfile .lock
-
-			# Creating lock file
-			Create_lockfile .lock
+			# Aquire lock file
+			Acquire_lockfile
 
 			# Create mountpoint
 			mkdir -p chroot/sys/fs/selinux
@@ -53,11 +50,8 @@ case "${1}" in
 	remove)
 		Echo_message "Begin unmounting /sys/fs/selinux..."
 
-		# Checking lock file
-		Check_lockfile .lock
-
-		# Creating lock file
-		Create_lockfile .lock
+		# Aquire lock file
+		Acquire_lockfile
 
 		# Unmounting /sys/fs/selinux
 		if [ -e chroot/sys/fs/selinux/enforce ]

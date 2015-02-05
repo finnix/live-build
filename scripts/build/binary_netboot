@@ -39,11 +39,8 @@ Require_stagefile .build/config .build/bootstrap
 # Checking stage file
 Check_stagefile .build/binary_netboot
 
-# Checking lock file
-Check_lockfile .lock
-
-# Creating lock file
-Create_lockfile .lock
+# Aquire lock file
+Acquire_lockfile
 
 # Remove old binary
 rm -f ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.netboot.tar ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.netboot.tar.gz ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.netboot.tar.bz2 ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.netboot.tar.xz ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.netboot.tar.xz

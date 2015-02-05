@@ -31,11 +31,8 @@ case "${1}" in
 		# Checking stage file
 		Check_stagefile .build/chroot_debianchroot
 
-		# Checking lock file
-		Check_lockfile .lock
-
-		# Creating lock file
-		Create_lockfile .lock
+		# Aquire lock file
+		Acquire_lockfile
 
 		if [ -f chroot/etc/debian_chroot ]
 		then
@@ -53,11 +50,8 @@ case "${1}" in
 	remove)
 		Echo_message "Deconfiguring file /etc/debian_chroot"
 
-		# Checking lock file
-		Check_lockfile .lock
-
-		# Creating lock file
-		Create_lockfile .lock
+		# Aquire lock file
+		Acquire_lockfile
 
 		if [ -f chroot/etc/debian_chroot.orig ]
 		then

@@ -31,11 +31,8 @@ case "${1}" in
 		# Checking stage file
 		Check_stagefile .build/chroot_sysv-rc
 
-		# Checking lock file
-		Check_lockfile .lock
-
-		# Creating lock file
-		Create_lockfile .lock
+		# Aquire lock file
+		Acquire_lockfile
 
 		if [ -e chroot/usr/sbin/policy-rc.d ]
 		then
@@ -59,11 +56,8 @@ EOF
 	remove)
 		Echo_message "Deconfiguring file /usr/sbin/policy-rc.d"
 
-		# Checking lock file
-		Check_lockfile .lock
-
-		# Creating lock file
-		Create_lockfile .lock
+		# Aquire lock file
+		Acquire_lockfile
 
 		# Remove custom policy-rc.d file
 		rm -f chroot/usr/sbin/policy-rc.d

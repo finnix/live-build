@@ -29,11 +29,8 @@ Require_stagefile .build/config .build/bootstrap
 # Checking stage file
 Check_stagefile .build/binary_chroot
 
-# Checking lock file
-Check_lockfile .lock
-
-# Creating lock file
-Create_lockfile .lock
+# Aquire lock file
+Acquire_lockfile
 
 # Normally, virtual filesystems are not mounted here, but people tend to be lazy
 if [ -f chroot/proc/version ]

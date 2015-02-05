@@ -36,11 +36,8 @@ Echo_message "Configuring file /etc/apt/sources.list"
 # Checking stage file
 Check_stagefile .build/bootstrap_archives
 
-# Checking lock file
-Check_lockfile .lock
-
-# Creating lock file
-Create_lockfile .lock
+# Aquire lock file
+Acquire_lockfile
 
 # Restoring cache
 Restore_package_cache chroot

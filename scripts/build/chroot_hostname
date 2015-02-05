@@ -29,11 +29,8 @@ case "${1}" in
 		# Checking stage file
 		Check_stagefile .build/chroot_hostname
 
-		# Checking lock file
-		Check_lockfile .lock
-
-		# Creating lock file
-		Create_lockfile .lock
+		# Aquire lock file
+		Acquire_lockfile
 
 		# Create hostname file
 		Echo_message "Configuring file /etc/hostname"
@@ -60,11 +57,8 @@ EOF
 	remove)
 		Echo_message "Deconfiguring file /etc/hostname"
 
-		# Checking lock file
-		Check_lockfile .lock
-
-		# Creating lock file
-		Create_lockfile .lock
+		# Aquire lock file
+		Acquire_lockfile
 
 		# Copying hostname from includes, if existing
 		if [ -e config/includes.chroot/etc/hostname ]

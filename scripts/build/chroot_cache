@@ -35,11 +35,8 @@ case "${1}" in
 
 		if [ -d cache/chroot ]
 		then
-			# Checking lock file
-			Check_lockfile .lock
-
-			# Creating lock file
-			Create_lockfile .lock
+			# Aquire lock file
+			Acquire_lockfile
 
 			# Removing old chroot
 			rm -rf chroot
@@ -60,11 +57,8 @@ case "${1}" in
 		# Checking stage file
 		Check_stagefile .build/chroot_cache.save
 
-		# Checking lock file
-		Check_lockfile .lock
-
-		# Creating lock file
-		Create_lockfile .lock
+		# Aquire lock file
+		Acquire_lockfile
 
 		rm -rf cache/chroot
 

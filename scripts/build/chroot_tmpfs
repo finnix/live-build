@@ -36,11 +36,8 @@ case "${1}" in
 		# Checking stage file
 		Check_stagefile .build/chroot_tmpfs
 
-		# Checking lock file
-		Check_lockfile .lock
-
-		# Creating lock file
-		Create_lockfile .lock
+		# Aquire lock file
+		Acquire_lockfile
 
 		mv chroot/var/lib/dpkg chroot/var/lib/dpkg.tmp
 		mkdir chroot/var/lib/dpkg
@@ -55,11 +52,8 @@ case "${1}" in
 	remove)
 		Echo_message "Deconfiguring tmpfs for /var/lib/dpkg"
 
-		# Checking lock file
-		Check_lockfile .lock
-
-		# Creating lock file
-		Create_lockfile .lock
+		# Aquire lock file
+		Acquire_lockfile
 
 		mkdir -p chroot/var/lib/dpkg.tmp
 		mv chroot/var/lib/dpkg/* chroot/var/lib/dpkg.tmp
