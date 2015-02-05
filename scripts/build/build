@@ -13,14 +13,10 @@ set -e
 # Including common functions
 [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
-# Automatically populating config tree
-if [ -x auto/config ] && [ ! -e .build/config ]
-then
-	Echo_message "Automatically populating config tree."
-	lb config
-fi
+# Automatically building config
+Auto_build_config
 
-# Read meta config
+# Redirecting to auto script if required
 if [ "${1}" != "noauto" ] && [ -x auto/build ]
 then
 	Echo_message "Executing auto/build script."
@@ -38,20 +34,19 @@ DESCRIPTION="Build a Debian Live system"
 HELP=""
 USAGE="${PROGRAM} [--force]"
 
-if [ ! -d config ]
-then
+# Checking build directory suitability
+
+if [ ! -d config ]; then
 	Echo_warning "No config/ directory; using defaults for all options"
 	lb config
 fi
 
-if [ "$(pwd)" = "/" ]
-then
+if [ "$(pwd)" = "/" ]; then
 	Echo_error "Cannot build live image from the root directory (/)"
 	exit 1
 fi
 
-if echo $(pwd) | grep -qs " "
-then
+if echo $(pwd) | grep -qs " "; then
 	Echo_error "Cannot build live image from a directory containing spaces"
 	exit 1
 fi
@@ -65,17 +60,17 @@ Check_defaults
 Echo_message "live-build ${LIVE_BUILD_VERSION}"
 Echo_message "Building config tree for a ${LB_MODE}/${LB_DISTRIBUTION_BINARY}/${LB_ARCHITECTURES} system"
 
-# Bootstrapping system
+# Stage #1: Bootstrap new root filesystem
 lb bootstrap ${@}
 
-# Customizing chroot
+# Stage #2: Build live OS file system
 lb chroot ${@}
 
-# Building installer images
+# Stage #3: Build installer components
 lb installer ${@}
 
-# Building binary images
+# Stage #4: Build binary (live disc) images
 lb binary ${@}
 
-# Building source images
+# Stage #5: Build supplimentary source disc images
 lb source ${@}

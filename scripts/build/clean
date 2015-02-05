@@ -13,7 +13,7 @@ set -e
 # Including common functions
 [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
-# Read meta config
+# Redirecting to auto script if required
 if [ "${1}" != "noauto" ] && [ -x auto/clean ]
 then
 	Echo_message "Executing auto/clean script."
@@ -31,13 +31,11 @@ DESCRIPTION="Clean up system build directories"
 HELP=""
 USAGE="${PROGRAM} [--all] [--cache] [--chroot] [--binary] [--purge] [--remove] [--stage] [--source]"
 
-#Arguments "${@}"
+# Processing arguments and configuration files
+# Note: Deliberately not passing parameters through to Arguments function call here!
+Init_config_data
 
-# Reading configuration files
-Read_conffiles $(Common_config_files)
-Set_defaults
-
-# Avoid cases were users accidentally nuke their config/binary
+# Avoiding cases were users accidentally nuke their config/binary
 if [ ! -d config ] && [ "$(basename ${PWD})" = "config" ]
 then
 	Echo_error "%s is not a good live-build working directory to clean." "${PWD}"

@@ -882,7 +882,7 @@ then
 	fi
 fi
 
-# Read meta config
+# Redirecting to auto script if required
 if [ "${1}" != "noauto" ] && [ -x auto/config ]
 then
 	Echo_message "Executing auto/config script."
@@ -918,10 +918,8 @@ then
 	Read_conffiles "${_CONFFILE}"
 fi
 
-# Setting defaults
+# Setting and checking defaults
 Set_defaults
-
-# Checking defaults
 Check_defaults
 
 if [ ! -e config ]
