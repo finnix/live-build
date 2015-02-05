@@ -56,8 +56,8 @@ Exit ()
 	return ${VALUE}
 }
 
-Setup_cleanup ()
+Setup_clean_exit ()
 {
-	Echo_message "Setting up cleanup function"
+	Echo_message "Setting up clean exit handler"
 	trap 'Exit' EXIT HUP INT QUIT TERM
 }

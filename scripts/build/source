@@ -13,17 +13,13 @@ set -e
 # Including common functions
 [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
-# Automatically populating config tree
-if [ -x auto/config ] && [ ! -e .build/config ]
-then
-	Echo_message "Automatically populating config tree."
-	lb config
-fi
-
 # Setting static variables
 DESCRIPTION="Build source images"
 HELP=""
 USAGE="${PROGRAM} [--force]"
+
+# Automatically populating config tree
+Auto_build_config
 
 # Processing arguments and configuration files
 Init_config_data "${@}"
@@ -33,12 +29,10 @@ then
 	exit 0
 fi
 
-#Require_stagefile
+# Setting up cleanup function
+Setup_clean_exit
 
-# Setup cleanup function
-Setup_cleanup
-
-# Enabling network in chroot
+# Configuring chroot (enabling networking)
 lb chroot_hosts install ${@}
 lb chroot_resolv install ${@}
 lb chroot_hostname install ${@}

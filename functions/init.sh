@@ -13,6 +13,15 @@ Common_config_files ()
 	echo "config/all config/common config/bootstrap config/chroot config/binary config/source"
 }
 
+Auto_build_config ()
+{
+	# Automatically build config
+	if [ -x auto/config ] && [ ! -e .build/config ]; then
+		Echo_message "Automatically populating config tree."
+		lb config
+	fi
+}
+
 Init_config_data ()
 {
 	Arguments "${@}"
