@@ -913,8 +913,8 @@ then
 fi
 
 # Setting and checking defaults
-Set_defaults
-Check_defaults
+Set_config_defaults
+Check_config_defaults
 
 if [ ! -e config ]
 then
@@ -1398,8 +1398,8 @@ EOF
 mkdir -p auto
 mkdir -p local/bin
 
-# Checking defaults again
-Check_defaults
+# Check defaults again
+Check_config_defaults
 
 if [ "${_CLEAN}" = "true" ]
 then

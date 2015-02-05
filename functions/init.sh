@@ -27,7 +27,7 @@ Init_config_data ()
 	Arguments "${@}"
 
 	Read_conffiles $(Common_config_files)
-	Set_defaults
+	Set_config_defaults
 }
 
 Maybe_auto_redirect ()

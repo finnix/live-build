@@ -49,7 +49,7 @@ fi
 Init_config_data "${@}"
 
 # Checking defaults
-Check_defaults
+Check_config_defaults
 
 Echo_message "live-build ${LIVE_BUILD_VERSION}"
 Echo_message "Building config tree for a ${LB_MODE}/${LB_DISTRIBUTION_BINARY}/${LB_ARCHITECTURES} system"

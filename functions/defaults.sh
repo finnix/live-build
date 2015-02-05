@@ -76,7 +76,7 @@ New_configuration ()
 	export LIVE_IMAGE_TYPE
 }
 
-Set_defaults ()
+Set_config_defaults ()
 {
 	# FIXME
 	New_configuration
@@ -822,7 +822,7 @@ Set_defaults ()
 	LB_SOURCE_IMAGES="${LB_SOURCE_IMAGES:-tar}"
 }
 
-Check_defaults ()
+Check_config_defaults ()
 {
 	case "${LB_BINARY_FILESYSTEM}" in
 		ntfs)
