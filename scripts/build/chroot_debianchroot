@@ -14,7 +14,7 @@ set -e
 [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
 # Setting static variables
-DESCRIPTION="$(Echo 'manage /etc/debian_chroot')"
+DESCRIPTION="Manage /etc/debian_chroot"
 HELP=""
 USAGE="${PROGRAM} {install|remove} [--force]"
 

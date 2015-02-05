@@ -14,7 +14,7 @@ set -e
 [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
 # Setting static variables
-DESCRIPTION="$(Echo 'manage /etc/apt/apt.conf')"
+DESCRIPTION="Manage /etc/apt/apt.conf"
 HELP=""
 USAGE="${PROGRAM} {install|install-binary|remove} [--force]"
 

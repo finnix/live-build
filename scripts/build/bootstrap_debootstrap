@@ -14,7 +14,7 @@ set -e
 [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
 # Setting static variables
-DESCRIPTION="$(Echo 'bootstrap a Debian system with debootstrap(8)')"
+DESCRIPTION="Bootstrap a Debian system with debootstrap(8)"
 HELP=""
 USAGE="${PROGRAM} [--force]"
 

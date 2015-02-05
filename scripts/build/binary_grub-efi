@@ -14,7 +14,7 @@ set -e
 [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
 # Setting static variables
-DESCRIPTION="$(Echo 'prepares and installs Grub based EFI support into binary')"
+DESCRIPTION="Prepares and installs Grub based EFI support into binary"
 HELP=""
 USAGE="${PROGRAM} [--force]"
 

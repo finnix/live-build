@@ -34,7 +34,7 @@ then
 fi
 
 # Setting static variables
-DESCRIPTION="$(Echo 'build a Debian Live system')"
+DESCRIPTION="Build a Debian Live system"
 HELP=""
 USAGE="${PROGRAM} [--force]"
 

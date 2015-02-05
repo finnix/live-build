@@ -14,7 +14,7 @@ set -e
 [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
 # Setting static variables
-DESCRIPTION="$(Echo 'make build interactive')"
+DESCRIPTION="Make build interactive"
 HELP=""
 USAGE="${PROGRAM} [--force]"
 

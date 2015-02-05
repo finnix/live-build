@@ -14,7 +14,7 @@ set -e
 [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
 # Setting static variables
-DESCRIPTION="$(Echo 'create source checksums')"
+DESCRIPTION="Create source checksums"
 HELP=""
 USAGE="${PROGRAM} [--force]"
 

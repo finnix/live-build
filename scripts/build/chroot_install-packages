@@ -14,7 +14,7 @@ set -e
 [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
 # Setting static variables
-DESCRIPTION="$(Echo 'install queued packages into chroot')"
+DESCRIPTION="Install queued packages into chroot"
 HELP=""
 USAGE="${PROGRAM} {install|live} [--force]"
 

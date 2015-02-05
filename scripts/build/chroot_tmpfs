@@ -14,7 +14,7 @@ set -e
 [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
 # Setting static variables
-DESCRIPTION="$(Echo 'use tmpfs to speedup the build')"
+DESCRIPTION="Use tmpfs to speedup the build"
 HELP=""
 USAGE="${PROGRAM} {install|remove} [--force]"
 

@@ -21,7 +21,7 @@ then
 fi
 
 # Setting static variables
-DESCRIPTION="$(Echo 'customize the Debian system')"
+DESCRIPTION="Customize the Debian system"
 HELP=""
 USAGE="${PROGRAM} [--force]"
 

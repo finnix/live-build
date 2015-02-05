@@ -21,7 +21,7 @@ then
 fi
 
 # Setting static variables
-DESCRIPTION="$(Echo 'preparing installer images')"
+DESCRIPTION="Preparing installer images"
 HELP=""
 USAGE="${PROGRAM} [--force]"
 

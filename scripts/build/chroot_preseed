@@ -14,7 +14,7 @@ set -e
 [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
 # Setting static variables
-DESCRIPTION="$(Echo 'execute local preseed in chroot')"
+DESCRIPTION="Execute local preseed in chroot"
 HELP=""
 USAGE="${PROGRAM} [--force]"
 

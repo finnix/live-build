@@ -14,7 +14,7 @@ set -e
 [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
 # Setting static variables
-DESCRIPTION="$(Echo 'build iso binary image')"
+DESCRIPTION="Build iso binary image"
 HELP=""
 USAGE="${PROGRAM} [--force]"
 
