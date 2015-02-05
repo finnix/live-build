@@ -21,11 +21,8 @@ USAGE="${PROGRAM} {install|live} [--force]"
 _PASS="${1}"
 shift
 
-Arguments "${@}"
-
-# Reading configuration files
-Read_conffiles config/all config/common config/bootstrap config/chroot config/binary config/source
-Set_defaults
+# Processing arguments and configuration files
+Init_config_data "${@}"
 
 Echo_message "Begin installing packages (${_PASS} pass)..."
 

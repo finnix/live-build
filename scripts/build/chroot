@@ -25,11 +25,8 @@ DESCRIPTION="Customize the Debian system"
 HELP=""
 USAGE="${PROGRAM} [--force]"
 
-Arguments "${@}"
-
-# Reading configuration files
-Read_conffiles config/all config/common config/bootstrap config/chroot config/binary config/source
-Set_defaults
+# Processing arguments and configuration files
+Init_config_data "${@}"
 
 # Setup cleanup function
 Setup_cleanup

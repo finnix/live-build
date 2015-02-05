@@ -38,8 +38,6 @@ DESCRIPTION="Build a Debian Live system"
 HELP=""
 USAGE="${PROGRAM} [--force]"
 
-Arguments "${@}"
-
 if [ ! -d config ]
 then
 	Echo_warning "No config/ directory; using defaults for all options"
@@ -58,9 +56,8 @@ then
 	exit 1
 fi
 
-# Reading configuration files
-Read_conffiles config/all config/common config/bootstrap config/chroot config/binary config/source
-Set_defaults
+# Processing arguments and configuration files
+Init_config_data "${@}"
 
 # Checking defaults
 Check_defaults

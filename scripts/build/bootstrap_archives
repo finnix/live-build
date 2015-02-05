@@ -25,11 +25,8 @@ if [ "${_PASS}" != "binary" ] && [ "${_PASS}" != "source" ]; then
 	Usage
 fi
 
-Arguments "${@}"
-
-# Reading configuration files
-Read_conffiles config/all config/common config/bootstrap config/chroot config/binary config/source
-Set_defaults
+# Processing arguments and configuration files
+Init_config_data "${@}"
 
 # Requiring stage file
 Require_stagefile .build/config .build/bootstrap
