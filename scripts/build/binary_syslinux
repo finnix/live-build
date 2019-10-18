@@ -45,8 +45,11 @@ Check_architectures amd64 i386
 Check_crossarchitectures
 
 case "${LB_INITRAMFS}" in
-	*)
+	live-boot)
 		_INITRAMFS="live"
+		;;
+	*)
+		_INITRAMFS="boot"
 		;;
 esac
 
