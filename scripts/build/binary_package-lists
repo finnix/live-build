@@ -71,8 +71,6 @@ then
 	fi
 
 	mkdir -p chroot/binary.deb/archives/partial
-	mv chroot/var/lib/dpkg/status chroot/var/lib/dpkg/status.tmp
-	touch chroot/var/lib/dpkg/status
 
 	for LIST in config/package-lists/*.list \
 		    config/package-lists/*.list.binary
@@ -83,7 +81,7 @@ then
 			Expand_packagelist "${LIST}" "config/package-lists" > chroot/root/"$(basename ${LIST})"
 
 			# Downloading additional packages
-			Chroot chroot "xargs --no-run-if-empty --arg-file=/root/$(basename ${LIST}) apt-get ${APT_OPTIONS} -o Dir::Cache=/binary.deb --download-only install"
+			Chroot chroot "xargs --no-run-if-empty --arg-file=/root/$(basename ${LIST}) apt-get ${APT_OPTIONS} -o Dir::Cache=/binary.deb -o Dir::State::status=/dev/null --download-only install"
 
 			# Remove package list
 			rm chroot/root/"$(basename ${LIST})"
@@ -151,7 +149,6 @@ then
 	rm -f chroot/bin/Packages
 
 	rm -rf chroot/binary.deb
-	mv chroot/var/lib/dpkg/status.tmp chroot/var/lib/dpkg/status
 
 	# Removing depends
 	Remove_package
