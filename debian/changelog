@@ -1,3 +1,9 @@
+live-build (1:20191221) unstable; urgency=medium
+
+  * Revert some Kali-specific change in scripts/build/binary_iso
+
+ -- Raphaël Hertzog <raphael@offensive-security.com>  Thu, 19 Dec 2019 21:07:22 +0100
+
 live-build (1:20191220) unstable; urgency=medium
 
   * Fix "--debian-installer cdrom" and its interaction with binary_package-lists
