@@ -1,3 +1,19 @@
+live-build (1:20191220) unstable; urgency=medium
+
+  * Fix "--debian-installer cdrom" and its interaction with binary_package-lists
+    apt-ftparchive is not able to differentiate between .deb and .udeb so
+    we have to install them in different pool directories so that we can
+    regenerate the Packages files without having the .udeb show up
+    unexpectedly.
+    Since binary_package-lists can overwrite the Packages files generated
+    in installer_debian-installer we have to ensure that it also updates
+    the Release file created formerly.
+    Ideally we should find a way to avoid the duplication of this logic.
+  * Bump Standards-Version to 4.4.1
+  * Switch to debhelper compat level 12
+
+ -- Raphaël Hertzog <raphael@offensive-security.com>  Thu, 19 Dec 2019 19:16:08 +0100
+
 live-build (1:20191219) unstable; urgency=medium
 
   [ Adrian Gibanel Lopez ]
