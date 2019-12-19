@@ -73,6 +73,7 @@ live-build (1:20191219) unstable; urgency=medium
   * installer_debian-installer: don't mess with /var/lib/dpkg/status
   * Tweak lintian overrides
   * Support --distribution-binary and --distribution-chroot (Closes: #888507)
+  * Update my email in the Maintainer field.
 
   [ Ronny Standtke ]
   * Run binary_hooks after binary_grub-efi (Closes: #940846)

@@ -2,7 +2,7 @@ Source: live-build
 Section: misc
 Priority: optional
 Maintainer: Debian Live <debian-live@lists.debian.org>
-Uploaders: Raphaël Hertzog <hertzog@debian.org>,
+Uploaders: Raphaël Hertzog <raphael@offensive-security.com>,
  Luca Boccassi <bluca@debian.org>,
 Build-Depends:
  debhelper (>= 10~),
