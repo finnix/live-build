@@ -514,7 +514,7 @@ then
 	fi
 
 	# Udeb handling
-	mkdir binary.udeb
+	mkdir -p binary.udeb/pool-udeb/main
 	cd binary.udeb
 
 	# Downloading udeb indices
@@ -570,7 +570,7 @@ then
 		do
 			if [ -e "${FILE}" ]
 			then
-				Install_file "${FILE}" "pool"
+				Install_file "${FILE}" "pool-udeb"
 
 				# Prefer local udebs over downloaded udebs
 				rm -f "$(basename ${FILE} | awk -F_ '{ print $1 }')"_*.udeb
@@ -584,7 +584,7 @@ then
 		do
 			if [ -e "${FILE}" ]
 			then
-				Install_file "${FILE}" "pool"
+				Install_file "${FILE}" "pool-udeb"
 
 				# Prefer local udebs over downloaded udebs
 				rm -f "$(basename ${FILE} | awk -F_ '{ print $1 }')"_*.udeb
@@ -629,8 +629,8 @@ then
 	do
 		if [ -f "$(basename ${UDEB})" ]
 		then
-			mkdir -p $(dirname ${UDEB})
-			mv "$(basename ${UDEB})" "$(dirname ${UDEB})"
+			Install_file "$(basename ${UDEB})" "pool-udeb"
+			rm "$(basename ${UDEB})"
 		fi
 	done
 
@@ -639,7 +639,7 @@ then
 	cd "${OLDPWD}"
 
 	mv binary.udeb chroot/root
-	echo "cd /root/binary.udeb && apt-ftparchive packages pool/main > dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/main/debian-installer/binary-${LB_ARCHITECTURES}/Packages" > chroot/binary.sh
+	echo "cd /root/binary.udeb && apt-ftparchive packages pool-udeb/main > dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/main/debian-installer/binary-${LB_ARCHITECTURES}/Packages" > chroot/binary.sh
 	Chroot chroot "sh binary.sh"
 	rm -f chroot/binary.sh
 	mv chroot/root/binary.udeb ./
