@@ -47,3 +47,9 @@ Chroot_has_package() {
 	fi
 	return 1
 }
+
+Chroot_package_list() {
+	CHROOT="${1:-chroot}"; shift
+
+	dpkg-query --admindir=${CHROOT}/var/lib/dpkg -W -f'${Package}\n'
+}

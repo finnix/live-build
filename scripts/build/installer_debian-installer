@@ -311,9 +311,6 @@ then
 	# Downloading additional packages
 	mkdir -p chroot/binary.deb/archives/partial
 
-	mv chroot/var/lib/dpkg/status chroot/var/lib/dpkg/status.tmp
-	touch chroot/var/lib/dpkg/status
-
 	case "${LB_ARCHITECTURES}" in
 		amd64)
 			DI_REQ_PACKAGES="lilo grub-pc"
@@ -401,7 +398,7 @@ then
 	fi
 
 	# Set apt command prefix
-	_LB_APT_COMMAND="apt-get ${APT_OPTIONS} -o Dir::Cache=/binary.deb -o APT::Install-Recommends=false --download-only"
+	_LB_APT_COMMAND="apt-get ${APT_OPTIONS} -o Dir::Cache=/binary.deb -o Dir::State::status=/dev/null -o APT::Install-Recommends=false --download-only"
 
 	if [ "${LB_DEBIAN_INSTALLER}" = "live" ]
 	then
@@ -417,7 +414,7 @@ then
 
 		# Drop the packages already installed that d-i doesn't explicitely need
 		_REMAINING_PACKAGES="$(echo ${DI_FIRMWARE_PACKAGES} ${DI_REQ_PACKAGES} | sed -e 's# #|#g')"
-		_REMAINING_PACKAGES="$(sed -n -e 's|Package: ||p' chroot/var/lib/dpkg/status.tmp | grep -E -v "^(${_REMAINING_PACKAGES})\$")"
+		_REMAINING_PACKAGES="$(Chroot_package_list chroot | grep -E -v "^(${_REMAINING_PACKAGES})\$")"
 
 		for _PACKAGE in ${_REMAINING_PACKAGES}
 		do
@@ -427,9 +424,6 @@ then
 		# Download .debs of the required packages
 		Chroot chroot ${_LB_APT_COMMAND} install ${DI_PACKAGES} ${DI_FIRMWARE_PACKAGES}
 	fi
-
-	# Revert dpkg status file
-	mv chroot/var/lib/dpkg/status.tmp chroot/var/lib/dpkg/status
 
 	mv chroot/binary.deb ./
 
