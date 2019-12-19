@@ -98,6 +98,10 @@
 .br
 	[\-d|\fB\-\-distribution\fR \fICODENAME\fR]
 .br
+	[\fB\-\-distribution\-chroot\fR \fICODENAME\fR]
+.br
+	[\fB\-\-distribution\-binary\fR \fICODENAME\fR]
+.br
 	[\fB\-\-dump\fR]
 .br
 	[\fB\-\-fdisk\fR fdisk|fdisk.dist]
@@ -195,6 +199,10 @@
 	[\fB\-\-parent\-debian\-installer\-distribution\fR \fICODENAME\fR]
 .br
 	[\fB\-\-parent\-distribution\fR \fICODENAME\fR]
+.br
+	[\fB\-\-parent\-distribution\-chroot\fR \fICODENAME\fR]
+.br
+	[\fB\-\-parent\-distribution\-binary\fR \fICODENAME\fR]
 .br
 	[\fB\-\-parent\-mirror\-binary\fR \fIURL\fR]
 .br
@@ -335,6 +343,10 @@ tells debootstrap to use an alternate bootstrap script (last parameter to deboot
 turns on debugging informational messages.
 .IP "\-d|\fB\-\-distribution\fR \fICODENAME\fR" 4
 defines the distribution of the resulting live system.
+.IP "\fB\-\-distribution\-binary\fR \fICODENAME\fR" 4
+defines the distribution enabled in the resulting live system (defaults to the value set in \fB\-\-distribution\fR)
+.IP "\fB\-\-distribution\-chroot\fR \fICODENAME\fR" 4
+defines the distribution used to build the live system (defaults to the value set in \fB\-\-distribution\fR)
 .IP "\fB\-\-dump\fR" 4
 prepares a report of the currently present live system configuration and the version of live\-build used. This is useful to provide if you submit bug reports, we do get all information required for us to locate and replicate an error.
 .IP "\fB\-\-fdisk\fR fdisk|fdisk.dist" 4
@@ -440,6 +452,10 @@ defines the archive areas for derivatives of the resulting live system.
 defines the parent debian\-installer distribution for derivatives of the resulting live system.
 .IP "\fB\-\-parent\-distribution\fR \fICODENAME\fR" 4
 defines the parent distribution for derivatives of the resulting live system.
+.IP "\fB\-\-parent\-distribution\-binary\fR \fICODENAME\fR" 4
+defines the derivative's parent distribution enabled in the resulting live system.
+.IP "\fB\-\-parent\-distribution\-chroot\fR \fICODENAME\fR" 4
+defines the derivative's parent distribution used to build the live system.
 .IP "\fB\-\-parent\-mirror\-binary\fR \fIURL\fR" 4
 sets the location of the debian package mirror that should end up configured in the final image and which is the one a user would see and use. This has not necessarily to be the same that is used to build the image, e.g. if you use a local mirror but want to have an official mirror in the image. This defaults to the value of \-\-mirror\-binary.
 .IP "\fB\-\-parent\-mirror\-binary\-security\fR \fIURL\fR" 4
