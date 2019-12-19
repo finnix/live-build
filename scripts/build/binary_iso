@@ -157,8 +157,8 @@ do
 		grub-efi)
 			if [ -e binary/boot/grub/efi.img ]
 			then
-				XORRISO_OPTIONS="${XORRISO_OPTIONS} --efi-boot boot/grub/efi.img"
-				XORRISO_OPTIONS="${XORRISO_OPTIONS} -append_partition 2 0x01 binary/boot/grub/efi.img"
+				XORRISO_OPTIONS="${XORRISO_OPTIONS} -e boot/grub/efi.img -no-emul-boot"
+				XORRISO_OPTIONS="${XORRISO_OPTIONS} -isohybrid-gpt-basdat -isohybrid-apm-hfsplus"
 			else
 				Echo "No EFI boot code to include in the ISO"
 			fi
