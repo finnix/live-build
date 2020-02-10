@@ -347,15 +347,17 @@ then
 
 		FIRMWARE_PACKAGES=""
 
-		rm -f cache/contents.chroot/contents.${LB_PARENT_DISTRIBUTION_CHROOT}.${LB_ARCHITECTURES}
+		CONTENTS_FILE="cache/contents.chroot/contents.${LB_PARENT_DISTRIBUTION_CHROOT}.${LB_ARCHITECTURES}"
+
+		rm -f "${CONTENTS_FILE}"
 
 		for _PARENT_ARCHIVE_AREA in ${LB_PARENT_ARCHIVE_AREAS}
 		do
-			_CONTENT="${LB_PARENT_MIRROR_CHROOT}/dists/${LB_PARENT_DISTRIBUTION_CHROOT}/${_PARENT_ARCHIVE_AREA}/Contents-${LB_ARCHITECTURES}.gz"
+			CONTENTS_URL="${LB_PARENT_MIRROR_CHROOT}/dists/${LB_PARENT_DISTRIBUTION_CHROOT}/${_PARENT_ARCHIVE_AREA}/Contents-${LB_ARCHITECTURES}.gz"
 
-			wget ${WGET_OPTIONS} ${_CONTENT} -O - | gunzip -c >> cache/contents.chroot/contents.${LB_PARENT_DISTRIBUTION_CHROOT}.${LB_ARCHITECTURES}
+			wget ${WGET_OPTIONS} "${CONTENTS_URL}" -O - | gunzip -c >> "${CONTENTS_FILE}"
 
-			FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} $(awk '/^lib\/firmware/ { print $2 }' cache/contents.chroot/contents.${LB_PARENT_DISTRIBUTION_CHROOT}.${LB_ARCHITECTURES} | sort -u)"
+			FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} $(awk '/^lib\/firmware/ { print $2 }' "${CONTENTS_FILE}" | sort -u)"
 		done
 
 		if echo ${LB_PARENT_ARCHIVE_AREAS} | grep -qs "non-free"
@@ -379,15 +381,17 @@ then
 		then
 			# FIXME: account for the fact that PARENT_DISTRIBUTION and DISTRIBUTION might be the same (to not have overlapping cache files for contents).
 
-			rm -f cache/contents.chroot/contents.${LB_DISTRIBUTION_CHROOT}.${LB_ARCHITECTURES}
+			CONTENTS_FILE="cache/contents.chroot/contents.${LB_DISTRIBUTION_CHROOT}.${LB_ARCHITECTURES}"
+
+			rm -f "${CONTENTS_FILE}"
 
 			for _ARCHIVE_AREA in ${LB_ARCHIVE_AREAS}
 			do
-				_CONTENT="${LB_MIRROR_CHROOT}/dists/${LB_DISTRIBUTION_CHROOT}/${_ARCHIVE_AREA}/Contents-${LB_ARCHITECTURES}.gz"
+				CONTENTS_URL="${LB_MIRROR_CHROOT}/dists/${LB_DISTRIBUTION_CHROOT}/${_ARCHIVE_AREA}/Contents-${LB_ARCHITECTURES}.gz"
 
-				wget ${WGET_OPTIONS} ${_CONTENT} -O - | gunzip -c >> cache/contents.chroot/contents.${LB_DISTRIBUTION_CHROOT}.${LB_ARCHITECTURES}
+				wget ${WGET_OPTIONS} "${CONTENTS_URL}" -O - | gunzip -c >> "${CONTENTS_FILE}"
 
-				FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} $(awk '/^lib\/firmware/ { print $2 }' cache/contents.chroot/contents.${LB_DISTRIBUTION_CHROOT}.${LB_ARCHITECTURES} | sort -u)"
+				FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} $(awk '/^lib\/firmware/ { print $2 }' "${CONTENTS_FILE}" | sort -u)"
 			done
 		fi
 
