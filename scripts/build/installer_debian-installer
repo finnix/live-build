@@ -356,9 +356,9 @@ then
 			CONTENTS_URL="${LB_PARENT_MIRROR_CHROOT}/dists/${LB_PARENT_DISTRIBUTION_CHROOT}/${_PARENT_ARCHIVE_AREA}/Contents-${LB_ARCHITECTURES}.gz"
 
 			wget ${WGET_OPTIONS} "${CONTENTS_URL}" -O - | gunzip -c >> "${CONTENTS_FILE}"
-
-			FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} $(awk '/^lib\/firmware/ { print $2 }' "${CONTENTS_FILE}" | sort -u)"
 		done
+
+		FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} $(awk '/^lib\/firmware/ { print $2 }' "${CONTENTS_FILE}" | sort -u)"
 
 		if echo ${LB_PARENT_ARCHIVE_AREAS} | grep -qs "non-free"
 		then
@@ -390,9 +390,9 @@ then
 				CONTENTS_URL="${LB_MIRROR_CHROOT}/dists/${LB_DISTRIBUTION_CHROOT}/${_ARCHIVE_AREA}/Contents-${LB_ARCHITECTURES}.gz"
 
 				wget ${WGET_OPTIONS} "${CONTENTS_URL}" -O - | gunzip -c >> "${CONTENTS_FILE}"
-
-				FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} $(awk '/^lib\/firmware/ { print $2 }' "${CONTENTS_FILE}" | sort -u)"
 			done
+
+			FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} $(awk '/^lib\/firmware/ { print $2 }' "${CONTENTS_FILE}" | sort -u)"
 		fi
 
 		# Drop section and keep package names only
