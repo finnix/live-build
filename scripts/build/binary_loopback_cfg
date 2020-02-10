@@ -82,15 +82,15 @@ Grub_install_entry ()
 	case $TYPE in
 		rescue|rescuegui)
 			APPEND=$(echo "$APPEND" | sed -e 's/ quiet//')
-		;;
+			;;
 	esac
 
 	if [ -z "$LINUX_INSTALL" ]; then
-	    # First entry recorded in LINUX_INSTALL
-	    LINUX_INSTALL="$(Grub_menu_entry "$LABEL" "$KERNEL" "$INITRD" "$APPEND")$NL"
+		# First entry recorded in LINUX_INSTALL
+		LINUX_INSTALL="$(Grub_menu_entry "$LABEL" "$KERNEL" "$INITRD" "$APPEND")$NL"
 	else
-	    # Remaining entries recorded in LINUX_ADVANCED_INSTALL
-	    LINUX_ADVANCED_INSTALL="$LINUX_ADVANCED_INSTALL$(Grub_menu_entry "$LABEL" "$KERNEL" "$INITRD" "$APPEND")$NL"
+		# Remaining entries recorded in LINUX_ADVANCED_INSTALL
+		LINUX_ADVANCED_INSTALL="$LINUX_ADVANCED_INSTALL$(Grub_menu_entry "$LABEL" "$KERNEL" "$INITRD" "$APPEND")$NL"
 	fi
 }
 
@@ -270,7 +270,7 @@ mkdir -p binary/boot/grub
 cp -a "${_SOURCE}"/* binary/boot/grub/
 
 escape_for_sed() {
-    echo -n "$1" | perl -npe 's/\n/\\n/gm'
+	echo -n "$1" | perl -npe 's/\n/\\n/gm'
 }
 
 sed -i \

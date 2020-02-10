@@ -433,7 +433,7 @@ Set_defaults ()
 			;;
 
 		i386)
-                        LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS_WITH_ARCH:-686-pae}"
+			LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS_WITH_ARCH:-686-pae}"
 			;;
 
 		ia64)

@@ -37,18 +37,18 @@ for x in "/usr/lib/grub/$platform"/*.mod; do
 	# dependencies.  It would be nice to have a way to read the module
 	# list directly out of the image.
 	case $(basename "$x" .mod) in
-	    configfile|fshelp|iso9660|memdisk|search|search_fs_file|search_fs_uuid|search_label|tar)
-		# included in boot image
-		;;
-	    affs|afs|afs_be|befs|befs_be|minix|nilfs2|sfs|zfs|zfsinfo)
-		# unnecessary filesystem modules
-		;;
-	    example_functional_test|functional_test|hello)
-		# other cruft
-		;;
-	    *)
-		cp -a "$x" "$outdir/boot/grub/$platform/"
-		;;
+		configfile|fshelp|iso9660|memdisk|search|search_fs_file|search_fs_uuid|search_label|tar)
+			# included in boot image
+			;;
+		affs|afs|afs_be|befs|befs_be|minix|nilfs2|sfs|zfs|zfsinfo)
+			# unnecessary filesystem modules
+			;;
+		example_functional_test|functional_test|hello)
+			# other cruft
+			;;
+		*)
+			cp -a "$x" "$outdir/boot/grub/$platform/"
+			;;
 	esac
 done
 

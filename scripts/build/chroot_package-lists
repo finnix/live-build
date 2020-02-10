@@ -66,8 +66,8 @@ else
 fi
 
 for LIST in config/package-lists/*.list \
-	    config/package-lists/*.list.chroot \
-	    config/package-lists/*.list.chroot_${_PASS}
+	     config/package-lists/*.list.chroot \
+	     config/package-lists/*.list.chroot_${_PASS}
 do
 	if [ -e "${LIST}" ]
 	then

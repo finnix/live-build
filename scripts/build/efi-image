@@ -55,7 +55,7 @@ EOF
 
 mkdir -p "$outdir/boot/grub/$platform"
 (for i in /usr/lib/grub/$platform/part_*.mod; do
-    i=`echo $i | sed 's?^.*/??g;s?\.mod$??g;'`
+	i=`echo $i | sed 's?^.*/??g;s?\.mod$??g;'`
 	echo "insmod $i"
  done; \
  echo "source /boot/grub/grub.cfg") >"$outdir/boot/grub/$platform/grub.cfg"

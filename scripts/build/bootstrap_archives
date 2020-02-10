@@ -37,7 +37,7 @@ Require_stagefile .build/config .build/bootstrap
 case "${LB_DERIVATIVE}" in
 	true)
 		_PARENT_FILE="sources.list.d/debian.list"
-	;;
+		;;
 
 	false)
 		_PARENT_FILE="sources.list"
@@ -62,7 +62,7 @@ Restore_cache cache/packages.chroot
 
 if echo "${LB_PARENT_MIRROR_CHROOT}" | grep -q '^file:/'
 then
-    Chroot_bind_path chroot "$(echo ${LB_PARENT_MIRROR_CHROOT} | sed -e 's|file:||')"
+	Chroot_bind_path chroot "$(echo ${LB_PARENT_MIRROR_CHROOT} | sed -e 's|file:||')"
 fi
 
 cat > chroot/etc/apt/${_PARENT_FILE} << EOF

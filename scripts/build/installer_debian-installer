@@ -284,7 +284,7 @@ Download_file "${DESTDIR}"/"${INITRD_DI}" ${URL}/${DI_REMOTE_BASE}/initrd.gz
 DOWNLOAD_GTK_INSTALLER=0
 if [ "${LB_DEBIAN_INSTALLER_GUI}" = "true" ]
 then
-		case "${LB_ARCHITECTURES}" in
+	case "${LB_ARCHITECTURES}" in
 		amd64|i386)
 			DOWNLOAD_GTK_INSTALLER=1
 			;;
@@ -598,8 +598,8 @@ then
 		if [ -e "${LOCATION}" ]
 		then
 			grep -v "^#" "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/udeb_exclude" > exclude || true
-	grep -v "^#" "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/exclude-udebs" >> exclude || true
-	grep -v "^#" "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/exclude-udebs-${LB_ARCHITECTURES}" >> exclude || true
+			grep -v "^#" "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/exclude-udebs" >> exclude || true
+			grep -v "^#" "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/exclude-udebs-${LB_ARCHITECTURES}" >> exclude || true
 
 			continue
 		fi

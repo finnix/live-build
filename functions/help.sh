@@ -10,7 +10,7 @@
 
 Help ()
 {
-        Echo "%s - %s" "${PROGRAM}" "${DESCRIPTION}"
+	Echo "%s - %s" "${PROGRAM}" "${DESCRIPTION}"
 	echo
 	Echo "Usage:"
 	echo

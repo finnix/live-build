@@ -129,14 +129,13 @@ then
 		mv "${FILE}" binary/${POOL}/${SECTION}/"${LETTER}"/"${SOURCE}"
 	done
 
-        if [ -e chroot/etc/os-release ]
-        then
-                _VERSION="$(. chroot/etc/os-release && echo ${VERSION_ID})"
-        fi
+	if [ -e chroot/etc/os-release ]; then
+		_VERSION="$(. chroot/etc/os-release && echo ${VERSION_ID})"
+	fi
 
-        if [ -n "${_VERSION}" ]; then
-                _LB_APT_VERSION_OPT='-o APT::FTPArchive::Release::Version="'"${_VERSION}"'"'
-        fi
+	if [ -n "${_VERSION}" ]; then
+		_LB_APT_VERSION_OPT='-o APT::FTPArchive::Release::Version="'"${_VERSION}"'"'
+	fi
 
 	cd binary
 
