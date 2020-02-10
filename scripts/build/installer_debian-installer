@@ -395,6 +395,8 @@ then
 			FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} $(awk '/^lib\/firmware/ { print $2 }' "${CONTENTS_FILE}" | sort -u)"
 		fi
 
+		rm -f "${CONTENTS_FILE}"
+
 		# Drop section and keep package names only
 		for _PACKAGE in ${FIRMWARE_PACKAGES}
 		do
