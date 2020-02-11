@@ -58,11 +58,9 @@ mkdir -p cache/contents.chroot
 
 FIRMWARE_PACKAGES=""
 
-Firmware_List_From_Contents "${LB_PARENT_MIRROR_CHROOT}" "${LB_PARENT_DISTRIBUTION_CHROOT}" "${LB_PARENT_ARCHIVE_AREAS}"
-
+# Manually add firmware-linux/non-free meta package
 if echo ${LB_PARENT_ARCHIVE_AREAS} | grep -qs "non-free"
 then
-	# Manually add firmware-linux/non-free meta package
 	if [ "${LB_DERIVATIVE}" != "true" ]
 	then
 		FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} firmware-linux"
@@ -76,6 +74,8 @@ then
 		esac
 	fi
 fi
+
+Firmware_List_From_Contents "${LB_PARENT_MIRROR_CHROOT}" "${LB_PARENT_DISTRIBUTION_CHROOT}" "${LB_PARENT_ARCHIVE_AREAS}"
 
 if [ "${LB_DERIVATIVE}" = "true" ]
 then
