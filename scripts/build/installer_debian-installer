@@ -240,6 +240,9 @@ VMLINUZ_GI="gtk/vmlinuz"
 INITRD_GI="gtk/initrd.gz"
 DESTDIR_GI="${DESTDIR}/gtk"
 
+# Debian Installer daily builds
+DAILY_DI_URL="https://d-i.debian.org/daily-images/${LB_ARCHITECTURES}/daily/"
+
 case "${LB_DERIVATIVE}" in
 	false)
 		if [ "${LB_DEBIAN_INSTALLER_DISTRIBUTION}" = "daily" ]
@@ -247,8 +250,7 @@ case "${LB_DERIVATIVE}" in
 			# FIXME: variable name should be decupled from derivatves
 			LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="sid"
 
-			# Debian Installer daily builds
-			URL="https://d-i.debian.org/daily-images/${LB_ARCHITECTURES}/daily/"
+			URL="${DAILY_DI_URL}"
 		else
 			URL="${LB_MIRROR_DEBIAN_INSTALLER}/dists/${LB_DEBIAN_INSTALLER_DISTRIBUTION}/main/installer-${LB_ARCHITECTURES}/current/images/"
 		fi
@@ -259,8 +261,7 @@ case "${LB_DERIVATIVE}" in
 		then
 			LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="sid"
 
-			# Debian Installer daily builds
-			URL="https://d-i.debian.org/daily-images/${LB_ARCHITECTURES}/daily/"
+			URL="${DAILY_DI_URL}"
 		else
 			URL="${LB_PARENT_MIRROR_DEBIAN_INSTALLER}/dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/main/installer-${LB_ARCHITECTURES}/current/images/"
 		fi
