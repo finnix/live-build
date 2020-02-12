@@ -10,7 +10,7 @@
 
 Exit ()
 {
-	VALUE="${?}"
+	VALUE=$?
 
 	if [ "${_DEBUG}" = "true" ]
 	then

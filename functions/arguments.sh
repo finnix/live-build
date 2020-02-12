@@ -12,7 +12,7 @@ Arguments ()
 {
 	ARGUMENTS="$(getopt --longoptions breakpoints,color,conffile:,debug,force,help,quiet,usage,verbose,version --name=${PROGRAM} --options c:huv --shell sh -- "${@}")"
 
-	if [ "${?}" != "0" ]
+	if [ $? -ne 0 ]
 	then
 		Echo_error "terminating" >&2
 		exit 1

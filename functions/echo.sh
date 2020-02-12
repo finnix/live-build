@@ -149,11 +149,11 @@ Echo_warning ()
 
 Echo_status ()
 {
-	__RETURN="${?}"
+	__RETURN=$?
 
 	if [ "${_COLOR}" = "false" ]
 	then
-		if [ "${__RETURN}" = "0" ]
+		if [ $__RETURN -eq 0 ]
 		then
 			printf " done.\n"
 		else
@@ -162,7 +162,7 @@ Echo_status ()
 	else
 		Cursor_columns_backward 8
 
-		if [ "${__RETURN}" = "0" ]
+		if [ $__RETURN -eq 0 ]
 		then
 			printf " ${GREEN}done${NO_COLOR}.  \n"
 		else
