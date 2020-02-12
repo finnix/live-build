@@ -20,19 +20,32 @@ Firmware_List_From_Contents () {
 
 	for _ARCHIVE_AREA in ${ARCHIVE_AREAS}
 	do
-		local CONTENTS_FILE="cache/contents.chroot/contents.${DISTRO_CHROOT}.${LB_ARCHITECTURES}.gz"
 		local CONTENTS_URL="${MIRROR_CHROOT}/dists/${DISTRO_CHROOT}/${_ARCHIVE_AREA}/Contents-${LB_ARCHITECTURES}.gz"
+		local CONTENTS_FILEDIR="cache/contents.chroot/${DISTRO_CHROOT}/${_ARCHIVE_AREA}"
+		local CONTENTS_FILE="${CONTENTS_FILEDIR}/contents-${LB_ARCHITECTURES}.gz"
 
-		# Ensure fresh
-		rm -f "${CONTENTS_FILE}"
+		mkdir -p "${CONTENTS_FILEDIR}"
 
-		wget ${WGET_OPTIONS} "${CONTENTS_URL}" -O "${CONTENTS_FILE}"
+		# Purge from cache if not wanting to use from cache, ensuring fresh copy
+		if [ "${LB_CACHE}" != "true" ]
+		then
+			rm -f "${CONTENTS_FILE}"
+		fi
+
+		# If not cached, download
+		if [ ! -e "${CONTENTS_FILE}" ]
+		then
+			wget ${WGET_OPTIONS} "${CONTENTS_URL}" -O "${CONTENTS_FILE}"
+		fi
 
 		local PACKAGES
 		PACKAGES="$(gunzip -c "${CONTENTS_FILE}" | awk '/^lib\/firmware/ { print $2 }' | sort -u )"
 		FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} ${PACKAGES}"
 
-		# Don't waste disk space preserving since always getting fresh
-		rm -f "${CONTENTS_FILE}"
+		# Don't waste disk space, if not making use of caching
+		if [ "${LB_CACHE}" != "true" ]
+		then
+			rm -f "${CONTENTS_FILE}"
+		fi
 	done
 }

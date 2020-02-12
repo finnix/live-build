@@ -54,7 +54,6 @@ Check_package host /usr/bin/wget wget
 # Include firmware packages
 
 # Get all firmware packages names
-mkdir -p cache/contents.chroot
 
 FIRMWARE_PACKAGES=""
 
