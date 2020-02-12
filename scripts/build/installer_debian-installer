@@ -528,7 +528,7 @@ then
 		gunzip -c Packages.derivative.gz > Packages.derivative
 	fi
 
-	# Sorting udebs
+	# Put derived first to prefer them
 	if [ "${LB_DERIVATIVE}" = "true" ]
 	then
 		UDEBS="$(awk '/Filename: / { print $2 }' Packages.derivative)"
@@ -536,7 +536,7 @@ then
 
 	UDEBS="${UDEBS} $(awk '/Filename: / { print $2 }' Packages)"
 
-	# Downloading udebs packages
+	# Downloading udeb packages
 	Echo_message "Downloading udebs..."
 
 	if [ "${LB_DERIVATIVE}" = "true" ]
@@ -546,12 +546,12 @@ then
 
 	for UDEB in ${UDEBS}
 	do
+		# Copy from cache if available, otherwise download
 		if [ -f ../cache/packages.installer_debian-installer.udeb/"$(basename ${UDEB})" ]
 		then
-			# Copying cached udebs
 			cp ../cache/packages.installer_debian-installer.udeb/"$(basename ${UDEB})" ./
 		else
-			# Downloading udebs
+			# Skip if already got (any version), i.e. should parent and derive both list it
 			if ! ls "$(basename ${UDEB} | awk -F_ '{ print $1 }')"_* > /dev/null 2>&1
 			then
 				wget ${WGET_OPTIONS} "${LB_MIRROR_CHROOT}"/${UDEB} || wget ${WGET_OPTIONS} "${LB_PARENT_MIRROR_CHROOT}"/${UDEB}
@@ -615,6 +615,7 @@ then
 	# Excluding udebs from excludes because we want them to be in the image on purpose
 	sed -i -e 's|di-utils-exit-installer||' exclude # used for live-installer-launcher
 
+	# Remove all udebs to be excluded from inclusion
 	while read EXCLUDE
 	do
 		if [ "${LB_DEBIAN_INSTALLER}" = "live" ] && [ "${EXCLUDE}" = "live-installer" ]
@@ -625,7 +626,7 @@ then
 		rm -f ${EXCLUDE}_*.udeb
 	done < exclude
 
-	# Moving udebs
+	# Sort udebs into alphabetised pool structure
 	for UDEB in ${UDEBS}
 	do
 		if [ -f "$(basename ${UDEB})" ]
@@ -637,6 +638,7 @@ then
 
 	# Creating udeb indices
 	mkdir -p dists/"${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}"/main/debian-installer/binary-"${LB_ARCHITECTURES}"
+
 	cd "${OLDPWD}"
 
 	mv binary.udeb chroot/root
