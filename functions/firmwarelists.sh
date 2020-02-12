@@ -18,20 +18,21 @@ Firmware_List_From_Contents () {
 	local DISTRO_CHROOT="${2}"
 	local ARCHIVE_AREAS="${3}"
 
-	local CONTENTS_FILE="cache/contents.chroot/contents.${DISTRO_CHROOT}.${LB_ARCHITECTURES}"
-
-	# Ensure fresh
-	rm -f "${CONTENTS_FILE}"
-
 	for _ARCHIVE_AREA in ${ARCHIVE_AREAS}
 	do
+		local CONTENTS_FILE="cache/contents.chroot/contents.${DISTRO_CHROOT}.${LB_ARCHITECTURES}.gz"
 		local CONTENTS_URL="${MIRROR_CHROOT}/dists/${DISTRO_CHROOT}/${_ARCHIVE_AREA}/Contents-${LB_ARCHITECTURES}.gz"
 
-		wget ${WGET_OPTIONS} "${CONTENTS_URL}" -O - | gunzip -c >> "${CONTENTS_FILE}"
+		# Ensure fresh
+		rm -f "${CONTENTS_FILE}"
+
+		wget ${WGET_OPTIONS} "${CONTENTS_URL}" -O "${CONTENTS_FILE}"
+
+		local PACKAGES
+		PACKAGES="$(gunzip -c "${CONTENTS_FILE}" | awk '/^lib\/firmware/ { print $2 }' | sort -u )"
+		FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} ${PACKAGES}"
+
+		# Don't waste disk space preserving since always getting fresh
+		rm -f "${CONTENTS_FILE}"
 	done
-
-	FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} $(awk '/^lib\/firmware/ { print $2 }' "${CONTENTS_FILE}" | sort -u)"
-
-	# Don't waste disk space preserving since always getting fresh
-	rm -f "${CONTENTS_FILE}"
 }
