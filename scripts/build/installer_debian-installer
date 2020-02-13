@@ -528,13 +528,35 @@ then
 		gunzip -c Packages.derivative.gz > Packages.derivative
 	fi
 
-	# Put derived first to prefer them
+	UDEBS="$(awk '/Filename: / { print $2 }' Packages)"
+
 	if [ "${LB_DERIVATIVE}" = "true" ]
 	then
-		UDEBS="$(awk '/Filename: / { print $2 }' Packages.derivative)"
-	fi
+		_UDEBS_DERIVED="$(awk '/Filename: / { print $2 }' Packages.derivative)"
 
-	UDEBS="${UDEBS} $(awk '/Filename: / { print $2 }' Packages)"
+		# Filter parent packages to exclude those replaced by derivative
+		# We need to compare package names from lists of paths and filenames that include versions
+		_UDEBS_FILTERED=""
+		_UDEBS_DERIVED_NAMES=""
+		for _UDEB in ${_UDEBS_DERIVED}
+		do
+			_UDEBS_DERIVED_NAMES="${_UDEBS_DERIVED_NAMES} $(basename ${_UDEB} | awk -F_ '{ print $1 }')"
+		done
+		for _UDEB in ${UDEBS}
+		do
+			if ! In_list "$(basename ${_UDEB} | awk -F_ '{ print $1 }')" "${_UDEBS_DERIVED_NAMES}"
+			then
+				_UDEBS_FILTERED="${_UDEBS_FILTERED} ${_UDEB}"
+			fi
+		done
+		_UDEBS_DERIVED_NAMES=""
+
+		# Combine into one list
+		UDEBS="${_UDEBS_FILTERED} ${_UDEBS_DERIVED}"
+
+		_UDEBS_DERIVED=""
+		_UDEBS_FILTERED=""
+	fi
 
 	# Downloading udeb packages
 	Echo_message "Downloading udebs..."
@@ -547,16 +569,12 @@ then
 	for UDEB in ${UDEBS}
 	do
 		_UDEB_FILENAME="$(basename ${UDEB})"
-		# Skip if already got (any version), i.e. should parent and derive both list it
-		if ! ls "$(${_UDEB_FILENAME} | awk -F_ '{ print $1 }')"_* > /dev/null 2>&1
+		# Copy from cache if available, otherwise download
+		if [ -f ../cache/packages.installer_debian-installer.udeb/"${_UDEB_FILENAME}" ]
 		then
-			# Copy from cache if available, otherwise download
-			if [ -f ../cache/packages.installer_debian-installer.udeb/"${_UDEB_FILENAME}" ]
-			then
-				cp ../cache/packages.installer_debian-installer.udeb/"${_UDEB_FILENAME}" ./
-			else
-				wget ${WGET_OPTIONS} "${LB_MIRROR_CHROOT}"/${UDEB} || wget ${WGET_OPTIONS} "${LB_PARENT_MIRROR_CHROOT}"/${UDEB}
-			fi
+			cp ../cache/packages.installer_debian-installer.udeb/"${_UDEB_FILENAME}" ./
+		else
+			wget ${WGET_OPTIONS} "${LB_MIRROR_CHROOT}/${UDEB}" || wget ${WGET_OPTIONS} "${LB_PARENT_MIRROR_CHROOT}/${UDEB}"
 		fi
 	done
 
@@ -630,11 +648,9 @@ then
 	# Sort udebs into alphabetised pool structure
 	for UDEB in ${UDEBS}
 	do
-		if [ -f "$(basename ${UDEB})" ]
-		then
-			Install_file "$(basename ${UDEB})" "pool-udeb"
-			rm "$(basename ${UDEB})"
-		fi
+		_UDEB_FILENAME="$(basename ${UDEB})"
+		Install_file "${_UDEB_FILENAME}" "pool-udeb"
+		rm "${_UDEB_FILENAME}"
 	done
 
 	# Creating udeb indices
