@@ -529,16 +529,17 @@ then
 	fi
 
 	UDEBS="$(awk '/Filename: / { print $2 }' Packages)"
+	UDEBS_DERIVED=""
 
 	if [ "${LB_DERIVATIVE}" = "true" ]
 	then
-		_UDEBS_DERIVED="$(awk '/Filename: / { print $2 }' Packages.derivative)"
+		UDEBS_DERIVED="$(awk '/Filename: / { print $2 }' Packages.derivative)"
 
 		# Filter parent packages to exclude those replaced by derivative
 		# We need to compare package names from lists of paths and filenames that include versions
 		_UDEBS_FILTERED=""
 		_UDEBS_DERIVED_NAMES=""
-		for _UDEB in ${_UDEBS_DERIVED}
+		for _UDEB in ${UDEBS_DERIVED}
 		do
 			_UDEBS_DERIVED_NAMES="${_UDEBS_DERIVED_NAMES} $(basename ${_UDEB} | awk -F_ '{ print $1 }')"
 		done
@@ -549,22 +550,13 @@ then
 				_UDEBS_FILTERED="${_UDEBS_FILTERED} ${_UDEB}"
 			fi
 		done
-		_UDEBS_DERIVED_NAMES=""
-
-		# Combine into one list
-		UDEBS="${_UDEBS_FILTERED} ${_UDEBS_DERIVED}"
-
-		_UDEBS_DERIVED=""
+		UDEBS="${_UDEBS_FILTERED}"
 		_UDEBS_FILTERED=""
+		_UDEBS_DERIVED_NAMES=""
 	fi
 
 	# Downloading udeb packages
 	Echo_message "Downloading udebs..."
-
-	if [ "${LB_DERIVATIVE}" = "true" ]
-	then
-		Echo_message "Building in derivative mode in debian+ layout.. a lot of 404 errors are ok here."
-	fi
 
 	for UDEB in ${UDEBS}
 	do
@@ -574,9 +566,24 @@ then
 		then
 			cp ../cache/packages.installer_debian-installer.udeb/"${_UDEB_FILENAME}" ./
 		else
-			wget ${WGET_OPTIONS} "${LB_MIRROR_CHROOT}/${UDEB}" || wget ${WGET_OPTIONS} "${LB_PARENT_MIRROR_CHROOT}/${UDEB}"
+			wget ${WGET_OPTIONS} "${LB_PARENT_MIRROR_CHROOT}/${UDEB}"
 		fi
 	done
+
+	if [ "${LB_DERIVATIVE}" = "true" ]
+	then
+		for UDEB in ${UDEBS_DERIVED}
+		do
+			_UDEB_FILENAME="$(basename ${UDEB})"
+			# Copy from cache if available, otherwise download
+			if [ -f ../cache/packages.installer_debian-installer.udeb/"${_UDEB_FILENAME}" ]
+			then
+				cp ../cache/packages.installer_debian-installer.udeb/"${_UDEB_FILENAME}" ./
+			else
+				wget ${WGET_OPTIONS} "${LB_MIRROR_CHROOT}/${UDEB}"
+			fi
+		done
+	fi
 
 	# Caching udebs
 	rm -rf ../cache/packages.installer_debian-installer.udeb
@@ -646,7 +653,7 @@ then
 	done < exclude
 
 	# Sort udebs into alphabetised pool structure
-	for UDEB in ${UDEBS}
+	for UDEB in "${UDEBS} ${UDEBS_DERIVED}"
 	do
 		_UDEB_FILENAME="$(basename ${UDEB})"
 		Install_file "${_UDEB_FILENAME}" "pool-udeb"
