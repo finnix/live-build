@@ -546,14 +546,15 @@ then
 
 	for UDEB in ${UDEBS}
 	do
-		# Copy from cache if available, otherwise download
-		if [ -f ../cache/packages.installer_debian-installer.udeb/"$(basename ${UDEB})" ]
+		_UDEB_FILENAME="$(basename ${UDEB})"
+		# Skip if already got (any version), i.e. should parent and derive both list it
+		if ! ls "$(${_UDEB_FILENAME} | awk -F_ '{ print $1 }')"_* > /dev/null 2>&1
 		then
-			cp ../cache/packages.installer_debian-installer.udeb/"$(basename ${UDEB})" ./
-		else
-			# Skip if already got (any version), i.e. should parent and derive both list it
-			if ! ls "$(basename ${UDEB} | awk -F_ '{ print $1 }')"_* > /dev/null 2>&1
+			# Copy from cache if available, otherwise download
+			if [ -f ../cache/packages.installer_debian-installer.udeb/"${_UDEB_FILENAME}" ]
 			then
+				cp ../cache/packages.installer_debian-installer.udeb/"${_UDEB_FILENAME}" ./
+			else
 				wget ${WGET_OPTIONS} "${LB_MIRROR_CHROOT}"/${UDEB} || wget ${WGET_OPTIONS} "${LB_PARENT_MIRROR_CHROOT}"/${UDEB}
 			fi
 		fi
