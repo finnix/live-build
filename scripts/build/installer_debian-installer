@@ -528,7 +528,7 @@ then
 	fi
 
 	# Sorting udebs
-	if [ "${LB_DERIVATIVE}" = true ]
+	if [ "${LB_DERIVATIVE}" = "true" ]
 	then
 		UDEBS="$(awk '/Filename: / { print $2 }' Packages.derivative)"
 	fi
