@@ -44,11 +44,15 @@ Create_stagefile ()
 
 Require_stagefile ()
 {
+	local NAME
+	local FILES
+	local NUMBER
 	NAME="$(basename ${0})"
-	FILES="${@}"
+	FILES="${@}" #must be on separate line to 'local' declaration to avoid error
 	NUMBER="$(echo ${@} | wc -w)"
 
-	CONTINUE=false
+	local FILE
+	local CONTINUE=false
 	for FILE in ${FILES}
 	do
 		# Find at least one of the required stages

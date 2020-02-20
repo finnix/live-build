@@ -10,8 +10,9 @@
 
 Is_Requested_Bootloader ()
 {
-	OLDIFS="$IFS"
-	IFS=","
+	local OLDIFS="$IFS"
+	local IFS=","
+	local BOOTLOADER
 	for BOOTLOADER in ${LB_BOOTLOADERS}; do
 		if [ "${BOOTLOADER}" = "${1}" ]; then
 			IFS="$OLDIFS"

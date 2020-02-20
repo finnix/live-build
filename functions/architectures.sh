@@ -11,9 +11,11 @@
 
 Check_architectures ()
 {
-	ARCHITECTURES="${@}"
-	VALID=false
+	local ARCHITECTURES
+	ARCHITECTURES="${@}" #must be on separate line to 'local' declaration to avoid error
+	local VALID=false
 
+	local ARCHITECTURE
 	for ARCHITECTURE in ${ARCHITECTURES}
 	do
 		if [ "$(echo ${LB_ARCHITECTURES} | grep ${ARCHITECTURE})" ]
@@ -50,6 +52,7 @@ Check_architectures ()
 
 Check_crossarchitectures ()
 {
+	local HOST
 	if [ $(which dpkg) ]
 	then
 		HOST="$(dpkg --print-architecture)"
@@ -57,6 +60,7 @@ Check_crossarchitectures ()
 		HOST="$(uname -m)"
 	fi
 
+	local CROSS
 	case "${HOST}" in
 		amd64|i386|x86_64)
 			CROSS="amd64 i386"

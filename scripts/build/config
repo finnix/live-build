@@ -137,6 +137,7 @@ USAGE="${PROGRAM}   [--apt apt|aptitude]\n\
 
 Local_arguments ()
 {
+	local LONG_OPTIONS
 	LONG_OPTIONS="apt:,apt-ftp-proxy:,apt-http-proxy:,apt-options:,aptitude-options:,debootstrap-options:,debootstrap-script:,
 		apt-pipeline:,apt-recommends:,apt-secure:,apt-source-archives:,cache:,cache-indices:,cache-packages:,
 		cache-stages:,debconf-frontend:,debconf-priority:,dump,
@@ -165,6 +166,7 @@ Local_arguments ()
 	# Remove spaces added by indentation
 	LONG_OPTIONS="$(echo ${LONG_OPTIONS} | tr -d ' ')"
 
+	local ARGUMENTS
 	local ERR=0
 	ARGUMENTS="$(getopt --longoptions ${LONG_OPTIONS} --name="${PROGRAM}" --options a:d:m:k:b:s:c:huv --shell sh -- "${@}")" || ERR=$?
 
@@ -183,6 +185,7 @@ Local_arguments ()
 		case "${1}" in
 			--dump)
 				# Dump version
+				local VERSION_DPKG
 				if [ $(which dpkg-query) ]
 				then
 					VERSION_DPKG="$(dpkg-query -f='${Version}' --show live-build)"
@@ -194,6 +197,7 @@ Local_arguments ()
 				Print_conffiles $(Common_config_files)
 
 				# Dump contents of directories that contain text files
+				local DIRECTORY
 				for DIRECTORY in config/package-lists config/apt config/preseed config/rootfs
 				do
 					if Find_files "${DIRECTORY}"

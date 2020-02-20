@@ -11,7 +11,7 @@
 
 Restore_package_cache ()
 {
-	DIRECTORY="cache/packages.${1}"
+	local DIRECTORY="cache/packages.${1}"
 
 	if [ "${LB_CACHE}" = "true" ] && [ "${LB_CACHE_PACKAGES}" = "true" ]
 	then
@@ -32,7 +32,7 @@ Restore_package_cache ()
 
 Save_package_cache ()
 {
-	DIRECTORY="cache/packages.${1}"
+	local DIRECTORY="cache/packages.${1}"
 
 	if [ "${LB_CACHE}" = "true" ] && [ "${LB_CACHE_PACKAGES}" = "true" ]
 	then
@@ -47,6 +47,7 @@ Save_package_cache ()
 			mkdir -p "${DIRECTORY}"
 
 			# Saving new cache
+			local PACKAGE
 			for PACKAGE in chroot/var/cache/apt/archives/*.deb
 			do
 				if [ -e "${DIRECTORY}"/"$(basename ${PACKAGE})" ]

@@ -19,6 +19,7 @@ In_list ()
 	local NEEDLE="${1}"
 	shift
 
+	local ITEM
 	for ITEM in ${@}
 	do
 		if [ "${NEEDLE}" = "${ITEM}" ]
@@ -32,6 +33,7 @@ In_list ()
 
 Truncate ()
 {
+	local FILE
 	for FILE in ${@}
 	do
 		if [ ! -L ${FILE} ]

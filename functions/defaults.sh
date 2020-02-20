@@ -96,6 +96,7 @@ Set_config_defaults ()
 	# Setting mode (currently: debian, progress-linux)
 	if [ $(which lsb_release) ]
 	then
+		local _DISTRIBUTOR
 		_DISTRIBUTOR="$(lsb_release -is | tr "[A-Z]" "[a-z]")"
 
 		case "${_DISTRIBUTOR}" in
@@ -624,6 +625,7 @@ Set_config_defaults ()
 			;;
 	esac
 
+	local _LB_BOOTAPPEND_PRESEED
 	if [ -n "${LB_DEBIAN_INSTALLER_PRESEEDFILE}" ]
 	then
 		case "${LIVE_IMAGE_TYPE}" in

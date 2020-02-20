@@ -19,6 +19,7 @@ Firmware_List_From_Contents () {
 	local DISTRO_CHROOT="${2}"
 	local ARCHIVE_AREAS="${3}"
 
+	local _ARCHIVE_AREA
 	for _ARCHIVE_AREA in ${ARCHIVE_AREAS}
 	do
 		local CONTENTS_URL="${MIRROR_CHROOT}/dists/${DISTRO_CHROOT}/${_ARCHIVE_AREA}/Contents-${LB_ARCHITECTURES}.gz"

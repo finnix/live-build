@@ -11,17 +11,20 @@
 
 Expand_packagelist ()
 {
+	local _LB_EXPAND_QUEUE
 	_LB_EXPAND_QUEUE="$(basename "${1}")"
 
 	shift
 
 	while [ -n "${_LB_EXPAND_QUEUE}" ]
 	do
+		local _LB_LIST_NAME
+		local _LB_EXPAND_QUEUE
 		_LB_LIST_NAME="$(echo ${_LB_EXPAND_QUEUE} | cut -d" " -f1)"
 		_LB_EXPAND_QUEUE="$(echo ${_LB_EXPAND_QUEUE} | cut -s -d" " -f2-)"
-		_LB_LIST_LOCATION=""
-		_LB_NESTED=0
-		_LB_ENABLED=1
+		local _LB_LIST_LOCATION=""
+		local _LB_NESTED=0
+		local _LB_ENABLED=1
 
 		for _LB_SEARCH_PATH in ${@}
 		do
@@ -42,6 +45,7 @@ Expand_packagelist ()
 		do
 			case "${_LB_LINE}" in
 				\!*)
+					local _EXEC
 					_EXEC="$(echo ${_LB_LINE} | sed -e 's|^!||')"
 
 					case "${LB_BUILD_WITH_CHROOT}" in
@@ -63,6 +67,10 @@ Expand_packagelist ()
 					fi
 					_LB_NESTED=1
 
+					local _LB_NEEDLE
+					local _LB_HAYSTACK
+					local _LB_NEEDLE_PART
+					local _LB_HAYSTACK_PART
 					_LB_NEEDLE="$(echo "${_LB_LINE}" | cut -d' ' -f3-)"
 					_LB_HAYSTACK="$(eval "echo \$LB_$(echo "${_LB_LINE}" | cut -d' ' -f2)")"
 
@@ -87,6 +95,10 @@ Expand_packagelist ()
 					fi
 					_LB_NESTED=1
 
+					local _LB_NEEDLE
+					local _LB_HAYSTACK
+					local _LB_NEEDLE_PART
+					local _LB_HAYSTACK_PART
 					_LB_NEEDLE="$(echo "${_LB_LINE}" | cut -d' ' -f3-)"
 					_LB_HAYSTACK="$(eval "echo \$LB_$(echo "${_LB_LINE}" | cut -d' ' -f2)")"
 
@@ -126,13 +138,15 @@ Expand_packagelist ()
 
 Discover_package_architectures ()
 {
-	_LB_EXPANDED_PKG_LIST="${1}"
-	_LB_DISCOVERED_ARCHITECTURES=""
+	local _LB_EXPANDED_PKG_LIST="${1}"
+	local _LB_DISCOVERED_ARCHITECTURES=""
 
 	shift
 
 	if [ -e "${_LB_EXPANDED_PKG_LIST}" ] && [ -s "${_LB_EXPANDED_PKG_LIST}" ]
 	then
+		local _LB_PACKAGE_LINE
+		local _LB_PACKAGE_LINE_PART
 		while read _LB_PACKAGE_LINE
 		do
 			# Lines from the expanded package list may have multiple, space-separated packages

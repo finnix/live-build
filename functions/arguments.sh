@@ -11,6 +11,7 @@
 
 Arguments ()
 {
+	local ARGUMENTS
 	local ERR=0
 	ARGUMENTS="$(getopt --longoptions breakpoints,color,no-color,conffile:,debug,force,help,quiet,usage,verbose,version --name=${PROGRAM} --options c:huv --shell sh -- "${@}")" || ERR=$?
 

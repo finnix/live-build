@@ -9,11 +9,12 @@
 ## under certain conditions; see COPYING for details.
 
 
+# Note, updates _LB_PACKAGES
 Check_package ()
 {
-	CHROOT="${1}"
-	FILE="${2}"
-	PACKAGE="${3}"
+	local CHROOT="${1}"
+	local FILE="${2}"
+	local PACKAGE="${3}"
 
 	Check_installed "${CHROOT}" "${FILE}" "${PACKAGE}"
 
@@ -68,9 +69,9 @@ Remove_package ()
 #                  2 if package isn't installed and we aren't in an apt managed system
 Check_installed ()
 {
-	CHROOT="${1}"
-	FILE="${2}"
-	PACKAGE="${3}"
+	local CHROOT="${1}"
+	local FILE="${2}"
+	local PACKAGE="${3}"
 
 	if [ "${LB_BUILD_WITH_CHROOT}" = "true" ] && [ "${CHROOT}" = "chroot" ]
 	then

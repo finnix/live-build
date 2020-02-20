@@ -11,14 +11,16 @@
 
 Chroot ()
 {
-	CHROOT="${1}"; shift
-	COMMANDS="${@}"
+	local CHROOT="${1}"; shift
+	local COMMANDS
+	COMMANDS="${@}" #must be on separate line to 'local' declaration to avoid error
 
 	# Executing commands in chroot
 	Echo_debug "Executing: %s" "${COMMANDS}"
 
 	ENV=""
 
+	local _FILE
 	for _FILE in config/environment config/environment.chroot
 	do
 		if [ -e "${_FILE}" ]
@@ -39,8 +41,8 @@ Chroot ()
 }
 
 Chroot_has_package() {
-	PACKAGE="${1}"; shift
-	CHROOT="${2:-chroot}"; shift
+	local PACKAGE="${1}"; shift
+	local CHROOT="${2:-chroot}"; shift
 
 	if dpkg-query --admindir=${CHROOT}/var/lib/dpkg -s ${PACKAGE} >/dev/null 2>&1 | grep -q "^Status: install"
 	then
@@ -50,7 +52,7 @@ Chroot_has_package() {
 }
 
 Chroot_package_list() {
-	CHROOT="${1:-chroot}"; shift
+	local CHROOT="${1:-chroot}"; shift
 
 	dpkg-query --admindir=${CHROOT}/var/lib/dpkg -W -f'${Package}\n'
 }

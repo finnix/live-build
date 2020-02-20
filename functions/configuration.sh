@@ -11,29 +11,30 @@
 
 Get_configuration ()
 {
-	_CONFIGURATION_FILE="${1}"
-	_FIELD_NAME="${2}"
+	local CONFIGURATION_FILE="${1}"
+	local FIELD_NAME="${2}"
+	local FIELD_BODY
 
-	if [ -e "${_CONFIGURATION_FILE}" ]
+	if [ -e "${CONFIGURATION_FILE}" ]
 	then
-		_FIELD_BODY="$(grep ^${_FIELD_NAME}: ${_CONFIGURATION_FILE} | awk '{ $1=""; print $0 }' | sed -e 's|^ ||')"
+		FIELD_BODY="$(grep ^${FIELD_NAME}: ${CONFIGURATION_FILE} | awk '{ $1=""; print $0 }' | sed -e 's|^ ||')"
 	fi
 
-	echo ${_FIELD_BODY}
+	echo ${FIELD_BODY}
 }
 
 Set_configuration ()
 {
-	_CONFIGURATION_FILE="${1}"
-	_FIELD_NAME="${2}"
-	_FIELD_BODY="${3}"
+	local CONFIGURATION_FILE="${1}"
+	local FIELD_NAME="${2}"
+	local FIELD_BODY="${3}"
 
-	if grep -qs "^${_FIELD_NAME}:" "${_CONFIGURATION_FILE}"
+	if grep -qs "^${FIELD_NAME}:" "${CONFIGURATION_FILE}"
 	then
 		# Update configuration
-		sed -i -e "s|^${_FIELD_NAME}:.*$|${_FIELD_NAME}: ${_FIELD_BODY}|" "${_CONFIGURATION_FILE}"
+		sed -i -e "s|^${FIELD_NAME}:.*$|${FIELD_NAME}: ${FIELD_BODY}|" "${CONFIGURATION_FILE}"
 	else
 		# Append configuration
-		echo "${_FIELD_NAME}: ${_FIELD_BODY}" >> "${_CONFIGURATION_FILE}"
+		echo "${FIELD_NAME}: ${FIELD_BODY}" >> "${CONFIGURATION_FILE}"
 	fi
 }

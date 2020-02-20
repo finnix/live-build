@@ -11,6 +11,9 @@
 
 Chroot_bind_path ()
 {
+	local CHROOT
+	local BIND_SRC
+	local BIND_DEST
 	CHROOT="$(readlink -f ${1})"
 	BIND_SRC="$(readlink -f ${2})"
 
@@ -27,6 +30,9 @@ Chroot_bind_path ()
 
 Chroot_unbind_path ()
 {
+	local CHROOT
+	local BIND_SRC
+	local BIND_DEST
 	CHROOT="$(readlink -f ${1})"
 	BIND_SRC="$(readlink -f ${2})"
 

@@ -151,8 +151,7 @@ case "${LB_ARCHITECTURES}" in
 esac
 
 Install_file() {
-	local FILE
-	FILE="${1}"
+	local FILE="${1}"
 
 	Echo_debug "Installing file %s" "${FILE}"
 
@@ -166,9 +165,9 @@ Install_file() {
 		ARCHIVE_AREA="main"
 	fi
 
-	local TARGET
-	TARGET="${2}/${ARCHIVE_AREA}"
+	local TARGET="${2}/${ARCHIVE_AREA}"
 
+	local SOURCE
 	SOURCE="$(dpkg -f ${FILE} Source | awk '{ print $1 }')"
 
 	if [ -z "${SOURCE}" ]
@@ -176,6 +175,7 @@ Install_file() {
 		SOURCE="$(basename ${FILE} | awk -F_ '{ print $1 }')"
 	fi
 
+	local LETTER
 	case "${SOURCE}" in
 		lib?*)
 			LETTER="$(echo ${SOURCE} | sed 's|\(....\).*|\1|')"
@@ -198,14 +198,12 @@ Install_file() {
 _LB_CACHE_DIR="$(pwd)/cache/installer_debian-installer"
 
 Download_file () {
-	local _LB_TARGET
-	_LB_TARGET="${1}"
-
-	local _LB_URL
-	_LB_URL="${2}"
+	local _LB_TARGET="${1}"
+	local _LB_URL="${2}"
 
 	Echo_debug "Downloading file \`%s\` from \`%s\`" "${_LB_TARGET}" "${_LB_URL}"
 
+	local _LB_CACHE_FILE
 	_LB_CACHE_FILE="${_LB_CACHE_DIR}/$(echo "${_LB_URL}" | sed 's|/|_|g')"
 
 	if [ ! -f "${_LB_CACHE_FILE}" ]
@@ -795,11 +793,9 @@ fi
 
 Repack_initrd()
 {
-	local TARGET_INITRD
-	local INCLUDE_PATH
-	TARGET_INITRD="${1}"
-	INCLUDE_PATH="${2}"
-	REPACK_TMPDIR="unpacked-initrd"
+	local TARGET_INITRD="${1}"
+	local INCLUDE_PATH="${2}"
+	local REPACK_TMPDIR="unpacked-initrd"
 
 	Echo_debug "Repacking initrd \`%s\`" "${TARGET_INITRD}"
 
@@ -816,6 +812,7 @@ Repack_initrd()
 	if [ ! -d "${INCLUDE_PATH}" ]
 	then
 		# Invoked the old way, just copy the preseeds
+		local _FILE
 		for _FILE in ../config/preseed/*.cfg ../config/preseed/*.cfg.installer
 		do
 			if [ -e "${_FILE}" ]
@@ -825,7 +822,7 @@ Repack_initrd()
 		done
 	else
 		# New way, include target directory content in the initrd
-		REPACK_TMPDIR_ABS="${PWD}"
+		local REPACK_TMPDIR_ABS="${PWD}"
 		cd "${INCLUDE_PATH}"
 		find -print0 | cpio -pumd0 --no-preserve-owner "${REPACK_TMPDIR_ABS}/"
 		cd "${OLDPWD}"

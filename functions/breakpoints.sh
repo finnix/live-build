@@ -11,7 +11,7 @@
 
 Breakpoint ()
 {
-	NAME="${1}"
+	local NAME="${1}"
 
 	if [ "${_BREAKPOINTS}" = "true" ]
 	then

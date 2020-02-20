@@ -66,11 +66,11 @@ Grub_live_entry ()
 
 Grub_install_entry ()
 {
-	LABEL="${1}"
-	TYPE="${2}"
-	KERNEL="${3}"
-	INITRD="${4}"
-	APPEND="${5}"
+	local LABEL="${1}"
+	local TYPE="${2}"
+	local KERNEL="${3}"
+	local INITRD="${4}"
+	local APPEND="${5}"
 
 	# Drop "quiet" kernel parameter for expert entries
 	case $TYPE in

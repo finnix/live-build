@@ -11,7 +11,7 @@
 
 Apt ()
 {
-	CHROOT="${1}"
+	local CHROOT="${1}"
 	shift
 
 	case "${LB_APT}" in

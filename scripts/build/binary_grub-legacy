@@ -50,10 +50,10 @@ Install_package
 # Local functions
 Grub_live_entry ()
 {
-	LABEL="${1}"
-	KERNEL="${2}"
-	INITRD="${3}"
-	APPEND="${4}"
+	local LABEL="${1}"
+	local KERNEL="${2}"
+	local INITRD="${3}"
+	local APPEND="${4}"
 
 	LINUX_LIVE="${LINUX_LIVE}\ntitle\t\tDebian GNU/Linux - ${LABEL}"
 	LINUX_LIVE="${LINUX_LIVE}\nkernel\t\t/${KERNEL} ${INITFS:+boot=${INITFS} }config LB_BOOTAPPEND_LIVE ${APPEND}"
@@ -62,15 +62,14 @@ Grub_live_entry ()
 
 Grub_install_entry ()
 {
-	LABEL="${1}"
-	KERNEL="${2}"
-	INITRD="${3}"
-	APPEND="${4}"
+	local LABEL="${1}"
+	local KERNEL="${2}"
+	local INITRD="${3}"
+	local APPEND="${4}"
 
-	APPEND="${APPEND} LB_BOOTAPPEND_INSTALL"
+	local APPEND="${APPEND} LB_BOOTAPPEND_INSTALL"
 
-	if [ "${LABEL}" != "expert" ] && [ "${LABEL}" != "expertgui" ]
-	then
+	if [ "${LABEL}" != "expert" ] && [ "${LABEL}" != "expertgui" ]; then
 		APPEND="${APPEND} --- quiet"
 	fi
 

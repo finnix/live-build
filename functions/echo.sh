@@ -12,7 +12,7 @@ exec 3>&1
 
 Echo ()
 {
-	STRING="${1}"
+	local STRING="${1}"
 	shift
 
 	printf "${STRING}\n" "${@}" >&3
@@ -21,7 +21,7 @@ Echo ()
 Echo_debug ()
 {
 	if [ "${_DEBUG}" = "true" ]; then
-		STRING="${1}"
+		local STRING="${1}"
 		shift
 
 		printf "D: ${STRING}\n" "${@}" >&3
@@ -30,7 +30,7 @@ Echo_debug ()
 
 Echo_error ()
 {
-	STRING="${1}"
+	local STRING="${1}"
 	shift
 
 	local PREFIX="${RED}E${NO_COLOR}"
@@ -45,7 +45,7 @@ Echo_message ()
 {
 	if [ "${_QUIET}" != "true" ]
 	then
-		STRING="${1}"
+		local STRING="${1}"
 		shift
 
 		local PREFIX="${PURPLE}P${NO_COLOR}"
@@ -60,7 +60,7 @@ Echo_message ()
 Echo_verbose ()
 {
 	if [ "${_VERBOSE}" = "true" ]; then
-		STRING="${1}"
+		local STRING="${1}"
 		shift
 
 		printf "I: ${STRING}\n" "${@}" >&3
@@ -69,7 +69,7 @@ Echo_verbose ()
 
 Echo_warning ()
 {
-	STRING="${1}"
+	local STRING="${1}"
 	shift
 
 	local PREFIX="${YELLOW}W${NO_COLOR}"
@@ -82,6 +82,7 @@ Echo_warning ()
 
 Echo_file ()
 {
+	local LINE
 	while read -r LINE
 	do
 		echo "${1}: ${LINE}" >&3

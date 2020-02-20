@@ -10,8 +10,8 @@
 
 Lodetach ()
 {
-	DEVICE="${1}"
-	ATTEMPT="${2:-1}"
+	local DEVICE="${1}"
+	local ATTEMPT="${2:-1}"
 
 	if [ "${ATTEMPT}" -gt 3 ]
 	then
@@ -37,10 +37,12 @@ Lodetach ()
 
 Losetup ()
 {
-	DEVICE="${1}"
-	FILE="${2}"
-	PARTITION="${3:-1}"
+	local DEVICE="${1}"
+	local FILE="${2}"
+	local PARTITION="${3:-1}"
 
+	local FDISK_OUT
+	local LOOPDEVICE
 	losetup --read-only --partscan "${DEVICE}" "${FILE}"
 	FDISK_OUT="$(fdisk -l -u ${DEVICE} 2>&1)"
 	Lodetach "${DEVICE}"
@@ -53,6 +55,8 @@ Losetup ()
 
 		losetup --partscan "${DEVICE}" "${FILE}"
 	else
+		local SECTORS
+		local OFFSET
 		SECTORS="$(echo "$FDISK_OUT" | sed -ne "s|^$LOOPDEVICE[ *]*\([0-9]*\).*|\1|p")"
 		OFFSET="$(expr ${SECTORS} '*' 512)"
 
@@ -65,7 +69,7 @@ Losetup ()
 # adapted from lib/ext2fs/mkjournal.c, default block size is 4096 bytes (/etc/mke2fs.conf).
 ext2fs_default_journal_size()
 {
-	SIZE="$1"
+	local SIZE="$1"
 	if [ "${SIZE}" -lt "8" ]; then # 2048*4096
 		echo 0
 	elif [ "${SIZE}" -lt "128" ]; then # 32768*4096
@@ -83,9 +87,10 @@ ext2fs_default_journal_size()
 
 Calculate_partition_size_without_journal ()
 {
-	WITHOUT_JOURNAL_ORIGINAL_SIZE="${1}"
-	WITHOUT_JOURNAL_FILESYSTEM="${2}"
+	local WITHOUT_JOURNAL_ORIGINAL_SIZE="${1}"
+	local WITHOUT_JOURNAL_FILESYSTEM="${2}"
 
+	local PERCENT
 	case "${WITHOUT_JOURNAL_FILESYSTEM}" in
 		ext2|ext3|ext4)
 			PERCENT="6"
@@ -100,11 +105,16 @@ Calculate_partition_size_without_journal ()
 
 Calculate_partition_size ()
 {
-	ORIGINAL_SIZE="${1}"
-	FILESYSTEM="${2}"
+	local ORIGINAL_SIZE="${1}"
+	local FILESYSTEM="${2}"
 
 	case "${FILESYSTEM}" in
 		ext3|ext4)
+			local NON_JOURNAL_SIZE
+			local PROJECTED_JOURNAL_SIZE
+			local PROJECTED_PARTITION_SIZE
+			local PRE_FINAL_PARTITION_SIZE
+			local JOURNAL_SIZE
 			NON_JOURNAL_SIZE=$(Calculate_partition_size_without_journal ${ORIGINAL_SIZE} ${FILESYSTEM})
 			PROJECTED_JOURNAL_SIZE=$(ext2fs_default_journal_size ${NON_JOURNAL_SIZE})
 			PROJECTED_PARTITION_SIZE=$(expr ${ORIGINAL_SIZE} + ${PROJECTED_JOURNAL_SIZE})
