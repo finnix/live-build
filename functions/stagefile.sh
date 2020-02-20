@@ -47,17 +47,18 @@ Require_stagefile ()
 	FILES="${@}"
 	NUMBER="$(echo ${@} | wc -w)"
 
+	CONTINUE=false
 	for FILE in ${FILES}
 	do
 		# Find at least one of the required stages
 		if [ -f ${FILE} ]
 		then
-			CONTINUE="true"
+			CONTINUE=true
 			NAME="${NAME} $(basename ${FILE})"
 		fi
 	done
 
-	if [ "${CONTINUE}" != "true" ]
+	if ! $CONTINUE
 	then
 		if [ "${NUMBER}" -eq 1 ]
 		then

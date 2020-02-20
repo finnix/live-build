@@ -11,36 +11,36 @@
 Check_architectures ()
 {
 	ARCHITECTURES="${@}"
-	VALID="false"
+	VALID=false
 
 	for ARCHITECTURE in ${ARCHITECTURES}
 	do
 		if [ "$(echo ${LB_ARCHITECTURES} | grep ${ARCHITECTURE})" ]
 		then
-			VALID="true"
+			VALID=true
 			break
 		fi
 	done
 
 	if [ "${ARCHITECTURES}" = "${LB_BOOTSTRAP_QEMU_ARCHITECTURES}" ]
 	then
-		VALID="true"
+		VALID=true
 
 		if [ ! -e "${LB_BOOTSTRAP_QEMU_STATIC}" ]
 		then
 			Echo_warning "skipping %s, qemu-static binary ${LB_BOOTSTRAP_QEMU_ARCHITECTURES} was not found"
-			VALID="false"
+			VALID=false
 		fi
 
 		if [ ! -x "${LB_BOOTSTRAP_QEMU_STATIC}" ]
 		then
 			Echo_warning "skipping %s, qemu-static binary ${LB_BOOTSTRAP_QEMU_STATIC} is not executable"
-			VALID="false"
+			VALID=false
 		fi
 
 	fi
 
-	if [ "${VALID}" = "false" ]
+	if ! $VALID
 	then
 		Echo_warning "skipping %s, foreign architecture(s)." "${0}"
 		exit 0
