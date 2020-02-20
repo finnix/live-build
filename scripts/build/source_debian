@@ -99,8 +99,7 @@ syslinux
 grub
 EOF
 
-		if [ "${LB_MEMTEST}" != "false" ] && [ "${LB_MEMTEST}" != "none" ]
-		then
+		if [ "${LB_MEMTEST}" != "none" ]; then
 			echo "${LB_MEMTEST}" >> source-selection.txt
 		fi
 		;;

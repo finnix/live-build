@@ -715,6 +715,9 @@ Set_defaults ()
 
 	# Setting memtest option
 	LB_MEMTEST="${LB_MEMTEST:-none}"
+	if [ "${LB_MEMTEST}" = "false" ]; then
+		LB_MEMTEST="none"
+	fi
 
 	# Setting loadlin option
 	case "${LB_MODE}" in
