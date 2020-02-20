@@ -148,9 +148,10 @@ fi
 
 dd if=/dev/zero of=chroot/binary.img bs=1024k count=0 seek=${REAL_DIM}
 FREELO="$(${LB_LOSETUP} -f)"
+MAKEDEV=false
 if [ ! -b chroot/${FREELO} ]
 then
-	MAKEDEV="true"
+	MAKEDEV=true
 
 	mv chroot/dev chroot/dev.tmp
 	find /dev | cpio -dmpu chroot
@@ -343,8 +344,7 @@ Lodetach ${FREELO}
 
 echo "!!! The above error/warning messages can be ignored !!!"
 
-if [ -n "${MAKEDEV}" ]
-then
+if $MAKEDEV; then
 	rm -rf chroot/dev
 	mv chroot/dev.tmp chroot/dev
 fi

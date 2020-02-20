@@ -65,10 +65,11 @@ fi
 DU_DIM="$(du -ms source | cut -f1)"
 REAL_DIM="$(Calculate_partition_size ${DU_DIM} ${LB_BINARY_FILESYSTEM})"
 dd if=/dev/zero of=${LIVE_IMAGE_NAME}-source.img bs=1024k count=0 seek=${REAL_DIM}
+MAKEDEV=false
 FREELO="$(${LB_LOSETUP} -f)"
 if [ ! -b chroot/${FREELO} ]
 then
-	MAKEDEV="true"
+	MAKEDEV=true
 
 	mv chroot/dev chroot/dev.tmp
 	find /dev | cpio -dmpu chroot
@@ -142,8 +143,7 @@ Losetup "$FREELO" ${LIVE_IMAGE_NAME}-source.img 0
 Chroot chroot "parted -s ${FREELO} set 1 lba off" || true
 Lodetach ${FREELO}
 
-if [ -n "${MAKEDEV}" ]
-then
+if $MAKEDEV; then
 	rm -rf chroot/dev
 	mv chroot/dev.tmp chroot/dev
 fi
