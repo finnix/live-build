@@ -8,7 +8,8 @@
 ## under certain conditions; see COPYING for details.
 
 
-PROGRAM="live-build"
+PROGRAM_NAME="live-build"
+PROGRAM="lb"
 VERSION="$(if [ -e ${LIVE_BUILD}/VERSION ]; then cat ${LIVE_BUILD}/VERSION; else cat /usr/share/live/build/VERSION; fi)"
 CONFIG_VERSION="$(echo ${VERSION} | awk -F- '{ print $1 }')"
 

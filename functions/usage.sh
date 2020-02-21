@@ -10,7 +10,7 @@
 
 Usage ()
 {
-	printf "%s - %s\n\n" "${PROGRAM}" "${DESCRIPTION}"
+	printf "%s - %s\n\n" "${PROGRAM_NAME}" "${DESCRIPTION}"
 	printf "Usage:\n\n"
 
 	if [ -n "${USAGE}" ]
