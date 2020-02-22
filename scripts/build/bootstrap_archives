@@ -16,7 +16,7 @@ set -e
 # Setting static variables
 DESCRIPTION="$(Echo 'manage /etc/apt/sources.list')"
 HELP=""
-USAGE="${PROGRAM} [--force]"
+USAGE="${PROGRAM} [source|binary] [--force]"
 
 _PASS="${1:-binary}"
 if [ -n "${1}" ]
