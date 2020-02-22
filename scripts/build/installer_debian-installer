@@ -678,6 +678,7 @@ then
 	esac
 
 cat > chroot/binary.sh << EOF
+#!/bin/sh
 cd /root/binary && apt-ftparchive \
 	-o APT::FTPArchive::Release::Origin="Debian" \
 	-o APT::FTPArchive::Release::Label="Debian" \

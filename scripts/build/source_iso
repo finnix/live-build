@@ -105,6 +105,7 @@ XORRISO_OPTIONS="${XORRISO_OPTIONS} --modification-date=$(date --utc --date="@${
 mv source chroot
 
 cat > chroot/source.sh << EOF
+#!/bin/sh
 xorriso ${XORRISO_OPTIONS} -o source.iso source
 EOF
 

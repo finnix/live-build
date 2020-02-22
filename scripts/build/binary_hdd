@@ -285,6 +285,7 @@ if [ "${LB_FIRST_BOOTLOADER}" = "grub" ]
 then
 
 cat > chroot/grub.sh << EOF
+#!/bin/sh
 cd binary.tmp
 grub --batch << EOM
 find /live/vmlinuz
@@ -298,6 +299,7 @@ EOF
 	echo "WAITING..." && read WAIT
 
 #cat > chroot/grub.sh << EOF
+#!/bin/sh
 #grub --batch << EOM
 #root $rootpartition
 #setup $hdddev
