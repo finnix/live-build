@@ -22,7 +22,7 @@
 
 set -e
 
-if [ -x "$(which man 2>/dev/null)" ]
+if [ $(which man) ]
 then
 	man live-build
 else

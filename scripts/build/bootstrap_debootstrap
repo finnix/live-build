@@ -24,7 +24,7 @@ Arguments "${@}"
 Read_conffiles config/all config/common config/bootstrap config/chroot config/binary config/source
 Set_defaults
 
-if [ ! -x "$(which debootstrap 2>/dev/null)" ]
+if [ ! $(which debootstrap) ]
 then
 	Echo_error "debootstrap - command not found"
 	Echo_verbose "debootstrap can be obtained from http://ftp.debian.org/debian/pool/main/d/debootstrap/"
@@ -76,7 +76,7 @@ then
 	DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS} --no-check-gpg"
 fi
 
-if [ -x "/usr/sbin/debootstrap" ]
+if [ $(which debootstrap) ]
 then
 	if [ "${LB_CACHE_PACKAGES}" = "true" ]
 	then
@@ -126,6 +126,6 @@ then
 	# Creating stage file
 	Create_stagefile .build/bootstrap
 else
-	Echo_error "Can't process file /usr/bin/debootstrap (FIXME)"
+	Echo_error "Can't find program debootstrap (FIXME)"
 	exit 1
 fi

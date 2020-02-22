@@ -178,7 +178,7 @@ Local_arguments ()
 		case "${1}" in
 			--dump)
 				# Dump version
-				if [ -x "$(which dpkg-query 2>/dev/null)" ]
+				if [ $(which dpkg-query) ]
 				then
 					VERSION_DPKG="$(dpkg-query -f='${Version}' --show live-build)"
 				fi

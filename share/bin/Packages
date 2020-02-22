@@ -10,9 +10,9 @@
 
 set -e
 
-if [ ! -e /usr/bin/grep-aptavail ]
+if [ ! $(which grep-aptavail) ]
 then
-	echo "E: /usr/bin/grep-aptavail: No such file."
+	echo "E: program grep-aptavail not found!"
 
 	exit 1
 fi

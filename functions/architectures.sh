@@ -49,7 +49,7 @@ Check_architectures ()
 
 Check_crossarchitectures ()
 {
-	if [ -x /usr/bin/dpkg ]
+	if [ $(which dpkg) ]
 	then
 		HOST="$(dpkg --print-architecture)"
 	else

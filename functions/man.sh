@@ -10,7 +10,7 @@
 
 Man ()
 {
-	if [ -x "$(which man 2>/dev/null)" ]
+	if [ $(which man) ]
 	then
 		man $(basename ${0})
 		exit 0
