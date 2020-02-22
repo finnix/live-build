@@ -104,7 +104,7 @@ XORRISO_OPTIONS="${XORRISO_OPTIONS} --modification-date=$(date --utc --date="@${
 # Moving image
 mv source chroot
 
-cat >> chroot/source.sh << EOF
+cat > chroot/source.sh << EOF
 xorriso ${XORRISO_OPTIONS} -o source.iso source
 EOF
 
