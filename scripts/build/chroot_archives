@@ -21,6 +21,10 @@ USAGE="${PROGRAM} {source|binary} {install|remove} [--force]"
 _PASS="${1}"
 shift
 
+if [ "${_PASS}" != "binary" ] && [ "${_PASS}" != "source" ]; then
+	Usage
+fi
+
 Arguments "${@}"
 
 # Reading configuration files

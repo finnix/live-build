@@ -24,6 +24,10 @@ then
 	shift
 fi
 
+if [ "${_PASS}" != "binary" ] && [ "${_PASS}" != "source" ]; then
+	Usage
+fi
+
 Arguments "${@}"
 
 # Reading configuration files
