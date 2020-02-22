@@ -14,16 +14,10 @@ set -e
 [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
 # Redirecting to auto script if required
-if [ "${1}" != "noauto" ] && [ -x auto/clean ]
-then
-	Echo_message "Executing auto/clean script."
-	./auto/clean "${@}"
-	exit ${?}
-fi
-
-if [ "${1}" = "noauto" ]
-then
+if [ "${1}" = "noauto" ]; then
 	shift
+else
+	Maybe_auto_redirect clean
 fi
 
 # Setting static variables

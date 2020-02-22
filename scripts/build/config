@@ -883,16 +883,10 @@ then
 fi
 
 # Redirecting to auto script if required
-if [ "${1}" != "noauto" ] && [ -x auto/config ]
-then
-	Echo_message "Executing auto/config script."
-	./auto/config "${@}"
-	exit ${?}
-fi
-
-if [ "${1}" = "noauto" ]
-then
+if [ "${1}" = "noauto" ]; then
 	shift
+else
+	Maybe_auto_redirect config
 fi
 
 # Reading system configuration

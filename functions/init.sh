@@ -29,3 +29,24 @@ Init_config_data ()
 	Read_conffiles $(Common_config_files)
 	Set_defaults
 }
+
+Maybe_auto_redirect ()
+{
+	local TYPE="${1}"; shift
+
+	case "${TYPE}" in
+		clean|config|build)
+			;;
+		*)
+			Echo_error "Unknown auto redirect type"
+			exit 1
+			;;
+	esac
+
+	local AUTO_SCRIPT="auto/${TYPE}"
+	if [ -x "${AUTO_SCRIPT}" ]; then
+		Echo_message "Executing ${AUTO_SCRIPT} script."
+		./"${AUTO_SCRIPT}" "${@}"
+		exit ${?}
+	fi
+}

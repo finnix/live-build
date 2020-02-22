@@ -17,16 +17,10 @@ set -e
 Auto_build_config
 
 # Redirecting to auto script if required
-if [ "${1}" != "noauto" ] && [ -x auto/build ]
-then
-	Echo_message "Executing auto/build script."
-	./auto/build "${@}"
-	exit ${?}
-fi
-
-if [ "${1}" = "noauto" ]
-then
+if [ "${1}" = "noauto" ]; then
 	shift
+else
+	Maybe_auto_redirect build
 fi
 
 # Setting static variables
