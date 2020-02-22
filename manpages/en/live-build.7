@@ -123,9 +123,11 @@ creates checksums (md5, sha1, and/or sha256) for live image content
 duplicates the chroot directory, to place a copy of what whould be the completed live OS root filesystem to one side, allowing the original to continue to be used in executing certain parts of the remainder of the build process
 .IP "\fBlb binary_disk\fR(1)" 4
 creates disk information files to be added to live image
-.IP "\fBlb binary_grub\fR(1)" 4
+.IP "\fBlb binary_grub-efi\fR(1)" 4
+installs grub2-efi into live image to provide image boot capability
+.IP "\fBlb binary_grub-legacy\fR(1)" 4
 installs grub into live image to provide image boot capability
-.IP "\fBlb binary_grub2\fR(1)" 4
+.IP "\fBlb binary_grub-pc\fR(1)" 4
 installs grub2 into live image to provide image boot capability
 .IP "\fBlb binary_hdd\fR(1)" 4
 compiles the final live image into an hdd image file
@@ -139,12 +141,16 @@ compiles the final live image into an iso file
 copies the linux\-image into the live image
 .IP "\fBlb binary_loadlin\fR(1)" 4
 bundles a copy of loadlin into the live image
+.IP "\fBlb binary_loopback_cfg\fR(1)" 4
+install loopback-cfg into the live image
 .IP "\fBlb binary_manifest\fR(1)" 4
 creates manifest of packages installed into live OS filesystem, and list of packages to be excluded by a persistence mechanism installing the live OS to disk
 .IP "\fBlb binary_memtest\fR(1)" 4
 bundles a copy of memtest into the live image
 .IP "\fBlb binary_netboot\fR(1)" 4
 compiles the final live image into a netboot tar archive
+.IP "\fBlb binary_onie\fR(1)" 4
+installs onie into the live image
 .IP "\fBlb binary_package\-lists\fR(1)" 4
 processes local lists of packages to obtain and bundle into image (from which they could later be installed if not already)
 .IP "\fBlb binary_rootfs\fR(1)" 4
@@ -207,8 +213,6 @@ manages mounting of /sys
 manages the /usr/sbin/policy\-rc.d file
 .IP "\fBlb chroot_tmpfs\fR(1)" 4
 manages configuration of dpkg to use a tmpfs filesystem
-.IP "\fBlb chroot_upstart\fR(1)" 4
-manages use of upstart /sbin/initctl program; in apply mode blocking execution through a dpkg diversion, and in remove mode enabling execution again
 .\" FIXME
 
 .SH CONFIG FILES
