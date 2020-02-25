@@ -830,8 +830,12 @@ Local_arguments ()
 	done
 }
 
+# Processing args such that we have a value for --config if given
+# We can thus momentarily print an appropriate message that we are ignoring it under certain circumstances
 Local_arguments "${@}"
 
+# Ignoring --config if CWD is already a git repo
+# Only print warning from direct execution, not when run from auto script redirection, to avoid repetition
 if [ -e .git ] && [ -n "${_CONFIG}" ]
 then
 	if [ "${1}" != "noauto" ]
@@ -842,6 +846,8 @@ then
 	_CONFIG=""
 fi
 
+# Ignoring --config if CWD already has a config
+# Only print warning from direct execution, not when run from auto script redirection, to avoid repetition
 if [ -e .build/config ] && [ -n "${_CONFIG}" ]
 then
 	if [ "${1}" != "noauto" ]
@@ -852,6 +858,7 @@ then
 	_CONFIG=""
 fi
 
+# Otherwise, handling --config request, copying specified config
 if [ -n "${_CONFIG}" ]
 then
 	if [ -e "${_CONFIG}" ] || [ -e "/usr/share/live/images/${_CONFIG}" ]
@@ -887,14 +894,16 @@ then
 	fi
 fi
 
-# Redirecting to auto script if required
+# "Auto" script redirection.
+# Re-run via "auto" script to pick up saved command-line arguments, if not already redirected.
+# See the documentation of the Maybe_auto_redirect function for more details.
 if [ "${1}" = "noauto" ]; then
 	shift
 else
 	Maybe_auto_redirect config
 fi
 
-# Reading system configuration
+# Reading config defaults configured at system level
 if ls /etc/live/build.conf > /dev/null 2>&1 || ls /etc/live/build/* > /dev/null 2>&1
 then
 	if In_list "--ignore-system-defaults" "${@}"
@@ -907,11 +916,13 @@ then
 	fi
 fi
 
-# Reading existing configuration
+# Reading existing saved configuration
 Read_conffiles $(Common_config_files)
 
+# Processing arguments again to overwrite just-read previously saved settings as necessary
 Local_arguments "${@}"
 
+# Loading user specified saved config file if specified
 if [ -n "${_CONFFILE}" ]
 then
 	Read_conffiles "${_CONFFILE}"
@@ -920,6 +931,8 @@ fi
 # Setting and checking defaults
 Set_config_defaults
 Check_config_defaults
+
+# Creating or updating saved config
 
 if [ ! -e config ]
 then
