@@ -304,9 +304,9 @@ defines whether live\-build should use the tools from within the chroot to build
 .IP "\fB\-\-cache\fR true|false" 4
 defines globally if any cache should be used at all. Different caches can be controlled through their own options.
 .IP "\fB\-\-cache\-indices\fR true|false" 4
-defines if downloaded package indices and lists should be cached which is false by default. Enabling it lets you rebuild an image completely offline, however, you would not get updates anymore then.
+defines if downloaded package indices and lists should be cached. This is false by default. Enabling it lets you rebuild an image completely offline, however, you would not get updates anymore then.
 .IP "\fB\-\-cache\-packages\fR true|false" 4
-defines if downloaded packages files should be cached which is true by default. Disabling it does save space consumption in your build directory, but remember that you will cause much unnecessary traffic if you do a couple of rebuilds. In general you should always leave it true, however, in some particular rare build setups, it can be faster to refetch packages from the local network mirror rather than to utilize the local disk.
+defines if downloaded packages files should be cached. This is true by default. Disabling it does save space consumption in your build directory, but remember that you will cause much unnecessary traffic if you do a couple of rebuilds. In general you should always leave it true, however, in some particular rare build setups, it can be faster to refetch packages from the local network mirror rather than to utilize the local disk.
 .IP "\fB\-\-cache\-stages\fR \fISTAGE\fR|""\fISTAGES\fR""" 4
 sets which stages should be cached. By default set to bootstrap. As an exception to the normal stage names, also rootfs can be used here which does only cache the generated root filesystem in filesystem.{dir,ext*,squashfs}. This is useful during development if you want to rebuild the binary stage but not regenerate the root filesystem all the time.
 .IP "\fB\-\-checksums\fR md5|sha1|sha224|sha256|sha384|sha512|none" 4
