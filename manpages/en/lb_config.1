@@ -368,7 +368,7 @@ sets the start of the partition for the HDD target for BIOSes that expect a spec
 .IP "\fB\-\-hdd\-size\fR \fISIZE\fR" 4
 defines the size for the HDD target. The unit is MiB. Defaults to auto, which generates the smallest possible image.
 .IP "\fB\-\-ignore\-system\-defaults\fR" 4
-\fBlb config\fR by default reads system defaults from \fI/etc/live/build.conf\fR and \fI/etc/live/build/*\fR when generating a new live system config directory. This is useful if you want to set global settings, such as mirror locations, and don't want to specify them all of the time.
+\fBlb config\fR by default reads system defaults from \fI/etc/live/build.conf\fR and \fI/etc/live/build/*\fR when generating a new live system config directory. This is useful if you want to set global settings, such as mirror locations, and don't want to specify them all of the time. This option allows you to ignore such global settings.
 .IP "\fB\-\-image\-name\fR \fINAME\fR" 4
 sets the base name of the image. Defaults to live-image.
 .IP "\fB\-\-initramfs\fR none|live\-boot" 4
