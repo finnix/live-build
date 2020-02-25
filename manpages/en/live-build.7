@@ -92,7 +92,7 @@ applies apt archive configuration
 .IP "\fBlb bootstrap_cache\fR(1)" 4
 in save mode, saves to cache a copy of the generated bootstrap directory, and in restore mode, restores from cache a previously generated copy
 .IP "\fBlb bootstrap_debootstrap\fR(1)" 4
-creates (bootstrap) a basic Debian root filesystem using debootstrap(8)
+creates (bootstraps) a basic Debian root filesystem using debootstrap(8)
 .SS Chroot stage specific commands
 .PP
 Note: The following chroot_ prefixed commands are used in building the live OS filesystem. Another set of similarly prefixed files are listed separately (see further down).
@@ -118,7 +118,7 @@ compiles a list of packages provided in the user\' local config to be installed 
 installs pre-configured answers to certain install prompts into the live OS root filesystem
 .SS Installer stage specific commands
 .IP "\fBlb installer_debian\-installer\fR(1)" 4
-obtains and sets up Debian installer(d-i) components
+obtains and sets up Debian installer (d-i) components
 .IP "\fBlb installer_preseed\fR(1)" 4
 installs pre-configured answers to certain install prompts
 .SS Binary stage specific commands
