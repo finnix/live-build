@@ -15,8 +15,8 @@ set -e
 
 # Setting static variables
 DESCRIPTION="$(Echo 'utility to build live systems')"
-HELP="FIXME"
-USAGE="FIXME"
+HELP=""
+USAGE="lb {clean|config|build}"
 
 case "${1}" in
 	-h|--help)
