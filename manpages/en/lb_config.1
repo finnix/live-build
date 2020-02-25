@@ -332,7 +332,7 @@ defines which type, if any, of the debian\-installer should be included in the r
 .IP "\fB\-\-debian\-installer\-distribution\fR daily|\fICODENAME\fR" 4
 defines the distribution where the debian\-installer files should be taken out from. Normally, this should be set to the same distribution as the live system. However, sometimes, one wants to use a newer or even daily built installer.
 .IP "\fB\-\-debian\-installer\-gui\fR true|false" 4
-defines whether the grahical version of the debian\-installer should be provided alongside the text based one. In Debian mode and for most versions of Ubuntu, this option is true, whereas otherwise false, by default.
+defines whether the grahical version of the debian\-installer should be provided alongside the text based one. In Debian mode this option is true, whereas otherwise false, by default.
 .IP "\fB\-\-debian\-installer\-preseedfile\fR \fIFILE\fR|\fIURL\fR" 4
 sets the filename or URL for an optionally used and included preseeding file for debian\-installer. If config/binary_debian\-installer/preseed.cfg exists, it will be used by default. 
 .IP "\fB\-\-debootstrap\-options\fR \fIOPTIONS\fR" 4
@@ -380,7 +380,7 @@ defines the init system. Defaults to systemd.
 .IP "\fB\-\-interactive\fR shell" 4
 defines if after the chroot stage and before the beginning of the binary stage, a interactive shell login should be spawned in the chroot in order to allow you to do manual customizations. Once you close the shell with logout or exit, the build will continue as usual. Note that it's strongly discouraged to use this for anything else than testing. Modifications that should be present in all builds of a live system should be properly made through hooks. Everything else destroys the beauty of being able to completely automate the build process and making it non-interactive. By default, this is of course false.
 .IP "\fB\-\-iso\-application\fR \fINAME\fR" 4
-sets the APPLICATION field in the header of a resulting CD/DVD image and defaults to "Debian Live" in debian mode, and "Ubuntu Live" in ubuntu mode.
+sets the APPLICATION field in the header of a resulting CD/DVD image and defaults to "Debian Live" in debian mode.
 .IP "\fB\-\-iso\-preparer\fR \fINAME\fR" 4
 sets the PREPARER field in the header of a resulting CD/DVD image. By default this is set to "live\-build \fIVERSION\fR; https://salsa.debian.org/live-team/live-build", where VERSION is expanded to the version of live\-build that was used to build the image.
 .IP "\fB\-\-iso\-publisher\fR \fINAME\fR" 4
@@ -437,7 +437,7 @@ defines the filesystem that will be configured in the bootloader configuration f
 .IP "\fB\-\-net\-root\-mountoptions\fR \fIOPTIONS\fR" 4
 sets additional options for mounting the root filesystem in netboot images and is by default empty.
 .IP "\fB\-\-net\-root\-path\fR \fIPATH\fR" 4
-sets the file path that will be configured in the bootloader configuration for your netboot image. This defaults to /srv/debian\-live in debian mode, and /srv/ubuntu-live when in ubuntu mode.
+sets the file path that will be configured in the bootloader configuration for your netboot image. This defaults to /srv/debian\-live in debian mode.
 .IP "\fB\-\-net\-root\-server\fR \fIIP\fR|\fIHOSTNAME\fR" 4
 sets the IP or hostname that will be configured in the bootloader configuration for the root filesystem of your netboot image. This defaults to 192.168.1.1.
 .IP "\fB\-\-net\-tarball\fR true|false" 4
