@@ -1374,7 +1374,7 @@ LB_ONIE_KERNEL_CMDLINE="${LB_ONIE_KERNEL_CMDLINE}"
 # (Default: ${LB_FIRMWARE_BINARY})
 LB_FIRMWARE_BINARY="${LB_FIRMWARE_BINARY}"
 
-# \$LB_FIRMWARE_CHROOT: include firmware packages in debian-installer
+# \$LB_FIRMWARE_CHROOT: include firmware packages in the live image
 # (Default: ${LB_FIRMWARE_CHROOT})
 LB_FIRMWARE_CHROOT="${LB_FIRMWARE_CHROOT}"
 
