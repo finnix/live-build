@@ -290,7 +290,7 @@ sets boot parameters specific to debian\-live. A complete list of boot parameter
 .IP "\fB\-\-bootappend\-live\-failsafe\fR \fIPARAMETER\fR|""\fIPARAMETERS\fR""" 4
 sets boot parameters specific to debian\-live failsafe boot entries. A complete list of boot parameters can be found in the \fIlive\-boot\fR(7) and \fIlive\-config\fR(7) manual pages.
 .IP "\fB\-\-bootloaders\fR grub-legacy|grub-pc|syslinux|grub-efi" 4
-defines which bootloader is being used in the generated image. This has only an effect if the selected binary image type lets you choose the bootloader. For example, if you build a iso, always syslinux (or more precise, isolinux) is being used. Also note that some combinations of binary images types and bootloaders may be possible but live\-build does not support them yet. \fBlb config\fR will fail to create such a not yet supported configuration and give a explanation about it. For hdd images on amd64 and i386, the default is syslinux.
+defines which bootloaders to use in the generated image. This only has an effect if the selected binary image type lets you choose the bootloader. For example, if you build an iso then syslinux (or more precise, isolinux) is always used. Also note that not all combinations of binary images types and bootloaders are supported (\fBlb config\fR will fail to create such an unsupported configuration and will give a explanation about it). For hdd images on amd64 and i386, the default is syslinux.
 .IP "\fB\-\-bootstrap\-qemu\-arch \fIARCH\fR" 4
 sets the architectures to use foreign bootstrap. Defaults to empty.
 .IP "\fB\-\-bootstrap\-qemu\-exclude \fIPACKAGES\fR" 4
