@@ -83,7 +83,7 @@ executes the fifth build stage, generating a corresponding source image (optiona
 
 .SH LOW\-LEVEL COMMANDS (PLUMBING) - BUILD STAGE COMPONENTS
 .\" FIXME
-The actual work of live\-build is implemented in the low-level commands, called plumbing. They are not supposed to be used by end users, they should stick with porcelains as they ensure that all the different plumbing commands are executed in the right order. However, if you intend to reuse live\-build commands in your own scripts, then the plumbings might be of interest for you.
+The actual work of live\-build is implemented in the low-level commands, called plumbing. They are not supposed to be used by end users, who should stick with porcelains as they ensure that all the different plumbing commands are executed in the right order. However, if you intend to reuse live\-build commands in your own scripts, then the plumbings might be of interest for you.
 .PP
 Note that the interface (set of options and the semantics) to these low\-level commands are meant to be a lot more stable than Porcelain level commands. The interface to Porcelain commands on the other hand are subject to change in order to improve the end user experience.
 .SS Bootstrap stage specific commands
