@@ -129,9 +129,9 @@ Create_apt_sources_list ()
 
 	# Disable deb-src entries?
 	if [ "${_PASS}" != "source" ] && [ "${LB_APT_SOURCE_ARCHIVES}" != "true" ]; then
-		sed -i "/^deb-src /d" "${PARENT_LIST_FILE}"
+		sed -i "s/^deb-src/#deb-src/g" "${PARENT_LIST_FILE}"
 		if [ "${LB_DERIVATIVE}" = "true" ]; then
-			sed -i "/^deb-src /d" "${LIST_FILE}"
+			sed -i "s/^deb-src/#deb-src/g" "${LIST_FILE}"
 		fi
 	fi
 }

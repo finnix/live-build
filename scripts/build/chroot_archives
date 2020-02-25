@@ -68,8 +68,8 @@ case "${1}" in
 
 				if [ "${_PASS}" != "source" ] && [ "${LB_APT_SOURCE_ARCHIVES}" = "false" ]
 				then
-					# Strip out source archives
-					sed -i "/^deb-src /d" "chroot/etc/apt/sources.list.d/$(basename ${FILE} .chroot)"
+					# Disable source archives
+					sed -i "s/^deb-src/#deb-src/g" "chroot/etc/apt/sources.list.d/$(basename ${FILE} .chroot)"
 				fi
 			fi
 		done
@@ -380,8 +380,8 @@ case "${1}" in
 
 				if [ "${_PASS}" != "source" ] && [ "${LB_APT_SOURCE_ARCHIVES}" = "false" ]
 				then
-					# Strip out source archives
-					sed -i "/^deb-src /d" "chroot/etc/apt/sources.list.d/$(basename ${FILE} .binary)"
+					# Disable source archives
+					sed -i "s/^deb-src/#deb-src/g" "chroot/etc/apt/sources.list.d/$(basename ${FILE} .binary)"
 				fi
 			fi
 		done
