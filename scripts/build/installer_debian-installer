@@ -282,25 +282,24 @@ Download_file "${DESTDIR}"/"${VMLINUZ_DI}" ${URL}/${DI_REMOTE_BASE}/${DI_REMOTE_
 Download_file "${DESTDIR}"/"${INITRD_DI}" ${URL}/${DI_REMOTE_BASE}/initrd.gz
 
 # Downloading graphical-installer
-DOWNLOAD_GTK_INSTALLER=0
+DOWNLOAD_GTK_INSTALLER=false
 if [ "${LB_DEBIAN_INSTALLER_GUI}" = "true" ]
 then
 	case "${LB_ARCHITECTURES}" in
 		amd64|i386)
-			DOWNLOAD_GTK_INSTALLER=1
+			DOWNLOAD_GTK_INSTALLER=true
 			;;
 
 		powerpc)
 			if [ "${LB_DEBIAN_INSTALLER}" = "netboot" ]
 			then
-				DOWNLOAD_GTK_INSTALLER=1
+				DOWNLOAD_GTK_INSTALLER=true
 			fi
 			;;
 	esac
 fi
 
-if [ ${DOWNLOAD_GTK_INSTALLER} -eq 1 ]
-then
+if $DOWNLOAD_GTK_INSTALLER; then
 	mkdir -p "${DESTDIR_GI}"
 	Download_file "${DESTDIR}"/"${VMLINUZ_GI}" ${URL}/${DI_REMOTE_BASE_GTK}/${DI_REMOTE_KERNEL}
 	Download_file "${DESTDIR}"/"${INITRD_GI}" ${URL}/${DI_REMOTE_BASE_GTK}/initrd.gz
