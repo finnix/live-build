@@ -256,15 +256,15 @@ In addition to its specific options \fBlb config\fR understands all generic live
 .IP "\fB\-\-apt\fR apt|aptitude" 4
 defines if apt\-get or aptitude is used to install packages when building the image. The default is apt.
 .IP "\fB\-\-apt\-ftp\-proxy\fR \fIURL\fR" 4
-sets the ftp proxy to be used by apt. By default, this is empty. Note that this variable is only for the proxy that gets used by apt internally within the chroot, it is not used for anything else.
+sets the FTP proxy to be used by apt. By default, this is empty. Note that this variable is only for the proxy that gets used by apt internally within the chroot, it is not used for anything else.
 .IP "\fB\-\-apt\-http\-proxy\fR \fIURL\fR" 4
-sets the http proxy to be used by apt. By default, this is empty. Note that this variable is only for the proxy that gets used by apt internally within the chroot, it is not used for anything else.
+sets the HTTP proxy to be used by apt. By default, this is empty. Note that this variable is only for the proxy that gets used by apt internally within the chroot, it is not used for anything else.
 .IP "\fB\-\-apt\-indices\fR true|false" 4
 defines if the resulting images should have apt indices or not and defaults to true.
 .IP "\fB\-\-apt\-options\fR \fIOPTION\fR|""\fIOPTIONS\fR""" 4
 defines the default options that will be appended to every apt call that is made inside chroot during the building of the image. By default, this is set to \-\-yes to allow non-interactive installation of packages.
 .IP "\fB\-\-apt\-pipeline\fR \fIDEPTH\fR" 4
-sets the depth of the apt/aptitude pipeline. In cases where the remote server is not RFC conforming or buggy (such as Squid 2.0.2) this option can be a value from 0 to 5 indicating how many outstanding requests APT should send. A value of zero MUST be specified if the remote host does not properly linger on TCP connections \- otherwise data corruption will occur. Hosts which require this are in violation of RFC 2068. By default, live\-build does not set this option.
+sets the depth of the apt/aptitude pipeline. In cases where the remote server is not RFC conforming or buggy (such as Squid 2.0.2) this option can be a value from 0 to 5 indicating how many outstanding requests apt should send. A value of zero MUST be specified if the remote host does not properly linger on TCP connections \- otherwise data corruption will occur. Hosts which require this are in violation of RFC 2068. By default, live\-build does not set this option.
 .IP "\fB\-\-apt\-recommends\fR true|false" 4
 defines if apt should install recommended packages automatically. By default, this is true.
 .IP "\fB\-\-apt\-secure\fR true|false" 4
@@ -280,9 +280,9 @@ defines which package archive areas of a debian packages archive should be used 
 .IP "\fB\-\-backports\fR true|false" 4
 defines if debian backports package archives should be included in the image or not.
 .IP "\fB\-\-binary\-filesystem\fR fat16|fat32|ext2|ext3|ext4|ntfs" 4
-defines the filesystem to be used in the image type. This only has an effect if the selected binary image type lets you choose a filesystem. For example, when selection iso the resulting CD/DVD has always the filesystem ISO9660. When building hdd images for usb sticks, this is active. Note that it defaults to fat16 on all architectures except sparc where it defaults to ext4. Also note that if you choose fat16 and your resulting binary image gets bigger than 2GB, the binary filesystem automatically gets switched to fat32.
+defines the filesystem to be used in the image type. This only has an effect if the selected binary image type lets you choose a filesystem. For example, when selection ISO the resulting CD/DVD has always the filesystem ISO9660. When building HDD images for USB sticks, this is active. Note that it defaults to fat16 on all architectures except sparc where it defaults to ext4. Also note that if you choose fat16 and your resulting binary image gets bigger than 2GB, the binary filesystem automatically gets switched to fat32.
 .IP "\-b|\fB\-\-binary\-images\fR iso|iso\-hybrid|netboot|tar|hdd" 4
-defines the image type to build. By default, for images using syslinux this is set to iso\-hybrid to build CD/DVD images that may also be used like hdd images, for non\-syslinux images, it defaults to iso.
+defines the image type to build. By default, for images using syslinux this is set to iso\-hybrid to build CD/DVD images that may also be used like HDD images, for non\-syslinux images, it defaults to ISO.
 .IP "\fB\-\-bootappend\-install\fR \fIPARAMETER\fR|""\fIPARAMETERS\fR""" 4
 sets boot parameters specific to debian\-installer, if included.
 .IP "\fB\-\-bootappend\-live\fR \fIPARAMETER\fR|""\fIPARAMETERS\fR""" 4
@@ -290,7 +290,7 @@ sets boot parameters specific to debian\-live. A complete list of boot parameter
 .IP "\fB\-\-bootappend\-live\-failsafe\fR \fIPARAMETER\fR|""\fIPARAMETERS\fR""" 4
 sets boot parameters specific to debian\-live failsafe boot entries. A complete list of boot parameters can be found in the \fIlive\-boot\fR(7) and \fIlive\-config\fR(7) manual pages.
 .IP "\fB\-\-bootloaders\fR grub-legacy|grub-pc|syslinux|grub-efi" 4
-defines which bootloaders to use in the generated image. This only has an effect if the selected binary image type lets you choose the bootloader. For example, if you build an iso then syslinux (or more precise, isolinux) is always used. Also note that not all combinations of binary images types and bootloaders are supported (\fBlb config\fR will fail to create such an unsupported configuration and will give a explanation about it). For hdd images on amd64 and i386, the default is syslinux. This option supports more than one booloader to be specified (space separated) in order to allow for both BIOS and EFI bootloaders to be included, though note that only one of each type can be used (i.e. do not try to use two BIOS bootloaders).
+defines which bootloaders to use in the generated image. This only has an effect if the selected binary image type lets you choose the bootloader. For example, if you build an ISO then syslinux (or more precise, isolinux) is always used. Also note that not all combinations of binary images types and bootloaders are supported (\fBlb config\fR will fail to create such an unsupported configuration and will give a explanation about it). For HDD images on amd64 and i386, the default is syslinux. This option supports more than one booloader to be specified (space separated) in order to allow for both BIOS and EFI bootloaders to be included, though note that only one of each type can be used (i.e. do not try to use two BIOS bootloaders).
 .IP "\fB\-\-bootstrap\-qemu\-arch \fIARCH\fR" 4
 sets the architectures to use foreign bootstrap. Defaults to empty.
 .IP "\fB\-\-bootstrap\-qemu\-exclude \fIPACKAGES\fR" 4
@@ -322,7 +322,7 @@ defines the compression program to be used to compress tarballs. Defaults to non
 .IP "\-c|\fB\-\-conffile\fR \fIFILE\fR" 4
 uses a user specified alternative configuration file in addition to the normally used one in the config directory.
 .IP "\fB\-\-config\fR \fIGIT_URL\fR::\fIGIT_BRANCH\fR" 4
-bootstraps the config tree from a git repository, optionally appended by a Git Id (branch, commit, tag, etc.).
+bootstraps the config tree from a git repository, optionally appended by a Git ID (branch, commit, tag, etc.).
 .IP "\fB\-\-debconf\-frontend\fR dialog|editor|noninteractive|readline" 4
 defines what value the debconf frontend should be set to inside the chroot. Note that setting it to anything but noninteractive, which is the default, makes your build asking questions during the build.
 .IP "\fB\-\-debconf\-priority\fR low|medium|high|critical" 4
@@ -362,11 +362,11 @@ defines the name of an optional to be included splash screen graphic for the gru
 .IP "\fB\-\-gzip\-options\fR \fIOPTION\fR|""\fIOPTIONS\fR""" 4
 defines the default options that will be appended to (almost) every gzip call during the building of the image. By default, this is set to \-\-best to use highest (but slowest) compression. Dynamically, if the host system supports it, also \-\-rsyncable is added.
 .IP "\fB\-\-hdd\-label\fR \fILABEL\fR" 4
-defines the label for the hdd target. Defaults to DEBIAN_LIVE.
+defines the label for the HDD target. Defaults to DEBIAN_LIVE.
 .IP "\fB\-\-hdd\-partition\-start\fR \fISTART\fR" 4
-sets the start of the partition for the hdd target for BIOSes that expect a specific boot partition start (e.g. "63s"). If empty, use optimal layout. Defaults to empty.
+sets the start of the partition for the HDD target for BIOSes that expect a specific boot partition start (e.g. "63s"). If empty, use optimal layout. Defaults to empty.
 .IP "\fB\-\-hdd\-size\fR \fISIZE\fR" 4
-defines the size for the hdd target. The unit is MiB. Defaults to auto, which generates the smallest possible image.
+defines the size for the HDD target. The unit is MiB. Defaults to auto, which generates the smallest possible image.
 .IP "\fB\-\-ignore\-system\-defaults\fR" 4
 \fBlb config\fR by default reads system defaults from \fI/etc/live/build.conf\fR and \fI/etc/live/build/*\fR when generating a new live system config directory. This is useful if you want to set global settings, such as mirror locations, and don't want to specify them all of the time.
 .IP "\fB\-\-image\-name\fR \fINAME\fR" 4
@@ -443,7 +443,7 @@ sets the IP or hostname that will be configured in the bootloader configuration 
 .IP "\fB\-\-net\-tarball\fR true|false" 4
 defines if a compressed tarball should be created. Disabling this options leads to no tarball at all, the plain binary directory is considered the output in this case. Default is true.
 .IP "\fB\-\-onie\fR true|false" 4
-defines if an ONIE.bin image is generated. ONIE binaries can be loaded by supported systems, and will in turn boot the live image. Note that iso or hybrid-iso are the only formats supported. For more information visit <\fIhttp://onie.org/\fR>. Default is false.
+defines if an ONIE.bin image is generated. ONIE binaries can be loaded by supported systems, and will in turn boot the live image. Note that ISO or hybrid-iso are the only formats supported. For more information visit <\fIhttp://onie.org/\fR>. Default is false.
 .IP "\fB\-\-onie\-kernel\-cmdline\fR \fI""OPTION1 OPTION2""\fR" 4
 defines additional kernel command line options that the ONIE system will use when booting the image. Default is empty string.
 .IP "\fB\-\-parent\-archive\-areas\fR \fIARCHIVE_AREA\fR|""\fIARCHIVE_AREAS\fR""" 4
