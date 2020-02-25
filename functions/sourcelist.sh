@@ -40,11 +40,6 @@ Create_apt_sources_list ()
 			;;
 	esac
 
-	local ADD_SOURCES=false
-	if [ "${_PASS}" = "source" ] || [ "${LB_APT_SOURCE_ARCHIVES}" = "true" ]; then
-		ADD_SOURCES=true
-	fi
-
 	local PARENT_FILE
 	case "${LB_DERIVATIVE}" in
 		true)
@@ -69,17 +64,11 @@ Create_apt_sources_list ()
 
 	# Set general repo
 	echo "deb ${PARENT_MIRROR} ${PARENT_DISTRIBUTION} ${LB_PARENT_ARCHIVE_AREAS}" >> ${PARENT_LIST_FILE}
-
-	if $ADD_SOURCES; then
-		echo "deb-src ${PARENT_MIRROR} ${PARENT_DISTRIBUTION} ${LB_PARENT_ARCHIVE_AREAS}" >> "${PARENT_LIST_FILE}"
-	fi
+	echo "deb-src ${PARENT_MIRROR} ${PARENT_DISTRIBUTION} ${LB_PARENT_ARCHIVE_AREAS}" >> "${PARENT_LIST_FILE}"
 
 	if [ "${LB_DERIVATIVE}" = "true" ]; then
 		echo "deb ${MIRROR} ${_DISTRIBUTION} ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
-
-		if $ADD_SOURCES; then
-			echo "deb-src ${MIRROR} ${_DISTRIBUTION} ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
-		fi
+		echo "deb-src ${MIRROR} ${_DISTRIBUTION} ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
 	fi
 
 	# Set security repo
@@ -93,26 +82,17 @@ Create_apt_sources_list ()
 
 					*)
 						echo "deb ${PARENT_MIRROR_SECURITY} ${PARENT_DISTRIBUTION}/updates ${LB_PARENT_ARCHIVE_AREAS}" >> "${PARENT_LIST_FILE}"
-
-						if $ADD_SOURCES; then
-							echo "deb-src ${PARENT_MIRROR_SECURITY} ${PARENT_DISTRIBUTION}/updates ${LB_PARENT_ARCHIVE_AREAS}" >> "${PARENT_LIST_FILE}"
-						fi
+						echo "deb-src ${PARENT_MIRROR_SECURITY} ${PARENT_DISTRIBUTION}/updates ${LB_PARENT_ARCHIVE_AREAS}" >> "${PARENT_LIST_FILE}"
 						;;
 				esac
 
 				if [ "${LB_MODE}" = progress-linux ]; then
 					echo "deb ${MIRROR_SECURITY} ${_DISTRIBUTION}-security ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
-
-					if $ADD_SOURCES; then
-						echo "deb-src ${MIRROR_SECURITY} ${_DISTRIBUTION}-security ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
-					fi
+					echo "deb-src ${MIRROR_SECURITY} ${_DISTRIBUTION}-security ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
 				else
 					if [ "${LB_DERIVATIVE}" = "true" ]; then
 						echo "deb ${MIRROR_SECURITY} ${_DISTRIBUTION}/updates ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
-
-						if $ADD_SOURCES; then
-							echo "deb-src ${MIRROR_SECURITY} ${_DISTRIBUTION}/updates ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
-						fi
+						echo "deb-src ${MIRROR_SECURITY} ${_DISTRIBUTION}/updates ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
 					fi
 				fi
 				;;
@@ -122,17 +102,11 @@ Create_apt_sources_list ()
 	# Set updates repo
 	if [ "${LB_UPDATES}" = "true" ]; then
 		echo "deb ${PARENT_MIRROR} ${PARENT_DISTRIBUTION}-updates ${LB_PARENT_ARCHIVE_AREAS}" >> "${PARENT_LIST_FILE}"
-
-		if $ADD_SOURCES; then
-			echo "deb-src ${PARENT_MIRROR} ${PARENT_DISTRIBUTION}-updates ${LB_PARENT_ARCHIVE_AREAS}" >> "${PARENT_LIST_FILE}"
-		fi
+		echo "deb-src ${PARENT_MIRROR} ${PARENT_DISTRIBUTION}-updates ${LB_PARENT_ARCHIVE_AREAS}" >> "${PARENT_LIST_FILE}"
 
 		if [ "${LB_DERIVATIVE}" = "true" ]; then
 			echo "deb ${MIRROR} ${_DISTRIBUTION}-updates ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
-
-			if $ADD_SOURCES; then
-				echo "deb-src ${MIRROR} ${_DISTRIBUTION}-updates ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
-			fi
+			echo "deb-src ${MIRROR} ${_DISTRIBUTION}-updates ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
 		fi
 	fi
 
@@ -142,20 +116,22 @@ Create_apt_sources_list ()
 			debian)
 				if [ "${PARENT_DISTRIBUTION}" != "sid" ]; then
 					echo "deb ${PARENT_MIRROR} ${PARENT_DISTRIBUTION}-backports ${LB_PARENT_ARCHIVE_AREAS}" >> "${PARENT_LIST_FILE}"
-
-					if $ADD_SOURCES; then
-						echo "deb-src ${PARENT_MIRROR} ${PARENT_DISTRIBUTION}-backports ${LB_PARENT_ARCHIVE_AREAS}" >> "${PARENT_LIST_FILE}"
-					fi
+					echo "deb-src ${PARENT_MIRROR} ${PARENT_DISTRIBUTION}-backports ${LB_PARENT_ARCHIVE_AREAS}" >> "${PARENT_LIST_FILE}"
 				fi
 				;;
 		esac
 
 		if [ "${LB_DERIVATIVE}" = "true" ]; then
 			echo "deb ${MIRROR} ${_DISTRIBUTION}-backports ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
+			echo "deb-src ${MIRROR} ${_DISTRIBUTION}-backports ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
+		fi
+	fi
 
-			if $ADD_SOURCES; then
-				echo "deb-src ${MIRROR} ${_DISTRIBUTION}-backports ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
-			fi
+	# Disable deb-src entries?
+	if [ "${_PASS}" != "source" ] && [ "${LB_APT_SOURCE_ARCHIVES}" != "true" ]; then
+		sed -i "/^deb-src /d" "${PARENT_LIST_FILE}"
+		if [ "${LB_DERIVATIVE}" = "true" ]; then
+			sed -i "/^deb-src /d" "${LIST_FILE}"
 		fi
 	fi
 }
