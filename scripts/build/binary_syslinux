@@ -150,6 +150,15 @@ case "${LB_BUILD_WITH_CHROOT}" in
 		;;
 esac
 
+# Use correct install menu set
+if [ "${LB_DEBIAN_INSTALLER_GUI}" = "true" ]; then
+	rm "${_TARGET}"/install_text.cfg
+	mv "${_TARGET}"/install_gui.cfg "${_TARGET}"/install.cfg
+else
+	rm "${_TARGET}"/install_gui.cfg
+	mv "${_TARGET}"/install_text.cfg "${_TARGET}"/install.cfg
+fi
+
 # Configuring files
 if [ -e "${_TARGET}/live.cfg.in" ]
 then
