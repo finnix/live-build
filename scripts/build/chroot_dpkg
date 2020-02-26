@@ -42,12 +42,7 @@ case "${1}" in
 
 		# Create custom start-stop-daemon program
 		Chroot chroot dpkg-divert --rename --quiet --add /sbin/start-stop-daemon
-
-cat > chroot/sbin/start-stop-daemon << EOF
-#!/bin/sh
-
-exit 0
-EOF
+		ln -fs /bin/true chroot/sbin/start-stop-daemon
 
 		chmod 755 chroot/sbin/start-stop-daemon
 
