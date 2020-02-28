@@ -26,7 +26,7 @@ USAGE="${PROGRAM}   [--apt apt|aptitude]\n\
 \t    [--apt-secure true|false]\n\
 \t    [--apt-source-archives true|false]\n\
 \t    [--aptitude-options OPTION|\"OPTIONS\"]\n\
-\t    [-a|--architectures ARCHITECTURE]\n\
+\t    [-a|--architecture ARCHITECTURE]\n\
 \t    [--archive-areas ARCHIVE_AREA|\"ARCHIVE_AREAS\"]\n\
 \t    [--backports true|false]\n\
 \t    [--binary-filesystem fat16|fat32|ext2|ext3|ext4|ntfs]\n\
@@ -349,7 +349,7 @@ Local_arguments ()
 				;;
 
 			# config/bootstrap
-			-a|--architectures)
+			-a|--architecture|--architectures)
 				LB_ARCHITECTURES="${2}"
 				shift 2
 				;;
