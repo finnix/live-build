@@ -139,12 +139,12 @@ Echo_warning ()
 
 	if [ "${_COLOR}" = "false" ]
 	then
-		printf "W:" >&1
+		printf "W:" >&2
 	else
-		printf "${YELLOW}W${NO_COLOR}:" >&1
+		printf "${YELLOW}W${NO_COLOR}:" >&2
 	fi
 
-	printf " ${STRING}\n" "${@}" >&1
+	printf " ${STRING}\n" "${@}" >&2
 }
 
 Echo_status ()
