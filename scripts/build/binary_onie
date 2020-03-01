@@ -166,7 +166,7 @@ IN_IMAGE="${IMAGE}"
 
 output_file="${OUT}/${IN_IMAGE}-ONIE.bin"
 
-echo "Creating $output_file:"
+Echo_message "Creating $output_file:"
 
 # prepare workspace
 [ -d $EXTRACTDIR ] && chmod +w -R $EXTRACTDIR
@@ -208,7 +208,7 @@ case $(file --brief --mime --dereference $EXTRACTDIR/live/initrd.img | \
 		COMPRESS="cat"
 		;;
 	*)
-		echo "ERROR: Unable to detect initrd compression format."
+		Echo_error "Unable to detect initrd compression format."
 		exit 1
 		;;
 esac
@@ -227,13 +227,13 @@ echo -n "."
 KERNEL='vmlinuz'
 IN_KERNEL=$EXTRACTDIR/live/$KERNEL
 [ -r $IN_KERNEL ] || {
-	echo "ERROR: Unable to find kernel in ISO: $IN_KERNEL"
+	Echo_error "Unable to find kernel in ISO: $IN_KERNEL"
 	exit 1
 }
 INITRD='initrd.img'
 IN_INITRD=$WORKDIR/$INITRD
 [ -r $IN_INITRD ] || {
-	echo "ERROR: Unable to find initrd in ISO: $IN_INITRD"
+	Echo_error "Unable to find initrd in ISO: $IN_INITRD"
 	exit 1
 }
 
@@ -305,12 +305,12 @@ echo -n "."
 # Repackage $INSTALLDIR into a self-extracting installer image
 sharch="$WORKDIR/sharch.tar"
 tar -C $WORKDIR -cf $sharch installer || {
-	echo "Error: Problems creating $sharch archive"
+	Echo_error "Problems creating $sharch archive"
 	exit 1
 }
 
 [ -f "$sharch" ] || {
-	echo "Error: $sharch not found"
+	Echo_error "$sharch not found"
 	exit 1
 }
 echo -n "."
@@ -319,7 +319,7 @@ sha1=$(cat $sharch | sha1sum | awk '{print $1}')
 echo -n "."
 
 cp sharch_body.sh $output_file || {
-	echo "Error: Problems copying sharch_body.sh"
+	Echo_error "Problems copying sharch_body.sh"
 	exit 1
 }
 
