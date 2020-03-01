@@ -18,11 +18,8 @@ DESCRIPTION="$(Echo 'manage /etc/apt/sources.list')"
 HELP=""
 USAGE="${PROGRAM} [source|binary] [--force]"
 
-_PASS="${1:-binary}"
-if [ -n "${1}" ]
-then
-	shift
-fi
+_PASS="${1}"
+shift
 
 if [ "${_PASS}" != "binary" ] && [ "${_PASS}" != "source" ]; then
 	Usage
