@@ -147,42 +147,6 @@ Echo_warning ()
 	printf " ${STRING}\n" "${@}" >&2
 }
 
-Echo_status ()
-{
-	__RETURN=$?
-
-	if [ "${_COLOR}" = "false" ]
-	then
-		if [ $__RETURN -eq 0 ]
-		then
-			printf " done.\n" >&1
-		else
-			printf " failed.\n" >&1
-		fi
-	else
-		Cursor_columns_backward 8
-
-		if [ $__RETURN -eq 0 ]
-		then
-			printf " ${GREEN}done${NO_COLOR}.  \n" >&1
-		else
-			printf " ${RED}failed${NO_COLOR}.\n" >&1
-		fi
-	fi
-}
-
-Echo_done ()
-{
-	if [ "${_COLOR}" = "false" ]
-	then
-		printf " already done.\n" >&1
-	else
-		Cursor_columns_backward 8
-
-		printf " ${GREEN}already done${NO_COLOR}.\n" >&1
-	fi
-}
-
 Echo_file ()
 {
 	while read LINE
