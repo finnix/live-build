@@ -52,9 +52,9 @@ Echo_error ()
 
 	if [ "${_COLOR}" = "false" ]
 	then
-		printf "E:"
+		printf "E:" >&2
 	else
-		printf "${RED}E${NO_COLOR}:"
+		printf "${RED}E${NO_COLOR}:" >&2
 	fi
 
 	printf " ${STRING}\n" "${@}" >&2
