@@ -13,7 +13,7 @@ Echo ()
 	STRING="${1}"
 	shift
 
-	printf "${STRING}\n" "${@}"
+	printf "${STRING}\n" "${@}" >&1
 }
 
 Echo_debug ()
@@ -23,7 +23,7 @@ Echo_debug ()
 		STRING="${1}"
 		shift
 
-		printf "D: ${STRING}\n" "${@}"
+		printf "D: ${STRING}\n" "${@}" >&1
 	fi
 }
 
@@ -34,13 +34,13 @@ Echo_debug_running ()
 		STRING="${1}"
 		shift
 
-		printf "D: ${STRING}" "${@}"
+		printf "D: ${STRING}" "${@}" >&1
 
 		if [ "${_COLOR}" = "false" ]
 		then
-			printf "..."
+			printf "..." >&1
 		else
-			printf "... ${YELLOW}${BLINK}running${NO_COLOR}"
+			printf "... ${YELLOW}${BLINK}running${NO_COLOR}" >&1
 		fi
 	fi
 }
@@ -69,12 +69,12 @@ Echo_message ()
 
 		if [ "${_COLOR}" = "false" ]
 		then
-			printf "P:"
+			printf "P:" >&1
 		else
-			printf "${WHITE}P${NO_COLOR}:"
+			printf "${WHITE}P${NO_COLOR}:" >&1
 		fi
 
-		printf " ${STRING}\n" "${@}"
+		printf " ${STRING}\n" "${@}" >&1
 	fi
 }
 
@@ -87,18 +87,18 @@ Echo_message_running ()
 
 		if [ "${_COLOR}" = "false" ]
 		then
-			printf "P:"
+			printf "P:" >&1
 		else
-			printf "${WHITE}P${NO_COLOR}:"
+			printf "${WHITE}P${NO_COLOR}:" >&1
 		fi
 
-		printf " ${STRING}" "${@}"
+		printf " ${STRING}" "${@}" >&1
 
 		if [ "${_COLOR}" = "true" ]
 		then
-			printf "... ${YELLOW}${BLINK}running${NO_COLOR}"
+			printf "... ${YELLOW}${BLINK}running${NO_COLOR}" >&1
 		else
-			printf "..."
+			printf "..." >&1
 		fi
 	fi
 }
@@ -110,7 +110,7 @@ Echo_verbose ()
 		STRING="${1}"
 		shift
 
-		printf "I: ${STRING}\n" "${@}"
+		printf "I: ${STRING}\n" "${@}" >&1
 	fi
 }
 
@@ -121,13 +121,13 @@ Echo_verbose_running ()
 		STRING="${1}"
 		shift
 
-		printf "I: ${STRING}" "${@}"
+		printf "I: ${STRING}" "${@}" >&1
 
 		if [ "${_COLOR}" = "true" ]
 		then
-			printf "... ${YELLOW}${BLINK}running${NO_COLOR}"
+			printf "... ${YELLOW}${BLINK}running${NO_COLOR}" >&1
 		else
-			printf "..."
+			printf "..." >&1
 		fi
 	fi
 }
@@ -139,12 +139,12 @@ Echo_warning ()
 
 	if [ "${_COLOR}" = "false" ]
 	then
-		printf "W:"
+		printf "W:" >&1
 	else
-		printf "${YELLOW}W${NO_COLOR}:"
+		printf "${YELLOW}W${NO_COLOR}:" >&1
 	fi
 
-	printf " ${STRING}\n" "${@}"
+	printf " ${STRING}\n" "${@}" >&1
 }
 
 Echo_status ()
@@ -155,18 +155,18 @@ Echo_status ()
 	then
 		if [ $__RETURN -eq 0 ]
 		then
-			printf " done.\n"
+			printf " done.\n" >&1
 		else
-			printf " failed.\n"
+			printf " failed.\n" >&1
 		fi
 	else
 		Cursor_columns_backward 8
 
 		if [ $__RETURN -eq 0 ]
 		then
-			printf " ${GREEN}done${NO_COLOR}.  \n"
+			printf " ${GREEN}done${NO_COLOR}.  \n" >&1
 		else
-			printf " ${RED}failed${NO_COLOR}.\n"
+			printf " ${RED}failed${NO_COLOR}.\n" >&1
 		fi
 	fi
 }
@@ -175,11 +175,11 @@ Echo_done ()
 {
 	if [ "${_COLOR}" = "false" ]
 	then
-		printf " already done.\n"
+		printf " already done.\n" >&1
 	else
 		Cursor_columns_backward 8
 
-		printf " ${GREEN}already done${NO_COLOR}.\n"
+		printf " ${GREEN}already done${NO_COLOR}.\n" >&1
 	fi
 }
 
@@ -187,7 +187,7 @@ Echo_file ()
 {
 	while read LINE
 	do
-		echo "${1}: ${LINE}"
+		echo "${1}: ${LINE}" >&1
 	done < "${1}"
 }
 
