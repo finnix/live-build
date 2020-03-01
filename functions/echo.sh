@@ -18,8 +18,7 @@ Echo ()
 
 Echo_debug ()
 {
-	if [ "${_DEBUG}" = "true" ]
-	then
+	if [ "${_DEBUG}" = "true" ]; then
 		STRING="${1}"
 		shift
 
@@ -32,14 +31,12 @@ Echo_error ()
 	STRING="${1}"
 	shift
 
-	if [ "${_COLOR}" = "false" ]
-	then
-		printf "E:" >&2
-	else
-		printf "${RED}E${NO_COLOR}:" >&2
+	local PREFIX="${RED}E${NO_COLOR}"
+	if [ "${_COLOR}" = "false" ]; then
+		PREFIX="E"
 	fi
 
-	printf " ${STRING}\n" "${@}" >&2
+	printf "${PREFIX}: ${STRING}\n" "${@}" >&2
 }
 
 Echo_message ()
@@ -49,21 +46,18 @@ Echo_message ()
 		STRING="${1}"
 		shift
 
-		if [ "${_COLOR}" = "false" ]
-		then
-			printf "P:" >&1
-		else
-			printf "${WHITE}P${NO_COLOR}:" >&1
+		local PREFIX="${WHITE}P${NO_COLOR}"
+		if [ "${_COLOR}" = "false" ]; then
+			PREFIX="P"
 		fi
 
-		printf " ${STRING}\n" "${@}" >&1
+		printf "${PREFIX}: ${STRING}\n" "${@}" >&1
 	fi
 }
 
 Echo_verbose ()
 {
-	if [ "${_VERBOSE}" = "true" ]
-	then
+	if [ "${_VERBOSE}" = "true" ]; then
 		STRING="${1}"
 		shift
 
@@ -76,14 +70,12 @@ Echo_warning ()
 	STRING="${1}"
 	shift
 
-	if [ "${_COLOR}" = "false" ]
-	then
-		printf "W:" >&2
-	else
-		printf "${YELLOW}W${NO_COLOR}:" >&2
+	local PREFIX="${YELLOW}W${NO_COLOR}"
+	if [ "${_COLOR}" = "false" ]; then
+		PREFIX="W"
 	fi
 
-	printf " ${STRING}\n" "${@}" >&2
+	printf "${PREFIX}: ${STRING}\n" "${@}" >&2
 }
 
 Echo_file ()
