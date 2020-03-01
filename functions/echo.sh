@@ -27,24 +27,6 @@ Echo_debug ()
 	fi
 }
 
-Echo_debug_running ()
-{
-	if [ "${_DEBUG}" = "true" ]
-	then
-		STRING="${1}"
-		shift
-
-		printf "D: ${STRING}" "${@}" >&1
-
-		if [ "${_COLOR}" = "false" ]
-		then
-			printf "..." >&1
-		else
-			printf "... ${YELLOW}${BLINK}running${NO_COLOR}" >&1
-		fi
-	fi
-}
-
 Echo_error ()
 {
 	STRING="${1}"
@@ -78,31 +60,6 @@ Echo_message ()
 	fi
 }
 
-Echo_message_running ()
-{
-	if [ "${_QUIET}" != "true" ]
-	then
-		STRING="${1}"
-		shift
-
-		if [ "${_COLOR}" = "false" ]
-		then
-			printf "P:" >&1
-		else
-			printf "${WHITE}P${NO_COLOR}:" >&1
-		fi
-
-		printf " ${STRING}" "${@}" >&1
-
-		if [ "${_COLOR}" = "true" ]
-		then
-			printf "... ${YELLOW}${BLINK}running${NO_COLOR}" >&1
-		else
-			printf "..." >&1
-		fi
-	fi
-}
-
 Echo_verbose ()
 {
 	if [ "${_VERBOSE}" = "true" ]
@@ -111,24 +68,6 @@ Echo_verbose ()
 		shift
 
 		printf "I: ${STRING}\n" "${@}" >&1
-	fi
-}
-
-Echo_verbose_running ()
-{
-	if [ "${_VERBOSE}" != "true" ]
-	then
-		STRING="${1}"
-		shift
-
-		printf "I: ${STRING}" "${@}" >&1
-
-		if [ "${_COLOR}" = "true" ]
-		then
-			printf "... ${YELLOW}${BLINK}running${NO_COLOR}" >&1
-		else
-			printf "..." >&1
-		fi
 	fi
 }
 
