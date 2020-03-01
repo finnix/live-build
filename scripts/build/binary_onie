@@ -208,6 +208,7 @@ case $(file --brief --mime --dereference $EXTRACTDIR/live/initrd.img | \
 		COMPRESS="cat"
 		;;
 	*)
+		echo "" #force newline
 		Echo_error "Unable to detect initrd compression format."
 		exit 1
 		;;
@@ -227,12 +228,14 @@ echo -n "."
 KERNEL='vmlinuz'
 IN_KERNEL=$EXTRACTDIR/live/$KERNEL
 [ -r $IN_KERNEL ] || {
+	echo "" #force newline
 	Echo_error "Unable to find kernel in ISO: $IN_KERNEL"
 	exit 1
 }
 INITRD='initrd.img'
 IN_INITRD=$WORKDIR/$INITRD
 [ -r $IN_INITRD ] || {
+	echo "" #force newline
 	Echo_error "Unable to find initrd in ISO: $IN_INITRD"
 	exit 1
 }
@@ -305,11 +308,13 @@ echo -n "."
 # Repackage $INSTALLDIR into a self-extracting installer image
 sharch="$WORKDIR/sharch.tar"
 tar -C $WORKDIR -cf $sharch installer || {
+	echo "" #force newline
 	Echo_error "Problems creating $sharch archive"
 	exit 1
 }
 
 [ -f "$sharch" ] || {
+	echo "" #force newline
 	Echo_error "$sharch not found"
 	exit 1
 }
@@ -319,6 +324,7 @@ sha1=$(cat $sharch | sha1sum | awk '{print $1}')
 echo -n "."
 
 cp sharch_body.sh $output_file || {
+	echo "" #force newline
 	Echo_error "Problems copying sharch_body.sh"
 	exit 1
 }
