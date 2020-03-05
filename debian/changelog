@@ -1,3 +1,23 @@
+live-build (1:20191222) UNRELEASED; urgency=medium
+
+  [ Raphaël Hertzog ]
+  * Get rid of extraneous whitespace showing up in syslinux menu
+  * Standardize on having the GUI installation first in boot menus
+
+  [ David Hewitt ]
+  * binary_syslinux: Acommodate LB_INITRAMFS not live-boot
+
+  [ Lyndon Brown ]
+  * remove redundant files (Closes: #952834, #952835)
+  * source: fix wrong action value for script execution (Closes: #952837)
+  * archives: fix removal of chroot/root/packages.chroot package list
+    (Closes: #952838)
+  * archives: fix incorrect usage string (Closes: #952839)
+  * archives: add 'pass' param validation check (Closes: #952841)
+  * archives: fix deb-src entry exclusion (Closes: #952842)
+
+ -- Raphaël Hertzog <hertzog@debian.org>  Thu, 05 Mar 2020 11:03:30 +0100
+
 live-build (1:20191221) unstable; urgency=medium
 
   * Revert some Kali-specific change in scripts/build/binary_iso
