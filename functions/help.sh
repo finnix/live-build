@@ -10,21 +10,22 @@
 
 Help ()
 {
-	printf "%s - %s\n\n" "${PROGRAM_NAME}" "${DESCRIPTION}"
-	printf "Usage:\n\n"
+	echo "${PROGRAM_NAME} - ${DESCRIPTION}"
+	printf "\nUsage:\n\n"
 
-	if [ -n "${USAGE}" ]
-	then
-		# printf without placeholder required here for correct \t and \n formatting of `lb config --usage`
+	if [ -n "${USAGE}" ]; then
+		# printf without placeholder required here for correct \t and \n formatting of `lb config` usage string
 		printf "  ${USAGE}\n"
 	fi
-	printf "  %s [-h|--help]\n" "${PROGRAM}"
-	printf "  %s [-u|--usage]\n" "${PROGRAM}"
-	printf "  %s [-v|--version]\n\n" "${PROGRAM}"
+
+	echo "  ${PROGRAM} [-h|--help]"
+	echo "  ${PROGRAM} [-u|--usage]"
+	echo "  ${PROGRAM} [-v|--version]"
+	echo
 
 	if [ -n "${HELP}" ]
 	then
-		printf "%s\n\n" "${HELP}"
+		printf "${HELP}\n\n"
 	fi
 
 	echo "Report bugs to the Live Systems project <https://wiki.debian.org/DebianLive>."
