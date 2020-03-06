@@ -15,7 +15,6 @@ set -e
 
 # Setting static variables
 DESCRIPTION="Manage /etc/apt/apt.conf"
-HELP=""
 USAGE="${PROGRAM} {install|install-binary|remove} [--force]"
 
 # Processing arguments and configuration files

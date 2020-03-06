@@ -16,7 +16,6 @@ set -e
 
 # Setting static variables
 DESCRIPTION="Build ONIE binary image"
-HELP=""
 USAGE="${PROGRAM} [--force]"
 
 # Processing arguments and configuration files

@@ -25,7 +25,6 @@ fi
 
 # Setting static variables
 DESCRIPTION="Build a Debian Live system"
-HELP=""
 USAGE="${PROGRAM} [--force]"
 
 # Checking build directory suitability

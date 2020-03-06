@@ -15,7 +15,6 @@ set -e
 
 # Setting static variables
 DESCRIPTION="Customize the Debian system"
-HELP=""
 USAGE="${PROGRAM} [--force]"
 
 # Automatically populating config tree

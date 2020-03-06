@@ -15,7 +15,6 @@ set -e
 
 # Setting static variables
 DESCRIPTION="Cache chroot stage"
-HELP=""
 USAGE="${PROGRAM} [--force]"
 
 # Processing arguments and configuration files

@@ -15,7 +15,6 @@ set -e
 
 # Setting static variables
 DESCRIPTION="Bootstrap a Debian system with debootstrap(8)"
-HELP=""
 USAGE="${PROGRAM} [--force]"
 
 # Processing arguments and configuration files

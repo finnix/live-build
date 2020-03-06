@@ -15,7 +15,6 @@ set -e
 
 # Setting static variables
 DESCRIPTION="Make build interactive"
-HELP=""
 USAGE="${PROGRAM} [--force]"
 
 # Processing arguments and configuration files

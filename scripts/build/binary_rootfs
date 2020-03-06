@@ -15,7 +15,6 @@ set -e
 
 # Setting static variables
 DESCRIPTION="Build rootfs image"
-HELP=""
 USAGE="${PROGRAM} [--force]"
 
 # Processing arguments and configuration files

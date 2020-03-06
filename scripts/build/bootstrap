@@ -15,7 +15,6 @@ set -e
 
 # Setting static variables
 DESCRIPTION="Bootstrap a Debian system"
-HELP=""
 USAGE="${PROGRAM} [--force]"
 
 # Automatically populating config tree

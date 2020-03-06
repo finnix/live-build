@@ -15,7 +15,6 @@ set -e
 
 # Setting static variables
 DESCRIPTION="Mount /dev/pts"
-HELP=""
 USAGE="${PROGRAM} {install|remove} [--force]"
 
 # Processing arguments and configuration files

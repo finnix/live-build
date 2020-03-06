@@ -15,7 +15,6 @@ set -e
 
 # Setting static variables
 DESCRIPTION="Schedule kernel packages for installation"
-HELP=""
 USAGE="${PROGRAM} [--force]"
 
 # Processing arguments and configuration files

@@ -15,7 +15,6 @@ set -e
 
 # Setting static variables
 DESCRIPTION="Manage /etc/apt/sources.list"
-HELP=""
 USAGE="${PROGRAM} {source|binary|chroot} {install|remove} [--force]"
 
 _PASS="${1}"

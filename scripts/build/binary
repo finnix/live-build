@@ -15,7 +15,6 @@ set -e
 
 # Setting static variables
 DESCRIPTION="Build binary images"
-HELP=""
 USAGE="${PROGRAM} [--force]"
 
 # Automatically populating config tree

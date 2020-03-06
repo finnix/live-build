@@ -15,7 +15,6 @@ set -e
 
 # Setting static variables
 DESCRIPTION="Manage /etc/resolv.conf"
-HELP=""
 USAGE="${PROGRAM} {install|remove} [--force]"
 
 # Processing arguments and configuration files

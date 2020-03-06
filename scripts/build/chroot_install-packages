@@ -15,7 +15,6 @@ set -e
 
 # Setting static variables
 DESCRIPTION="Install queued packages into chroot"
-HELP=""
 USAGE="${PROGRAM} {install|live} [--force]"
 
 _PASS="${1}"
