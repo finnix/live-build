@@ -15,7 +15,8 @@ Usage ()
 
 	if [ -n "${USAGE}" ]
 	then
-		printf "  %s\n" "${USAGE}"
+		# printf without placeholder required here for correct \t and \n formatting of `lb config --usage`
+		printf "  ${USAGE}\n"
 	fi
 
 	printf "  %s [-h|--help]\n" "${PROGRAM}"
