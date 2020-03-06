@@ -164,10 +164,15 @@ Local_arguments ()
 		bootstrap-qemu-exclude:"
 	# Remove spaces added by indentation
 	LONG_OPTIONS="$(echo ${LONG_OPTIONS} | tr -d ' ')"
-	ARGUMENTS="$(getopt --longoptions ${LONG_OPTIONS} --name="${PROGRAM}" --options a:d:m:k:b:s:c:huv --shell sh -- "${@}")"
 
-	if [ $? -ne 0 ]; then
-		Echo_error "terminating" >&2
+	local ERR=0
+	ARGUMENTS="$(getopt --longoptions ${LONG_OPTIONS} --name="${PROGRAM}" --options a:d:m:k:b:s:c:huv --shell sh -- "${@}")" || ERR=$?
+
+	if [ $ERR -eq 1 ]; then
+		Echo_error "invalid arguments"
+		exit 1
+	elif [ $ERR -ne 0 ]; then
+		Echo_error "getop failure"
 		exit 1
 	fi
 

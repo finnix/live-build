@@ -10,11 +10,14 @@
 
 Arguments ()
 {
-	ARGUMENTS="$(getopt --longoptions breakpoints,color,conffile:,debug,force,help,quiet,usage,verbose,version --name=${PROGRAM} --options c:huv --shell sh -- "${@}")"
+	local ERR=0
+	ARGUMENTS="$(getopt --longoptions breakpoints,color,conffile:,debug,force,help,quiet,usage,verbose,version --name=${PROGRAM} --options c:huv --shell sh -- "${@}")" || ERR=$?
 
-	if [ $? -ne 0 ]
-	then
-		Echo_error "terminating" >&2
+	if [ $ERR -eq 1 ]; then
+		Echo_error "invalid arguments"
+		exit 1
+	elif [ $ERR -ne 0 ]; then
+		Echo_error "getop failure"
 		exit 1
 	fi
 
