@@ -80,7 +80,7 @@ Echo_warning ()
 
 Echo_file ()
 {
-	while read LINE
+	while read -r LINE
 	do
 		echo "${1}: ${LINE}" >&1
 	done < "${1}"
