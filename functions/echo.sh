@@ -8,13 +8,14 @@
 ## This is free software, and you are welcome to redistribute it
 ## under certain conditions; see COPYING for details.
 
+exec 3>&1
 
 Echo ()
 {
 	STRING="${1}"
 	shift
 
-	printf "${STRING}\n" "${@}" >&1
+	printf "${STRING}\n" "${@}" >&3
 }
 
 Echo_debug ()
@@ -23,7 +24,7 @@ Echo_debug ()
 		STRING="${1}"
 		shift
 
-		printf "D: ${STRING}\n" "${@}" >&1
+		printf "D: ${STRING}\n" "${@}" >&3
 	fi
 }
 
@@ -52,7 +53,7 @@ Echo_message ()
 			PREFIX="P"
 		fi
 
-		printf "${PREFIX}: ${STRING}\n" "${@}" >&1
+		printf "${PREFIX}: ${STRING}\n" "${@}" >&3
 	fi
 }
 
@@ -62,7 +63,7 @@ Echo_verbose ()
 		STRING="${1}"
 		shift
 
-		printf "I: ${STRING}\n" "${@}" >&1
+		printf "I: ${STRING}\n" "${@}" >&3
 	fi
 }
 
@@ -83,7 +84,7 @@ Echo_file ()
 {
 	while read -r LINE
 	do
-		echo "${1}: ${LINE}" >&1
+		echo "${1}: ${LINE}" >&3
 	done < "${1}"
 }
 
