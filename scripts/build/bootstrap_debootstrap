@@ -71,6 +71,8 @@ fi
 if [ "${LB_APT_SECURE}" = "false" ]
 then
 	DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS} --no-check-gpg"
+else
+	DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS} --force-check-gpg"
 fi
 
 if [ "${LB_CACHE_PACKAGES}" = "true" ]
