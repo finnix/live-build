@@ -10,6 +10,7 @@
 
 NO_COLOR="\033[0m"
 
+BOLD="\033[1m"
 UNDERSCORE="\033[4m"
 BLINK="\033[5m"
 
