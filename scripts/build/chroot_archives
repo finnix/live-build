@@ -20,7 +20,7 @@ USAGE="${PROGRAM} {source|binary|chroot} {install|remove} [--force]"
 _PASS="${1}"
 shift
 
-if ! In_List "${_PASS}" "binary" "chroot" "source"; then
+if ! In_list "${_PASS}" "binary" "chroot" "source"; then
 	Usage
 fi
 
