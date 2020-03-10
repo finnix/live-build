@@ -130,7 +130,11 @@ case "${LB_MODE}" in
 		;;
 esac
 
+# Make a clean directory to download the packages to.
+# We need to set the ownership to user `_apt` to give write access to the apt user,
+# otherwise we get a lot of warnings from apt about downloading as root.
 mkdir -p chroot/source.pkgs
+chown _apt:root chroot/source.pkgs
 
 cat > chroot/missing-source.txt << EOF
 This file contains the list of binary packages that are installed on the "live"
