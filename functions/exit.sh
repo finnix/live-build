@@ -18,6 +18,12 @@ Exit ()
 		set | grep -e ^LB
 	fi
 
+	# Skip if we have not yet completed the initial bootstrapping (bootstrap_debootstrap)
+	# (nothing to be done; avoids unhelpful messages)
+	if [ ! -e .build/bootstrap ]; then
+		return ${VALUE}
+	fi
+
 	# Always exit true in case we are not able to unmount
 	# (e.g. due to running processes in chroot from user customizations)
 	Echo_message "Begin unmounting filesystems..."
