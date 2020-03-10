@@ -26,8 +26,10 @@ Init_config_data "${@}"
 # Setting up cleanup function
 Setup_clean_exit
 
-# Configuring chroot
+# Restoring cached live OS chroot from cache
 lb chroot_cache restore ${@}
+
+# Configuring chroot
 lb chroot_devpts install ${@}
 lb chroot_proc install ${@}
 lb chroot_selinuxfs install ${@}
@@ -79,6 +81,8 @@ lb chroot_sysfs remove ${@}
 lb chroot_selinuxfs remove ${@}
 lb chroot_proc remove ${@}
 lb chroot_devpts remove ${@}
+
+# Saving live OS chroot to cache
 lb chroot_cache save ${@}
 
 Chroot chroot "ls -lR" > chroot.files
