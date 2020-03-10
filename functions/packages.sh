@@ -80,7 +80,7 @@ Check_installed ()
 			INSTALL_STATUS=1
 		fi
 	else
-		if which dpkg-query > /dev/null 2>&1
+		if [ $(which dpkg-query) ]
 		then
 			if dpkg-query -s "${PACKAGE}" 2> /dev/null | grep -qs "Status: install"
 			then
