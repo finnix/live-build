@@ -72,56 +72,50 @@ then
 	DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS} --no-check-gpg"
 fi
 
-if [ $(which debootstrap) ]
+if [ "${LB_CACHE_PACKAGES}" = "true" ]
 then
-	if [ "${LB_CACHE_PACKAGES}" = "true" ]
+	if ls cache/packages.bootstrap/*.deb > /dev/null 2>&1
 	then
-		if ls cache/packages.bootstrap/*.deb > /dev/null 2>&1
-		then
-			mkdir -p chroot/var/cache/apt/archives
-			cp cache/packages.bootstrap/*.deb chroot/var/cache/apt/archives
-		fi
-
-		Echo_breakage "Running debootstrap (download-only)... "
-		debootstrap ${DEBOOTSTRAP_OPTIONS} --download-only "${LB_PARENT_DISTRIBUTION_CHROOT}" chroot "${LB_PARENT_MIRROR_BOOTSTRAP}" ${DEBOOTSTRAP_SCRIPT}
-
-		# Removing old cache
-		rm -f cache/packages.bootstrap/*.deb
-
-		# Saving new cache
-		mkdir -p cache/packages.bootstrap
-		cp chroot/var/cache/apt/archives/*.deb cache/packages.bootstrap
+		mkdir -p chroot/var/cache/apt/archives
+		cp cache/packages.bootstrap/*.deb chroot/var/cache/apt/archives
 	fi
 
-	Echo_breakage "Running debootstrap... "
+	Echo_breakage "Running debootstrap (download-only)... "
+	debootstrap ${DEBOOTSTRAP_OPTIONS} --download-only "${LB_PARENT_DISTRIBUTION_CHROOT}" chroot "${LB_PARENT_MIRROR_BOOTSTRAP}" ${DEBOOTSTRAP_SCRIPT}
 
-	# Run appropriate bootstrap, i.e. foreign or regular bootstrap
-	if [ "${LB_BOOTSTRAP_QEMU_ARCHITECTURES}" = "${LB_ARCHITECTURES}" ]; then
+	# Removing old cache
+	rm -f cache/packages.bootstrap/*.deb
 
-		if [ -n "${LB_BOOTSTRAP_QEMU_EXCLUDE}" ]
-		then
-			DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS} --exclude=$(echo ${LB_BOOTSTRAP_QEMU_EXCLUDE} | sed 's|  *|,|g')"
-		fi
-
-		Echo_message "Bootstrap will be foreign"
-		debootstrap ${DEBOOTSTRAP_OPTIONS} --foreign "${LB_PARENT_DISTRIBUTION_CHROOT}" chroot "${LB_PARENT_MIRROR_BOOTSTRAP}" ${DEBOOTSTRAP_SCRIPT}
-
-		Echo_message "Running debootstrap second stage under QEMU"
-		cp ${LB_BOOTSTRAP_QEMU_STATIC} chroot/usr/bin
-		Chroot chroot /bin/sh /debootstrap/debootstrap --second-stage ${FOREIGN_DEBOOTSTRAP_OPTIONS}
-	else
-		debootstrap ${DEBOOTSTRAP_OPTIONS} "${LB_PARENT_DISTRIBUTION_CHROOT}" chroot "${LB_PARENT_MIRROR_BOOTSTRAP}" ${DEBOOTSTRAP_SCRIPT}
-	fi
-
-	# Deconfiguring debootstrap configurations
-	rm -f chroot/etc/hosts
-
-	# Removing bootstrap cache
-	rm -f chroot/var/cache/apt/archives/*.deb
-
-	# Creating stage file
-	Create_stagefile .build/bootstrap
-else
-	Echo_error "Can't find program debootstrap (FIXME)"
-	exit 1
+	# Saving new cache
+	mkdir -p cache/packages.bootstrap
+	cp chroot/var/cache/apt/archives/*.deb cache/packages.bootstrap
 fi
+
+Echo_breakage "Running debootstrap... "
+
+# Run appropriate bootstrap, i.e. foreign or regular bootstrap
+if [ "${LB_BOOTSTRAP_QEMU_ARCHITECTURES}" = "${LB_ARCHITECTURES}" ]; then
+
+	if [ -n "${LB_BOOTSTRAP_QEMU_EXCLUDE}" ]
+	then
+		DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS} --exclude=$(echo ${LB_BOOTSTRAP_QEMU_EXCLUDE} | sed 's|  *|,|g')"
+	fi
+
+	Echo_message "Bootstrap will be foreign"
+	debootstrap ${DEBOOTSTRAP_OPTIONS} --foreign "${LB_PARENT_DISTRIBUTION_CHROOT}" chroot "${LB_PARENT_MIRROR_BOOTSTRAP}" ${DEBOOTSTRAP_SCRIPT}
+
+	Echo_message "Running debootstrap second stage under QEMU"
+	cp ${LB_BOOTSTRAP_QEMU_STATIC} chroot/usr/bin
+	Chroot chroot /bin/sh /debootstrap/debootstrap --second-stage ${FOREIGN_DEBOOTSTRAP_OPTIONS}
+else
+	debootstrap ${DEBOOTSTRAP_OPTIONS} "${LB_PARENT_DISTRIBUTION_CHROOT}" chroot "${LB_PARENT_MIRROR_BOOTSTRAP}" ${DEBOOTSTRAP_SCRIPT}
+fi
+
+# Deconfiguring debootstrap configurations
+rm -f chroot/etc/hosts
+
+# Removing bootstrap cache
+rm -f chroot/var/cache/apt/archives/*.deb
+
+# Creating stage file
+Create_stagefile .build/bootstrap
