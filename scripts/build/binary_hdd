@@ -56,9 +56,7 @@ Check_package chroot /sbin/parted parted
 Check_package host /sbin/fdisk fdisk
 Check_package host /sbin/losetup mount
 
-echo "${LB_BOOTLOADERS}" | \
-while IFS="," read -r BOOTLOADER
-do
+for BOOTLOADER in $(echo "${LB_BOOTLOADERS}" | tr "," "\n"); do
 	case "${BOOTLOADER}" in
 		grub)
 			Check_package chroot /usr/sbin/grub grub
