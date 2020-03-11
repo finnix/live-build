@@ -273,22 +273,6 @@ Set_config_defaults ()
 			;;
 	esac
 
-	# Setting fdisk
-	if [ -z "${LB_FDISK}" ] || [ ! -x "${LB_FDISK}" ]
-	then
-		# Workaround for gnu-fdisk divertion
-		# (gnu-fdisk is buggy, #445304).
-		if [ -x /sbin/fdisk.distrib ]
-		then
-			LB_FDISK="fdisk.distrib"
-		elif [ -x /sbin/fdisk ]
-		then
-			LB_FDISK="fdisk"
-		else
-			Echo_error "Can't process file /sbin/fdisk"
-		fi
-	fi
-
 	# Setting losetup
 	if [ -z "${LB_LOSETUP}" ] || [ "${LB_LOSETUP}" != "/sbin/losetup.orig" ]
 	then

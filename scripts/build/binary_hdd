@@ -53,6 +53,7 @@ esac
 
 Check_package chroot /usr/share/doc/mtools mtools
 Check_package chroot /sbin/parted parted
+Check_package host /sbin/fdisk fdisk
 
 echo "${LB_BOOTLOADERS}" | \
 while IFS="," read -r BOOTLOADER

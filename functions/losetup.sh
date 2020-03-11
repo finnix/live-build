@@ -42,7 +42,7 @@ Losetup ()
 	PARTITION="${3:-1}"
 
 	${LB_LOSETUP} --read-only --partscan "${DEVICE}" "${FILE}"
-	FDISK_OUT="$(${LB_FDISK} -l -u ${DEVICE} 2>&1)"
+	FDISK_OUT="$(fdisk -l -u ${DEVICE} 2>&1)"
 	Lodetach "${DEVICE}"
 
 	LOOPDEVICE="$(echo ${DEVICE}p${PARTITION})"
