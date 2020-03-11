@@ -41,6 +41,15 @@ Create_lockfile .lock
 Check_architectures amd64 i386 arm64
 Check_crossarchitectures
 
+# Setting destination directory
+case "${LIVE_IMAGE_TYPE}" in
+	hdd*|netboot)
+		Echo_warning "Bootloader in this image type not yet supported by live-build."
+		Echo_error "This would produce a not bootable image, aborting (FIXME)."
+		exit 1
+		;;
+esac
+
 # Checking depends
 case "${LB_ARCHITECTURES}" in
 	amd64|i386)
@@ -105,15 +114,6 @@ case "${LB_UEFI_SECURE_BOOT}" in
 		;;
 esac
 _LB_PACKAGES="${_PRE_SB_PACKAGES}"
-
-# Setting destination directory
-case "${LIVE_IMAGE_TYPE}" in
-	hdd*|netboot)
-		Echo_warning "Bootloader in this image type not yet supported by live-build."
-		Echo_error "This would produce a not bootable image, aborting (FIXME)."
-		exit 1
-		;;
-esac
 
 # Restoring cache
 Restore_package_cache binary
