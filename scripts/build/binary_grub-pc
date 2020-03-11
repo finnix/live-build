@@ -54,7 +54,7 @@ Install_package
 case "${LIVE_IMAGE_TYPE}" in
 	hdd*|netboot)
 		Echo_warning "Bootloader in this image type not yet supported by live-build."
-		Echo_warning "This would produce a not bootable image, aborting (FIXME)."
+		Echo_error "This would produce a not bootable image, aborting (FIXME)."
 		exit 1
 		;;
 esac
