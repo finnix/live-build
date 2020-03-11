@@ -75,5 +75,9 @@ else
 	exit 1
 fi
 
-Echo "[%s] %s" "$(date +'%F %T')" "lb ${COMMAND} $(echo ${@})"
+_CMD_LABEL="lb ${COMMAND}"
+if [ "${_COLOR_OUT}" = "true" ]; then
+	_CMD_LABEL="${CYAN}${_CMD_LABEL}${NO_COLOR}"
+fi
+Echo "[%s] ${_CMD_LABEL} %s" "$(date +'%F %T')" "$(echo ${@})"
 ${ENV} exec "${SCRIPT}" "${@}"
