@@ -296,8 +296,12 @@ Set_config_defaults ()
 	esac
 
 	# Setting live build options
+	if [ -t 1 ] && [ -t 2 ]; then
+		_COLOR="${_COLOR:-true}"
+	else
+		_COLOR="${_COLOR:-false}"
+	fi
 	_BREAKPOINTS="${_BREAKPOINTS:-false}"
-	_COLOR="${_COLOR:-false}"
 	_DEBUG="${_DEBUG:-false}"
 	_FORCE="${_FORCE:-false}"
 	_QUIET="${_QUIET:-false}"
