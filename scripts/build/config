@@ -106,6 +106,7 @@ USAGE="${PROGRAM}   [--apt apt|aptitude]\n\
 \t    [--net-root-path PATH]\n\
 \t    [--net-root-server IP|HOSTNAME]\n\
 \t    [--net-tarball true|false]\n\
+\t    [--no-color]\n\
 \t    [--onie true|false]\n\
 \t    [--onie-kernel-cmdline \"OPTION1 OPTION2\"]\n\
 \t    [--parent-archive-areas ARCHIVE_AREA|\"ARCHIVE_AREAS\"]\n\
@@ -157,7 +158,7 @@ Local_arguments ()
 		iso-volume:,jffs2-eraseblock:,memtest:,net-root-filesystem:,net-root-mountoptions:,
 		net-root-path:,net-root-server:,net-cow-filesystem:,net-cow-mountoptions:,net-cow-path:,
 		net-cow-server:,net-tarball:,onie:,onie-kernel-cmdline:,firmware-binary:,firmware-chroot:,swap-file-path:,swap-file-size:,
-		loadlin:,win32-loader:,source:,source-images:,breakpoints,conffile:,color,debug,force,
+		loadlin:,win32-loader:,source:,source-images:,breakpoints,conffile:,color,no-color,debug,force,
 		help,ignore-system-defaults,quiet,usage,verbose,version,bootstrap-qemu-static:,bootstrap-qemu-arch:,
 		uefi-secure-boot:,
 		bootstrap-qemu-exclude:"
@@ -774,6 +775,11 @@ Local_arguments ()
 
 			--color)
 				_COLOR="true"
+				shift
+				;;
+
+			--no-color)
+				_COLOR="false"
 				shift
 				;;
 

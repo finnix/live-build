@@ -186,6 +186,8 @@
 .br
 	[\fB\-\-net\-tarball\fR true|false]
 .br
+	[\fB\-\-no\-color]
+.br
 	[\fB\-\-onie\fR true|false]
 .br
 	[\fB\-\-onie\-kernel\-cmdline\fR \fI"OPTION1 OPTION2"\fR]
@@ -434,6 +436,8 @@ sets the file path that will be configured in the bootloader configuration for y
 sets the IP or hostname that will be configured in the bootloader configuration for the root filesystem of your netboot image. This defaults to 192.168.1.1.
 .IP "\fB\-\-net\-tarball\fR true|false" 4
 defines if a compressed tarball should be created. Disabling this options leads to no tarball at all, the plain binary directory is considered the output in this case. Default is true.
+.IP "\fB\-\-no\-color\fR" 4
+turns off color in the messages.
 .IP "\fB\-\-onie\fR true|false" 4
 defines if an ONIE.bin image is generated. ONIE binaries can be loaded by supported systems, and will in turn boot the live image. Note that ISO or hybrid-iso are the only formats supported. For more information visit <\fIhttp://onie.org/\fR>. Default is false.
 .IP "\fB\-\-onie\-kernel\-cmdline\fR \fI""OPTION1 OPTION2""\fR" 4
