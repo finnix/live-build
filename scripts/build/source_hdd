@@ -49,6 +49,7 @@ Create_lockfile .lock
 Check_package chroot /sbin/mkdosfs dosfstools
 Check_package chroot /sbin/parted parted
 Check_package host /sbin/fdisk fdisk
+Check_package host /sbin/losetup mount
 
 # Installing depends
 Install_package
@@ -64,7 +65,7 @@ DU_DIM="$(du -ms source | cut -f1)"
 REAL_DIM="$(Calculate_partition_size ${DU_DIM} ${LB_BINARY_FILESYSTEM})"
 dd if=/dev/zero of=${LIVE_IMAGE_NAME}-source.img bs=1024k count=0 seek=${REAL_DIM}
 MAKEDEV=false
-FREELO="$(${LB_LOSETUP} -f)"
+FREELO="$(losetup -f)"
 if [ ! -b chroot/${FREELO} ]
 then
 	MAKEDEV=true
@@ -136,7 +137,7 @@ rmdir source.tmp
 Lodetach ${FREELO}
 Echo_warning "!!! The above error/warning messages can be ignored !!!"
 
-FREELO="$(${LB_LOSETUP} -f)"
+FREELO="$(losetup -f)"
 Losetup "$FREELO" ${LIVE_IMAGE_NAME}-source.img 0
 Chroot chroot "parted -s ${FREELO} set 1 lba off" || true
 Lodetach ${FREELO}

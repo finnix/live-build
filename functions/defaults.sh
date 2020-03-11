@@ -273,22 +273,6 @@ Set_config_defaults ()
 			;;
 	esac
 
-	# Setting losetup
-	if [ -z "${LB_LOSETUP}" ] || [ "${LB_LOSETUP}" != "/sbin/losetup.orig" ]
-	then
-		# Workaround for loop-aes-utils divertion
-		# (loop-aes-utils' losetup lacks features).
-		if [ -x /sbin/losetup.orig ]
-		then
-			LB_LOSETUP="losetup.orig"
-		elif [ -x /sbin/losetup ]
-		then
-			LB_LOSETUP="losetup"
-		else
-			Echo_error "Can't process file /sbin/losetup"
-		fi
-	fi
-
 	if [ "${LB_ARCHITECTURES}" = "i386" ] && [ "${CURRENT_IMAGE_ARCHITECTURE}" = "amd64" ]
 	then
 		# Use linux32 when building amd64 images on i386

@@ -89,7 +89,6 @@ USAGE="${PROGRAM}   [--apt apt|aptitude]\n\
 \t    [-k|--linux-flavours FLAVOUR|\"FLAVOURS\"]\n\
 \t    [--linux-packages \"PACKAGES\"]\n\
 \t    [--loadlin true|false]\n\
-\t    [--losetup losetup|losetup.orig]\n\
 \t    [--memtest memtest86+|memtest86|none]\n\
 \t    [--mirror-binary URL]\n\
 \t    [--mirror-binary-security URL]\n\
@@ -140,7 +139,7 @@ Local_arguments ()
 	LONG_OPTIONS="apt:,apt-ftp-proxy:,apt-http-proxy:,apt-options:,aptitude-options:,debootstrap-options:,debootstrap-script:,
 		apt-pipeline:,apt-recommends:,apt-secure:,apt-source-archives:,cache:,cache-indices:,cache-packages:,
 		cache-stages:,debconf-frontend:,debconf-priority:,dump,
-		initramfs:,initramfs-compression:,initsystem:,losetup:,mode:,system:,tasksel:,
+		initramfs:,initramfs-compression:,initsystem:,mode:,system:,tasksel:,
 		architectures:,clean,
 		distribution:,parent-distribution:,parent-debian-installer-distribution:,
 		distribution-chroot:,parent-distribution-chroot:,
@@ -334,7 +333,7 @@ Local_arguments ()
 				;;
 
 			--losetup)
-				LB_LOSETUP="${2}"
+				Echo_warning "--losetup is an obsolete option"
 				shift 2
 				;;
 
@@ -1009,10 +1008,6 @@ LB_INITRAMFS_COMPRESSION="${LB_INITRAMFS_COMPRESSION}"
 # \$LB_INITSYSTEM: set init system
 # (Default: ${LB_INITSYSTEM})
 LB_INITSYSTEM="${LB_INITSYSTEM}"
-
-# \$LB_LOSETUP: set losetup program
-# (Default: autodetected)
-LB_LOSETUP="${LB_LOSETUP}"
 
 # \$LB_MODE: set distribution mode
 # (Default: ${LB_MODE})
