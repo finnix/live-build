@@ -48,7 +48,7 @@ Echo_message ()
 		STRING="${1}"
 		shift
 
-		local PREFIX="${BOLD}P${NO_COLOR}"
+		local PREFIX="${PURPLE}P${NO_COLOR}"
 		if [ "${_COLOR}" = "false" ]; then
 			PREFIX="P"
 		fi
