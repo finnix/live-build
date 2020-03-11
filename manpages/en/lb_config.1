@@ -1,4 +1,4 @@
-.TH LIVE\-BUILD 1 2017\-08\-29 1:20170829 "Live Systems Project"
+.TH LIVE\-BUILD 1 2017\-08\-29 1:20170829 "Debian Live Project"
 
 .SH NAME
 \fBlb_config\fR \- Create config directory
@@ -243,11 +243,11 @@
 	[\fB\-\-zsync\fR true|false]
 
 .SH DESCRIPTION
-\fBlb config\fR is a high\-level command (porcelain) of \fIlive\-build\fR(7), the live systems tool suite.
+\fBlb config\fR is a high\-level command (porcelain) of \fIlive\-build\fR(7), the Debian Live tool suite.
 .PP
 \fBlb config\fR populates the configuration directory for live\-build. This directory is named 'config' and is created in the current directory where \fBlb config\fR was executed.
 .PP
-Note: \fBlb config\fR tries to be smart and sets defaults for some options depending on the setting of other options. This means that when generating a new configuration, you should call \fBlb config\fR only once with all options specified. Calling it several times with only a subset of the options each can result in non working configurations. This is also caused by the fact that \fBlb config\fR called with one option only changes that option, and leaves everything else as is unless it is not defined. However, \fBlb config\fR does warn about known impossible or likely impossible combinations that would lead to non working live systems. If unsure, remove config/{binary,build,bootstrap,chroot,common,source} and call \fBlb config\fR again.
+Note: \fBlb config\fR tries to be smart and sets defaults for some options depending on the setting of other options. This means that when generating a new configuration, you should call \fBlb config\fR only once with all options specified. Calling it several times with only a subset of the options each can result in non working configurations. This is also caused by the fact that \fBlb config\fR called with one option only changes that option, and leaves everything else as is unless it is not defined. However, \fBlb config\fR does warn about known impossible or likely impossible combinations that would lead to non working Debian Live. If unsure, remove config/{binary,build,bootstrap,chroot,common,source} and call \fBlb config\fR again.
 
 .SH OPTIONS
 In addition to its specific options \fBlb config\fR understands all generic live\-build options. See \fIlive\-build\fR(7) for a complete list of all generic live\-build options.
@@ -384,7 +384,7 @@ sets the APPLICATION field in the header of a resulting CD/DVD image and default
 .IP "\fB\-\-iso\-preparer\fR \fINAME\fR" 4
 sets the PREPARER field in the header of a resulting CD/DVD image. By default this is set to "live\-build \fIVERSION\fR; https://salsa.debian.org/live-team/live-build", where VERSION is expanded to the version of live\-build that was used to build the image.
 .IP "\fB\-\-iso\-publisher\fR \fINAME\fR" 4
-sets the PUBLISHED field in the header of a resulting CD/DVD image. By default, this is set to 'Live Systems project; https://wiki.debian.org/DebianLive; debian\-live@lists.debian.org'. Remember to change this to the appropriate value when distributing custom and unofficial images.
+sets the PUBLISHED field in the header of a resulting CD/DVD image. By default, this is set to 'Debian Live project; https://wiki.debian.org/DebianLive; debian\-live@lists.debian.org'. Remember to change this to the appropriate value when distributing custom and unofficial images.
 .IP "\fB\-\-iso\-volume\fR \fINAME\fR" 4
 sets the VOLUME field in the header of a resulting CD/DVD and defaults to '(\fIMODE\fR) (\fIDISTRIBUTION\fR) (\fIDATE\fR)' whereas MODE is expanded to the name of the mode in use, DISTRIBUTION the distribution name, and DATE with the current date and time of the generation.
 .IP "\fB\-\-isohybrid\-options\fR \fIOPTION\fR|""\fIOPTIONS\fR""" 4
@@ -518,10 +518,10 @@ An optional, global configuration file for \fBlb config\fR variables. It is usef
 This program is a part of live\-build.
 
 .SH HOMEPAGE
-More information about live\-build and the Live Systems project can be found on the homepage at <\fIhttps://wiki.debian.org/DebianLive\fR>.
+More information about live\-build and the Debian Live project can be found on the homepage at <\fIhttps://wiki.debian.org/DebianLive\fR>.
 
 .SH BUGS
-Bugs can be reported by submitting a bugreport for the live\-build package in the Bug Tracking System at <\fIhttp://bugs.debian.org/\fR> or by writing a mail to the Live Systems mailing list at <\fIdebian-live@lists.debian.org\fR>.
+Bugs can be reported by submitting a bugreport for the live\-build package in the Bug Tracking System at <\fIhttp://bugs.debian.org/\fR> or by writing a mail to the Debian Live mailing list at <\fIdebian-live@lists.debian.org\fR>.
 
 .SH AUTHOR
 live\-build was originally written by Daniel Baumann <\fImail@daniel-baumann.ch\fR>. Since 2016 development has been continued by the Debian Live team.

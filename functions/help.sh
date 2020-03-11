@@ -29,6 +29,6 @@ Help ()
 		printf "${HELP}\n\n"
 	fi
 
-	echo "Report bugs to the Live Systems project <https://wiki.debian.org/DebianLive>."
+	echo "Report bugs to the Debian Live project <https://wiki.debian.org/DebianLive>."
 	exit 0
 }
