@@ -1,6 +1,7 @@
 #! /bin/sh
 set -e
 
+# Copyright (C) 2016-2020 The Debian Live team
 # Copyright (C) 2010, 2011 Canonical Ltd.
 # Author: Colin Watson <cjwatson@ubuntu.com>
 #

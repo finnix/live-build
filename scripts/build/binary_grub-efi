@@ -1,6 +1,7 @@
 #!/bin/sh
 
 ## live-build(7) - System Build Scripts
+## Copyright (C) 2016-2020 The Debian Live team
 ## Copyright (C) 2016 Adrian Gibanel Lopez <adrian15sgd@gmail.com>
 ##
 ## This program comes with ABSOLUTELY NO WARRANTY; for details see COPYING.
