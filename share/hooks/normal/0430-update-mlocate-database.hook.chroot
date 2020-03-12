@@ -8,7 +8,7 @@ set -e
 # means that if the live system is later installed to a hard disk then less
 # work will be required after installation.
 
-if command -v updatedb.mlocate >/dev/null
+if [ $(which updatedb.mlocate) ]
 then
 	updatedb.mlocate
 fi

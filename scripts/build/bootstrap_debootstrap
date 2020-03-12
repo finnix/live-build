@@ -21,7 +21,7 @@ USAGE="${PROGRAM} [--force]"
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
-if ! command -v debootstrap >/dev/null
+if [ ! $(which debootstrap) ]
 then
 	Echo_error "debootstrap - command not found"
 	Echo_verbose "debootstrap can be obtained from http://ftp.debian.org/debian/pool/main/d/debootstrap/"

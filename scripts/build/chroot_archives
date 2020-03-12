@@ -238,7 +238,7 @@ case "${1}" in
 				cp -f cache/indices.bootstrap/*Release* chroot/var/lib/apt/lists
 			fi
 
-			if [ "${LB_APT}" = "aptitude" ] && ! command -v aptitude >/dev/null
+			if [ "${LB_APT}" = "aptitude" ] && [ ! $(which aptitude) ]
 			then
 				Chroot chroot "apt-get ${APT_OPTIONS} update"
 				Chroot chroot "apt-get ${APT_OPTIONS} install aptitude"

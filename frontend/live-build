@@ -23,7 +23,7 @@
 
 set -e
 
-if command -v man >/dev/null
+if [ $(which man) ]
 then
 	man live-build
 else
