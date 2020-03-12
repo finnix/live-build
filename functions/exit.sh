@@ -11,7 +11,7 @@
 
 Exit ()
 {
-	VALUE=$?
+	local VALUE=$1
 
 	if [ "${_DEBUG}" = "true" ]
 	then
@@ -63,8 +63,25 @@ Exit ()
 	return ${VALUE}
 }
 
+Exit_exit ()
+{
+	local VALUE=$?
+	if [ "${VALUE}" -ne 0 ]; then
+		Echo_error "An unexpected failure occurred, exiting..."
+	fi
+	Exit "${VALUE}"
+}
+
+Exit_other ()
+{
+	local VALUE=$?
+	Echo_warning "Unexpected early exit caught, attempting cleanup..."
+	Exit "${VALUE}"
+}
+
 Setup_clean_exit ()
 {
 	Echo_message "Setting up clean exit handler"
-	trap 'Exit' EXIT HUP INT QUIT TERM
+	trap 'Exit_other' HUP INT QUIT TERM
+	trap 'Exit_exit' EXIT
 }
