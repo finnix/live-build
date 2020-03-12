@@ -265,4 +265,4 @@ Save_package_cache binary
 Remove_package
 
 # Creating stage file
-Create_stagefile .build/binary_grub
+Create_stagefile .build/binary_grub-legacy

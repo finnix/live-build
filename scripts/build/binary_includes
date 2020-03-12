@@ -27,7 +27,7 @@ Echo_message "Begin copying binary includes..."
 Require_stagefile .build/config .build/bootstrap
 
 # Checking stage file
-Check_stagefile .build/includes.binary
+Check_stagefile .build/binary_includes
 
 # Checking lock file
 Check_lockfile .lock

@@ -34,7 +34,7 @@ Require_stagefile .build/config .build/bootstrap
 Echo_message "Configuring file /etc/apt/sources.list"
 
 # Checking stage file
-Check_stagefile .build/chroot_archives
+Check_stagefile .build/bootstrap_archives
 
 # Checking lock file
 Check_lockfile .lock
