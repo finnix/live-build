@@ -78,7 +78,7 @@ then
 
 	# Remove dependency
 	Remove_package
-
-	# Creating stage file
-	Create_stagefile .build/chroot_preseed
 fi
+
+# Creating stage file
+Create_stagefile .build/chroot_preseed

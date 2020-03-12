@@ -62,7 +62,7 @@ then
 			cat "${_FILE}" >> "${_DIRECTORY}/preseed.cfg"
 		fi
 	done
-
-	# Creating stage file
-	Create_stagefile .build/installer_preseed
 fi
+
+# Creating stage file
+Create_stagefile .build/installer_preseed

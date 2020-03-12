@@ -85,12 +85,11 @@ cat > binary/install/gtk/install.bat << EOF
 EOF
 
 		fi
-
-		# Creating stage file
-		Create_stagefile .build/binary_loadlin
 		;;
-
 	*)
 		Echo_warning "loadlin inclusion is set to true but not compatible with your architecture, ignoring."
 		;;
 esac
+
+# Creating stage file
+Create_stagefile .build/binary_loadlin

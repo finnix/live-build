@@ -45,7 +45,7 @@ then
 	Echo_message "Extracting the tarball in the chroot..."
 	Chroot chroot "tar -xvf includes.chroot.tar --no-same-owner --keep-directory-symlink --overwrite"
 	rm chroot/includes.chroot.tar
-
-	# Creating stage file
-	Create_stagefile .build/includes.chroot
 fi
+
+# Creating stage file
+Create_stagefile .build/includes.chroot

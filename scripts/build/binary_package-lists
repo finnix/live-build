@@ -175,7 +175,7 @@ then
 
 	# Saving cache
 	Save_package_cache chroot
-
-	# Creating stage file
-	Create_stagefile .build/binary_package-lists
 fi
+
+# Creating stage file
+Create_stagefile .build/binary_package-lists
