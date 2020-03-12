@@ -11,7 +11,7 @@
 
 set -e
 
-if [ ! $(which grep-aptavail) ]
+if ! command -v grep-aptavail >/dev/null
 then
 	echo "E: program grep-aptavail not found!"
 

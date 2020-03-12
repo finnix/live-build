@@ -11,7 +11,7 @@
 
 Man ()
 {
-	if [ $(which man) ]
+	if command -v man >/dev/null
 	then
 		man $(basename ${0})
 		exit 0

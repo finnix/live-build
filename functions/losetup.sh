@@ -22,7 +22,7 @@ Lodetach ()
 	# Changes to block devices result in uevents which trigger rules which in
 	# turn access the loop device (ex. udisks-part-id, blkid) which can cause
 	# a race condition. We call 'udevadm settle' to help avoid this.
-	if [ $(which udevadm) ]
+	if command -v udevadm >/dev/null
 	then
 		udevadm settle
 	fi

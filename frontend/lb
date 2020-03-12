@@ -21,7 +21,7 @@ USAGE="lb {clean|config|build}"
 
 case "${1}" in
 	-h|--help)
-		if [ $(which man) ]
+		if command -v man >/dev/null
 		then
 			man lb
 			exit 0
@@ -76,7 +76,7 @@ case "${1}" in
 		then
 			# User has live-build installed in the system
 			SCRIPT=/usr/lib/live/build/"${COMMAND}"
-		elif [ $(which "${COMMAND}") ]
+		elif command -v "${COMMAND}" >/dev/null
 		then
 			# User has live-build commands in path
 			SCRIPT="${COMMAND}"

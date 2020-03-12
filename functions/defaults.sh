@@ -14,7 +14,7 @@ New_configuration ()
 	## Runtime
 
 	# Image: Architecture
-	if [ $(which dpkg) ]
+	if command -v dpkg >/dev/null
 	then
 		CURRENT_IMAGE_ARCHITECTURE="$(dpkg --print-architecture)"
 	else
@@ -94,7 +94,7 @@ Set_config_defaults ()
 	LB_SYSTEM="${LB_SYSTEM:-live}"
 
 	# Setting mode (currently: debian, progress-linux)
-	if [ $(which lsb_release) ]
+	if command -v lsb_release >/dev/null
 	then
 		_DISTRIBUTOR="$(lsb_release -is | tr "[A-Z]" "[a-z]")"
 
@@ -802,7 +802,7 @@ Check_config_defaults ()
 {
 	case "${LB_BINARY_FILESYSTEM}" in
 		ntfs)
-			if [ ! $(which ntfs-3g) ]
+			if ! command -v ntfs-3g >/dev/null
 			then
 				Echo_error "Using ntfs as the binary filesystem is currently only supported if ntfs-3g is installed on the host system."
 
