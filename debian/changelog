@@ -5,7 +5,7 @@ live-build (1:20191222) UNRELEASED; urgency=medium
   * Standardize on having the GUI installation first in boot menus
 
   [ David Hewitt ]
-  * binary_syslinux: Acommodate LB_INITRAMFS not live-boot
+  * binary_syslinux: Accommodate LB_INITRAMFS not live-boot
 
   [ Lyndon Brown ]
   * remove redundant files (Closes: #952834, #952835)
