@@ -38,10 +38,11 @@ esac
 Echo_message "Begin building binary iso image..."
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
 
 # Checking stage file
-Check_stagefile .build/binary_iso
+STAGE_FILE="binary_iso"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -242,4 +243,4 @@ Save_package_cache binary
 Remove_package
 
 # Creating stage file
-Create_stagefile .build/binary_iso
+Create_stagefile "${STAGE_FILE}"

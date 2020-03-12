@@ -28,10 +28,11 @@ Init_config_data "${@}"
 Echo_message "Begin installing loopback.cfg..."
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
 
 # Checking stage file
-Check_stagefile .build/binary_loopback_cfg
+STAGE_FILE="binary_loopback_cfg"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -301,4 +302,4 @@ sed -i -e 's|\ $||g' binary/boot/grub/*.cfg
 echo "source /boot/grub/grub.cfg" > binary/boot/grub/loopback.cfg
 
 # Creating stage file
-Create_stagefile .build/binary_loopback_cfg
+Create_stagefile "${STAGE_FILE}"

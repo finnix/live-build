@@ -11,8 +11,8 @@
 
 Check_stagefile ()
 {
-	FILE="${1}"
-	NAME="$(basename ${1})"
+	FILE=".build/${1}"
+	NAME="$(basename ${FILE})"
 
 	# Checking stage file
 	if [ -f "${FILE}" ]
@@ -32,14 +32,19 @@ Check_stagefile ()
 
 Create_stagefile ()
 {
-	FILE="${1}"
-	DIRECTORY="$(dirname ${1})"
+	FILE=".build/${1}"
+	DIRECTORY="$(dirname ${FILE})"
 
 	# Creating stage directory
 	mkdir -p "${DIRECTORY}"
 
 	# Creating stage file
 	touch "${FILE}"
+}
+
+Remove_stagefile ()
+{
+	rm -f ".build/${1}"
 }
 
 Require_stagefile ()
@@ -55,6 +60,7 @@ Require_stagefile ()
 	local CONTINUE=false
 	for FILE in ${FILES}
 	do
+		FILE=".build/${FILE}"
 		# Find at least one of the required stages
 		if [ -f ${FILE} ]
 		then

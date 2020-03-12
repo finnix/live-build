@@ -22,14 +22,16 @@ USAGE="${PROGRAM} {install|remove} [--force]"
 Init_config_data "${@}"
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
+
+STAGE_FILE="chroot_proc"
 
 case "${1}" in
 	install)
 		Echo_message "Begin mounting /proc..."
 
 		# Checking stage file
-		Check_stagefile .build/chroot_proc
+		Check_stagefile "${STAGE_FILE}"
 
 		# Acquire lock file
 		Acquire_lockfile
@@ -41,7 +43,7 @@ case "${1}" in
 		mount -t proc -o x-gvfs-hide proc-live chroot/proc
 
 		# Creating stage file
-		Create_stagefile .build/chroot_proc
+		Create_stagefile "${STAGE_FILE}"
 		;;
 
 	remove)
@@ -63,7 +65,7 @@ case "${1}" in
 		fi
 
 		# Removing stage file
-		rm -f .build/chroot_proc
+		Remove_stagefile "${STAGE_FILE}"
 		;;
 
 	*)

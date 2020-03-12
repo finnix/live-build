@@ -22,14 +22,16 @@ USAGE="${PROGRAM} {install|remove} [--force]"
 Init_config_data "${@}"
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
+
+STAGE_FILE="chroot_sysfs"
 
 case "${1}" in
 	install)
 		Echo_message "Begin mounting /sys..."
 
 		# Checking stage file
-		Check_stagefile .build/chroot_sysfs
+		Check_stagefile "${STAGE_FILE}"
 
 		# Acquire lock file
 		Acquire_lockfile
@@ -41,7 +43,7 @@ case "${1}" in
 		mount -t sysfs -o x-gvfs-hide sysfs-live chroot/sys
 
 		# Creating stage file
-		Create_stagefile .build/chroot_sysfs
+		Create_stagefile "${STAGE_FILE}"
 		;;
 
 	remove)
@@ -57,7 +59,7 @@ case "${1}" in
 		fi
 
 		# Removing stage file
-		rm -f .build/chroot_sysfs
+		Remove_stagefile "${STAGE_FILE}"
 		;;
 
 	*)

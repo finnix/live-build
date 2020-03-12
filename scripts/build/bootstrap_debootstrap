@@ -37,8 +37,10 @@ Echo_message "Begin bootstrapping system..."
 Check_package chroot bin/debootstrap debootstrap
 
 # Checking stage file
-Check_stagefile .build/bootstrap
-Check_stagefile .build/bootstrap_cache.restore
+Check_stagefile bootstrap
+# Note, this must match that used in `bootstrap_cache`
+STAGE_FILE="bootstrap_cache.restore"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -118,4 +120,4 @@ rm -f chroot/etc/hosts
 rm -f chroot/var/cache/apt/archives/*.deb
 
 # Creating stage file
-Create_stagefile .build/bootstrap
+Create_stagefile bootstrap

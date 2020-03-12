@@ -24,10 +24,11 @@ Init_config_data "${@}"
 Echo_message "Begin copying binary includes..."
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
 
 # Checking stage file
-Check_stagefile .build/binary_includes
+STAGE_FILE="binary_includes"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -48,4 +49,4 @@ then
 fi
 
 # Creating stage file
-Create_stagefile .build/binary_includes
+Create_stagefile "${STAGE_FILE}"

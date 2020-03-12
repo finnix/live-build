@@ -34,10 +34,11 @@ fi
 Echo_message "Begin building source hdd image..."
 
 # Requiring stage file
-Require_stagefile .build/config .build/source_debian
+Require_stagefile config source_debian
 
 # Checking stage file
-Check_stagefile .build/source_hdd
+STAGE_FILE="source_hdd"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -148,4 +149,4 @@ fi
 Remove_package
 
 # Creating stage file
-Create_stagefile .build/source_hdd
+Create_stagefile "${STAGE_FILE}"

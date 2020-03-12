@@ -34,10 +34,11 @@ fi
 Echo_message "Begin building zsync control files..."
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
 
 # Checking stage file
-Check_stagefile .build/binary_zsync
+STAGE_FILE="binary_zsync"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -121,4 +122,4 @@ Save_package_cache binary
 Remove_package
 
 # Creating stage file
-Create_stagefile .build/binary_zsync
+Create_stagefile "${STAGE_FILE}"

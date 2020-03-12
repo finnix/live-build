@@ -29,14 +29,16 @@ fi
 Init_config_data "${@}"
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
+
+STAGE_FILE="chroot_archives"
 
 case "${1}" in
 	install)
 		Echo_message "Configuring file /etc/apt/sources.list"
 
 		# Checking stage file
-		Check_stagefile .build/chroot_archives
+		Check_stagefile "${STAGE_FILE}"
 
 		# Acquire lock file
 		Acquire_lockfile
@@ -312,7 +314,7 @@ case "${1}" in
 		Save_package_cache chroot
 
 		# Creating stage file
-		Create_stagefile .build/chroot_archives
+		Create_stagefile "${STAGE_FILE}"
 		;;
 
 	remove)
@@ -436,7 +438,7 @@ case "${1}" in
 		rm -f chroot/root/packages.chroot
 
 		# Removing stage file
-		rm -f .build/chroot_archives
+		Remove_stagefile "${STAGE_FILE}"
 		;;
 
 	*)

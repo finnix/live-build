@@ -24,10 +24,11 @@ Init_config_data "${@}"
 Echo_message "Begin building root filesystem image..."
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap .build/binary_chroot
+Require_stagefile config bootstrap binary_chroot
 
 # Checking stage file
-Check_stagefile .build/binary_rootfs
+STAGE_FILE="binary_rootfs"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -65,7 +66,7 @@ then
 	cp -a cache/binary_rootfs/filesystem.* binary/"${INITFS}"
 
 	# Creating stage file
-	Create_stagefile .build/binary_rootfs
+	Create_stagefile "${STAGE_FILE}"
 	exit 0
 fi
 
@@ -447,4 +448,4 @@ then
 fi
 
 # Creating stage file
-Create_stagefile .build/binary_rootfs
+Create_stagefile "${STAGE_FILE}"

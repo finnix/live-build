@@ -24,10 +24,11 @@ Init_config_data "${@}"
 Echo_message "Begin executing hooks..."
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
 
 # Checking stage file
-Check_stagefile .build/source_hooks
+STAGE_FILE="source_hooks"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -72,4 +73,4 @@ do
 done
 
 # Creating stage file
-Create_stagefile .build/source_hooks
+Create_stagefile "${STAGE_FILE}"

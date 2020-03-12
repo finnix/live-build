@@ -22,7 +22,9 @@ USAGE="${PROGRAM} {install|remove} [--force]"
 Init_config_data "${@}"
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
+
+STAGE_FILE="chroot_selinuxfs"
 
 case "${1}" in
 	install)
@@ -31,7 +33,7 @@ case "${1}" in
 			Echo_message "Begin mounting /sys/fs/selinux..."
 
 			# Checking stage file
-			Check_stagefile .build/chroot_selinuxfs
+			Check_stagefile "${STAGE_FILE}"
 
 			# Acquire lock file
 			Acquire_lockfile
@@ -43,7 +45,7 @@ case "${1}" in
 			mount -t selinuxfs -o x-gvfs-hide selinuxfs-live chroot/sys/fs/selinux
 
 			# Creating stage file
-			Create_stagefile .build/chroot_selinuxfs
+			Create_stagefile "${STAGE_FILE}"
 		fi
 		;;
 
@@ -60,7 +62,7 @@ case "${1}" in
 		fi
 
 		# Removing stage file
-		rm -f .build/chroot_selinuxfs
+		Remove_stagefile "${STAGE_FILE}"
 		;;
 
 	*)

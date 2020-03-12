@@ -22,14 +22,16 @@ USAGE="${PROGRAM} {install|remove} [--force]"
 Init_config_data "${@}"
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
+
+STAGE_FILE="chroot_hosts"
 
 case "${1}" in
 	install)
 		Echo_message "Configuring file /etc/hosts"
 
 		# Checking stage file
-		Check_stagefile .build/chroot_hosts
+		Check_stagefile "${STAGE_FILE}"
 
 		# Acquire lock file
 		Acquire_lockfile
@@ -55,7 +57,7 @@ EOF
 		fi
 
 		# Creating stage file
-		Create_stagefile .build/chroot_hosts
+		Create_stagefile "${STAGE_FILE}"
 		;;
 
 	remove)
@@ -79,7 +81,7 @@ EOF
 		fi
 
 		# Removing stage file
-		rm -f .build/chroot_hosts
+		Remove_stagefile "${STAGE_FILE}"
 		;;
 
 	*)

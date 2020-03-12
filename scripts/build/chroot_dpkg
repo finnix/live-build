@@ -22,14 +22,16 @@ USAGE="${PROGRAM} {install|remove} [--force]"
 Init_config_data "${@}"
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
+
+STAGE_FILE="chroot_dpkg"
 
 case "${1}" in
 	install)
 		Echo_message "Configuring file /sbin/start-stop-daemon"
 
 		# Checking stage file
-		Check_stagefile .build/chroot_dpkg
+		Check_stagefile "${STAGE_FILE}"
 
 		# Acquire lock file
 		Acquire_lockfile
@@ -56,7 +58,7 @@ EOF
 		ln -fs /bin/true chroot/usr/sbin/flash-kernel
 
 		# Creating stage file
-		Create_stagefile .build/chroot_dpkg
+		Create_stagefile "${STAGE_FILE}"
 		;;
 
 	remove)
@@ -82,7 +84,7 @@ EOF
 		rm -f chroot/etc/dpkg/dpkg.cfg.d/live-build
 
 		# Removing stage file
-		rm -f .build/chroot_dpkg
+		Remove_stagefile "${STAGE_FILE}"
 		;;
 
 	*)

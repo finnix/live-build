@@ -29,10 +29,11 @@ fi
 Echo_message "Begin creating manifest..."
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
 
 # Checking stage file
-Check_stagefile .build/binary_manifest
+STAGE_FILE="binary_manifest"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -59,4 +60,4 @@ cp chroot.packages.live ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.packages
 cp chroot.files ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.files
 
 # Creating stage file
-Create_stagefile .build/binary_manifest
+Create_stagefile "${STAGE_FILE}"

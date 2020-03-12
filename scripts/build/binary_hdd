@@ -29,10 +29,11 @@ fi
 Echo_message "Begin building binary hdd image..."
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap .build/chroot_proc
+Require_stagefile config bootstrap chroot_proc
 
 # Checking stage file
-Check_stagefile .build/binary_hdd
+STAGE_FILE="binary_hdd"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -354,4 +355,4 @@ Save_package_cache binary
 Remove_package
 
 # Creating stage file
-Create_stagefile .build/binary_hdd
+Create_stagefile "${STAGE_FILE}"

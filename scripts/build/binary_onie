@@ -42,10 +42,11 @@ esac
 Echo_message "Begin building onie binary..."
 
 # Requiring stage file
-Require_stagefile .build/config .build/binary_iso
+Require_stagefile config binary_iso
 
 # Checking stage file
-Check_stagefile .build/binary_onie
+STAGE_FILE="binary_onie"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -335,4 +336,4 @@ ls -la $(basename $output_file)
 Echo_message "onie-installer created..."
 
 # Creating stage file
-Create_stagefile .build/binary_onie
+Create_stagefile "${STAGE_FILE}"

@@ -38,10 +38,11 @@ esac
 Echo_message "Begin building source iso image..."
 
 # Requiring stage file
-Require_stagefile .build/config .build/source_debian
+Require_stagefile config source_debian
 
 # Checking stage file
-Check_stagefile .build/source_iso
+STAGE_FILE="source_iso"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -114,4 +115,4 @@ rm -f chroot/source.sh
 Remove_package
 
 # Creating stage file
-Create_stagefile .build/source_iso
+Create_stagefile "${STAGE_FILE}"

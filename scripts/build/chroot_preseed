@@ -24,10 +24,11 @@ Init_config_data "${@}"
 Echo_message "Begin executing local preseeds..."
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
 
 # Checking stage file
-Check_stagefile .build/chroot_preseed
+STAGE_FILE="chroot_preseed"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -78,4 +79,4 @@ then
 fi
 
 # Creating stage file
-Create_stagefile .build/chroot_preseed
+Create_stagefile "${STAGE_FILE}"

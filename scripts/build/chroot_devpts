@@ -22,14 +22,16 @@ USAGE="${PROGRAM} {install|remove} [--force]"
 Init_config_data "${@}"
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
+
+STAGE_FILE="chroot_devpts"
 
 case "${1}" in
 	install)
 		Echo_message "Begin mounting /dev/pts..."
 
 		# Checking stage file
-		Check_stagefile .build/chroot_devpts
+		Check_stagefile "${STAGE_FILE}"
 
 		# Acquire lock file
 		Acquire_lockfile
@@ -41,7 +43,7 @@ case "${1}" in
 		mount -t devpts -o gid=5,mode=620,x-gvfs-hide devpts-live chroot/dev/pts || true
 
 		# Creating stage file
-		Create_stagefile .build/chroot_devpts
+		Create_stagefile "${STAGE_FILE}"
 		;;
 
 	remove)
@@ -59,7 +61,7 @@ case "${1}" in
 		fi
 
 		# Removing stage file
-		rm -f .build/chroot_devpts
+		Remove_stagefile "${STAGE_FILE}"
 		;;
 
 	*)

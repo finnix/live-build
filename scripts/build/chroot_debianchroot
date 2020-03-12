@@ -22,14 +22,16 @@ USAGE="${PROGRAM} {install|remove} [--force]"
 Init_config_data "${@}"
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
+
+STAGE_FILE="chroot_debianchroot"
 
 case "${1}" in
 	install)
 		Echo_message "Configuring file /etc/debian_chroot"
 
 		# Checking stage file
-		Check_stagefile .build/chroot_debianchroot
+		Check_stagefile "${STAGE_FILE}"
 
 		# Acquire lock file
 		Acquire_lockfile
@@ -44,7 +46,7 @@ case "${1}" in
 		echo "live" > chroot/etc/debian_chroot
 
 		# Creating stage file
-		Create_stagefile .build/chroot_debianchroot
+		Create_stagefile "${STAGE_FILE}"
 		;;
 
 	remove)
@@ -63,7 +65,7 @@ case "${1}" in
 		fi
 
 		# Removing stage file
-		rm -f .build/chroot_debianchroot
+		Remove_stagefile "${STAGE_FILE}"
 		;;
 
 	*)

@@ -1513,4 +1513,4 @@ Type: ${LIVE_IMAGE_TYPE}
 EOF
 
 # Creating stage file
-Create_stagefile .build/config
+Create_stagefile config

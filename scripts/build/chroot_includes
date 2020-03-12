@@ -24,10 +24,11 @@ Init_config_data "${@}"
 Echo_message "Begin copying chroot includes..."
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
 
 # Checking stage file
-Check_stagefile .build/includes.chroot
+STAGE_FILE="includes.chroot"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -45,4 +46,4 @@ then
 fi
 
 # Creating stage file
-Create_stagefile .build/includes.chroot
+Create_stagefile "${STAGE_FILE}"

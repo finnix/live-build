@@ -29,10 +29,14 @@ then
 	exit 0
 fi
 
+# Note, this (plus the applicable extension added below) must match that used in `bootstrap_debootstrap`
+STAGE_FILE="bootstrap_cache"
+
 case "${1}" in
 	restore)
 		# Checking stage file
-		Check_stagefile .build/bootstrap_cache.restore
+		STAGE_FILE="${STAGE_FILE}.restore"
+		Check_stagefile "${STAGE_FILE}"
 
 		if [ -d cache/bootstrap ]
 		then
@@ -48,8 +52,8 @@ case "${1}" in
 			cp -a cache/bootstrap chroot
 
 			# Creating stage file
-			Create_stagefile .build/bootstrap_cache.restore
-			Create_stagefile .build/bootstrap
+			Create_stagefile "${STAGE_FILE}"
+			Create_stagefile bootstrap
 
 			exit 0
 		fi
@@ -59,7 +63,8 @@ case "${1}" in
 		Echo_message "Saving bootstrap stage to cache..."
 
 		# Checking stage file
-		Check_stagefile .build/bootstrap_cache.save
+		STAGE_FILE="${STAGE_FILE}.save"
+		Check_stagefile "${STAGE_FILE}"
 
 		# Acquire lock file
 		Acquire_lockfile
@@ -71,6 +76,6 @@ case "${1}" in
 		cp -a chroot cache/bootstrap
 
 		# Creating stage file
-		Create_stagefile .build/bootstrap_cache.save
+		Create_stagefile "${STAGE_FILE}"
 		;;
 esac

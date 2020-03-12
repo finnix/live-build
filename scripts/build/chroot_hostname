@@ -22,12 +22,14 @@ USAGE="${PROGRAM} {install|remove} [--force]"
 Init_config_data "${@}"
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
+
+STAGE_FILE="chroot_hostname"
 
 case "${1}" in
 	install)
 		# Checking stage file
-		Check_stagefile .build/chroot_hostname
+		Check_stagefile "${STAGE_FILE}"
 
 		# Acquire lock file
 		Acquire_lockfile
@@ -51,7 +53,7 @@ EOF
 		chmod 755 chroot/bin/hostname
 
 		# Creating stage file
-		Create_stagefile .build/chroot_hostname
+		Create_stagefile "${STAGE_FILE}"
 		;;
 
 	remove)
@@ -73,7 +75,7 @@ EOF
 		Chroot chroot dpkg-divert --rename --quiet --remove /bin/hostname
 
 		# Removing stage file
-		rm -f .build/chroot_hostname
+		Remove_stagefile "${STAGE_FILE}"
 		;;
 
 	*)

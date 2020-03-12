@@ -26,12 +26,15 @@ then
 	exit 0
 fi
 
+STAGE_FILE="chroot_cache"
+
 case "${1}" in
 	restore)
 		Echo_message "Restoring chroot stage from cache..."
 
 		# Checking stage file
-		Check_stagefile .build/chroot_cache.restore
+		STAGE_FILE="${STAGE_FILE}.restore"
+		Check_stagefile "${STAGE_FILE}"
 
 		if [ -d cache/chroot ]
 		then
@@ -45,7 +48,7 @@ case "${1}" in
 			cp -a cache/chroot chroot
 
 			# Creating stage file
-			Create_stagefile .build/chroot_cache.restore
+			Create_stagefile "${STAGE_FILE}"
 
 			exit 0
 		fi
@@ -55,7 +58,8 @@ case "${1}" in
 		Echo_message "Saving chroot stage to cache..."
 
 		# Checking stage file
-		Check_stagefile .build/chroot_cache.save
+		STAGE_FILE="${STAGE_FILE}.save"
+		Check_stagefile "${STAGE_FILE}"
 
 		# Acquire lock file
 		Acquire_lockfile
@@ -67,6 +71,6 @@ case "${1}" in
 		cp -a chroot cache/chroot
 
 		# Creating stage file
-		Create_stagefile .build/chroot_cache.save
+		Create_stagefile "${STAGE_FILE}"
 		;;
 esac

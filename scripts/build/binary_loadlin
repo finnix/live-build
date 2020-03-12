@@ -29,10 +29,11 @@ fi
 Echo_message "Begin copying loadlin..."
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
 
 # Checking stage file
-Check_stagefile .build/binary_loadlin
+STAGE_FILE="binary_loadlin"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -88,4 +89,4 @@ EOF
 esac
 
 # Creating stage file
-Create_stagefile .build/binary_loadlin
+Create_stagefile "${STAGE_FILE}"

@@ -22,14 +22,16 @@ USAGE="${PROGRAM} {install|install-binary|remove} [--force]"
 Init_config_data "${@}"
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
+
+STAGE_FILE="chroot_apt"
 
 case "${1}" in
 	install|install-binary)
 		Echo_message "Configuring file /etc/apt/apt.conf"
 
 		# Checking stage file
-		Check_stagefile .build/chroot_apt
+		Check_stagefile "${STAGE_FILE}"
 
 		# Acquire lock file
 		Acquire_lockfile
@@ -205,7 +207,7 @@ EOF
 		esac
 
 		# Creating stage file
-		Create_stagefile .build/chroot_apt
+		Create_stagefile "${STAGE_FILE}"
 		;;
 
 	remove)
@@ -303,7 +305,7 @@ EOF
 		fi
 
 		# Removing stage file
-		rm -f .build/chroot_apt
+		Remove_stagefile "${STAGE_FILE}"
 		;;
 
 	*)

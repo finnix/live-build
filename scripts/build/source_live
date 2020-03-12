@@ -29,10 +29,11 @@ fi
 Echo_message "Begin copying live-build configuration..."
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
 
 # Checking stage file
-Check_stagefile .build/source_live
+STAGE_FILE="source_live"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -61,4 +62,4 @@ packages used in the "live" disc).
 EOF
 
 # Creating stage file
-Create_stagefile .build/source_live
+Create_stagefile "${STAGE_FILE}"

@@ -26,10 +26,11 @@ Check_Any_Bootloader_Role "grub-efi"
 Echo_message "Begin preparing Grub based EFI support..."
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
 
 # Checking stage file
-Check_stagefile .build/binary_grub-efi
+STAGE_FILE="binary_grub-efi"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -302,4 +303,4 @@ rm -rf chroot/grub-efi-temp
 # We rely on: binary_loopback_cfg to generate grub.cfg and other configuration files
 
 # Creating stage file
-Create_stagefile .build/binary_grub-efi
+Create_stagefile "${STAGE_FILE}"

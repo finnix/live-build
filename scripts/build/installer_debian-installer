@@ -49,10 +49,11 @@ esac
 Echo_message "Begin installing debian-installer..."
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
 
 # Checking stage file
-Check_stagefile .build/installer_debian-installer
+STAGE_FILE="installer_debian-installer"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -880,4 +881,4 @@ Save_package_cache binary
 Remove_package
 
 # Creating stage file
-Create_stagefile .build/installer_debian-installer
+Create_stagefile "${STAGE_FILE}"

@@ -29,10 +29,11 @@ fi
 Echo_message "Begin scheduling kernel image installation..."
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
 
 # Checking stage file
-Check_stagefile .build/chroot_linux-image
+STAGE_FILE="chroot_linux-image"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -53,4 +54,4 @@ do
 done
 
 # Creating stage file
-Create_stagefile .build/chroot_linux-image
+Create_stagefile "${STAGE_FILE}"

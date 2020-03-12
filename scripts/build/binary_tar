@@ -29,10 +29,11 @@ fi
 Echo_message "Begin building binary tarball..."
 
 # Requiring stage file
-Require_stagefile .build/config .build/bootstrap
+Require_stagefile config bootstrap
 
 # Checking stage file
-Check_stagefile .build/binary_tar
+STAGE_FILE="binary_tar"
+Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file
 Acquire_lockfile
@@ -64,4 +65,4 @@ case "${LB_COMPRESSION}" in
 esac
 
 # Creating stage file
-Create_stagefile .build/binary_tar
+Create_stagefile "${STAGE_FILE}"
