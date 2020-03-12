@@ -522,7 +522,14 @@ Set_config_defaults ()
 	then
 		case "${LB_ARCHITECTURES}" in
 			amd64|i386)
-				LB_BOOTLOADERS="syslinux,grub-efi"
+				case "${LIVE_IMAGE_TYPE}" in
+					hdd*|netboot)
+						LB_BOOTLOADERS="syslinux"
+						;;
+					*)
+						LB_BOOTLOADERS="syslinux,grub-efi"
+						;;
+				esac
 				;;
 		esac
 	fi
