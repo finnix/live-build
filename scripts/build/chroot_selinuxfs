@@ -40,7 +40,7 @@ case "${1}" in
 			mkdir -p chroot/sys/fs/selinux
 
 			# Mounting /sys/fs/selinux
-			mount selinuxfs-live -t selinuxfs chroot/sys/fs/selinux
+			mount -t selinuxfs -o x-gvfs-hide selinuxfs-live chroot/sys/fs/selinux
 
 			# Creating stage file
 			Create_stagefile .build/chroot_selinuxfs

@@ -38,7 +38,7 @@ case "${1}" in
 		mkdir -p chroot/proc
 
 		# Mounting /proc
-		mount proc-live -t proc chroot/proc
+		mount -t proc -o x-gvfs-hide proc-live chroot/proc
 
 		# Creating stage file
 		Create_stagefile .build/chroot_proc

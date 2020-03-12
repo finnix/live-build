@@ -38,7 +38,7 @@ case "${1}" in
 		mkdir -p chroot/sys
 
 		# Mounting /sys
-		mount sysfs-live -t sysfs chroot/sys
+		mount -t sysfs -o x-gvfs-hide sysfs-live chroot/sys
 
 		# Creating stage file
 		Create_stagefile .build/chroot_sysfs

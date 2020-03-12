@@ -41,7 +41,7 @@ case "${1}" in
 
 		mv chroot/var/lib/dpkg chroot/var/lib/dpkg.tmp
 		mkdir chroot/var/lib/dpkg
-		mount -t tmpfs tmpfs chroot/var/lib/dpkg
+		mount -t tmpfs -o x-gvfs-hide tmpfs chroot/var/lib/dpkg
 		mv chroot/var/lib/dpkg.tmp/* chroot/var/lib/dpkg
 		rm -rf chroot/var/lib/dpkg.tmp
 
