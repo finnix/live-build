@@ -69,14 +69,14 @@ Exit_exit ()
 	if [ "${VALUE}" -ne 0 ]; then
 		Echo_error "An unexpected failure occurred, exiting..."
 	fi
-	Exit "${VALUE}"
+	Exit ${VALUE}
 }
 
 Exit_other ()
 {
 	local VALUE=$?
 	Echo_warning "Unexpected early exit caught, attempting cleanup..."
-	Exit "${VALUE}"
+	Exit ${VALUE}
 }
 
 Setup_clean_exit ()
