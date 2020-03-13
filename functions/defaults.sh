@@ -296,10 +296,19 @@ Set_config_defaults ()
 	esac
 
 	# Setting live build options
-	if [ -t 1 ] && [ -t 2 ]; then
-		_COLOR="${_COLOR:-true}"
+	if [ -z "${_COLOR}" ]; then
+		_COLOR="auto"
+		_COLOR_OUT="true"
+		_COLOR_ERR="true"
+		if [ ! -t 1 ]; then
+			_COLOR_OUT="false"
+		fi
+		if [ ! -t 2 ]; then
+			_COLOR_ERR="false"
+		fi
 	else
-		_COLOR="${_COLOR:-false}"
+		_COLOR_OUT="${_COLOR}"
+		_COLOR_ERR="${_COLOR}"
 	fi
 	_BREAKPOINTS="${_BREAKPOINTS:-false}"
 	_DEBUG="${_DEBUG:-false}"

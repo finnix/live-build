@@ -34,7 +34,7 @@ Echo_error ()
 	shift
 
 	local PREFIX="${RED}E${NO_COLOR}"
-	if [ "${_COLOR}" = "false" ]; then
+	if [ "${_COLOR_ERR}" = "false" ]; then
 		PREFIX="E"
 	fi
 
@@ -49,7 +49,7 @@ Echo_message ()
 		shift
 
 		local PREFIX="${PURPLE}P${NO_COLOR}"
-		if [ "${_COLOR}" = "false" ]; then
+		if [ "${_COLOR_OUT}" = "false" ]; then
 			PREFIX="P"
 		fi
 
@@ -73,7 +73,7 @@ Echo_warning ()
 	shift
 
 	local PREFIX="${YELLOW}W${NO_COLOR}"
-	if [ "${_COLOR}" = "false" ]; then
+	if [ "${_COLOR_ERR}" = "false" ]; then
 		PREFIX="W"
 	fi
 

@@ -34,11 +34,15 @@ Arguments ()
 
 			--color)
 				_COLOR="true"
+				_COLOR_OUT="true"
+				_COLOR_ERR="true"
 				shift
 				;;
 
 			--no-color)
 				_COLOR="false"
+				_COLOR_OUT="false"
+				_COLOR_ERR="false"
 				shift
 				;;
 
