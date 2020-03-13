@@ -30,7 +30,7 @@ Echo_message "Begin installing packages (${_PASS} pass)..."
 Require_stagefile .build/config .build/bootstrap
 
 # Checking stage file
-Check_stagefile .build/chroot_install-packages.${PASS}
+Check_stagefile .build/chroot_install-packages.${_PASS}
 
 # Acquire lock file
 Acquire_lockfile
