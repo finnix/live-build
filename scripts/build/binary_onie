@@ -47,7 +47,7 @@ Require_stagefile .build/config .build/binary_iso
 # Checking stage file
 Check_stagefile .build/binary_onie
 
-# Aquire lock file
+# Acquire lock file
 Acquire_lockfile
 
 Check_package host /bin/cpio cpio

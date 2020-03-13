@@ -34,7 +34,7 @@ Require_stagefile .build/config .build/bootstrap
 # Checking stage file
 Check_stagefile .build/source_live
 
-# Aquire lock file
+# Acquire lock file
 Acquire_lockfile
 
 # Remove old sources

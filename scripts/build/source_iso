@@ -43,7 +43,7 @@ Require_stagefile .build/config .build/source_debian
 # Checking stage file
 Check_stagefile .build/source_iso
 
-# Aquire lock file
+# Acquire lock file
 Acquire_lockfile
 
 # Checking depends

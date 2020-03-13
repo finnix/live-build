@@ -34,7 +34,7 @@ Require_stagefile .build/config .build/bootstrap .build/chroot_proc
 # Checking stage file
 Check_stagefile .build/binary_hdd
 
-# Aquire lock file
+# Acquire lock file
 Acquire_lockfile
 
 # Checking depends

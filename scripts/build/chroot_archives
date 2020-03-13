@@ -38,7 +38,7 @@ case "${1}" in
 		# Checking stage file
 		Check_stagefile .build/chroot_archives
 
-		# Aquire lock file
+		# Acquire lock file
 		Acquire_lockfile
 
 		# Restoring cache
@@ -318,7 +318,7 @@ case "${1}" in
 	remove)
 		Echo_message "Deconfiguring file /etc/apt/sources.list"
 
-		# Aquire lock file
+		# Acquire lock file
 		Acquire_lockfile
 
 		# Restore top-level sources

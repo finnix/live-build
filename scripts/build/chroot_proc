@@ -31,7 +31,7 @@ case "${1}" in
 		# Checking stage file
 		Check_stagefile .build/chroot_proc
 
-		# Aquire lock file
+		# Acquire lock file
 		Acquire_lockfile
 
 		# Creating mountpoint
@@ -47,7 +47,7 @@ case "${1}" in
 	remove)
 		Echo_message "Begin unmounting /proc..."
 
-		# Aquire lock file
+		# Acquire lock file
 		Acquire_lockfile
 
 		# Workaround binfmt-support /proc locking

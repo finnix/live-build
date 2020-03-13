@@ -29,7 +29,7 @@ case "${1}" in
 		# Checking stage file
 		Check_stagefile .build/chroot_hostname
 
-		# Aquire lock file
+		# Acquire lock file
 		Acquire_lockfile
 
 		# Create hostname file
@@ -57,7 +57,7 @@ EOF
 	remove)
 		Echo_message "Deconfiguring file /etc/hostname"
 
-		# Aquire lock file
+		# Acquire lock file
 		Acquire_lockfile
 
 		# Copying hostname from includes, if existing

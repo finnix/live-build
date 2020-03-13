@@ -34,7 +34,7 @@ Require_stagefile .build/config .build/bootstrap
 # Checking stage file
 Check_stagefile .build/chroot_interactive
 
-# Aquire lock file
+# Acquire lock file
 Acquire_lockfile
 
 case "${LB_INTERACTIVE}" in

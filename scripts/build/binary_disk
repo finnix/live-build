@@ -37,7 +37,7 @@ Require_stagefile .build/config .build/bootstrap
 # Checking stage file
 Check_stagefile .build/binary_disk
 
-# Aquire lock file
+# Acquire lock file
 Acquire_lockfile
 
 mkdir -p binary/.disk

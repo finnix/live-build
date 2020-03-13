@@ -40,7 +40,7 @@ Check_package chroot bin/debootstrap debootstrap
 Check_stagefile .build/bootstrap
 Check_stagefile .build/bootstrap_cache.restore
 
-# Aquire lock file
+# Acquire lock file
 Acquire_lockfile
 
 # Creating chroot directory

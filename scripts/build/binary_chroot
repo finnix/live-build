@@ -29,7 +29,7 @@ Require_stagefile .build/config .build/bootstrap
 # Checking stage file
 Check_stagefile .build/binary_chroot
 
-# Aquire lock file
+# Acquire lock file
 Acquire_lockfile
 
 # Normally, virtual filesystems are not mounted here, but people tend to be lazy

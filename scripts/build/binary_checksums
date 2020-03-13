@@ -32,7 +32,7 @@ Require_stagefile .build/config .build/bootstrap
 # Checking stage file
 Check_stagefile .build/binary_checksums
 
-# Aquire lock file
+# Acquire lock file
 Acquire_lockfile
 
 for CHECKSUM in ${LB_CHECKSUMS}

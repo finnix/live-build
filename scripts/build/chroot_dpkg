@@ -31,7 +31,7 @@ case "${1}" in
 		# Checking stage file
 		Check_stagefile .build/chroot_dpkg
 
-		# Aquire lock file
+		# Acquire lock file
 		Acquire_lockfile
 
 		# Create custom start-stop-daemon program
@@ -62,7 +62,7 @@ EOF
 	remove)
 		Echo_message "Deconfiguring file /sbin/start-stop-daemon"
 
-		# Aquire lock file
+		# Acquire lock file
 		Acquire_lockfile
 
 		# Manual hacks for special packages

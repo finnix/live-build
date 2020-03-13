@@ -31,7 +31,7 @@ case "${1}" in
 		# Checking stage file
 		Check_stagefile .build/chroot_hosts
 
-		# Aquire lock file
+		# Acquire lock file
 		Acquire_lockfile
 
 		if [ -f chroot/etc/hosts ]
@@ -61,7 +61,7 @@ EOF
 	remove)
 		Echo_message "Deconfiguring file /etc/hosts"
 
-		# Aquire lock file
+		# Acquire lock file
 		Acquire_lockfile
 
 		if [ -e config/includes.chroot/etc/hosts ]

@@ -29,7 +29,7 @@ Require_stagefile .build/config .build/bootstrap
 # Checking stage file
 Check_stagefile .build/includes.chroot
 
-# Aquire lock file
+# Acquire lock file
 Acquire_lockfile
 
 if Find_files config/includes.chroot/

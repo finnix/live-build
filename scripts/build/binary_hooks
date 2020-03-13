@@ -29,7 +29,7 @@ Require_stagefile .build/config .build/bootstrap
 # Checking stage file
 Check_stagefile .build/binary_hooks
 
-# Aquire lock file
+# Acquire lock file
 Acquire_lockfile
 
 ## Processing distribution hooks

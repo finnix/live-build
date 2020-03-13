@@ -32,7 +32,7 @@ Require_stagefile .build/config .build/bootstrap
 # Checking stage file
 Check_stagefile .build/chroot_linux-image
 
-# Aquire lock file
+# Acquire lock file
 Acquire_lockfile
 
 # Diverting update-initramfs

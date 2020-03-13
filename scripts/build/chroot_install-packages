@@ -32,7 +32,7 @@ Require_stagefile .build/config .build/bootstrap
 # Checking stage file
 Check_stagefile .build/chroot_install-packages.${PASS}
 
-# Aquire lock file
+# Acquire lock file
 Acquire_lockfile
 
 # Check for packages specified with foreign architecture

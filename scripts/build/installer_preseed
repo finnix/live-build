@@ -33,7 +33,7 @@ Echo_message "Begin including local preseeds..."
 # Checking stage file
 Check_stagefile .build/installer_preseed
 
-# Aquire lock file
+# Acquire lock file
 Acquire_lockfile
 
 if ls config/preseed/*.cfg > /dev/null 2>&1 || \

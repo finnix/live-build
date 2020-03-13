@@ -31,7 +31,7 @@ case "${1}" in
 		# Checking stage file
 		Check_stagefile .build/chroot_sysv-rc
 
-		# Aquire lock file
+		# Acquire lock file
 		Acquire_lockfile
 
 		if [ -e chroot/usr/sbin/policy-rc.d ]
@@ -56,7 +56,7 @@ EOF
 	remove)
 		Echo_message "Deconfiguring file /usr/sbin/policy-rc.d"
 
-		# Aquire lock file
+		# Acquire lock file
 		Acquire_lockfile
 
 		# Remove custom policy-rc.d file

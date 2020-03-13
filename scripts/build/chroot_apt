@@ -31,7 +31,7 @@ case "${1}" in
 		# Checking stage file
 		Check_stagefile .build/chroot_apt
 
-		# Aquire lock file
+		# Acquire lock file
 		Acquire_lockfile
 
 		mkdir -p chroot/etc/apt/apt.conf.d
@@ -211,7 +211,7 @@ EOF
 	remove)
 		Echo_message "Deconfiguring file /etc/apt/apt.conf"
 
-		# Aquire lock file
+		# Acquire lock file
 		Acquire_lockfile
 
 		# Deconfiguring aptitude ftp proxy

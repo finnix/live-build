@@ -32,7 +32,7 @@ Require_stagefile .build/config .build/source_debian
 # Checking stage file
 Check_stagefile .build/source_checksums
 
-# Aquire lock file
+# Acquire lock file
 Acquire_lockfile
 
 for DIRECTORY in source/debian source/live

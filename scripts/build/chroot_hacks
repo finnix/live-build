@@ -29,7 +29,7 @@ Require_stagefile .build/config .build/bootstrap
 # Checking stage file
 Check_stagefile .build/chroot_hacks
 
-# Aquire lock file
+# Acquire lock file
 Acquire_lockfile
 
 case "${LIVE_IMAGE_TYPE}" in

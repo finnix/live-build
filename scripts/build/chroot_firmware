@@ -32,7 +32,7 @@ Require_stagefile .build/config .build/bootstrap
 # Checking stage file
 Check_stagefile .build/chroot_firmware
 
-# Aquire lock file
+# Acquire lock file
 Acquire_lockfile
 
 # Checking depends

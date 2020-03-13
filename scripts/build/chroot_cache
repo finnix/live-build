@@ -35,7 +35,7 @@ case "${1}" in
 
 		if [ -d cache/chroot ]
 		then
-			# Aquire lock file
+			# Acquire lock file
 			Acquire_lockfile
 
 			# Removing old chroot
@@ -57,7 +57,7 @@ case "${1}" in
 		# Checking stage file
 		Check_stagefile .build/chroot_cache.save
 
-		# Aquire lock file
+		# Acquire lock file
 		Acquire_lockfile
 
 		rm -rf cache/chroot

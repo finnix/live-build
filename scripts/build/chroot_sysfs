@@ -31,7 +31,7 @@ case "${1}" in
 		# Checking stage file
 		Check_stagefile .build/chroot_sysfs
 
-		# Aquire lock file
+		# Acquire lock file
 		Acquire_lockfile
 
 		# Create mountpoint
@@ -47,7 +47,7 @@ case "${1}" in
 	remove)
 		Echo_message "Begin unmounting /sys..."
 
-		# Aquire lock file
+		# Acquire lock file
 		Acquire_lockfile
 
 		# Unmounting /sys

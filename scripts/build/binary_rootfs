@@ -29,7 +29,7 @@ Require_stagefile .build/config .build/bootstrap .build/binary_chroot
 # Checking stage file
 Check_stagefile .build/binary_rootfs
 
-# Aquire lock file
+# Acquire lock file
 Acquire_lockfile
 
 case "${LB_ARCHITECTURES}" in

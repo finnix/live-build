@@ -31,7 +31,7 @@ case "${1}" in
 		# Checking stage file
 		Check_stagefile .build/chroot_resolv
 
-		# Aquire lock file
+		# Acquire lock file
 		Acquire_lockfile
 
 		if [ -e chroot/etc/resolv.conf ]
@@ -64,7 +64,7 @@ case "${1}" in
 	remove)
 		Echo_message "Deconfiguring file /etc/resolv.conf"
 
-		# Aquire lock file
+		# Acquire lock file
 		Acquire_lockfile
 
 		if [ -e config/includes.chroot/etc/resolv.conf ]
