@@ -24,14 +24,12 @@ Init_config_data "${@}"
 # Requiring stage file
 Require_stagefile config bootstrap
 
-STAGE_FILE="chroot_apt"
-
 case "${1}" in
 	install|install-binary)
 		Echo_message "Configuring file /etc/apt/apt.conf"
 
 		# Checking stage file
-		Check_stagefile "${STAGE_FILE}"
+		Check_stagefile
 
 		# Acquire lock file
 		Acquire_lockfile
@@ -207,7 +205,7 @@ EOF
 		esac
 
 		# Creating stage file
-		Create_stagefile "${STAGE_FILE}"
+		Create_stagefile
 		;;
 
 	remove)
@@ -305,7 +303,7 @@ EOF
 		fi
 
 		# Removing stage file
-		Remove_stagefile "${STAGE_FILE}"
+		Remove_stagefile
 		;;
 
 	*)

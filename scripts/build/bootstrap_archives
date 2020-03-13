@@ -34,8 +34,7 @@ Require_stagefile config bootstrap
 Echo_message "Configuring file /etc/apt/sources.list"
 
 # Checking stage file
-STAGE_FILE="bootstrap_archives"
-Check_stagefile "${STAGE_FILE}"
+Check_stagefile
 
 # Acquire lock file
 Acquire_lockfile
@@ -156,4 +155,4 @@ Apt chroot "dist-upgrade"
 Save_package_cache chroot
 
 # Creating stage file
-Create_stagefile "${STAGE_FILE}"
+Create_stagefile

@@ -24,8 +24,6 @@ Init_config_data "${@}"
 # Requiring stage file
 Require_stagefile config bootstrap
 
-STAGE_FILE="chroot_selinuxfs"
-
 case "${1}" in
 	install)
 		if [ -e /sys/fs/selinux/enforce ] && [ "$(cat /sys/fs/selinux/enforce)" = "1" ]
@@ -33,7 +31,7 @@ case "${1}" in
 			Echo_message "Begin mounting /sys/fs/selinux..."
 
 			# Checking stage file
-			Check_stagefile "${STAGE_FILE}"
+			Check_stagefile
 
 			# Acquire lock file
 			Acquire_lockfile
@@ -45,7 +43,7 @@ case "${1}" in
 			mount -t selinuxfs -o x-gvfs-hide selinuxfs-live chroot/sys/fs/selinux
 
 			# Creating stage file
-			Create_stagefile "${STAGE_FILE}"
+			Create_stagefile
 		fi
 		;;
 
@@ -62,7 +60,7 @@ case "${1}" in
 		fi
 
 		# Removing stage file
-		Remove_stagefile "${STAGE_FILE}"
+		Remove_stagefile
 		;;
 
 	*)

@@ -29,13 +29,16 @@ then
 	exit 0
 fi
 
-# Note, this (plus the applicable extension added below) must match that used in `bootstrap_debootstrap`
-STAGE_FILE="bootstrap_cache"
+_ACTION="${1}"
+shift
 
-case "${1}" in
+# Set non-default stage file name (auto picked up by the functions)
+# Note, this (plus the applicable extension added below) must match that used in `bootstrap_debootstrap`
+STAGE_FILE="bootstrap_cache.${_ACTION}"
+
+case "${_ACTION}" in
 	restore)
 		# Checking stage file
-		STAGE_FILE="${STAGE_FILE}.restore"
 		Check_stagefile "${STAGE_FILE}"
 
 		if [ -d cache/bootstrap ]
@@ -53,7 +56,7 @@ case "${1}" in
 
 			# Creating stage file
 			Create_stagefile "${STAGE_FILE}"
-			Create_stagefile bootstrap
+			Create_stagefile "bootstrap"
 
 			exit 0
 		fi
@@ -63,7 +66,6 @@ case "${1}" in
 		Echo_message "Saving bootstrap stage to cache..."
 
 		# Checking stage file
-		STAGE_FILE="${STAGE_FILE}.save"
 		Check_stagefile "${STAGE_FILE}"
 
 		# Acquire lock file

@@ -41,8 +41,7 @@ Echo_message "Begin building binary iso image..."
 Require_stagefile config bootstrap
 
 # Checking stage file
-STAGE_FILE="binary_iso"
-Check_stagefile "${STAGE_FILE}"
+Check_stagefile
 
 # Acquire lock file
 Acquire_lockfile
@@ -243,4 +242,4 @@ Save_package_cache binary
 Remove_package
 
 # Creating stage file
-Create_stagefile "${STAGE_FILE}"
+Create_stagefile

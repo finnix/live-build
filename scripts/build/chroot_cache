@@ -26,14 +26,18 @@ then
 	exit 0
 fi
 
-STAGE_FILE="chroot_cache"
+_ACTION="${1}"
+shift
 
-case "${1}" in
+# Set non-default stage file name (auto picked up by the functions)
+# Setting to default name with appended action name
+STAGE_FILE="$(Stagefile_name "${_ACTION}")"
+
+case "${_ACTION}" in
 	restore)
 		Echo_message "Restoring chroot stage from cache..."
 
 		# Checking stage file
-		STAGE_FILE="${STAGE_FILE}.restore"
 		Check_stagefile "${STAGE_FILE}"
 
 		if [ -d cache/chroot ]
@@ -58,7 +62,6 @@ case "${1}" in
 		Echo_message "Saving chroot stage to cache..."
 
 		# Checking stage file
-		STAGE_FILE="${STAGE_FILE}.save"
 		Check_stagefile "${STAGE_FILE}"
 
 		# Acquire lock file

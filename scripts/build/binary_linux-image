@@ -32,8 +32,7 @@ Echo_message "Begin install linux-image..."
 Require_stagefile config bootstrap
 
 # Checking stage file
-STAGE_FILE="binary_linux-image"
-Check_stagefile "${STAGE_FILE}"
+Check_stagefile
 
 # Acquire lock file
 Acquire_lockfile
@@ -75,4 +74,4 @@ case "${LB_INITRAMFS}" in
 esac
 
 # Creating stage file
-Create_stagefile "${STAGE_FILE}"
+Create_stagefile

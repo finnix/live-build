@@ -41,8 +41,7 @@ Echo_message "Begin building source iso image..."
 Require_stagefile config source_debian
 
 # Checking stage file
-STAGE_FILE="source_iso"
-Check_stagefile "${STAGE_FILE}"
+Check_stagefile
 
 # Acquire lock file
 Acquire_lockfile
@@ -115,4 +114,4 @@ rm -f chroot/source.sh
 Remove_package
 
 # Creating stage file
-Create_stagefile "${STAGE_FILE}"
+Create_stagefile

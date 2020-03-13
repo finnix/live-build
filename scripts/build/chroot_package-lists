@@ -29,8 +29,11 @@ Echo_message "Begin queueing installation of package lists (${_PASS} pass)..."
 # Requiring stage file
 Require_stagefile config bootstrap
 
+# Set non-default stage file name (auto picked up by the functions)
+# Setting to default name with appended action name
+STAGE_FILE="$(Stagefile_name "${_PASS}")"
+
 # Checking stage file
-STAGE_FILE="chroot_package-lists.${_PASS}"
 Check_stagefile "${STAGE_FILE}"
 
 # Acquire lock file

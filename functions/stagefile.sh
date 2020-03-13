@@ -9,9 +9,21 @@
 ## under certain conditions; see COPYING for details.
 
 
+# Get the default filename for a script's stagefile (the name of the script
+# file itself). A suffix can be appended via providing as a param.
+Stagefile_name ()
+{
+	local SUFFIX="${1}"
+	local FILENAME
+	FILENAME="$(basename $0)"
+	echo ${FILENAME}${SUFFIX:+.$SUFFIX}
+}
+
 Check_stagefile ()
 {
-	FILE=".build/${1}"
+	local FILE
+	local NAME
+	FILE=".build/${1:-$(Stagefile_name)}"
 	NAME="$(basename ${FILE})"
 
 	# Checking stage file
@@ -32,7 +44,9 @@ Check_stagefile ()
 
 Create_stagefile ()
 {
-	FILE=".build/${1}"
+	local FILE
+	local DIRECTORY
+	FILE=".build/${1:-$(Stagefile_name)}"
 	DIRECTORY="$(dirname ${FILE})"
 
 	# Creating stage directory
@@ -44,7 +58,9 @@ Create_stagefile ()
 
 Remove_stagefile ()
 {
-	rm -f ".build/${1}"
+	local FILE
+	FILE=".build/${1:-$(Stagefile_name)}"
+	rm -f "${FILE}"
 }
 
 Require_stagefile ()

@@ -31,8 +31,7 @@ esac
 Echo_message "Begin including local preseeds..."
 
 # Checking stage file
-STAGE_FILE="installer_preseed"
-Check_stagefile "${STAGE_FILE}"
+Check_stagefile
 
 # Acquire lock file
 Acquire_lockfile
@@ -63,4 +62,4 @@ then
 fi
 
 # Creating stage file
-Create_stagefile "${STAGE_FILE}"
+Create_stagefile

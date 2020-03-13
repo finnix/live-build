@@ -24,14 +24,12 @@ Init_config_data "${@}"
 # Requiring stage file
 Require_stagefile config bootstrap
 
-STAGE_FILE="chroot_sysfs"
-
 case "${1}" in
 	install)
 		Echo_message "Begin mounting /sys..."
 
 		# Checking stage file
-		Check_stagefile "${STAGE_FILE}"
+		Check_stagefile
 
 		# Acquire lock file
 		Acquire_lockfile
@@ -43,7 +41,7 @@ case "${1}" in
 		mount -t sysfs -o x-gvfs-hide sysfs-live chroot/sys
 
 		# Creating stage file
-		Create_stagefile "${STAGE_FILE}"
+		Create_stagefile
 		;;
 
 	remove)
@@ -59,7 +57,7 @@ case "${1}" in
 		fi
 
 		# Removing stage file
-		Remove_stagefile "${STAGE_FILE}"
+		Remove_stagefile
 		;;
 
 	*)

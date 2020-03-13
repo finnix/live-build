@@ -32,8 +32,7 @@ Echo_message "Begin copying win32-loader..."
 Require_stagefile config bootstrap
 
 # Checking stage file
-STAGE_FILE="binary_win32-loader"
-Check_stagefile "${STAGE_FILE}"
+Check_stagefile
 
 # Acquire lock file
 Acquire_lockfile
@@ -127,4 +126,4 @@ EOF
 esac
 
 # Creating stage file
-Create_stagefile "${STAGE_FILE}"
+Create_stagefile

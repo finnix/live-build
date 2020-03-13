@@ -29,8 +29,7 @@ Echo_message "Begin preparing Grub based EFI support..."
 Require_stagefile config bootstrap
 
 # Checking stage file
-STAGE_FILE="binary_grub-efi"
-Check_stagefile "${STAGE_FILE}"
+Check_stagefile
 
 # Acquire lock file
 Acquire_lockfile
@@ -303,4 +302,4 @@ rm -rf chroot/grub-efi-temp
 # We rely on: binary_loopback_cfg to generate grub.cfg and other configuration files
 
 # Creating stage file
-Create_stagefile "${STAGE_FILE}"
+Create_stagefile

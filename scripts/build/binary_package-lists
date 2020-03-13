@@ -27,8 +27,7 @@ Echo_message "Begin installing local package lists..."
 Require_stagefile config bootstrap
 
 # Checking stage file
-STAGE_FILE="binary_package-lists"
-Check_stagefile "${STAGE_FILE}"
+Check_stagefile
 
 # Acquire lock file
 Acquire_lockfile
@@ -176,4 +175,4 @@ then
 fi
 
 # Creating stage file
-Create_stagefile "${STAGE_FILE}"
+Create_stagefile

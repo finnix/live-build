@@ -27,8 +27,7 @@ Echo_message "Begin executing hooks..."
 Require_stagefile config bootstrap
 
 # Checking stage file
-STAGE_FILE="source_hooks"
-Check_stagefile "${STAGE_FILE}"
+Check_stagefile
 
 # Acquire lock file
 Acquire_lockfile
@@ -73,4 +72,4 @@ do
 done
 
 # Creating stage file
-Create_stagefile "${STAGE_FILE}"
+Create_stagefile

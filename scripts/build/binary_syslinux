@@ -29,8 +29,7 @@ Echo_message "Begin installing syslinux..."
 Require_stagefile config bootstrap
 
 # Checking stage file
-STAGE_FILE="binary_syslinux"
-Check_stagefile "${STAGE_FILE}"
+Check_stagefile
 
 # Acquire lock file
 Acquire_lockfile
@@ -338,4 +337,4 @@ case "${LB_BUILD_WITH_CHROOT}" in
 esac
 
 # Creating stage file
-Create_stagefile "${STAGE_FILE}"
+Create_stagefile

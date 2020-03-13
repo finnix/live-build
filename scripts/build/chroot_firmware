@@ -32,8 +32,7 @@ Echo_message "Begin scheduling firmware installation..."
 Require_stagefile config bootstrap
 
 # Checking stage file
-STAGE_FILE="chroot_firmware"
-Check_stagefile "${STAGE_FILE}"
+Check_stagefile
 
 # Acquire lock file
 Acquire_lockfile
@@ -114,4 +113,4 @@ EOF
 fi
 
 # Creating stage file
-Create_stagefile "${STAGE_FILE}"
+Create_stagefile
