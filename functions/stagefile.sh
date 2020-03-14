@@ -63,19 +63,24 @@ Remove_stagefile ()
 	rm -f "${FILE}"
 }
 
-# Find at least one of the required stages, `exit 1` if none found
+# Ensure that all specified stagefiles exist (and thus that all associated stages are complete)
 Require_stagefile ()
 {
 	if [ $# -eq 0 ]; then
 		Echo_warning "Bad `Require_stagefile` usage, no params were supplied"
 		return 0
 	fi
+
 	local FILE
+	local MISSING=false
 	for FILE in ${@}; do
-		if [ -f ".build/${FILE}" ]; then
-			return 0
+		if [ ! -f ".build/${FILE}" ]; then
+			MISSING=true
 		fi
 	done
+	if ! $MISSING; then
+		return 0
+	fi
 
 	local NAME
 	NAME="$(basename ${0})"
@@ -83,7 +88,7 @@ Require_stagefile ()
 	if [ $# -eq 1 ]; then
 		Echo_error "%s requires stage: %s" "${NAME}" "${FILE}"
 	else
-		Echo_error "%s requires one of these stages: %s" "${NAME}" "$(echo ${@})"
+		Echo_error "%s requires the following stages: %s" "${NAME}" "$(echo ${@})"
 	fi
 
 	exit 1
