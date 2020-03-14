@@ -72,20 +72,24 @@ Require_stagefile ()
 	fi
 
 	local FILE
-	local MISSING=false
+	local MISSING=""
+	local MISSING_MULTIPLE=false
 	for FILE in ${@}; do
 		if [ ! -f ".build/${FILE}" ]; then
-			MISSING=true
+			if [ -n "${MISSING}" ]; then
+				MISSING_MULTIPLE=true
+			fi
+			MISSING="${MISSING:+$MISSING }${FILE}"
 		fi
 	done
-	if ! $MISSING; then
+	if [ -z "${MISSING}" ]; then
 		return 0
 	fi
 
-	if [ $# -eq 1 ]; then
-		Echo_error "the following stage is required to be completed first: %s" "${FILE}"
+	if ! $MISSING_MULTIPLE; then
+		Echo_error "the following stage is required to be done first: %s" "${MISSING}"
 	else
-		Echo_error "the following stages are required to be completed first: %s" "$(echo ${@})"
+		Echo_error "the following stages are required to be completed first: %s" "${MISSING}"
 	fi
 
 	exit 1
