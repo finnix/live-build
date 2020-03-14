@@ -26,6 +26,8 @@ then
 	exit 0
 fi
 
+Echo_message "Begin scheduling firmware installation..."
+
 # Requiring stage file
 Require_stagefile .build/config .build/bootstrap
 
