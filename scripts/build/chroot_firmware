@@ -15,7 +15,7 @@ set -e
 [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
 # Setting static variables
-DESCRIPTION="Schedule kernel packages for installation"
+DESCRIPTION="Schedule firmware packages for installation"
 USAGE="${PROGRAM} [--force]"
 
 # Processing arguments and configuration files
