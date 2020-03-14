@@ -1,0 +1,3 @@
+Tests: build-default-image
+Depends: live-build,
+Restrictions: needs-root, allow-stderr,
