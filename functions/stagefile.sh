@@ -82,13 +82,10 @@ Require_stagefile ()
 		return 0
 	fi
 
-	local NAME
-	NAME="$(basename ${0})"
-
 	if [ $# -eq 1 ]; then
-		Echo_error "%s requires stage: %s" "${NAME}" "${FILE}"
+		Echo_error "the following stage is required to be completed first: %s" "${FILE}"
 	else
-		Echo_error "%s requires the following stages: %s" "${NAME}" "$(echo ${@})"
+		Echo_error "the following stages are required to be completed first: %s" "$(echo ${@})"
 	fi
 
 	exit 1
