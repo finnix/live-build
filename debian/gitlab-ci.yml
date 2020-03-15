@@ -18,6 +18,9 @@ pages:
   only:
     - master
   script:
-    - git clean -fdx
-    - gitlab-ci-git-buildpackage-all
+    - mkdir ${CI_PROJECT_DIR}/debian/output/aptly; cd ${CI_PROJECT_DIR}/debian/output/aptly
     - gitlab-ci-aptly
+    - cd ${CI_PROJECT_DIR}
+    - mv ${CI_PROJECT_DIR}/debian/output/aptly/public .
+  dependencies:
+    - build
