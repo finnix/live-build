@@ -307,17 +307,17 @@ then
 	case "${LB_ARCHITECTURES}" in
 		amd64)
 			DI_REQ_PACKAGES="lilo grub-pc"
-			DI_PACKAGES="${DI_REQ_PACKAGES} linux-image-amd64"
+			DI_PACKAGES="linux-image-amd64"
 			;;
 
 		i386)
 			DI_REQ_PACKAGES="lilo grub-pc"
-			DI_PACKAGES="${DI_REQ_PACKAGES} linux-image-686-pae"
+			DI_PACKAGES="linux-image-686-pae"
 			;;
 
 		powerpc)
 			DI_REQ_PACKAGES="yaboot"
-			DI_PACKAGES="${DI_REQ_PACKAGES} linux-image-powerpc linux-image-powerpc64 linux-image-powerpc-smp"
+			DI_PACKAGES="linux-image-powerpc linux-image-powerpc64 linux-image-powerpc-smp"
 			;;
 	esac
 
@@ -326,7 +326,6 @@ then
 	case "${LB_MODE}" in
 		debian)
 			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} console-setup keyboard-configuration kbd"
-			DI_PACKAGES="${DI_PACKAGES} console-setup keyboard-configuration kbd"
 			;;
 	esac
 
@@ -413,7 +412,7 @@ then
 		done
 	else
 		# Download .debs of the required packages
-		Chroot chroot ${_LB_APT_COMMAND} install ${DI_PACKAGES} ${DI_FIRMWARE_PACKAGES}
+		Chroot chroot ${_LB_APT_COMMAND} install ${DI_PACKAGES} ${DI_FIRMWARE_PACKAGES} ${DI_REQ_PACKAGES}
 	fi
 
 	mv chroot/binary.deb ./
