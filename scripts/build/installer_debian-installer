@@ -643,8 +643,10 @@ then
 	# Sort udebs into alphabetised pool structure
 	for UDEB in ${UDEBS} ${UDEBS_DERIVED}; do
 		_UDEB_FILENAME="$(basename ${UDEB})"
-		Install_file "${_UDEB_FILENAME}" "pool-udeb"
-		rm "${_UDEB_FILENAME}"
+		if [ -f "${_UDEB_FILENAME}" ]; then
+			Install_file "${_UDEB_FILENAME}" "pool-udeb"
+			rm "${_UDEB_FILENAME}"
+		fi
 	done
 
 	# Creating udeb indices
