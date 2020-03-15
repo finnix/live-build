@@ -384,6 +384,7 @@ then
 		do
 			DI_FIRMWARE_PACKAGES="${DI_FIRMWARE_PACKAGES} $(echo ${_PACKAGE} | awk -F/ '{ print $NF }')"
 		done
+		FIRMWARE_PACKAGES=""
 	fi
 
 	# Set apt command prefix
