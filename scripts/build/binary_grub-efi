@@ -35,7 +35,7 @@ Check_stagefile .build/binary_grub-efi
 Acquire_lockfile
 
 # Check architecture
-Check_architectures amd64 i386 arm64
+Check_architectures amd64 i386 arm64 armhf
 Check_crossarchitectures
 
 # Setting destination directory
@@ -56,6 +56,9 @@ case "${LB_ARCHITECTURES}" in
 	arm64)
 		Check_package chroot /usr/lib/grub/arm64-efi/configfile.mod grub-efi-arm64-bin
 		;;
+	armhf)
+		Check_package chroot /usr/lib/grub/arm-efi/configfile.mod grub-efi-arm-bin
+		;;
 esac
 Check_package chroot /usr/bin/grub-mkimage grub-common
 Check_package chroot /usr/bin/mcopy mtools
@@ -74,6 +77,11 @@ case "${LB_ARCHITECTURES}" in
 		_SB_EFI_PLATFORM="arm64"
 		_SB_EFI_NAME="aa64"
 		_SB_EFI_DEB="arm64"
+		;;
+	armhf)
+		_SB_EFI_PLATFORM="arm"
+		_SB_EFI_NAME="arm"
+		_SB_EFI_DEB="arm"
 		;;
 esac
 
@@ -119,7 +127,7 @@ Restore_package_cache binary
 Install_package
 
 # Cleanup files that we generate
-rm -rf binary/boot/efi.img binary/boot/grub/i386-efi/ binary/boot/grub/x86_64-efi binary/boot/grub/arm64-efi
+rm -rf binary/boot/efi.img binary/boot/grub/i386-efi/ binary/boot/grub/x86_64-efi binary/boot/grub/arm64-efi binary/boot/grub/arm-efi
 
 # This is workaround till both efi-image and grub-cpmodules are put into a binary package
 case "${LB_BUILD_WITH_CHROOT}" in
@@ -197,11 +205,15 @@ case "${LB_ARCHITECTURES}" in
 		gen_efi_boot_img "x86_64-efi" "x64" "debian-live/amd64"
 		gen_efi_boot_img "i386-efi" "ia32" "debian-live/i386"
 		PATH="\${PRE_EFI_IMAGE_PATH}"
-	;;
+		;;
 	arm64)
 		gen_efi_boot_img "arm64-efi" "aa64" "debian-live/arm64"
 		PATH="\${PRE_EFI_IMAGE_PATH}"
-	;;
+		;;
+	armhf)
+		gen_efi_boot_img "arm-efi" "arm" "debian-live/arm"
+		PATH="\${PRE_EFI_IMAGE_PATH}"
+		;;
 esac
 
 
@@ -276,12 +288,14 @@ esac
 rm -f chroot/grub-efi-temp/bootnetia32.efi
 rm -f chroot/grub-efi-temp/bootnetx64.efi
 rm -f chroot/grub-efi-temp/bootnetaa64.efi
+rm -f chroot/grub-efi-temp/bootnetarm.efi
 
 mkdir -p binary
 cp -r chroot/grub-efi-temp/* binary/
 rm -rf chroot/grub-efi-temp-x86_64-efi
 rm -rf chroot/grub-efi-temp-i386-efi
 rm -rf chroot/grub-efi-temp-arm64-efi
+rm -rf chroot/grub-efi-temp-arm-efi
 rm -rf chroot/grub-efi-temp-cfg
 rm -rf chroot/grub-efi-temp
 
