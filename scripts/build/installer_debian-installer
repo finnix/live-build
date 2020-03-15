@@ -632,16 +632,13 @@ EOF
 
 	# Excluding udebs from excludes because we want them to be in the image on purpose
 	sed -i -e 's|di-utils-exit-installer||' exclude # used for live-installer-launcher
+	if [ "${LB_DEBIAN_INSTALLER}" = "live" ]; then
+		sed -i -e 's|live-installer||' exclude
+	fi
 
 	# Remove all udebs to be excluded from inclusion
-	while read EXCLUDE
-	do
-		if [ "${LB_DEBIAN_INSTALLER}" = "live" ] && [ "${EXCLUDE}" = "live-installer" ]
-		then
-			continue
-		fi
-
-		rm -f ${EXCLUDE}_*.udeb
+	while read EXCLUDE; do
+		rm -f "${EXCLUDE}_*.udeb"
 	done < exclude
 
 	# Sort udebs into alphabetised pool structure
