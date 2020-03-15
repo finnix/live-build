@@ -474,7 +474,11 @@ then
 		mkdir -p "binary/${INDICE_DIR}"
 
 		mv binary chroot/root
-		echo "cd /root/binary && apt-ftparchive packages pool/${_ARCHIVE_AREA} > ${INDICE_DIR}/Packages" > chroot/binary.sh
+cat > chroot/binary.sh << EOF
+#!/bin/sh
+cd /root/binary
+apt-ftparchive packages "pool/${_ARCHIVE_AREA}" > "${INDICE_DIR}/Packages"
+EOF
 		Chroot chroot "sh binary.sh"
 		rm -f chroot/binary.sh
 		mv chroot/root/binary ./
@@ -657,7 +661,11 @@ then
 	cd "${OLDPWD}"
 
 	mv binary.udeb chroot/root
-	echo "cd /root/binary.udeb && apt-ftparchive packages pool-udeb/main > ${UDEB_INDICE_DIR}/Packages" > chroot/binary.sh
+cat > chroot/binary.sh << EOF
+#!/bin/sh
+cd /root/binary.udeb
+apt-ftparchive packages "pool-udeb/main" > "${UDEB_INDICE_DIR}/Packages"
+EOF
 	Chroot chroot "sh binary.sh"
 	rm -f chroot/binary.sh
 	mv chroot/root/binary.udeb ./
