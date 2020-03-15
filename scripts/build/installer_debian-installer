@@ -216,6 +216,7 @@ Download_file () {
 		fi
 	fi
 
+	# Use hardlink if same device
 	if [ "$(stat --printf %d "${_LB_CACHE_DIR}/")" = "$(stat --printf %d ./)" ]
 	then
 		CP_OPTIONS="-l"
@@ -402,7 +403,7 @@ then
 		# Download .debs of the required packages
 		Chroot chroot ${_LB_APT_COMMAND} install ${DI_PACKAGES} ${DI_FIRMWARE_PACKAGES} ${DI_REQ_PACKAGES}
 
-		# Drop the packages already installed that d-i doesn't explicitely need
+		# Drop the packages already installed that d-i doesn't explicitly need
 		_REMAINING_PACKAGES="$(echo ${DI_FIRMWARE_PACKAGES} ${DI_REQ_PACKAGES} | sed -e 's# #|#g')"
 		_REMAINING_PACKAGES="$(Chroot_package_list chroot | grep -E -v "^(${_REMAINING_PACKAGES})\$")"
 
@@ -417,8 +418,7 @@ then
 
 	mv chroot/binary.deb ./
 
-	for _ARCHIVE_AREA in $(echo ${LB_PARENT_ARCHIVE_AREAS} ${LB_ARCHIVE_AREAS})
-	do
+	for _ARCHIVE_AREA in ${LB_PARENT_ARCHIVE_AREAS} ${LB_ARCHIVE_AREAS}; do
 		mkdir -p binary/pool/${_ARCHIVE_AREA}
 	done
 
