@@ -469,20 +469,20 @@ then
 	fi
 
 	# Generating deb indices
-	for _ARCHIVE_AREA in $(cd binary/pool && ls)
-	do
-		mkdir -p binary/dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/${_ARCHIVE_AREA}/binary-${LB_ARCHITECTURES}
+	for _ARCHIVE_AREA in $(cd binary/pool && ls); do
+		INDICE_DIR="dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/${_ARCHIVE_AREA}/binary-${LB_ARCHITECTURES}"
+		mkdir -p "binary/${INDICE_DIR}"
 
 		mv binary chroot/root
-		echo "cd /root/binary && apt-ftparchive packages pool/${_ARCHIVE_AREA} > dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/${_ARCHIVE_AREA}/binary-${LB_ARCHITECTURES}/Packages" > chroot/binary.sh
+		echo "cd /root/binary && apt-ftparchive packages pool/${_ARCHIVE_AREA} > ${INDICE_DIR}/Packages" > chroot/binary.sh
 		Chroot chroot "sh binary.sh"
 		rm -f chroot/binary.sh
 		mv chroot/root/binary ./
 
-		gzip -9 -c binary/dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/${_ARCHIVE_AREA}/binary-${LB_ARCHITECTURES}/Packages > binary/dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/${_ARCHIVE_AREA}/binary-${LB_ARCHITECTURES}/Packages.gz
+		gzip -9 -c "binary/${INDICE_DIR}/Packages" > "binary/${INDICE_DIR}/Packages.gz"
 
 		# Fetching release
-		Download_file binary/dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/${_ARCHIVE_AREA}/binary-${LB_ARCHITECTURES}/Release "${LB_PARENT_MIRROR_CHROOT}"/dists/"${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}"/${_ARCHIVE_AREA}/binary-"${LB_ARCHITECTURES}"/Release
+		Download_file "binary/${INDICE_DIR}/Release" "${LB_PARENT_MIRROR_CHROOT}/${INDICE_DIR}/Release"
 	done
 
 	# Symlink firmware packages to /firmware
@@ -546,13 +546,14 @@ then
 	# Downloading udeb packages
 	Echo_message "Downloading udebs..."
 
+	UDEB_CACHE_DIR="../cache/packages.installer_debian-installer.udeb"
+
 	for UDEB in ${UDEBS}
 	do
 		_UDEB_FILENAME="$(basename ${UDEB})"
 		# Copy from cache if available, otherwise download
-		if [ -f ../cache/packages.installer_debian-installer.udeb/"${_UDEB_FILENAME}" ]
-		then
-			cp ../cache/packages.installer_debian-installer.udeb/"${_UDEB_FILENAME}" ./
+		if [ -f "${UDEB_CACHE_DIR}/${_UDEB_FILENAME}" ]; then
+			cp "${UDEB_CACHE_DIR}/${_UDEB_FILENAME}" ./
 		else
 			wget ${WGET_OPTIONS} "${LB_PARENT_MIRROR_CHROOT}/${UDEB}"
 		fi
@@ -564,9 +565,8 @@ then
 		do
 			_UDEB_FILENAME="$(basename ${UDEB})"
 			# Copy from cache if available, otherwise download
-			if [ -f ../cache/packages.installer_debian-installer.udeb/"${_UDEB_FILENAME}" ]
-			then
-				cp ../cache/packages.installer_debian-installer.udeb/"${_UDEB_FILENAME}" ./
+			if [ -f "${UDEB_CACHE_DIR}/${_UDEB_FILENAME}" ]; then
+				cp "${UDEB_CACHE_DIR}/${_UDEB_FILENAME}" ./
 			else
 				wget ${WGET_OPTIONS} "${LB_MIRROR_CHROOT}/${UDEB}"
 			fi
@@ -574,9 +574,9 @@ then
 	fi
 
 	# Caching udebs
-	rm -rf ../cache/packages.installer_debian-installer.udeb
-	mkdir -p ../cache/packages.installer_debian-installer.udeb
-	cp *.udeb ../cache/packages.installer_debian-installer.udeb
+	rm -rf "${UDEB_CACHE_DIR}"
+	mkdir -p "${UDEB_CACHE_DIR}"
+	cp *.udeb "${UDEB_CACHE_DIR}"
 
 	# Including local udebs
 	if Find_files ../config/packages.binary/*_"${LB_ARCHITECTURES}".udeb || Find_files ../config/packages/*_"${LB_ARCHITECTURES}".udeb
@@ -650,18 +650,20 @@ then
 	done
 
 	# Creating udeb indices
-	mkdir -p dists/"${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}"/main/debian-installer/binary-"${LB_ARCHITECTURES}"
+	UDEB_INDICE_DIR="dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/main/debian-installer/binary-${LB_ARCHITECTURES}"
+
+	mkdir -p "${UDEB_INDICE_DIR}"
 
 	cd "${OLDPWD}"
 
 	mv binary.udeb chroot/root
-	echo "cd /root/binary.udeb && apt-ftparchive packages pool-udeb/main > dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/main/debian-installer/binary-${LB_ARCHITECTURES}/Packages" > chroot/binary.sh
+	echo "cd /root/binary.udeb && apt-ftparchive packages pool-udeb/main > ${UDEB_INDICE_DIR}/Packages" > chroot/binary.sh
 	Chroot chroot "sh binary.sh"
 	rm -f chroot/binary.sh
 	mv chroot/root/binary.udeb ./
 
 	cd binary.udeb
-	gzip -9 -c dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/main/debian-installer/binary-${LB_ARCHITECTURES}/Packages > dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/main/debian-installer/binary-${LB_ARCHITECTURES}/Packages.gz
+	gzip -9 -c "${UDEB_INDICE_DIR}/Packages" > "${UDEB_INDICE_DIR}/Packages.gz"
 
 	rm -f Packages* exclude
 	find . | cpio -dmpu "${OLDPWD}"/binary
