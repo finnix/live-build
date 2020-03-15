@@ -27,7 +27,7 @@ then
 fi
 
 # Requiring stage file
-Require_stagefile config bootstrap
+Require_stagefiles config bootstrap
 
 case "${1}" in
 	install)

@@ -29,7 +29,7 @@ fi
 Echo_message "Begin creating manifest..."
 
 # Requiring stage file
-Require_stagefile config bootstrap
+Require_stagefiles config bootstrap
 
 # Checking stage file
 Check_stagefile

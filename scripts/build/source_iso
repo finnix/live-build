@@ -38,7 +38,7 @@ esac
 Echo_message "Begin building source iso image..."
 
 # Requiring stage file
-Require_stagefile config source_debian
+Require_stagefiles config source_debian
 
 # Checking stage file
 Check_stagefile

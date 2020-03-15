@@ -27,7 +27,7 @@ Init_config_data "${@}"
 Echo_message "Begin installing packages (${_PASS} pass)..."
 
 # Requiring stage file
-Require_stagefile config bootstrap
+Require_stagefiles config bootstrap
 
 # Set non-default stage file name
 # Setting to default name with appended action name

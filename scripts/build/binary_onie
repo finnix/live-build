@@ -42,7 +42,7 @@ esac
 Echo_message "Begin building onie binary..."
 
 # Requiring stage file
-Require_stagefile config binary_iso
+Require_stagefiles config binary_iso
 
 # Checking stage file
 Check_stagefile

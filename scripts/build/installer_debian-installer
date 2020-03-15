@@ -49,7 +49,7 @@ esac
 Echo_message "Begin installing debian-installer..."
 
 # Requiring stage file
-Require_stagefile config bootstrap
+Require_stagefiles config bootstrap
 
 # Checking stage file
 Check_stagefile

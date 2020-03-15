@@ -64,7 +64,7 @@ Remove_stagefile ()
 }
 
 # Ensure that all specified stagefiles exist (and thus that all associated stages are complete)
-Require_stagefile ()
+Require_stagefiles ()
 {
 	if [ $# -eq 0 ]; then
 		Echo_warning "Bad `Require_stagefile` usage, no params were supplied"

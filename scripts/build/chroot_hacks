@@ -24,7 +24,7 @@ Init_config_data "${@}"
 Echo_message "Begin executing hacks..."
 
 # Requiring stage file
-Require_stagefile config bootstrap
+Require_stagefiles config bootstrap
 
 # Checking stage file
 Check_stagefile

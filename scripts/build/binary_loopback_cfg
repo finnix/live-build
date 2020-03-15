@@ -28,7 +28,7 @@ Init_config_data "${@}"
 Echo_message "Begin installing loopback.cfg..."
 
 # Requiring stage file
-Require_stagefile config bootstrap
+Require_stagefiles config bootstrap
 
 # Checking stage file
 Check_stagefile

@@ -29,7 +29,7 @@ fi
 Echo_message "Begin building binary hdd image..."
 
 # Requiring stage file
-Require_stagefile config bootstrap chroot_proc
+Require_stagefiles config bootstrap chroot_proc
 
 # Checking stage file
 Check_stagefile

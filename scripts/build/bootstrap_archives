@@ -29,7 +29,7 @@ fi
 Init_config_data "${@}"
 
 # Requiring stage file
-Require_stagefile config bootstrap
+Require_stagefiles config bootstrap
 
 Echo_message "Configuring file /etc/apt/sources.list"
 

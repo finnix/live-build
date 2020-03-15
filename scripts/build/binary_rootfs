@@ -24,7 +24,7 @@ Init_config_data "${@}"
 Echo_message "Begin building root filesystem image..."
 
 # Requiring stage file
-Require_stagefile config bootstrap binary_chroot
+Require_stagefiles config bootstrap binary_chroot
 
 # Checking stage file
 Check_stagefile

@@ -22,7 +22,7 @@ USAGE="${PROGRAM} {install|install-binary|remove} [--force]"
 Init_config_data "${@}"
 
 # Requiring stage file
-Require_stagefile config bootstrap
+Require_stagefiles config bootstrap
 
 case "${1}" in
 	install|install-binary)

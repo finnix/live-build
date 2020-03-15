@@ -33,7 +33,7 @@ esac
 Echo_message "Begin installing disk information..."
 
 # Requiring stage file
-Require_stagefile config bootstrap
+Require_stagefiles config bootstrap
 
 # Checking stage file
 Check_stagefile
