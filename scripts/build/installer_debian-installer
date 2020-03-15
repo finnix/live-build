@@ -641,8 +641,7 @@ then
 	done < exclude
 
 	# Sort udebs into alphabetised pool structure
-	for UDEB in "${UDEBS} ${UDEBS_DERIVED}"
-	do
+	for UDEB in ${UDEBS} ${UDEBS_DERIVED}; do
 		_UDEB_FILENAME="$(basename ${UDEB})"
 		Install_file "${_UDEB_FILENAME}" "pool-udeb"
 		rm "${_UDEB_FILENAME}"
