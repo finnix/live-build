@@ -241,7 +241,7 @@ INITRD_GI="gtk/initrd.gz"
 DESTDIR_GI="${DESTDIR}/gtk"
 
 # Debian Installer daily builds
-DAILY_DI_URL="https://d-i.debian.org/daily-images/${LB_ARCHITECTURES}/daily/"
+DAILY_DI_URL="https://d-i.debian.org/daily-images/${LB_ARCHITECTURES}/daily"
 
 case "${LB_DERIVATIVE}" in
 	false)
@@ -252,7 +252,7 @@ case "${LB_DERIVATIVE}" in
 
 			URL="${DAILY_DI_URL}"
 		else
-			URL="${LB_MIRROR_DEBIAN_INSTALLER}/dists/${LB_DEBIAN_INSTALLER_DISTRIBUTION}/main/installer-${LB_ARCHITECTURES}/current/images/"
+			URL="${LB_MIRROR_DEBIAN_INSTALLER}/dists/${LB_DEBIAN_INSTALLER_DISTRIBUTION}/main/installer-${LB_ARCHITECTURES}/current/images"
 		fi
 		;;
 
@@ -263,14 +263,14 @@ case "${LB_DERIVATIVE}" in
 
 			URL="${DAILY_DI_URL}"
 		else
-			URL="${LB_PARENT_MIRROR_DEBIAN_INSTALLER}/dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/main/installer-${LB_ARCHITECTURES}/current/images/"
+			URL="${LB_PARENT_MIRROR_DEBIAN_INSTALLER}/dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/main/installer-${LB_ARCHITECTURES}/current/images"
 		fi
 
 		if [ "${LB_MODE}" = "progress-linux" ]
 		then
 			# FIXME: normal derivatives probably don't rebuild d-i,
 			# but progress-linux does.
-			URL="${LB_MIRROR_DEBIAN_INSTALLER}/dists/${LB_DEBIAN_INSTALLER_DISTRIBUTION}/main/installer-${LB_ARCHITECTURES}/current/images/"
+			URL="${LB_MIRROR_DEBIAN_INSTALLER}/dists/${LB_DEBIAN_INSTALLER_DISTRIBUTION}/main/installer-${LB_ARCHITECTURES}/current/images"
 		fi
 		;;
 esac
