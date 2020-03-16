@@ -68,3 +68,9 @@ lb binary ${@}
 
 # Stage #5: Build supplimentary source disc images
 lb source ${@}
+
+if [ "${_COLOR_OUT}" = "false" ]; then
+	Echo_message "Build completed successfully"
+else
+	Echo_message "%sBuild completed successfully%s" "$(echo ${GREEN})" "$(echo ${NO_COLOR})"
+fi

@@ -87,3 +87,5 @@ lb chroot_devpts remove ${@}
 lb chroot_cache save ${@}
 
 Chroot chroot "ls -lR" > chroot.files
+
+Echo_message "Chroot stage completed"

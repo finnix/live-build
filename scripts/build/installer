@@ -66,3 +66,5 @@ then
 	lb chroot_proc remove ${@}
 	lb chroot_devpts remove ${@}
 fi
+
+Echo_message "Installer stage completed"

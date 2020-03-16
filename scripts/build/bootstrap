@@ -61,3 +61,5 @@ lb chroot_sysfs remove ${@}
 lb chroot_selinuxfs remove ${@}
 lb chroot_proc remove ${@}
 lb chroot_devpts remove ${@}
+
+Echo_message "Bootstrap stage completed"

@@ -24,8 +24,8 @@ Auto_build_config
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
-if [ "${LB_SOURCE}" != "true" ]
-then
+if [ "${LB_SOURCE}" != "true" ]; then
+	Echo_message "Source stage disabled, skipping"
 	exit 0
 fi
 
@@ -55,3 +55,5 @@ lb chroot_archives source remove ${@}
 lb chroot_hostname remove ${@}
 lb chroot_resolv remove ${@}
 lb chroot_hosts remove ${@}
+
+Echo_message "Source stage completed"
