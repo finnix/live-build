@@ -29,6 +29,7 @@ Exit ()
 	# (e.g. due to running processes in chroot from user customizations)
 	Echo_message "Begin unmounting filesystems..."
 
+	local DIRECTORY
 	if [ -e /proc/mounts ]
 	then
 		for DIRECTORY in $(awk -v dir="${PWD}/chroot/" '$2 ~ dir { print $2 }' /proc/mounts | sort -r)
