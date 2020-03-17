@@ -128,7 +128,7 @@ do
 
 		grub-pc)
 			XORRISO_OPTIONS="${XORRISO_OPTIONS} -no-emul-boot -boot-load-size 4 -boot-info-table"
-			XORRISO_OPTIONS="${XORRISO_OPTIONS} -b boot/grub/grub_eltorito -J"
+			XORRISO_OPTIONS="${XORRISO_OPTIONS} -b boot/grub/grub_eltorito"
 			XORRISO_EXCLUDE="boot/grub/grub_eltorito"
 			;;
 
