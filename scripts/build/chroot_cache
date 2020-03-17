@@ -29,7 +29,7 @@ fi
 _ACTION="${1}"
 shift
 
-# Set non-default stage file name (auto picked up by the functions)
+# Set non-default stage file name
 # Setting to default name with appended action name
 STAGE_FILE="$(Stagefile_name "${_ACTION}")"
 

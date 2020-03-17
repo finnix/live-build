@@ -32,7 +32,7 @@ fi
 _ACTION="${1}"
 shift
 
-# Set non-default stage file name (auto picked up by the functions)
+# Set non-default stage file name
 # Note, this (plus the applicable extension added below) must match that used in `bootstrap_debootstrap`
 STAGE_FILE="bootstrap_cache.${_ACTION}"
 
