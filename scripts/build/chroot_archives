@@ -19,7 +19,8 @@ DESCRIPTION="Manage /etc/apt/sources.list"
 USAGE="${PROGRAM} {source|binary|chroot} {install|remove} [--force]"
 
 _PASS="${1}"
-shift
+_ACTION="${2}"
+shift 2
 
 if ! In_list "${_PASS}" "binary" "chroot" "source"; then
 	Usage
@@ -31,7 +32,7 @@ Init_config_data "${@}"
 # Requiring stage file
 Require_stagefiles config bootstrap
 
-case "${1}" in
+case "${_ACTION}" in
 	install)
 		Echo_message "Configuring file /etc/apt/sources.list"
 
