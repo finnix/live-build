@@ -41,6 +41,8 @@ Create_apt_sources_list ()
 			;;
 	esac
 
+	local _PASS="${2}"
+
 	local PARENT_FILE
 	case "${LB_DERIVATIVE}" in
 		true)

@@ -51,7 +51,7 @@ case "${1}" in
 		fi
 
 		# Configure custom sources.list
-		Create_apt_sources_list chroot
+		Create_apt_sources_list chroot "${_PASS}"
 
 		# Adding local apt sources (chroot)
 		for FILE in config/archives/*.list config/archives/*.list.chroot
@@ -333,7 +333,7 @@ case "${1}" in
 		mkdir -p chroot/var/lib/apt/lists/partial
 
 		# Configure custom sources.list
-		Create_apt_sources_list binary
+		Create_apt_sources_list binary "${_PASS}"
 
 		# Removing chroot-only apt sources
 		for FILE in config/archives/*.list.chroot

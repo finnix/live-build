@@ -49,7 +49,7 @@ then
 fi
 
 # Configure custom sources.list
-Create_apt_sources_list chroot
+Create_apt_sources_list chroot "${_PASS}"
 
 # Adding local apt sources (chroot)
 for FILE in config/archives/*.list config/archives/*.list.chroot
