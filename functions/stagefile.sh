@@ -67,26 +67,22 @@ Remove_stagefile ()
 Require_stagefiles ()
 {
 	if [ $# -eq 0 ]; then
-		Echo_warning "Bad `Require_stagefile` usage, no params were supplied"
+		Echo_warning "Bad 'Require_stagefiles' usage, no params were supplied"
 		return 0
 	fi
 
 	local FILE
 	local MISSING=""
-	local MISSING_MULTIPLE=false
+	local MISSING_COUNT=0
 	for FILE in ${@}; do
 		if [ ! -f ".build/${FILE}" ]; then
-			if [ -n "${MISSING}" ]; then
-				MISSING_MULTIPLE=true
-			fi
+			MISSING_COUNT=$(( $MISSING_COUNT + 1 ))
 			MISSING="${MISSING:+$MISSING }${FILE}"
 		fi
 	done
-	if [ -z "${MISSING}" ]; then
+	if [ $MISSING_COUNT -eq 0 ]; then
 		return 0
-	fi
-
-	if ! $MISSING_MULTIPLE; then
+	elif [ $MISSING_COUNT -eq 1 ]; then
 		Echo_error "the following stage is required to be done first: %s" "${MISSING}"
 	else
 		Echo_error "the following stages are required to be completed first: %s" "${MISSING}"
