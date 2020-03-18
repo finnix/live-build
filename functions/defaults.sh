@@ -200,20 +200,19 @@ Set_config_defaults ()
 	LB_TASKSEL="${LB_TASKSEL:-apt}"
 
 	# Setting live build options
-	if [ -z "${_COLOR}" ]; then
-		_COLOR="auto"
-		_COLOR_OUT="true"
-		_COLOR_ERR="true"
-		if [ ! -t 1 ]; then
+	# Colouring is re-evaluated here just incase a hard coded override was given in the saved config
+	case "${_COLOR}" in
+		true)
+			_COLOR_OUT="true"
+			_COLOR_ERR="true"
+			;;
+		false)
 			_COLOR_OUT="false"
-		fi
-		if [ ! -t 2 ]; then
 			_COLOR_ERR="false"
-		fi
-	else
-		_COLOR_OUT="${_COLOR}"
-		_COLOR_ERR="${_COLOR}"
-	fi
+			;;
+		auto)
+			;;
+	esac
 	_BREAKPOINTS="${_BREAKPOINTS:-false}"
 	_DEBUG="${_DEBUG:-false}"
 	_FORCE="${_FORCE:-false}"

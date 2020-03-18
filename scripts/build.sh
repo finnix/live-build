@@ -23,6 +23,21 @@
 
 set -e
 
+if [ -z "${_COLOR}" ]; then
+	_COLOR="auto"
+	_COLOR_OUT="true"
+	_COLOR_ERR="true"
+	if [ ! -t 1 ]; then
+		_COLOR_OUT="false"
+	fi
+	if [ ! -t 2 ]; then
+		_COLOR_ERR="false"
+	fi
+else
+	_COLOR_OUT="${_COLOR}"
+	_COLOR_ERR="${_COLOR}"
+fi
+
 if [ -e local/live-build ]
 then
 	LIVE_BUILD="${LIVE_BUILD:-${PWD}/local/live-build}"
