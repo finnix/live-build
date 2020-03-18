@@ -19,7 +19,7 @@ Arguments ()
 		Echo_error "invalid arguments"
 		exit 1
 	elif [ $ERR -ne 0 ]; then
-		Echo_error "getop failure"
+		Echo_error "getopt failure"
 		exit 1
 	fi
 
