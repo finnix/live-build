@@ -179,7 +179,7 @@ Local_arguments ()
 	ARGUMENTS="$(getopt --longoptions ${LONG_OPTIONS} --name="${PROGRAM}" --options a:d:m:k:b:s:c:huv --shell sh -- "${@}")" || ERR=$?
 
 	if [ $ERR -eq 1 ]; then
-		Echo_error "invalid arguments"
+		Echo_error "Invalid argument(s)"
 		exit 1
 	elif [ $ERR -ne 0 ]; then
 		Echo_error "getopt failure"

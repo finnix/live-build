@@ -19,25 +19,14 @@ DESCRIPTION="Utility to build live systems"
 HELP=""
 USAGE="lb {clean|config|build}"
 
-case "${1}" in
-	-h|--help)
-		if [ $(which man) ]; then
-			man lb
-		else
-			Usage
-		fi
-		exit 0
-		;;
+# Handle options up to any command
+# We replace the arg set with any remaining args on return
+Arguments frontend "${@}"
+eval set -- "${REMAINING_ARGS}"
 
-	""|-u|--usage)
-		Usage
-		;;
-
-	-v|--version)
-		echo "${VERSION}"
-		exit 0
-		;;
-esac
+if [ -z "${1}" ]; then
+	Usage
+fi
 
 COMMAND="${1}"
 shift
