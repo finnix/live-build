@@ -551,15 +551,7 @@ Set_config_defaults ()
 	LB_FIRST_BOOTLOADER=$(echo "${LB_BOOTLOADERS}" | awk -F, '{ print $1 }')
 
 	# Setting checksums
-	case "${LB_MODE}" in
-		progress-linux)
-			LB_CHECKSUMS="${LB_CHECKSUMS:-sha256}"
-			;;
-
-		*)
-			LB_CHECKSUMS="${LB_CHECKSUMS:-md5}"
-			;;
-	esac
+	LB_CHECKSUMS="${LB_CHECKSUMS:-sha256}"
 
 	# Setting compression
 	LB_COMPRESSION="${LB_COMPRESSION:-none}"
