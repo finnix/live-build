@@ -477,11 +477,7 @@ Set_config_defaults ()
 	LB_BOOTAPPEND_INSTALL="$(echo ${LB_BOOTAPPEND_INSTALL} | sed -e 's/[ \t]*$//')"
 
 	# Setting iso author
-	case "${LB_MODE}" in
-		debian)
-			LB_ISO_APPLICATION="${LB_ISO_APPLICATION:-Debian Live}"
-			;;
-	esac
+	LB_ISO_APPLICATION="${LB_ISO_APPLICATION:-Debian Live}"
 
 	# Set iso preparer
 	LB_ISO_PREPARER="${LB_ISO_PREPARER:-live-build \$VERSION; https://salsa.debian.org/live-team/live-build}"
@@ -490,21 +486,13 @@ Set_config_defaults ()
 	LB_ISO_PUBLISHER="${LB_ISO_PUBLISHER:-Debian Live project; https://wiki.debian.org/DebianLive; debian-live@lists.debian.org}"
 
 	# Setting hdd options
-	case "${LB_MODE}" in
-		debian)
-			LB_HDD_LABEL="${LB_HDD_LABEL:-DEBIAN_LIVE}"
-			;;
-	esac
+	LB_HDD_LABEL="${LB_HDD_LABEL:-DEBIAN_LIVE}"
 
 	# Setting hdd size
 	LB_HDD_SIZE="${LB_HDD_SIZE:-auto}"
 
 	# Setting iso volume
-	case "${LB_MODE}" in
-		debian)
-			LB_ISO_VOLUME="${LB_ISO_VOLUME:-Debian ${LB_DISTRIBUTION} \$(date +%Y%m%d-%H:%M)}"
-			;;
-	esac
+	LB_ISO_VOLUME="${LB_ISO_VOLUME:-Debian ${LB_DISTRIBUTION} \$(date +%Y%m%d-%H:%M)}"
 
 	# Setting memtest option
 	LB_MEMTEST="${LB_MEMTEST:-none}"
