@@ -84,12 +84,6 @@ Set_config_defaults ()
 
 	## config/common
 
-	if [ -e local/live-build ]
-	then
-		LIVE_BUILD="${LIVE_BUILD:-${PWD}/local/live-build}"
-		export LIVE_BUILD
-	fi
-
 	# Setting system type
 	LB_SYSTEM="${LB_SYSTEM:-live}"
 
