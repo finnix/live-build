@@ -142,7 +142,7 @@ Local_arguments ()
 		apt-pipeline:,apt-recommends:,apt-secure:,apt-source-archives:,cache:,cache-indices:,cache-packages:,
 		cache-stages:,debconf-frontend:,debconf-priority:,dump,
 		initramfs:,initramfs-compression:,initsystem:,mode:,system:,tasksel:,
-		architectures:,clean,
+		architecture:,architectures:,clean,
 		distribution:,parent-distribution:,parent-debian-installer-distribution:,
 		distribution-chroot:,parent-distribution-chroot:,
 		distribution-binary:,parent-distribution-binary:,
