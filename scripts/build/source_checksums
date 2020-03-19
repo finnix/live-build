@@ -44,15 +44,7 @@ do
 
 	for CHECKSUM in ${LB_CHECKSUMS}
 	do
-		case "${LB_MODE}" in
-			progress-linux)
-				CHECKSUMS="$(echo ${CHECKSUM} | tr [a-z] [A-Z])SUMS"
-				;;
-
-			*)
-				CHECKSUMS="${CHECKSUM}sum.txt"
-				;;
-		esac
+		CHECKSUMS="${CHECKSUM}sum.txt"
 
 		Echo_message "Begin creating source ${CHECKSUMS}..."
 

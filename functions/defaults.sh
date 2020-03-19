@@ -53,17 +53,7 @@ New_configuration ()
 
 	# Image: Archive Areas
 	LB_ARCHIVE_AREAS="${LB_ARCHIVE_AREAS:-$(Get_configuration config/build Archive-Areas)}"
-
-	case "${LB_MODE}" in
-		progress-linux)
-			LB_ARCHIVE_AREAS="${LB_ARCHIVE_AREAS:-main contrib non-free}"
-			;;
-
-		*)
-			LB_ARCHIVE_AREAS="${LB_ARCHIVE_AREAS:-main}"
-			;;
-	esac
-
+	LB_ARCHIVE_AREAS="${LB_ARCHIVE_AREAS:-main}"
 	export LB_ARCHIVE_AREAS
 
 	# Image: Archive Areas
@@ -87,14 +77,14 @@ Set_config_defaults ()
 	# Setting system type
 	LB_SYSTEM="${LB_SYSTEM:-live}"
 
-	# Setting mode (currently: debian, progress-linux)
+	# Setting mode (currently: debian)
 	if [ $(which lsb_release) ]
 	then
 		local _DISTRIBUTOR
 		_DISTRIBUTOR="$(lsb_release -is | tr "[A-Z]" "[a-z]")"
 
 		case "${_DISTRIBUTOR}" in
-			debian|progress-linux)
+			debian)
 				LB_MODE="${LB_MODE:-${_DISTRIBUTOR}}"
 				;;
 
@@ -103,50 +93,16 @@ Set_config_defaults ()
 				;;
 		esac
 	else
-		if [ -e /etc/progress-linux_version ]
-		then
-			LB_MODE="${LB_MODE:-progress-linux}"
-		else
-			LB_MODE="${LB_MODE:-debian}"
-		fi
+		LB_MODE="${LB_MODE:-debian}"
 	fi
 
 	# Setting distribution name
-	case "${LB_MODE}" in
-		progress-linux)
-			LB_DISTRIBUTION="${LB_DISTRIBUTION:-cairon}"
-			LB_DERIVATIVE="true"
-			LB_DERIVATIVE_IS_BASED_ON="debian"
-			;;
-
-		*)
-			LB_DISTRIBUTION="${LB_DISTRIBUTION:-buster}"
-			LB_DERIVATIVE="false"
-			;;
-	esac
+	LB_DERIVATIVE="false"
+	LB_DISTRIBUTION="${LB_DISTRIBUTION:-buster}"
 	LB_DISTRIBUTION_CHROOT="${LB_DISTRIBUTION_CHROOT:-${LB_DISTRIBUTION}}"
 	LB_DISTRIBUTION_BINARY="${LB_DISTRIBUTION_BINARY:-${LB_DISTRIBUTION_CHROOT}}"
 
-
-	case "${LB_MODE}" in
-		progress-linux)
-			case "${LB_DISTRIBUTION}" in
-				baureo|baureo-backports)
-					LB_PARENT_DISTRIBUTION="${LB_PARENT_DISTRIBUTION:-wheezy}"
-					;;
-
-				cairon|cairon-backports)
-					LB_PARENT_DISTRIBUTION="${LB_PARENT_DISTRIBUTION:-sid}"
-					;;
-			esac
-
-			LB_BACKPORTS="${LB_BACKPORTS:-true}"
-			;;
-
-		*)
-			LB_BACKPORTS="${LB_BACKPORTS:-false}"
-			;;
-	esac
+	LB_BACKPORTS="${LB_BACKPORTS:-false}"
 	if [ -n "$LB_PARENT_DISTRIBUTION" ]; then
 		LB_PARENT_DISTRIBUTION_CHROOT="${LB_PARENT_DISTRIBUTION_CHROOT:-${LB_PARENT_DISTRIBUTION}}"
 		LB_PARENT_DISTRIBUTION_BINARY="${LB_PARENT_DISTRIBUTION_BINARY:-${LB_PARENT_DISTRIBUTION}}"
@@ -186,30 +142,10 @@ Set_config_defaults ()
 
 	XZ_OPTIONS="${XZ_OPTIONS:--6}"
 
-	# Setting apt recommends
-	case "${LB_MODE}" in
-		progress-linux)
-			LB_APT_RECOMMENDS="${LB_APT_RECOMMENDS:-false}"
-			;;
-
-		*)
-			LB_APT_RECOMMENDS="${LB_APT_RECOMMENDS:-true}"
-			;;
-	esac
-
-	# Setting apt secure
+	# Setting apt settings
+	LB_APT_RECOMMENDS="${LB_APT_RECOMMENDS:-true}"
 	LB_APT_SECURE="${LB_APT_SECURE:-true}"
-
-	# Setting apt source
-	case "${LB_MODE}" in
-		progress-linux)
-			LB_APT_SOURCE_ARCHIVES="${LB_APT_SOURCE_ARCHIVES:-false}"
-			;;
-
-		*)
-			LB_APT_SOURCE_ARCHIVES="${LB_APT_SOURCE_ARCHIVES:-true}"
-			;;
-	esac
+	LB_APT_SOURCE_ARCHIVES="${LB_APT_SOURCE_ARCHIVES:-true}"
 
 	# Setting cache option
 	LB_CACHE="${LB_CACHE:-true}"
@@ -242,29 +178,13 @@ Set_config_defaults ()
 	LB_INITRAMFS_COMPRESSION="${LB_INITRAMFS_COMPRESSION:-gzip}"
 
 	# Setting initsystem
-	case "${LB_MODE}" in
-		progress-linux)
-			case "${LB_DISTRIBUTION}" in
-				cairon*)
-					LB_INITSYSTEM="${LB_INITSYSTEM:-systemd}"
-					;;
-
-				*)
-					LB_INITSYSTEM="${LB_INITSYSTEM:-sysvinit}"
-					;;
-			esac
+	case "${LB_SYSTEM}" in
+		live)
+			LB_INITSYSTEM="${LB_INITSYSTEM:-systemd}"
 			;;
 
-		*)
-			case "${LB_SYSTEM}" in
-				live)
-					LB_INITSYSTEM="${LB_INITSYSTEM:-systemd}"
-					;;
-
-				normal)
-					LB_INITSYSTEM="${LB_INITSYSTEM:-none}"
-					;;
-			esac
+		normal)
+			LB_INITSYSTEM="${LB_INITSYSTEM:-none}"
 			;;
 	esac
 
@@ -308,11 +228,6 @@ Set_config_defaults ()
 			LB_MIRROR_BOOTSTRAP="${LB_MIRROR_BOOTSTRAP:-http://deb.debian.org/debian/}"
 			LB_PARENT_MIRROR_BOOTSTRAP="${LB_PARENT_MIRROR_BOOTSTRAP:-${LB_MIRROR_BOOTSTRAP}}"
 			;;
-
-		progress-linux)
-			LB_PARENT_MIRROR_BOOTSTRAP="${LB_PARENT_MIRROR_BOOTSTRAP:-http://deb.debian.org/debian/}"
-			LB_MIRROR_BOOTSTRAP="${LB_MIRROR_BOOTSTRAP:-http://cdn.archive.progress-linux.org/packages/}"
-			;;
 	esac
 
 	LB_PARENT_MIRROR_CHROOT="${LB_PARENT_MIRROR_CHROOT:-${LB_PARENT_MIRROR_BOOTSTRAP}}"
@@ -324,11 +239,6 @@ Set_config_defaults ()
 			LB_MIRROR_CHROOT_SECURITY="${LB_MIRROR_CHROOT_SECURITY:-http://security.debian.org/}"
 			LB_PARENT_MIRROR_CHROOT_SECURITY="${LB_PARENT_MIRROR_CHROOT_SECURITY:-${LB_MIRROR_CHROOT_SECURITY}}"
 			;;
-
-		progress-linux)
-			LB_PARENT_MIRROR_CHROOT_SECURITY="${LB_PARENT_MIRROR_CHROOT_SECURITY:-http://security.debian.org/}"
-			LB_MIRROR_CHROOT_SECURITY="${LB_MIRROR_CHROOT_SECURITY:-${LB_MIRROR_CHROOT}}"
-			;;
 	esac
 
 	# Setting mirror which ends up in the image
@@ -336,11 +246,6 @@ Set_config_defaults ()
 		debian)
 			LB_MIRROR_BINARY="${LB_MIRROR_BINARY:-http://deb.debian.org/debian/}"
 			LB_PARENT_MIRROR_BINARY="${LB_PARENT_MIRROR_BINARY:-${LB_MIRROR_BINARY}}"
-			;;
-
-		progress-linux)
-			LB_PARENT_MIRROR_BINARY="${LB_PARENT_MIRROR_BINARY:-http://deb.debian.org/debian/}"
-			LB_MIRROR_BINARY="${LB_MIRROR_BINARY:-${LB_MIRROR_CHROOT}}"
 			;;
 	esac
 
@@ -350,24 +255,10 @@ Set_config_defaults ()
 			LB_MIRROR_BINARY_SECURITY="${LB_MIRROR_BINARY_SECURITY:-http://security.debian.org/}"
 			LB_PARENT_MIRROR_BINARY_SECURITY="${LB_PARENT_MIRROR_BINARY_SECURITY:-${LB_MIRROR_BINARY_SECURITY}}"
 			;;
-
-		progress-linux)
-			LB_PARENT_MIRROR_BINARY_SECURITY="${LB_PARENT_MIRROR_BINARY_SECURITY:-http://security.debian.org/}"
-			LB_MIRROR_BINARY_SECURITY="${LB_MIRROR_BINARY_SECURITY:-${LB_MIRROR_CHROOT}}"
-			;;
 	esac
 
-	case "${LB_MODE}" in
-		progress-linux)
-			LB_PARENT_MIRROR_DEBIAN_INSTALLER="${LB_PARENT_MIRROR_DEBIAN_INSTALLER:-${LB_MIRROR_CHROOT}}"
-			LB_MIRROR_DEBIAN_INSTALLER="${LB_MIRROR_DEBIAN_INSTALLER:-${LB_MIRROR_CHROOT}}"
-			;;
-
-		*)
-			LB_MIRROR_DEBIAN_INSTALLER="${LB_MIRROR_DEBIAN_INSTALLER:-${LB_MIRROR_CHROOT}}"
-			LB_PARENT_MIRROR_DEBIAN_INSTALLER="${LB_PARENT_MIRROR_DEBIAN_INSTALLER:-${LB_PARENT_MIRROR_CHROOT}}"
-			;;
-	esac
+	LB_MIRROR_DEBIAN_INSTALLER="${LB_MIRROR_DEBIAN_INSTALLER:-${LB_MIRROR_CHROOT}}"
+	LB_PARENT_MIRROR_DEBIAN_INSTALLER="${LB_PARENT_MIRROR_DEBIAN_INSTALLER:-${LB_PARENT_MIRROR_CHROOT}}"
 
 	## config/chroot
 
@@ -410,42 +301,15 @@ Set_config_defaults ()
 			;;
 
 		ia64)
-			case "${LB_MODE}" in
-				progress-linux)
-					Echo_error "Architecture ${LB_ARCHITECTURES} not supported in the ${LB_MODE} mode."
-					exit 1
-					;;
-
-				*)
-					LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS_WITH_ARCH:-itanium}"
-					;;
-			esac
+			LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS_WITH_ARCH:-itanium}"
 			;;
 
 		powerpc)
-			case "${LB_MODE}" in
-				progress-linux)
-					Echo_error "Architecture ${LB_ARCHITECTURES} not supported in the ${LB_MODE} mode."
-					exit 1
-					;;
-
-				*)
-					LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS_WITH_ARCH:-powerpc64 powerpc}"
-					;;
-			esac
+			LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS_WITH_ARCH:-powerpc64 powerpc}"
 			;;
 
 		s390x)
-			case "${LB_MODE}" in
-				progress-linux)
-					Echo_error "Architecture ${LB_ARCHITECTURES} not supported in the ${LB_MODE} mode."
-					exit 1
-					;;
-
-				*)
-					LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS_WITH_ARCH:-s390x}"
-					;;
-			esac
+			LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS_WITH_ARCH:-s390x}"
 			;;
 
 		*)
@@ -504,15 +368,7 @@ Set_config_defaults ()
 	esac
 
 	# Setting apt indices
-	case "${LB_MODE}" in
-		progress-linux)
-			LB_APT_INDICES="${LB_APT_INDICES:-false}"
-			;;
-
-		*)
-			LB_APT_INDICES="${LB_APT_INDICES:-true}"
-			;;
-	esac
+	LB_APT_INDICES="${LB_APT_INDICES:-true}"
 
 	# Setting bootloader
 	if [ -z "${LB_BOOTLOADERS}" ]
@@ -564,7 +420,7 @@ Set_config_defaults ()
 
 	# Setting debian-installer-gui
 	case "${LB_MODE}" in
-		debian|progress-linux)
+		debian)
 			LB_DEBIAN_INSTALLER_GUI="${LB_DEBIAN_INSTALLER_GUI:-true}"
 			;;
 
@@ -638,34 +494,18 @@ Set_config_defaults ()
 		debian)
 			LB_ISO_APPLICATION="${LB_ISO_APPLICATION:-Debian Live}"
 			;;
-
-		progress-linux)
-			LB_ISO_APPLICATION="${LB_ISO_APPLICATION:-Progress Linux}"
-			;;
 	esac
 
 	# Set iso preparer
 	LB_ISO_PREPARER="${LB_ISO_PREPARER:-live-build \$VERSION; https://salsa.debian.org/live-team/live-build}"
 
 	# Set iso publisher
-	case "${LB_MODE}" in
-		progress-linux)
-			LB_ISO_PUBLISHER="${LB_ISO_PUBLISHER:-Progress Linux; http://www.progress-linux.org/; progress-project@lists.progress-linux.org}"
-			;;
-
-		*)
-			LB_ISO_PUBLISHER="${LB_ISO_PUBLISHER:-Debian Live project; https://wiki.debian.org/DebianLive; debian-live@lists.debian.org}"
-			;;
-	esac
+	LB_ISO_PUBLISHER="${LB_ISO_PUBLISHER:-Debian Live project; https://wiki.debian.org/DebianLive; debian-live@lists.debian.org}"
 
 	# Setting hdd options
 	case "${LB_MODE}" in
 		debian)
 			LB_HDD_LABEL="${LB_HDD_LABEL:-DEBIAN_LIVE}"
-			;;
-
-		progress-linux)
-			LB_HDD_LABEL="${LB_HDD_LABEL:-PROGRESS_$(echo ${LB_DISTRIBUTION} | tr "[a-z]" "[A-Z]")}"
 			;;
 	esac
 
@@ -677,10 +517,6 @@ Set_config_defaults ()
 		debian)
 			LB_ISO_VOLUME="${LB_ISO_VOLUME:-Debian ${LB_DISTRIBUTION} \$(date +%Y%m%d-%H:%M)}"
 			;;
-
-		progress-linux)
-			LB_ISO_VOLUME="${LB_ISO_VOLUME:-Progress ${LB_DISTRIBUTION}}"
-			;;
 	esac
 
 	# Setting memtest option
@@ -690,50 +526,34 @@ Set_config_defaults ()
 	fi
 
 	# Setting loadlin option
-	case "${LB_MODE}" in
-		progress-linux)
-
+	case "${LB_ARCHITECTURES}" in
+		amd64|i386)
+			if [ "${LB_DEBIAN_INSTALLER}" != "none" ]
+			then
+				LB_LOADLIN="${LB_LOADLIN:-true}"
+			else
+				LB_LOADLIN="${LB_LOADLIN:-false}"
+			fi
 			;;
 
 		*)
-			case "${LB_ARCHITECTURES}" in
-				amd64|i386)
-					if [ "${LB_DEBIAN_INSTALLER}" != "none" ]
-					then
-						LB_LOADLIN="${LB_LOADLIN:-true}"
-					else
-						LB_LOADLIN="${LB_LOADLIN:-false}"
-					fi
-					;;
-
-				*)
-					LB_LOADLIN="${LB_LOADLIN:-false}"
-					;;
-			esac
+			LB_LOADLIN="${LB_LOADLIN:-false}"
 			;;
 	esac
 
 	# Setting win32-loader option
-	case "${LB_MODE}" in
-		progress-linux)
-
+	case "${LB_ARCHITECTURES}" in
+		amd64|i386)
+			if [ "${LB_DEBIAN_INSTALLER}" != "none" ]
+			then
+				LB_WIN32_LOADER="${LB_WIN32_LOADER:-true}"
+			else
+				LB_WIN32_LOADER="${LB_WIN32_LOADER:-false}"
+			fi
 			;;
 
 		*)
-			case "${LB_ARCHITECTURES}" in
-				amd64|i386)
-					if [ "${LB_DEBIAN_INSTALLER}" != "none" ]
-					then
-						LB_WIN32_LOADER="${LB_WIN32_LOADER:-true}"
-					else
-						LB_WIN32_LOADER="${LB_WIN32_LOADER:-false}"
-					fi
-					;;
-
-				*)
-					LB_WIN32_LOADER="${LB_WIN32_LOADER:-false}"
-					;;
-			esac
+			LB_WIN32_LOADER="${LB_WIN32_LOADER:-false}"
 			;;
 	esac
 
@@ -741,15 +561,7 @@ Set_config_defaults ()
 	LB_NET_ROOT_FILESYSTEM="${LB_NET_ROOT_FILESYSTEM:-nfs}"
 
 	# Setting netboot server path
-	case "${LB_MODE}" in
-		progress-linux)
-			LB_NET_ROOT_PATH="${LB_NET_ROOT_PATH:-/srv/progress-linux}"
-			;;
-
-		*)
-			LB_NET_ROOT_PATH="${LB_NET_ROOT_PATH:-/srv/${LB_MODE}-live}"
-			;;
-	esac
+	LB_NET_ROOT_PATH="${LB_NET_ROOT_PATH:-/srv/${LB_MODE}-live}"
 
 	# Setting netboot server address
 	LB_NET_ROOT_SERVER="${LB_NET_ROOT_SERVER:-192.168.1.1}"

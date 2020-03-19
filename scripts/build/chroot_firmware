@@ -54,20 +54,9 @@ Check_package host /usr/bin/wget wget
 FIRMWARE_PACKAGES=""
 
 # Manually add firmware-linux/non-free meta package
-if echo ${LB_PARENT_ARCHIVE_AREAS} | grep -qs "non-free"
+if [ "${LB_DERIVATIVE}" = "false" ] && echo ${LB_PARENT_ARCHIVE_AREAS} | grep -qs "non-free"
 then
-	if [ "${LB_DERIVATIVE}" != "true" ]
-	then
-		FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} firmware-linux"
-	else
-		case "${LB_DERIVATIVE_IS_BASED_ON}" in
-			debian)
-				FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} firmware-linux"
-				;;
-			*)
-				;;
-		esac
-	fi
+	FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} firmware-linux"
 fi
 
 Firmware_List_From_Contents "${LB_PARENT_MIRROR_CHROOT}" "${LB_PARENT_DISTRIBUTION_CHROOT}" "${LB_PARENT_ARCHIVE_AREAS}"

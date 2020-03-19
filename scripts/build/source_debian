@@ -103,37 +103,6 @@ then
 	echo "${LB_TASKSEL}" >> source-selection.txt
 fi
 
-# apt-get source does not respect pinning
-# building images with backports included but not enabled
-# will result in apt-get source download stuff from backports
-# where available. workaround: disable backports
-case "${LB_MODE}" in
-	progress-linux)
-		case "${LB_DISTRIBUTION_BINARY}" in
-			*-backports)
-
-				;;
-
-			*)
-				if grep -qs "${LB_DISTRIBUTION_BINARY}-backports" chroot/etc/apt/sources.list.d/progress-linux.list
-				then
-					cp chroot/etc/apt/sources.list.d/progress-linux.list chroot/etc/apt/sources.list.d/progress-linux.list.orig
-
-					while read -r _LINE
-					do
-						if echo "${_LINE}" | grep -qs ${LB_DISTRIBUTION_BINARY}-backports
-						then
-							sed -i -e "s|${_LINE}|#${_LINE}|" chroot/etc/apt/sources.list.d/progress-linux.list
-						fi
-					done < chroot/etc/apt/sources.list.d/progress-linux.list.orig
-
-					Apt chroot update
-				fi
-				;;
-		esac
-		;;
-esac
-
 # Make a clean directory to download the packages to.
 # We need to set the ownership to user `_apt` to give write access to the apt user,
 # otherwise we get a lot of warnings from apt about downloading as root.
@@ -201,14 +170,6 @@ do
 done
 
 rmdir --ignore-fail-on-non-empty chroot/source.pkgs
-
-# Reverting apt sources again
-if [ -e chroot/etc/apt/sources.list.d/progress-linux.list.orig ]
-then
-	mv chroot/etc/apt/sources.list.d/progress-linux.list.orig chroot/etc/apt/sources.list.d/progress-linux.list
-
-	Apt chroot update
-fi
 
 # Creating stage file
 Create_stagefile

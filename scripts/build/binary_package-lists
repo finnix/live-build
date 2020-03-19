@@ -32,17 +32,8 @@ Check_stagefile
 # Acquire lock file
 Acquire_lockfile
 
-case "${LB_MODE}" in
-	progress-linux)
-		DISTS="installer/dists"
-		POOL="installer/pool"
-		;;
-
-	*)
-		DISTS="dists"
-		POOL="pool"
-		;;
-esac
+DISTS="dists"
+POOL="pool"
 
 if ls config/package-lists/*.list > /dev/null 2>&1 || \
    ls config/package-lists/*.list.binary > /dev/null 2>&1

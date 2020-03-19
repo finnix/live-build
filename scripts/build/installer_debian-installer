@@ -263,14 +263,6 @@ case "${LB_DERIVATIVE}" in
 		else
 			URL="${LB_PARENT_MIRROR_DEBIAN_INSTALLER}/dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/main/installer-${LB_ARCHITECTURES}/current/images"
 		fi
-
-		if [ "${LB_MODE}" = "progress-linux" ]
-		then
-			# FIXME: normal derivatives probably don't rebuild d-i,
-			# but progress-linux does.
-			URL="${LB_MIRROR_DEBIAN_INSTALLER}/dists/${LB_DEBIAN_INSTALLER_DISTRIBUTION}/main/installer-${LB_ARCHITECTURES}/current/images"
-		fi
-		;;
 esac
 
 mkdir -p "${DESTDIR_DI}"
@@ -346,20 +338,9 @@ then
 		FIRMWARE_PACKAGES=""
 
 		# Manually add firmware-linux/non-free meta package
-		if echo ${LB_PARENT_ARCHIVE_AREAS} | grep -qs "non-free"
+		if [ "${LB_DERIVATIVE}" = "false" ] && echo ${LB_PARENT_ARCHIVE_AREAS} | grep -qs "non-free"
 		then
-			if [ "${LB_DERIVATIVE}" != "true" ]
-			then
-				FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} firmware-linux"
-			else
-				case "${LB_DERIVATIVE_IS_BASED_ON}" in
-					debian)
-						FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} firmware-linux"
-						;;
-					*)
-						;;
-				esac
-			fi
+			FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} firmware-linux"
 		fi
 
 		Firmware_List_From_Contents "${LB_PARENT_MIRROR_CHROOT}" "${LB_PARENT_DISTRIBUTION_CHROOT}" "${LB_PARENT_ARCHIVE_AREAS}"
@@ -856,22 +837,6 @@ then
 		Repack_initrd "${DESTDIR}"/"${INITRD_GI}" config/includes.installer
 	fi
 fi
-
-case "${LB_MODE}" in
-	progress-linux)
-		mv binary/install binary/installer
-
-		rm -f binary/debian
-
-		for _DIRECTORY in dists pool project firmware
-		do
-			if [ -e "binary/${_DIRECTORY}" ]
-			then
-				mv binary/"${_DIRECTORY}" binary/installer
-			fi
-		done
-		;;
-esac
 
 # Saving cache
 Save_package_cache binary

@@ -37,15 +37,7 @@ Check_stagefile
 # Acquire lock file
 Acquire_lockfile
 
-case "${LB_MODE}" in
-	progress-linux)
-		RUN_LABEL="Run Progress Linux"
-		;;
-
-	*)
-		RUN_LABEL="Run Debian GNU/Linux"
-		;;
-esac
+RUN_LABEL="Run Debian GNU/Linux"
 
 case "${LB_ARCHITECTURES}" in
 	amd64|i386)

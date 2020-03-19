@@ -95,7 +95,7 @@ USAGE="${PROGRAM}   [--apt apt|aptitude]\n\
 \t    [--mirror-chroot URL]\n\
 \t    [--mirror-chroot-security URL]\n\
 \t    [--mirror-debian-installer URL]\n\
-\t    [--mode debian|progress-linux]\n\
+\t    [--mode debian]\n\
 \t    [--net-cow-filesystem nfs|cfs]\n\
 \t    [--net-cow-mountoptions OPTIONS]\n\
 \t    [--net-cow-path PATH]\n\

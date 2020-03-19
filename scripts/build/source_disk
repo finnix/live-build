@@ -60,12 +60,6 @@ case "${LB_MODE}" in
 		TRACE="project/trace/ftp-master.debian.org"
 		;;
 
-	progress-linux)
-		TITLE="Progress Linux"
-		STRING="${VERSION} (${DISTRIBUTION}) - ${ARCHITECTURE}"
-		TRACE="project/trace/archive-master.progress-linux.org"
-		;;
-
 	*)
 		TITLE="Debian GNU/Linux"
 		STRING="Snapshot ${ARCHITECTURE}"

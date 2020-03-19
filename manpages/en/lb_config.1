@@ -164,7 +164,7 @@
 .br
 	[\fB\-\-mirror\-debian\-installer\fR \fIURL\fR]
 .br
-	[\fB\-\-mode\fR debian|progress-linux]
+	[\fB\-\-mode\fR debian]
 .br
 	[\fB\-\-net\-cow\-filesystem\fR nfs|cfs]
 .br
@@ -405,7 +405,7 @@ sets the location of the debian package mirror that will be used to fetch the pa
 sets the location of the debian security package mirror that will be used to fetch the packages of the derivative in order to build the live system. By default, this points to http://security.debian.org/.
 .IP "\fB\-\-mirror\-debian\-installer\fR \fIURL\fR" 4
 sets the location of the mirror that will be used to fetch the debian installer images of the derivative. By default, this points to the same mirror used to build the live system, i.e. the value of \-\-mirror\-chroot.
-.IP "\fB\-\-mode\fR debian|progress-linux" 4
+.IP "\fB\-\-mode\fR debian" 4
 defines a global mode to load project specific defaults. By default this is set to debian.
 .IP "\fB\-\-net\-cow\-filesystem\fR nfs|cfs" 4
 defines the filesystem type for the copy\-on\-write layer and defaults to nfs.

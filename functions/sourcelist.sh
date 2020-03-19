@@ -75,7 +75,7 @@ Create_apt_sources_list ()
 	# Set security repo
 	if [ "${LB_SECURITY}" = "true" ]; then
 		case "${LB_MODE}" in
-			debian|progress-linux)
+			debian)
 				case "${PARENT_DISTRIBUTION}" in
 					sid)
 						# do nothing
@@ -87,14 +87,9 @@ Create_apt_sources_list ()
 						;;
 				esac
 
-				if [ "${LB_MODE}" = progress-linux ]; then
-					echo "deb ${MIRROR_SECURITY} ${_DISTRIBUTION}-security ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
-					echo "deb-src ${MIRROR_SECURITY} ${_DISTRIBUTION}-security ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
-				else
-					if [ "${LB_DERIVATIVE}" = "true" ]; then
-						echo "deb ${MIRROR_SECURITY} ${_DISTRIBUTION}/updates ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
-						echo "deb-src ${MIRROR_SECURITY} ${_DISTRIBUTION}/updates ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
-					fi
+				if [ "${LB_DERIVATIVE}" = "true" ]; then
+					echo "deb ${MIRROR_SECURITY} ${_DISTRIBUTION}/updates ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
+					echo "deb-src ${MIRROR_SECURITY} ${_DISTRIBUTION}/updates ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
 				fi
 				;;
 		esac

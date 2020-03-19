@@ -142,68 +142,6 @@ case "${1}" in
 			esac
 		fi
 
-		case "${LB_MODE}" in
-			progress-linux)
-				if [ ! -e chroot/etc/apt/preferences.d/progress-linux.pref ]
-				then
-					_DISTRIBUTION="$(echo ${LB_DISTRIBUTION_BINARY} | sed -e 's|-backports||')"
-
-					_ENABLE_DISTRIBUTIONS="${_DISTRIBUTION}"
-					_DISABLE_DISTRIBUTIONS=""
-
-					if [ "${LB_SECURITY}" = "true" ]
-					then
-						_ENABLE_DISTRIBUTIONS="${_ENABLE_DISTRIBUTIONS} ${_DISTRIBUTION}-security"
-					fi
-
-					if [ "${LB_UPDATES}" = "true" ]
-					then
-						_ENABLE_DISTRIBUTIONS="${_ENABLE_DISTRIBUTIONS} ${_DISTRIBUTION}-updates"
-					fi
-
-					case "${LB_DISTRIBUTION_BINARY}" in
-						*-backports)
-							if [ "${LB_BACKPORTS}" = "true" ]
-							then
-								_ENABLE_DISTRIBUTIONS="${_ENABLE_DISTRIBUTIONS} ${_DISTRIBUTION}-backports"
-							fi
-							;;
-
-						*)
-							if [ "${LB_BACKPORTS}" = "true" ]
-							then
-								_DISABLE_DISTRIBUTIONS="${_DISABLE_DISTRIBUTIONS} ${_DISTRIBUTION}-backports"
-							fi
-							;;
-					esac
-
-					for _DISTRIBUTION in ${_ENABLE_DISTRIBUTIONS}
-					do
-
-cat >> chroot/etc/apt/preferences.d/progress-linux.pref << EOF
-
-Package: *
-Pin: release n=${_DISTRIBUTION}
-Pin-Priority: 999
-EOF
-
-					done
-
-					for _DISTRIBUTION in ${_DISABLE_DISTRIBUTIONS}
-					do
-
-cat >> chroot/etc/apt/preferences.d/progress-linux.pref << EOF
-
-#Package: *
-#Pin: release n=${_DISTRIBUTION}
-#Pin-Priority: 999
-EOF
-
-					done
-				fi
-				;;
-		esac
-
 		# Creating stage file
 		Create_stagefile
 		;;
