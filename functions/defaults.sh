@@ -406,15 +406,7 @@ Set_config_defaults ()
 	LB_DEBIAN_INSTALLER_DISTRIBUTION="${LB_DEBIAN_INSTALLER_DISTRIBUTION:-${LB_DISTRIBUTION}}"
 
 	# Setting debian-installer-gui
-	case "${LB_MODE}" in
-		debian)
-			LB_DEBIAN_INSTALLER_GUI="${LB_DEBIAN_INSTALLER_GUI:-true}"
-			;;
-
-		*)
-			LB_DEBIAN_INSTALLER_GUI="${LB_DEBIAN_INSTALLER_GUI:-false}"
-			;;
-	esac
+	LB_DEBIAN_INSTALLER_GUI="${LB_DEBIAN_INSTALLER_GUI:-true}"
 
 	# Setting debian-installer preseed filename
 	if [ -z "${LB_DEBIAN_INSTALLER_PRESEEDFILE}" ]
