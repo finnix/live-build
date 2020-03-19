@@ -279,17 +279,6 @@ Set_config_defaults ()
 	# Setting tasksel
 	LB_TASKSEL="${LB_TASKSEL:-apt}"
 
-	# Setting root directory
-	case "${LB_MODE}" in
-		progress-linux)
-			LB_ROOT="${LB_ROOT:-progress-linux}"
-			;;
-
-		*)
-			LB_ROOT="${LB_ROOT:-${LB_MODE}-live}"
-			;;
-	esac
-
 	# Setting live build options
 	if [ -z "${_COLOR}" ]; then
 		_COLOR="auto"
