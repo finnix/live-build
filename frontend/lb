@@ -12,7 +12,7 @@
 set -e
 
 # Including common functions
-[ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
+[ -n "${LIVE_BUILD}" ] && [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
 # Setting static variables
 DESCRIPTION="Utility to build live systems"
