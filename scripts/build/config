@@ -141,7 +141,7 @@ Local_arguments ()
 	LONG_OPTIONS="apt:,apt-ftp-proxy:,apt-http-proxy:,apt-options:,aptitude-options:,debootstrap-options:,debootstrap-script:,
 		apt-pipeline:,apt-recommends:,apt-secure:,apt-source-archives:,cache:,cache-indices:,cache-packages:,
 		cache-stages:,debconf-frontend:,debconf-priority:,dump,
-		initramfs:,initramfs-compression:,initsystem:,mode:,system:,tasksel:,
+		initramfs:,initramfs-compression:,initsystem:,fdisk:,losetup:,mode:,system:,tasksel:,
 		architecture:,architectures:,clean,
 		distribution:,parent-distribution:,parent-debian-installer-distribution:,
 		distribution-chroot:,parent-distribution-chroot:,
