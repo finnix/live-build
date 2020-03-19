@@ -24,7 +24,7 @@ case "${1}" in
 		if [ $(which man) ]; then
 			man lb
 		else
-			${0} --usage
+			Usage
 		fi
 		exit 0
 		;;
