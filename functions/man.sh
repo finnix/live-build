@@ -13,7 +13,7 @@ Man ()
 {
 	if [ $(which man) ]
 	then
-		man $(basename ${0})
+		man ${PROGRAM} $(basename ${0})
 		exit 0
 	fi
 }
