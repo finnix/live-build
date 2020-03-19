@@ -222,41 +222,28 @@ Set_config_defaults ()
 
 	## config/bootstrap
 
-	# Setting mirror to fetch packages from
-	case "${LB_MODE}" in
-		debian)
-			LB_MIRROR_BOOTSTRAP="${LB_MIRROR_BOOTSTRAP:-http://deb.debian.org/debian/}"
-			LB_PARENT_MIRROR_BOOTSTRAP="${LB_PARENT_MIRROR_BOOTSTRAP:-${LB_MIRROR_BOOTSTRAP}}"
-			;;
-	esac
-
-	LB_PARENT_MIRROR_CHROOT="${LB_PARENT_MIRROR_CHROOT:-${LB_PARENT_MIRROR_BOOTSTRAP}}"
+	# Setting mirrors
+	# *_MIRROR_CHROOT: to fetch packages from
+	# *_MIRROR_BOOTSTRAP: to fetch packages from
+	# *_MIRROR_CHROOT_SECURITY: security mirror to fetch packages from
+	# *_MIRROR_BINARY: mirror which ends up in the image
+	# *_MIRROR_BINARY_SECURITY: security mirror which ends up in the image
+	# *_MIRROR_DEBIAN_INSTALLER: to fetch installer from
 	LB_MIRROR_CHROOT="${LB_MIRROR_CHROOT:-${LB_MIRROR_BOOTSTRAP}}"
+	LB_PARENT_MIRROR_CHROOT="${LB_PARENT_MIRROR_CHROOT:-${LB_PARENT_MIRROR_BOOTSTRAP}}"
+	if [ "${LB_MODE}" = "debian" ]; then
+		LB_MIRROR_BOOTSTRAP="${LB_MIRROR_BOOTSTRAP:-http://deb.debian.org/debian/}"
+		LB_PARENT_MIRROR_BOOTSTRAP="${LB_PARENT_MIRROR_BOOTSTRAP:-${LB_MIRROR_BOOTSTRAP}}"
 
-	# Setting security mirror to fetch packages from
-	case "${LB_MODE}" in
-		debian)
-			LB_MIRROR_CHROOT_SECURITY="${LB_MIRROR_CHROOT_SECURITY:-http://security.debian.org/}"
-			LB_PARENT_MIRROR_CHROOT_SECURITY="${LB_PARENT_MIRROR_CHROOT_SECURITY:-${LB_MIRROR_CHROOT_SECURITY}}"
-			;;
-	esac
+		LB_MIRROR_CHROOT_SECURITY="${LB_MIRROR_CHROOT_SECURITY:-http://security.debian.org/}"
+		LB_PARENT_MIRROR_CHROOT_SECURITY="${LB_PARENT_MIRROR_CHROOT_SECURITY:-${LB_MIRROR_CHROOT_SECURITY}}"
 
-	# Setting mirror which ends up in the image
-	case "${LB_MODE}" in
-		debian)
-			LB_MIRROR_BINARY="${LB_MIRROR_BINARY:-http://deb.debian.org/debian/}"
-			LB_PARENT_MIRROR_BINARY="${LB_PARENT_MIRROR_BINARY:-${LB_MIRROR_BINARY}}"
-			;;
-	esac
+		LB_MIRROR_BINARY="${LB_MIRROR_BINARY:-http://deb.debian.org/debian/}"
+		LB_PARENT_MIRROR_BINARY="${LB_PARENT_MIRROR_BINARY:-${LB_MIRROR_BINARY}}"
 
-	# Setting security mirror which ends up in the image
-	case "${LB_MODE}" in
-		debian)
-			LB_MIRROR_BINARY_SECURITY="${LB_MIRROR_BINARY_SECURITY:-http://security.debian.org/}"
-			LB_PARENT_MIRROR_BINARY_SECURITY="${LB_PARENT_MIRROR_BINARY_SECURITY:-${LB_MIRROR_BINARY_SECURITY}}"
-			;;
-	esac
-
+		LB_MIRROR_BINARY_SECURITY="${LB_MIRROR_BINARY_SECURITY:-http://security.debian.org/}"
+		LB_PARENT_MIRROR_BINARY_SECURITY="${LB_PARENT_MIRROR_BINARY_SECURITY:-${LB_MIRROR_BINARY_SECURITY}}"
+	fi
 	LB_MIRROR_DEBIAN_INSTALLER="${LB_MIRROR_DEBIAN_INSTALLER:-${LB_MIRROR_CHROOT}}"
 	LB_PARENT_MIRROR_DEBIAN_INSTALLER="${LB_PARENT_MIRROR_DEBIAN_INSTALLER:-${LB_PARENT_MIRROR_CHROOT}}"
 
