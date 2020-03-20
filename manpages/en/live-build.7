@@ -49,7 +49,7 @@ be verbose.
 
 .SH LIVE\-BUILD COMMANDS
 .\" FIXME
-We divide live\-build into high level ("porcelain") commands and low level ("plumbing") commands.
+We divide live\-build into high level ("porcelain") commands, secondary major build stage ("porcelain") commands, and low level ("plumbing") commands.
 .PP
 Here is the complete list of all available live\-build commands. See their man
 pages for additional documentation.
@@ -62,7 +62,7 @@ We separate the porcelain commands into the main commands and some ancillary use
 .IP "\fBlb config\fR(1)" 4
 creates configuration for live\-build
 .IP "\fBlb build\fR(1)" 4
-executes the build process (by executing all of the secondary level build stages in sequence)
+executes the build process (by executing all of the secondary level major build stages in sequence)
 .IP "\fBlb clean\fR(1)" 4
 cleans up system build directories
 .SS Ancillary Commands
@@ -72,7 +72,7 @@ generic live\-build script execution wrapper
 
 .SH SECONDARY\-LEVEL BUILD COMMANDS (PORCELAIN)
 .\" FIXME
-The following are the commands that execute each major stage of the build process, in their necessary order of execution. Normally a user might just execute the higher level \fBlb build\fR(1) command.
+The following are the commands that execute each major stage of the build process, in their necessary order of execution. Normally a user might just execute the higher level \fBlb build\fR(1) command rather than use these individually.
 .IP "\fBlb bootstrap\fR(1)" 4
 executes the first build stage, creating (bootstraping) a basic Debian root filesystem
 .IP "\fBlb chroot\fR(1)" 4
