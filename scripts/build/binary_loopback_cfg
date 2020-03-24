@@ -233,6 +233,8 @@ fi
 # Assembling debian-installer configuration
 if [ "${LB_DEBIAN_INSTALLER}" != "none" ]
 then
+	ENABLE_INSTALL_MENU="true"
+
 	KERNEL_DI="/install/vmlinuz"
 	INITRD_DI="/install/initrd.gz"
 	APPEND_DI="vga=normal ${LB_BOOTAPPEND_INSTALL} --- quiet"
@@ -262,6 +264,8 @@ then
 		Grub_install_entry "Automatic install in text mode" "auto" "${KERNEL_DI}" "${INITRD_DI}" "auto=true priority=critical ${APPEND_DI}" "a"
 		Grub_install_entry "Rescue system in text mode" "rescue" "${KERNEL_DI}" "${INITRD_DI}" "rescue/enable=true ${APPEND_DI}" "r"
 	fi
+else
+	ENABLE_INSTALL_MENU="false"
 fi
 
 # Assembling memtest configuration
@@ -296,6 +300,7 @@ sed -i \
     -e "s|@LB_BOOTAPPEND_INSTALL@|${LB_BOOTAPPEND_INSTALL}|" \
     -e "s|@LB_BOOTAPPEND_LIVE_FAILSAFE@|${LB_BOOTAPPEND_LIVE_FAILSAFE}|" \
     -e "s|@LB_BOOTAPPEND_LIVE@|${LB_BOOTAPPEND_LIVE}|" \
+    -e "s|@ENABLE_INSTALL_MENU@|${ENABLE_INSTALL_MENU}|" \
     -e "s|LINUX_LIVE|$(escape_for_sed "${LINUX_LIVE}")|" \
     -e "s|LINUX_INSTALL|$(escape_for_sed "${LINUX_INSTALL}")|" \
     -e "s|LINUX_ADVANCED_INSTALL|$(escape_for_sed "${LINUX_ADVANCED_INSTALL}")|" \
