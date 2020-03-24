@@ -50,9 +50,10 @@ Grub_menu_entry() {
 	local KERNEL="$2"
 	local INITRD="$3"
 	local APPEND="$4"
+	local HOTKEY="${5:+ --hotkey=$5}"
 
 	cat <<END
-menuentry "$LABEL" {
+menuentry "${LABEL}"${HOTKEY} {
 	linux	$KERNEL $APPEND
 	initrd	$INITRD
 }
@@ -71,6 +72,7 @@ Grub_install_entry ()
 	local KERNEL="${3}"
 	local INITRD="${4}"
 	local APPEND="${5}"
+	local HOTKEY="${6}"
 
 	# Drop "quiet" kernel parameter for expert entries
 	case $TYPE in
@@ -81,10 +83,10 @@ Grub_install_entry ()
 
 	if [ -z "$LINUX_INSTALL" ]; then
 		# First entry recorded in LINUX_INSTALL
-		LINUX_INSTALL="$(Grub_menu_entry "$LABEL" "$KERNEL" "$INITRD" "$APPEND")$NL"
+		LINUX_INSTALL="$(Grub_menu_entry "$LABEL" "$KERNEL" "$INITRD" "$APPEND" "$HOTKEY")$NL"
 	else
 		# Remaining entries recorded in LINUX_ADVANCED_INSTALL
-		LINUX_ADVANCED_INSTALL="$LINUX_ADVANCED_INSTALL$(Grub_menu_entry "$LABEL" "$KERNEL" "$INITRD" "$APPEND")$NL"
+		LINUX_ADVANCED_INSTALL="$LINUX_ADVANCED_INSTALL$(Grub_menu_entry "$LABEL" "$KERNEL" "$INITRD" "$APPEND" "$HOTKEY")$NL"
 	fi
 }
 
