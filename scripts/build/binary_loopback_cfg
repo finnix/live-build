@@ -120,7 +120,7 @@ Grub_live_autodetect_entry ()
 Grub_memtest_menu_entry ()
 {
 	cat <<END
-menuentry "$LB_MEMTEST" {
+menuentry "$LB_MEMTEST" --hotkey=m {
 	linux16 /${INITFS}/memtest
 }
 END
