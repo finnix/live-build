@@ -219,6 +219,15 @@ Set_config_defaults ()
 	_QUIET="${_QUIET:-false}"
 	_VERBOSE="${_VERBOSE:-false}"
 
+	# Apt v2.0.1 introduced color support, but it needs to be explicitly enabled
+	if [ "${_COLOR_OUT}" = "true" ] && [ "${_COLOR_ERR}" = "true" ]; then
+		APT_OPTIONS="${APT_OPTIONS} -o APT::Color=true"
+		APTITUDE_OPTIONS="${APTITUDE_OPTIONS} -o APT::Color=true"
+	else
+		APT_OPTIONS="${APT_OPTIONS} -o APT::Color=false"
+		APTITUDE_OPTIONS="${APTITUDE_OPTIONS} -o APT::Color=false"
+	fi
+
 	## config/bootstrap
 
 	# Setting mirrors
