@@ -281,18 +281,18 @@ sed -i \
     -e "s|LINUX_ADVANCED_INSTALL|$(escape_for_sed "${LINUX_ADVANCED_INSTALL}")|" \
     -e "s|LINUX_INSTALL|$(escape_for_sed "${LINUX_INSTALL}")|" \
     -e "s|MEMTEST|$(escape_for_sed "${MEMTEST}")|" \
-    -e "s|KERNEL_GI|$(escape_for_sed "${KERNEL_GI}")|" \
-    -e "s|INITRD_GI|$(escape_for_sed "${INITRD_GI}")|" \
-    -e "s|APPEND_GI|$(escape_for_sed "${APPEND_GI}")|" \
-    -e "s|KERNEL_DI|$(escape_for_sed "${KERNEL_DI}")|" \
-    -e "s|INITRD_DI|$(escape_for_sed "${INITRD_DI}")|" \
-    -e "s|APPEND_DI|$(escape_for_sed "${APPEND_DI}")|" \
-    -e "s|KERNEL_LIVE|$(escape_for_sed "${KERNEL_LIVE}")|" \
-    -e "s|INITRD_LIVE|$(escape_for_sed "${INITRD_LIVE}")|" \
-    -e "s|APPEND_LIVE|$(escape_for_sed "${APPEND_LIVE}")|" \
-    -e "s|LB_BOOTAPPEND_INSTALL|$(escape_for_sed "${LB_BOOTAPPEND_INSTALL}")|" \
-    -e "s|LB_BOOTAPPEND_LIVE_FAILSAFE|$(escape_for_sed "${LB_BOOTAPPEND_LIVE_FAILSAFE}")|" \
-    -e "s|LB_BOOTAPPEND_LIVE|$(escape_for_sed "${LB_BOOTAPPEND_LIVE}")|" \
+    -e "s|KERNEL_GI|${KERNEL_GI}|" \
+    -e "s|INITRD_GI|${INITRD_GI}|" \
+    -e "s|APPEND_GI|${APPEND_GI}|" \
+    -e "s|KERNEL_DI|${KERNEL_DI}|" \
+    -e "s|INITRD_DI|${INITRD_DI}|" \
+    -e "s|APPEND_DI|${APPEND_DI}|" \
+    -e "s|KERNEL_LIVE|${KERNEL_LIVE}|" \
+    -e "s|INITRD_LIVE|${INITRD_LIVE}|" \
+    -e "s|APPEND_LIVE|${APPEND_LIVE}|" \
+    -e "s|LB_BOOTAPPEND_INSTALL|${LB_BOOTAPPEND_INSTALL}|" \
+    -e "s|LB_BOOTAPPEND_LIVE_FAILSAFE|${LB_BOOTAPPEND_LIVE_FAILSAFE}|" \
+    -e "s|LB_BOOTAPPEND_LIVE|${LB_BOOTAPPEND_LIVE}|" \
     binary/boot/grub/*.cfg
 
 sed -i -e 's|//|/|g' binary/boot/grub/*.cfg
