@@ -119,8 +119,7 @@ case "${LB_INITRAMFS}" in
 esac
 
 # Setting boot parameters
-if [ "${LB_UNION_FILESYSTEM}" != "overlay" ]
-then
+if [ "${LB_UNION_FILESYSTEM}" != "overlay" ]; then
 	LB_BOOTAPPEND_LIVE="${LB_BOOTAPPEND_LIVE} union=${LB_UNION_FILESYSTEM}"
 fi
 
@@ -136,9 +135,8 @@ APPEND_LIVE="${LB_BOOTAPPEND_LIVE} findiso=\${iso_path}"
 # Assembling kernel configuration
 _AMD64_686_NUMBER="0"
 
-for _FLAVOUR in ${LB_LINUX_FLAVOURS}
-do
-	if [ "${_FLAVOUR}" = "amd64" -o "${_FLAVOUR}" = "686" ] ; then
+for _FLAVOUR in ${LB_LINUX_FLAVOURS}; do
+	if [ "${_FLAVOUR}" = "amd64" -o "${_FLAVOUR}" = "686" ]; then
 		_AMD64_686_NUMBER="$((${_AMD64_686_NUMBER} + 1))"
 	fi
 done
@@ -157,8 +155,7 @@ if [ "${_AMD64_686_NUMBER}" -ge 2 ] ; then
 		"/${INITFS}/${_686_INITRD}" \
 		"${APPEND_LIVE}"
 
-	if [ "${LB_BOOTAPPEND_LIVE_FAILSAFE}" != "none" ]
-	then
+	if [ "${LB_BOOTAPPEND_LIVE_FAILSAFE}" != "none" ]; then
 		Grub_live_autodetect_entry "Live system (autodetect) (fail-safe mode)" \
 			"/${INITFS}/${AMD64_KERNEL}" \
 			"/${INITFS}/${AMD64_INITRD}" \
@@ -167,10 +164,16 @@ if [ "${_AMD64_686_NUMBER}" -ge 2 ] ; then
 			"${LB_BOOTAPPEND_LIVE_FAILSAFE}"
 	fi
 else
-	Grub_live_entry "Live system" "/${INITFS}/${DEFAULT_KERNEL}" "/${INITFS}/${DEFAULT_INITRD}" "${APPEND_LIVE}" "l"
-	if [ "${LB_BOOTAPPEND_LIVE_FAILSAFE}" != "none" ]
-	then
-		Grub_live_entry "Live system (fail-safe mode)" "/${INITFS}/${DEFAULT_KERNEL}" "/${INITFS}/${DEFAULT_INITRD}" "${LB_BOOTAPPEND_LIVE_FAILSAFE}"
+	Grub_live_entry "Live system" \
+		"/${INITFS}/${DEFAULT_KERNEL}" \
+		"/${INITFS}/${DEFAULT_INITRD}" \
+		"${APPEND_LIVE}" \
+		"l"
+	if [ "${LB_BOOTAPPEND_LIVE_FAILSAFE}" != "none" ]; then
+		Grub_live_entry "Live system (fail-safe mode)" \
+			"/${INITFS}/${DEFAULT_KERNEL}" \
+			"/${INITFS}/${DEFAULT_INITRD}" \
+			"${LB_BOOTAPPEND_LIVE_FAILSAFE}"
 	fi
 fi
 
@@ -180,21 +183,25 @@ for KERNEL in chroot/boot/vmlinuz-*; do
 done
 
 if [ $_COUNT -gt 1 ]; then
-	for KERNEL in chroot/boot/vmlinuz-*
-	do
+	for KERNEL in chroot/boot/vmlinuz-*; do
 		VERSION="$(basename ${KERNEL} | sed -e 's|vmlinuz-||')"
 
-		Grub_live_entry "Live system, kernel ${VERSION}" "/${INITFS}/$(basename ${KERNEL})" "/${INITFS}/initrd.img-${VERSION}" "${APPEND_LIVE}"
+		Grub_live_entry "Live system, kernel ${VERSION}" \
+			"/${INITFS}/$(basename ${KERNEL})" \
+			"/${INITFS}/initrd.img-${VERSION}" \
+			"${APPEND_LIVE}"
 
 		if [ "${LB_BOOTAPPEND_LIVE_FAILSAFE}" != "none" ]; then
-			Grub_live_entry "Live system, kernel ${VERSION} (fail-safe mode)" "/${INITFS}/$(basename ${KERNEL})" "/${INITFS}/initrd.img-${VERSION}" "${LB_BOOTAPPEND_LIVE_FAILSAFE}"
+			Grub_live_entry "Live system, kernel ${VERSION} (fail-safe mode)" \
+				"/${INITFS}/$(basename ${KERNEL})" \
+				"/${INITFS}/initrd.img-${VERSION}" \
+				"${LB_BOOTAPPEND_LIVE_FAILSAFE}"
 		fi
 	done
 fi
 
 # Assembling debian-installer configuration
-if [ "${LB_DEBIAN_INSTALLER}" != "none" ]
-then
+if [ "${LB_DEBIAN_INSTALLER}" != "none" ]; then
 	ENABLE_INSTALL_MENU="true"
 	LINUX_INSTALL="source /boot/grub/install_start.cfg"
 	LINUX_ADVANCED_INSTALL="source /boot/grub/install.cfg"
