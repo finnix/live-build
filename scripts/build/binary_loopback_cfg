@@ -40,6 +40,8 @@ Acquire_lockfile
 Check_architectures amd64 i386
 Check_crossarchitectures
 
+_TARGET="binary/boot/grub"
+
 # Variable used to embed newlines
 NL="
 "
@@ -96,14 +98,14 @@ Grub_live_autodetect_entry ()
 _SOURCE_USER="config/bootloaders/grub-pc"
 
 # Copying templates
-mkdir -p binary/boot/grub
+mkdir -p "${_TARGET}"
 if [ -n "${LIVE_BUILD}" ]; then
-	cp -a "${LIVE_BUILD}/share/bootloaders/grub-pc"/* binary/boot/grub/
+	cp -a "${LIVE_BUILD}/share/bootloaders/grub-pc"/* "${_TARGET}"/
 else
-	cp -a "/usr/share/live/build/bootloaders/grub-pc"/* binary/boot/grub/
+	cp -a "/usr/share/live/build/bootloaders/grub-pc"/* "${_TARGET}"/
 fi
 if [ -e "${_SOURCE_USER}" ]; then
-	cp -af "${_SOURCE_USER}"/* binary/boot/grub/
+	cp -af "${_SOURCE_USER}"/* "${_TARGET}"/
 fi
 
 case "${LB_INITRAMFS}" in
@@ -212,22 +214,22 @@ then
 	APPEND_GI="vga=788 ${LB_BOOTAPPEND_INSTALL} --- quiet"
 
 	if [ "${LB_DEBIAN_INSTALLER_GUI}" = "true" ]; then
-		rm binary/boot/grub/install_text.cfg
-		rm binary/boot/grub/install_start_text.cfg
-		mv binary/boot/grub/install_gui.cfg binary/boot/grub/install.cfg
-		mv binary/boot/grub/install_start_gui.cfg binary/boot/grub/install_start.cfg
+		rm ${_TARGET}/install_text.cfg
+		rm ${_TARGET}/install_start_text.cfg
+		mv ${_TARGET}/install_gui.cfg ${_TARGET}/install.cfg
+		mv ${_TARGET}/install_start_gui.cfg ${_TARGET}/install_start.cfg
 	else
-		rm binary/boot/grub/install_gui.cfg
-		rm binary/boot/grub/install_start_gui.cfg
-		mv binary/boot/grub/install_text.cfg binary/boot/grub/install.cfg
-		mv binary/boot/grub/install_start_text.cfg binary/boot/grub/install_start.cfg
+		rm ${_TARGET}/install_gui.cfg
+		rm ${_TARGET}/install_start_gui.cfg
+		mv ${_TARGET}/install_text.cfg ${_TARGET}/install.cfg
+		mv ${_TARGET}/install_start_text.cfg ${_TARGET}/install_start.cfg
 	fi
 else
 	ENABLE_INSTALL_MENU="false"
-	rm binary/boot/grub/install_text.cfg
-	rm binary/boot/grub/install_gui.cfg
-	rm binary/boot/grub/install_start_text.cfg
-	rm binary/boot/grub/install_start_gui.cfg
+	rm "${_TARGET}"/install_text.cfg
+	rm "${_TARGET}"/install_gui.cfg
+	rm "${_TARGET}"/install_start_text.cfg
+	rm "${_TARGET}"/install_start_gui.cfg
 fi
 
 # Assembling memtest configuration
@@ -237,7 +239,7 @@ if [ -f "binary/${MEMTEST_BIN}" ]; then
 	MEMTEST="source /boot/grub/memtest.cfg" #for backwards compatibility
 else
 	ENABLE_MEMTEST="false"
-	rm -f binary/boot/grub/memtest.cfg
+	rm -f "${_TARGET}"/memtest.cfg
 fi
 
 escape_for_sed() {
@@ -282,12 +284,12 @@ sed -i \
     -e "s|LB_BOOTAPPEND_INSTALL|${LB_BOOTAPPEND_INSTALL}|" \
     -e "s|LB_BOOTAPPEND_LIVE_FAILSAFE|${LB_BOOTAPPEND_LIVE_FAILSAFE}|" \
     -e "s|LB_BOOTAPPEND_LIVE|${LB_BOOTAPPEND_LIVE}|" \
-    binary/boot/grub/*.cfg
+    "${_TARGET}"/*.cfg
 
-sed -i -e 's|//|/|g' binary/boot/grub/*.cfg
-sed -i -e 's|\ $||g' binary/boot/grub/*.cfg
+sed -i -e 's|//|/|g' "${_TARGET}"/*.cfg
+sed -i -e 's|\ $||g' "${_TARGET}"/*.cfg
 
-echo "source /boot/grub/grub.cfg" > binary/boot/grub/loopback.cfg
+echo "source /boot/grub/grub.cfg" > "${_TARGET}"/loopback.cfg
 
 # Creating stage file
 Create_stagefile
