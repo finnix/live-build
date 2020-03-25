@@ -242,25 +242,25 @@ then
 	APPEND_GI="vga=788 ${LB_BOOTAPPEND_INSTALL} --- quiet"
 
 	if [ "${LB_DEBIAN_INSTALLER_GUI}" = "true" ]; then
-		Grub_install_entry "Start installer" "installgui" "${KERNEL_GI}" "${INITRD_GI}" "${APPEND_GI}"
+		Grub_install_entry "Start installer" "installgui" "${KERNEL_GI}" "${INITRD_GI}" "${APPEND_GI}" "i"
 
-		Grub_install_entry "Install in graphical mode" "installgui" "${KERNEL_GI}" "${INITRD_GI}" "${APPEND_GI}"
-		Grub_install_entry "Install in text mode" "install" "${KERNEL_DI}" "${INITRD_DI}" "${APPEND_DI}"
-		Grub_install_entry "Expert install in graphical mode" "expertgui" "${KERNEL_GI}" "${INITRD_GI}" "priority=low ${APPEND_GI}"
+		Grub_install_entry "Install in graphical mode" "installgui" "${KERNEL_GI}" "${INITRD_GI}" "${APPEND_GI}" "g"
+		Grub_install_entry "Install in text mode" "install" "${KERNEL_DI}" "${INITRD_DI}" "${APPEND_DI}" "i"
+		Grub_install_entry "Expert install in graphical mode" "expertgui" "${KERNEL_GI}" "${INITRD_GI}" "priority=low ${APPEND_GI}" "x"
 		Grub_install_entry "Expert install in text mode" "expert" "${KERNEL_DI}" "${INITRD_DI}" "priority=low ${APPEND_DI}"
-		Grub_install_entry "Automatic install in graphical mode" "autogui" "${KERNEL_GI}" "${INITRD_GI}" "auto=true priority=critical ${APPEND_GI}"
+		Grub_install_entry "Automatic install in graphical mode" "autogui" "${KERNEL_GI}" "${INITRD_GI}" "auto=true priority=critical ${APPEND_GI}" "a"
 		Grub_install_entry "Automatic install in text mode" "auto" "${KERNEL_DI}" "${INITRD_DI}" "auto=true priority=critical ${APPEND_DI}"
-		Grub_install_entry "Rescue system in graphical mode" "rescuegui" "${KERNEL_GI}" "${INITRD_GI}" "rescue/enable=true ${APPEND_GI}"
+		Grub_install_entry "Rescue system in graphical mode" "rescuegui" "${KERNEL_GI}" "${INITRD_GI}" "rescue/enable=true ${APPEND_GI}" "r"
 		Grub_install_entry "Rescue system in text mode" "rescue" "${KERNEL_DI}" "${INITRD_DI}" "rescue/enable=true ${APPEND_DI}"
 		# Note, the following speech synthesis entry deliberately uses graphical kernel, but normal video params, copying the official Debian install disc
-		Grub_install_entry "Install in graphical mode with speech synthesis" "${KERNEL_GI}" "${INITRD_GI}" "speakup.synth=soft ${APPEND_GI}"
+		Grub_install_entry "Install in graphical mode with speech synthesis" "${KERNEL_GI}" "${INITRD_GI}" "speakup.synth=soft ${APPEND_GI}" "s"
 	else
-		Grub_install_entry "Start installer" "install" "${KERNEL_DI}" "${INITRD_DI}" "${APPEND_DI}"
+		Grub_install_entry "Start installer" "install" "${KERNEL_DI}" "${INITRD_DI}" "${APPEND_DI}" "i"
 
-		Grub_install_entry "Install in text mode" "install" "${KERNEL_DI}" "${INITRD_DI}" "${APPEND_DI}"
-		Grub_install_entry "Expert install in text mode" "expert" "${KERNEL_DI}" "${INITRD_DI}" "priority=low ${APPEND_DI}"
-		Grub_install_entry "Automatic install in text mode" "auto" "${KERNEL_DI}" "${INITRD_DI}" "auto=true priority=critical ${APPEND_DI}"
-		Grub_install_entry "Rescue system in text mode" "rescue" "${KERNEL_DI}" "${INITRD_DI}" "rescue/enable=true ${APPEND_DI}"
+		Grub_install_entry "Install in text mode" "install" "${KERNEL_DI}" "${INITRD_DI}" "${APPEND_DI}" "i"
+		Grub_install_entry "Expert install in text mode" "expert" "${KERNEL_DI}" "${INITRD_DI}" "priority=low ${APPEND_DI}" "x"
+		Grub_install_entry "Automatic install in text mode" "auto" "${KERNEL_DI}" "${INITRD_DI}" "auto=true priority=critical ${APPEND_DI}" "a"
+		Grub_install_entry "Rescue system in text mode" "rescue" "${KERNEL_DI}" "${INITRD_DI}" "rescue/enable=true ${APPEND_DI}" "r"
 	fi
 fi
 
