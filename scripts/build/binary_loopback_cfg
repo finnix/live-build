@@ -92,15 +92,6 @@ Grub_live_autodetect_entry ()
 	LINUX_LIVE="${LINUX_LIVE}$(Grub_live_autodetect_menu_entry "$@")$NL"
 }
 
-Grub_memtest_menu_entry ()
-{
-	cat <<END
-menuentry "Memory Diagnostic Tool ($LB_MEMTEST)" --hotkey=m {
-	linux16 /${INITFS}/memtest
-}
-END
-}
-
 # User config replacement/additional files
 _SOURCE_USER="config/bootloaders/grub-pc"
 
@@ -240,9 +231,13 @@ else
 fi
 
 # Assembling memtest configuration
-if [ -f "binary/${INITFS}/memtest" ]
-then
-	MEMTEST="$(Grub_memtest_menu_entry)$NL"
+MEMTEST_BIN="/${INITFS}/memtest"
+if [ -f "binary/${MEMTEST_BIN}" ]; then
+	ENABLE_MEMTEST="true"
+	MEMTEST="source /boot/grub/memtest.cfg" #for backwards compatibility
+else
+	ENABLE_MEMTEST="false"
+	rm -f binary/boot/grub/memtest.cfg
 fi
 
 escape_for_sed() {
@@ -254,7 +249,6 @@ sed -i \
     -e "s|@LINUX_LIVE@|$(escape_for_sed "${LINUX_LIVE}")|" \
     -e "s|@LINUX_INSTALL@|${LINUX_INSTALL}|" \
     -e "s|@LINUX_ADVANCED_INSTALL@|${LINUX_ADVANCED_INSTALL}|" \
-    -e "s|@MEMTEST@|$(escape_for_sed "${MEMTEST}")|" \
     -e "s|@KERNEL_GI@|${KERNEL_GI}|" \
     -e "s|@INITRD_GI@|${INITRD_GI}|" \
     -e "s|@APPEND_GI@|${APPEND_GI}|" \
@@ -269,10 +263,13 @@ sed -i \
     -e "s|@LB_BOOTAPPEND_LIVE@|${LB_BOOTAPPEND_LIVE}|" \
     -e "s|@APPEND_INSTALL@|${LB_BOOTAPPEND_INSTALL}|" \
     -e "s|@ENABLE_INSTALL_MENU@|${ENABLE_INSTALL_MENU}|" \
+    -e "s|@ENABLE_MEMTEST@|${ENABLE_MEMTEST}|" \
+    -e "s|@MEMTEST_BIN@|${MEMTEST_BIN}|" \
+    -e "s|@MEMTEST_VERSION@|${LB_MEMTEST}|" \
     -e "s|LINUX_LIVE|$(escape_for_sed "${LINUX_LIVE}")|" \
     -e "s|LINUX_INSTALL|${LINUX_INSTALL}|" \
     -e "s|LINUX_ADVANCED_INSTALL|${LINUX_ADVANCED_INSTALL}|" \
-    -e "s|MEMTEST|$(escape_for_sed "${MEMTEST}")|" \
+    -e "s|MEMTEST|${MEMTEST}|" \
     -e "s|KERNEL_GI|${KERNEL_GI}|" \
     -e "s|INITRD_GI|${INITRD_GI}|" \
     -e "s|APPEND_GI|${APPEND_GI}|" \
