@@ -1,6 +1,5 @@
 label live-@FLAVOUR@
 	menu label ^Live (@FLAVOUR@)
-	menu title Live (@FLAVOUR@)
 	menu default
 	linux @LINUX@
 	initrd @INITRD@
