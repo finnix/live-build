@@ -65,31 +65,6 @@ Grub_live_entry ()
 	LINUX_LIVE="${LINUX_LIVE}$(Grub_menu_entry "$@")$NL"
 }
 
-Grub_install_entry ()
-{
-	local LABEL="${1}"
-	local TYPE="${2}"
-	local KERNEL="${3}"
-	local INITRD="${4}"
-	local APPEND="${5}"
-	local HOTKEY="${6}"
-
-	# Drop "quiet" kernel parameter for expert entries
-	case $TYPE in
-		expert|expertgui)
-			APPEND=$(echo "$APPEND" | sed -e 's/ --- quiet//')
-			;;
-	esac
-
-	if [ -z "$LINUX_INSTALL" ]; then
-		# First entry recorded in LINUX_INSTALL
-		LINUX_INSTALL="$(Grub_menu_entry "$LABEL" "$KERNEL" "$INITRD" "$APPEND" "$HOTKEY")$NL"
-	else
-		# Remaining entries recorded in LINUX_ADVANCED_INSTALL
-		LINUX_ADVANCED_INSTALL="$LINUX_ADVANCED_INSTALL$(Grub_menu_entry "$LABEL" "$KERNEL" "$INITRD" "$APPEND" "$HOTKEY")$NL"
-	fi
-}
-
 Grub_live_autodetect_menu_entry ()
 {
 	local LABEL="${1}"
@@ -234,6 +209,8 @@ fi
 if [ "${LB_DEBIAN_INSTALLER}" != "none" ]
 then
 	ENABLE_INSTALL_MENU="true"
+	LINUX_INSTALL="source /boot/grub/install_start.cfg"
+	LINUX_ADVANCED_INSTALL="source /boot/grub/install.cfg"
 
 	KERNEL_DI="/install/vmlinuz"
 	INITRD_DI="/install/initrd.gz"
@@ -244,28 +221,22 @@ then
 	APPEND_GI="vga=788 ${LB_BOOTAPPEND_INSTALL} --- quiet"
 
 	if [ "${LB_DEBIAN_INSTALLER_GUI}" = "true" ]; then
-		Grub_install_entry "Start installer" "installgui" "${KERNEL_GI}" "${INITRD_GI}" "${APPEND_GI}" "i"
-
-		Grub_install_entry "Install in graphical mode" "installgui" "${KERNEL_GI}" "${INITRD_GI}" "${APPEND_GI}" "g"
-		Grub_install_entry "Install in text mode" "install" "${KERNEL_DI}" "${INITRD_DI}" "${APPEND_DI}" "i"
-		Grub_install_entry "Expert install in graphical mode" "expertgui" "${KERNEL_GI}" "${INITRD_GI}" "priority=low ${APPEND_GI}" "x"
-		Grub_install_entry "Expert install in text mode" "expert" "${KERNEL_DI}" "${INITRD_DI}" "priority=low ${APPEND_DI}"
-		Grub_install_entry "Automatic install in graphical mode" "autogui" "${KERNEL_GI}" "${INITRD_GI}" "auto=true priority=critical ${APPEND_GI}" "a"
-		Grub_install_entry "Automatic install in text mode" "auto" "${KERNEL_DI}" "${INITRD_DI}" "auto=true priority=critical ${APPEND_DI}"
-		Grub_install_entry "Rescue system in graphical mode" "rescuegui" "${KERNEL_GI}" "${INITRD_GI}" "rescue/enable=true ${APPEND_GI}" "r"
-		Grub_install_entry "Rescue system in text mode" "rescue" "${KERNEL_DI}" "${INITRD_DI}" "rescue/enable=true ${APPEND_DI}"
-		# Note, the following speech synthesis entry deliberately uses graphical kernel, but normal video params, copying the official Debian install disc
-		Grub_install_entry "Install in graphical mode with speech synthesis" "${KERNEL_GI}" "${INITRD_GI}" "speakup.synth=soft ${APPEND_GI}" "s"
+		rm binary/boot/grub/install_text.cfg
+		rm binary/boot/grub/install_start_text.cfg
+		mv binary/boot/grub/install_gui.cfg binary/boot/grub/install.cfg
+		mv binary/boot/grub/install_start_gui.cfg binary/boot/grub/install_start.cfg
 	else
-		Grub_install_entry "Start installer" "install" "${KERNEL_DI}" "${INITRD_DI}" "${APPEND_DI}" "i"
-
-		Grub_install_entry "Install in text mode" "install" "${KERNEL_DI}" "${INITRD_DI}" "${APPEND_DI}" "i"
-		Grub_install_entry "Expert install in text mode" "expert" "${KERNEL_DI}" "${INITRD_DI}" "priority=low ${APPEND_DI}" "x"
-		Grub_install_entry "Automatic install in text mode" "auto" "${KERNEL_DI}" "${INITRD_DI}" "auto=true priority=critical ${APPEND_DI}" "a"
-		Grub_install_entry "Rescue system in text mode" "rescue" "${KERNEL_DI}" "${INITRD_DI}" "rescue/enable=true ${APPEND_DI}" "r"
+		rm binary/boot/grub/install_gui.cfg
+		rm binary/boot/grub/install_start_gui.cfg
+		mv binary/boot/grub/install_text.cfg binary/boot/grub/install.cfg
+		mv binary/boot/grub/install_start_text.cfg binary/boot/grub/install_start.cfg
 	fi
 else
 	ENABLE_INSTALL_MENU="false"
+	rm binary/boot/grub/install_text.cfg
+	rm binary/boot/grub/install_gui.cfg
+	rm binary/boot/grub/install_start_text.cfg
+	rm binary/boot/grub/install_start_gui.cfg
 fi
 
 # Assembling memtest configuration
@@ -281,8 +252,8 @@ escape_for_sed() {
 # Those without '@' markers are for backwards compatibility
 sed -i \
     -e "s|@LINUX_LIVE@|$(escape_for_sed "${LINUX_LIVE}")|" \
-    -e "s|@LINUX_INSTALL@|$(escape_for_sed "${LINUX_INSTALL}")|" \
-    -e "s|@LINUX_ADVANCED_INSTALL@|$(escape_for_sed "${LINUX_ADVANCED_INSTALL}")|" \
+    -e "s|@LINUX_INSTALL@|${LINUX_INSTALL}|" \
+    -e "s|@LINUX_ADVANCED_INSTALL@|${LINUX_ADVANCED_INSTALL}|" \
     -e "s|@MEMTEST@|$(escape_for_sed "${MEMTEST}")|" \
     -e "s|@KERNEL_GI@|${KERNEL_GI}|" \
     -e "s|@INITRD_GI@|${INITRD_GI}|" \
@@ -296,10 +267,11 @@ sed -i \
     -e "s|@LB_BOOTAPPEND_INSTALL@|${LB_BOOTAPPEND_INSTALL}|" \
     -e "s|@LB_BOOTAPPEND_LIVE_FAILSAFE@|${LB_BOOTAPPEND_LIVE_FAILSAFE}|" \
     -e "s|@LB_BOOTAPPEND_LIVE@|${LB_BOOTAPPEND_LIVE}|" \
+    -e "s|@APPEND_INSTALL@|${LB_BOOTAPPEND_INSTALL}|" \
     -e "s|@ENABLE_INSTALL_MENU@|${ENABLE_INSTALL_MENU}|" \
     -e "s|LINUX_LIVE|$(escape_for_sed "${LINUX_LIVE}")|" \
-    -e "s|LINUX_INSTALL|$(escape_for_sed "${LINUX_INSTALL}")|" \
-    -e "s|LINUX_ADVANCED_INSTALL|$(escape_for_sed "${LINUX_ADVANCED_INSTALL}")|" \
+    -e "s|LINUX_INSTALL|${LINUX_INSTALL}|" \
+    -e "s|LINUX_ADVANCED_INSTALL|${LINUX_ADVANCED_INSTALL}|" \
     -e "s|MEMTEST|$(escape_for_sed "${MEMTEST}")|" \
     -e "s|KERNEL_GI|${KERNEL_GI}|" \
     -e "s|INITRD_GI|${INITRD_GI}|" \
