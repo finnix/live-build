@@ -126,18 +126,13 @@ menuentry "Memory Diagnostic Tool ($LB_MEMTEST)" --hotkey=m {
 END
 }
 
-if [ -e "config/bootloaders/grub-pc" ]
-then
-	# Internal local copy
-	_SOURCE="config/bootloaders/grub-pc"
+# User config replacement/additional files
+_SOURCE_USER="config/bootloaders/grub-pc"
+
+if [ -n "${LIVE_BUILD}" ]; then
+	_SOURCE="${LIVE_BUILD}/share/bootloaders/grub-pc"
 else
-	# Internal system copy
-	if [ -n "${LIVE_BUILD}" ]
-	then
-		_SOURCE="${LIVE_BUILD}/share/bootloaders/grub-pc"
-	else
-		_SOURCE="/usr/share/live/build/bootloaders/grub-pc"
-	fi
+	_SOURCE="/usr/share/live/build/bootloaders/grub-pc"
 fi
 
 case "${LB_INITRAMFS}" in
@@ -277,6 +272,9 @@ fi
 # Copying templates
 mkdir -p binary/boot/grub
 cp -a "${_SOURCE}"/* binary/boot/grub/
+if [ -e "${_SOURCE_USER}" ]; then
+	cp -af "${_SOURCE_USER}"/* binary/boot/grub/
+fi
 
 escape_for_sed() {
 	echo -n "$1" | perl -npe 's/\n/\\n/gm'
