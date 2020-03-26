@@ -243,6 +243,18 @@ do
 	fi
 done
 
+KERNEL_DI="/install/vmlinuz"
+INITRD_DI="/install/initrd.gz"
+KERNEL_GI="/install/gtk/vmlinuz"
+INITRD_GI="/install/gtk/initrd.gz"
+
+sed -i \
+    -e "s|@KERNEL_GI@|${KERNEL_GI}|" \
+    -e "s|@INITRD_GI@|${INITRD_GI}|" \
+    -e "s|@KERNEL_DI@|${KERNEL_DI}|" \
+    -e "s|@INITRD_DI@|${INITRD_DI}|" \
+    "${_TARGET}"/install.cfg
+
 MEMTEST_PATH="${_INITRAMFS}/memtest"
 sed -i -e "s#@MEMTEST_VERSION@#${LB_MEMTEST}#g" -e "s#@MEMTEST@#/${MEMTEST_PATH}#g" "${_TARGET}"/memtest.cfg
 
