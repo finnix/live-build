@@ -129,10 +129,15 @@ END
 # User config replacement/additional files
 _SOURCE_USER="config/bootloaders/grub-pc"
 
+# Copying templates
+mkdir -p binary/boot/grub
 if [ -n "${LIVE_BUILD}" ]; then
-	_SOURCE="${LIVE_BUILD}/share/bootloaders/grub-pc"
+	cp -a "${LIVE_BUILD}/share/bootloaders/grub-pc"/* binary/boot/grub/
 else
-	_SOURCE="/usr/share/live/build/bootloaders/grub-pc"
+	cp -a "/usr/share/live/build/bootloaders/grub-pc"/* binary/boot/grub/
+fi
+if [ -e "${_SOURCE_USER}" ]; then
+	cp -af "${_SOURCE_USER}"/* binary/boot/grub/
 fi
 
 case "${LB_INITRAMFS}" in
@@ -267,13 +272,6 @@ fi
 if [ -f "binary/${INITFS}/memtest" ]
 then
 	MEMTEST="$(Grub_memtest_menu_entry)$NL"
-fi
-
-# Copying templates
-mkdir -p binary/boot/grub
-cp -a "${_SOURCE}"/* binary/boot/grub/
-if [ -e "${_SOURCE_USER}" ]; then
-	cp -af "${_SOURCE_USER}"/* binary/boot/grub/
 fi
 
 escape_for_sed() {
