@@ -42,29 +42,20 @@ Check_crossarchitectures
 
 _TARGET="binary/boot/grub"
 
-# Variable used to embed newlines
-NL="
-"
-
 # Local functions
-Grub_menu_entry() {
+Grub_live_menu_entry() {
 	local LABEL="$1"
 	local KERNEL="$2"
 	local INITRD="$3"
 	local APPEND="$4"
 	local HOTKEY="${5:+ --hotkey=$5}"
 
-	cat <<END
+	cat >> "${LIVE_ENTRIES_TMP}" <<END
 menuentry "${LABEL}"${HOTKEY} {
 	linux	$KERNEL $APPEND
 	initrd	$INITRD
 }
 END
-}
-
-Grub_live_entry ()
-{
-	LINUX_LIVE="${LINUX_LIVE}$(Grub_menu_entry "$@")$NL"
 }
 
 Grub_live_autodetect_menu_entry ()
@@ -75,7 +66,8 @@ Grub_live_autodetect_menu_entry ()
 	local _686_KERNEL="${4}"
 	local _686_INITRD="${5}"
 	local APPEND="${6}"
-	cat <<END
+
+	cat >> "${LIVE_ENTRIES_TMP}" <<END
 # Autodetect if amd64 is supported
 menuentry "$LABEL" {
 	if cpuid -l; then
@@ -87,11 +79,6 @@ menuentry "$LABEL" {
 	fi
 }
 END
-}
-
-Grub_live_autodetect_entry ()
-{
-	LINUX_LIVE="${LINUX_LIVE}$(Grub_live_autodetect_menu_entry "$@")$NL"
 }
 
 # User config replacement/additional files
@@ -132,7 +119,11 @@ KERNEL_LIVE="/${INITFS}/${DEFAULT_KERNEL}"
 INITRD_LIVE="/${INITFS}/${DEFAULT_INITRD}"
 APPEND_LIVE="${LB_BOOTAPPEND_LIVE} findiso=\${iso_path}"
 
-# Assembling kernel configuration
+# Ensure fresh live entries
+LIVE_ENTRIES_TMP="${_TARGET}/live.cfg.tmp"
+rm -f "${LIVE_ENTRIES_TMP}"
+
+# Assemble live menu entries
 _AMD64_686_NUMBER="0"
 
 for _FLAVOUR in ${LB_LINUX_FLAVOURS}; do
@@ -148,7 +139,7 @@ if [ "${_AMD64_686_NUMBER}" -ge 2 ] ; then
 	_686_KERNEL="$(basename chroot/boot/vmlinuz-*686)"
 	_686_INITRD="initrd.img-$(echo ${_686_KERNEL} | sed -e 's|vmlinuz-||')"
 
-	Grub_live_autodetect_entry "Live system (autodetect)" \
+	Grub_live_autodetect_menu_entry "Live system (autodetect)" \
 		"/${INITFS}/${AMD64_KERNEL}" \
 		"/${INITFS}/${AMD64_INITRD}" \
 		"/${INITFS}/${_686_KERNEL}" \
@@ -156,7 +147,7 @@ if [ "${_AMD64_686_NUMBER}" -ge 2 ] ; then
 		"${APPEND_LIVE}"
 
 	if [ "${LB_BOOTAPPEND_LIVE_FAILSAFE}" != "none" ]; then
-		Grub_live_autodetect_entry "Live system (autodetect) (fail-safe mode)" \
+		Grub_live_autodetect_menu_entry "Live system (autodetect) (fail-safe mode)" \
 			"/${INITFS}/${AMD64_KERNEL}" \
 			"/${INITFS}/${AMD64_INITRD}" \
 			"/${INITFS}/${_686_KERNEL}" \
@@ -164,13 +155,13 @@ if [ "${_AMD64_686_NUMBER}" -ge 2 ] ; then
 			"${LB_BOOTAPPEND_LIVE_FAILSAFE}"
 	fi
 else
-	Grub_live_entry "Live system" \
+	Grub_live_menu_entry "Live system" \
 		"/${INITFS}/${DEFAULT_KERNEL}" \
 		"/${INITFS}/${DEFAULT_INITRD}" \
 		"${APPEND_LIVE}" \
 		"l"
 	if [ "${LB_BOOTAPPEND_LIVE_FAILSAFE}" != "none" ]; then
-		Grub_live_entry "Live system (fail-safe mode)" \
+		Grub_live_menu_entry "Live system (fail-safe mode)" \
 			"/${INITFS}/${DEFAULT_KERNEL}" \
 			"/${INITFS}/${DEFAULT_INITRD}" \
 			"${LB_BOOTAPPEND_LIVE_FAILSAFE}"
@@ -186,19 +177,24 @@ if [ $_COUNT -gt 1 ]; then
 	for KERNEL in chroot/boot/vmlinuz-*; do
 		VERSION="$(basename ${KERNEL} | sed -e 's|vmlinuz-||')"
 
-		Grub_live_entry "Live system, kernel ${VERSION}" \
+		Grub_live_menu_entry "Live system, kernel ${VERSION}" \
 			"/${INITFS}/$(basename ${KERNEL})" \
 			"/${INITFS}/initrd.img-${VERSION}" \
 			"${APPEND_LIVE}"
 
 		if [ "${LB_BOOTAPPEND_LIVE_FAILSAFE}" != "none" ]; then
-			Grub_live_entry "Live system, kernel ${VERSION} (fail-safe mode)" \
+			Grub_live_menu_entry "Live system, kernel ${VERSION} (fail-safe mode)" \
 				"/${INITFS}/$(basename ${KERNEL})" \
 				"/${INITFS}/initrd.img-${VERSION}" \
 				"${LB_BOOTAPPEND_LIVE_FAILSAFE}"
 		fi
 	done
 fi
+
+# Replace placeholder with compiled live entries temporarily held in live.cfg.tmp
+sed -i -e "/@LINUX_LIVE@/ r ${LIVE_ENTRIES_TMP}" "${_TARGET}"/*.cfg
+sed -i -e "/LINUX_LIVE/ r ${LIVE_ENTRIES_TMP}" "${_TARGET}"/*.cfg #backwards compatibility
+rm -f "${LIVE_ENTRIES_TMP}"
 
 # Assembling debian-installer configuration
 if [ "${LB_DEBIAN_INSTALLER}" != "none" ]; then
@@ -241,17 +237,12 @@ else
 	rm -f "${_TARGET}"/memtest.cfg
 fi
 
-escape_for_sed() {
-	echo -n "$1" | perl -npe 's/\n/\\n/gm'
-}
-
 # These must be held in variables to avoid mistake by checkbashisms
 LINUX_INSTALL="source /boot/grub/install_start.cfg"
 LINUX_ADVANCED_INSTALL="source /boot/grub/install.cfg"
 
 # Those without '@' markers are for backwards compatibility
 sed -i \
-    -e "s|@LINUX_LIVE@|$(escape_for_sed "${LINUX_LIVE}")|" \
     -e "s|@KERNEL_GI@|${KERNEL_GI}|" \
     -e "s|@INITRD_GI@|${INITRD_GI}|" \
     -e "s|@APPEND_GI@|${APPEND_GI}|" \
@@ -269,7 +260,6 @@ sed -i \
     -e "s|@ENABLE_MEMTEST@|${ENABLE_MEMTEST}|" \
     -e "s|@MEMTEST_BIN@|${MEMTEST_BIN}|" \
     -e "s|@MEMTEST_VERSION@|${LB_MEMTEST}|" \
-    -e "s|LINUX_LIVE|$(escape_for_sed "${LINUX_LIVE}")|" \
     -e "s|LINUX_INSTALL|${LINUX_INSTALL}|" \
     -e "s|LINUX_ADVANCED_INSTALL|${LINUX_ADVANCED_INSTALL}|" \
     -e "s|MEMTEST|${MEMTEST}|" \
