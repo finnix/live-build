@@ -1178,6 +1178,7 @@ mkdir -p config/includes.installer
 mkdir -p config/packages.binary
 mkdir -p config/package-lists
 mkdir -p config/rootfs
+mkdir -p config/bootloaders
 
 cat > config/binary << EOF
 # config/binary - options for live-build(7), binary stage
