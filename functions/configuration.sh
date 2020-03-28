@@ -142,8 +142,6 @@ Prepare_config ()
 		APTITUDE_OPTIONS="${APTITUDE_OPTIONS} -o APT::Color=false"
 	fi
 
-	LB_TASKSEL="${LB_TASKSEL:-apt}"
-
 	BZIP2_OPTIONS="${BZIP2_OPTIONS:--6}"
 	GZIP_OPTIONS="${GZIP_OPTIONS:--6}"
 	LZIP_OPTIONS="${LZIP_OPTIONS:--6}"
@@ -700,11 +698,6 @@ Validate_config_permitted_values ()
 
 	if ! In_list "${LB_SYSTEM}" live normal; then
 		Echo_error "You have specified an invalid value for LB_SYSTEM (--system)."
-		exit 1
-	fi
-
-	if ! In_list "${LB_TASKSEL}" apt aptitude tasksel; then
-		Echo_error "You have specified an invalid value for LB_TASKSEL (--tasksel)."
 		exit 1
 	fi
 

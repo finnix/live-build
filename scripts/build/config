@@ -118,7 +118,6 @@ USAGE="${PROGRAM}   [--apt apt|apt-get|aptitude]\n\
 \t    [--swap-file-path PATH]\n\
 \t    [--swap-file-size MB]\n\
 \t    [--system live|normal]\n\
-\t    [--tasksel apt|aptitude|tasksel]\n\
 \t    [--uefi-secure-boot auto|enable|disable]\n\
 \t    [--updates true|false]\n\
 \t    [--validate]\n\
@@ -817,7 +816,7 @@ Local_arguments ()
 				;;
 
 			--tasksel)
-				LB_TASKSEL="${2}"
+				Echo_warning "--tasksel is an obsolete option"
 				shift 2
 				;;
 
@@ -1030,9 +1029,6 @@ LB_MODE="${LB_MODE}"
 
 # \$LB_SYSTEM: set system type
 LB_SYSTEM="${LB_SYSTEM}"
-
-# \$LB_TASKSEL: set tasksel program
-LB_TASKSEL="${LB_TASKSEL}"
 
 # live-build options
 

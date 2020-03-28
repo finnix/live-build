@@ -98,11 +98,6 @@ case "${LB_ARCHITECTURES}" in
 		;;
 esac
 
-if [ -n "${LB_TASKS}" ]
-then
-	echo "${LB_TASKSEL}" >> source-selection.txt
-fi
-
 # Make a clean directory to download the packages to.
 # We need to set the ownership to user `_apt` to give write access to the apt user,
 # otherwise we get a lot of warnings from apt about downloading as root.
