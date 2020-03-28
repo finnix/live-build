@@ -68,6 +68,25 @@ Prepare_config ()
 	# FIXME
 	New_configuration
 
+	# Colouring is re-evaluated here just incase a hard coded override was given in the saved config
+	case "${_COLOR}" in
+		true)
+			_COLOR_OUT="true"
+			_COLOR_ERR="true"
+			;;
+		false)
+			_COLOR_OUT="false"
+			_COLOR_ERR="false"
+			;;
+		auto)
+			;;
+	esac
+	_BREAKPOINTS="${_BREAKPOINTS:-false}"
+	_DEBUG="${_DEBUG:-false}"
+	_FORCE="${_FORCE:-false}"
+	_QUIET="${_QUIET:-false}"
+	_VERBOSE="${_VERBOSE:-false}"
+
 	LB_SYSTEM="${LB_SYSTEM:-live}"
 
 	if [ $(which lsb_release) ]
@@ -104,28 +123,37 @@ Prepare_config ()
 	LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION:-${LB_PARENT_DISTRIBUTION_CHROOT}}"
 
 	LB_APT="${LB_APT:-apt}"
-
 	LB_APT_FTP_PROXY="${LB_APT_FTP_PROXY}"
 	LB_APT_HTTP_PROXY="${LB_APT_HTTP_PROXY}"
+	LB_APT_RECOMMENDS="${LB_APT_RECOMMENDS:-true}"
+	LB_APT_SECURE="${LB_APT_SECURE:-true}"
+	LB_APT_SOURCE_ARCHIVES="${LB_APT_SOURCE_ARCHIVES:-true}"
+	LB_APT_INDICES="${LB_APT_INDICES:-true}"
 
 	APT_OPTIONS="${APT_OPTIONS:---yes}"
 	APTITUDE_OPTIONS="${APTITUDE_OPTIONS:---assume-yes}"
 
+	# Apt v2.0.1 introduced color support, but it needs to be explicitly enabled
+	if [ "${_COLOR_OUT}" = "true" ] && [ "${_COLOR_ERR}" = "true" ]; then
+		APT_OPTIONS="${APT_OPTIONS} -o APT::Color=true"
+		APTITUDE_OPTIONS="${APTITUDE_OPTIONS} -o APT::Color=true"
+	else
+		APT_OPTIONS="${APT_OPTIONS} -o APT::Color=false"
+		APTITUDE_OPTIONS="${APTITUDE_OPTIONS} -o APT::Color=false"
+	fi
+
+	LB_TASKSEL="${LB_TASKSEL:-apt}"
+
 	BZIP2_OPTIONS="${BZIP2_OPTIONS:--6}"
 	GZIP_OPTIONS="${GZIP_OPTIONS:--6}"
+	LZIP_OPTIONS="${LZIP_OPTIONS:--6}"
+	LZMA_OPTIONS="${LZMA_OPTIONS:--6}"
+	XZ_OPTIONS="${XZ_OPTIONS:--6}"
 
 	if gzip --help | grep -qs "\-\-rsyncable"
 	then
 		GZIP_OPTIONS="$(echo ${GZIP_OPTIONS} | sed -e 's|--rsyncable||') --rsyncable"
 	fi
-
-	LZIP_OPTIONS="${LZIP_OPTIONS:--6}"
-	LZMA_OPTIONS="${LZMA_OPTIONS:--6}"
-	XZ_OPTIONS="${XZ_OPTIONS:--6}"
-
-	LB_APT_RECOMMENDS="${LB_APT_RECOMMENDS:-true}"
-	LB_APT_SECURE="${LB_APT_SECURE:-true}"
-	LB_APT_SOURCE_ARCHIVES="${LB_APT_SOURCE_ARCHIVES:-true}"
 
 	LB_CACHE="${LB_CACHE:-true}"
 	if [ "${LB_CACHE}" = "false" ]
@@ -171,36 +199,6 @@ Prepare_config ()
 		_LINUX32="linux32"
 	else
 		_LINUX32=""
-	fi
-
-	LB_TASKSEL="${LB_TASKSEL:-apt}"
-
-	# Colouring is re-evaluated here just incase a hard coded override was given in the saved config
-	case "${_COLOR}" in
-		true)
-			_COLOR_OUT="true"
-			_COLOR_ERR="true"
-			;;
-		false)
-			_COLOR_OUT="false"
-			_COLOR_ERR="false"
-			;;
-		auto)
-			;;
-	esac
-	_BREAKPOINTS="${_BREAKPOINTS:-false}"
-	_DEBUG="${_DEBUG:-false}"
-	_FORCE="${_FORCE:-false}"
-	_QUIET="${_QUIET:-false}"
-	_VERBOSE="${_VERBOSE:-false}"
-
-	# Apt v2.0.1 introduced color support, but it needs to be explicitly enabled
-	if [ "${_COLOR_OUT}" = "true" ] && [ "${_COLOR_ERR}" = "true" ]; then
-		APT_OPTIONS="${APT_OPTIONS} -o APT::Color=true"
-		APTITUDE_OPTIONS="${APTITUDE_OPTIONS} -o APT::Color=true"
-	else
-		APT_OPTIONS="${APT_OPTIONS} -o APT::Color=false"
-		APTITUDE_OPTIONS="${APTITUDE_OPTIONS} -o APT::Color=false"
 	fi
 
 	# Mirrors:
@@ -288,6 +286,8 @@ Prepare_config ()
 
 	LB_LINUX_PACKAGES="${LB_LINUX_PACKAGES:-linux-image}"
 
+	LB_BINARY_FILESYSTEM="${LB_BINARY_FILESYSTEM:-fat32}"
+
 	case "${LB_PARENT_DISTRIBUTION_BINARY}" in
 		sid)
 			LB_SECURITY="${LB_SECURITY:-false}"
@@ -308,8 +308,6 @@ Prepare_config ()
 			;;
 	esac
 
-	LB_BINARY_FILESYSTEM="${LB_BINARY_FILESYSTEM:-fat32}"
-
 	case "${LB_ARCHITECTURES}" in
 		amd64|i386)
 			LIVE_IMAGE_TYPE="${LIVE_IMAGE_TYPE:-iso-hybrid}"
@@ -319,8 +317,6 @@ Prepare_config ()
 			LIVE_IMAGE_TYPE="${LIVE_IMAGE_TYPE:-iso}"
 			;;
 	esac
-
-	LB_APT_INDICES="${LB_APT_INDICES:-true}"
 
 	if [ -z "${LB_BOOTLOADERS}" ]
 	then
@@ -364,7 +360,6 @@ Prepare_config ()
 	fi
 
 	LB_DEBIAN_INSTALLER_DISTRIBUTION="${LB_DEBIAN_INSTALLER_DISTRIBUTION:-${LB_DISTRIBUTION}}"
-
 	LB_DEBIAN_INSTALLER_GUI="${LB_DEBIAN_INSTALLER_GUI:-true}"
 
 	if [ -z "${LB_DEBIAN_INSTALLER_PRESEEDFILE}" ]
@@ -431,11 +426,10 @@ Prepare_config ()
 	LB_ISO_APPLICATION="${LB_ISO_APPLICATION:-Debian Live}"
 	LB_ISO_PREPARER="${LB_ISO_PREPARER:-live-build \$VERSION; https://salsa.debian.org/live-team/live-build}"
 	LB_ISO_PUBLISHER="${LB_ISO_PUBLISHER:-Debian Live project; https://wiki.debian.org/DebianLive; debian-live@lists.debian.org}"
+	LB_ISO_VOLUME="${LB_ISO_VOLUME:-Debian ${LB_DISTRIBUTION} \$(date +%Y%m%d-%H:%M)}"
 
 	LB_HDD_LABEL="${LB_HDD_LABEL:-DEBIAN_LIVE}"
 	LB_HDD_SIZE="${LB_HDD_SIZE:-auto}"
-
-	LB_ISO_VOLUME="${LB_ISO_VOLUME:-Debian ${LB_DISTRIBUTION} \$(date +%Y%m%d-%H:%M)}"
 
 	LB_MEMTEST="${LB_MEMTEST:-none}"
 	if [ "${LB_MEMTEST}" = "false" ]; then
@@ -444,8 +438,7 @@ Prepare_config ()
 
 	case "${LB_ARCHITECTURES}" in
 		amd64|i386)
-			if [ "${LB_DEBIAN_INSTALLER}" != "none" ]
-			then
+			if [ "${LB_DEBIAN_INSTALLER}" != "none" ]; then
 				LB_LOADLIN="${LB_LOADLIN:-true}"
 			else
 				LB_LOADLIN="${LB_LOADLIN:-false}"
@@ -459,8 +452,7 @@ Prepare_config ()
 
 	case "${LB_ARCHITECTURES}" in
 		amd64|i386)
-			if [ "${LB_DEBIAN_INSTALLER}" != "none" ]
-			then
+			if [ "${LB_DEBIAN_INSTALLER}" != "none" ]; then
 				LB_WIN32_LOADER="${LB_WIN32_LOADER:-true}"
 			else
 				LB_WIN32_LOADER="${LB_WIN32_LOADER:-false}"
