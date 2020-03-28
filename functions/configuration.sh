@@ -469,9 +469,7 @@ Prepare_config ()
 			;;
 	esac
 
-	LB_NET_ROOT_FILESYSTEM="${LB_NET_ROOT_FILESYSTEM:-nfs}"
 	LB_NET_ROOT_PATH="${LB_NET_ROOT_PATH:-/srv/${LB_MODE}-live}"
-	LB_NET_ROOT_SERVER="${LB_NET_ROOT_SERVER:-192.168.1.1}"
 	LB_NET_TARBALL="${LB_NET_TARBALL:-true}"
 
 	LB_ONIE="${LB_ONIE:-false}"
@@ -693,11 +691,6 @@ Validate_config_permitted_values ()
 
 	if ! In_list "${LB_MEMTEST}" memtest86+ memtest86 none; then
 		Echo_error "You have specified an invalid value for LB_MEMTEST (--memtest)."
-		exit 1
-	fi
-
-	if ! In_list "${LB_NET_ROOT_FILESYSTEM}" nfs cfs; then
-		Echo_error "You have specified an invalid value for LB_NET_ROOT_FILESYSTEM (--net-root-filesystem)."
 		exit 1
 	fi
 

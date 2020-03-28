@@ -95,10 +95,7 @@ USAGE="${PROGRAM}   [--apt apt|apt-get|aptitude]\n\
 \t    [--mirror-chroot-security URL]\n\
 \t    [--mirror-debian-installer URL]\n\
 \t    [--mode debian]\n\
-\t    [--net-root-filesystem nfs|cfs]\n\
-\t    [--net-root-mountoptions OPTION|\"OPTIONS\"]\n\
 \t    [--net-root-path PATH]\n\
-\t    [--net-root-server IP|HOSTNAME]\n\
 \t    [--net-tarball true|false]\n\
 \t    [--no-color]\n\
 \t    [--onie true|false]\n\
@@ -700,12 +697,12 @@ Local_arguments ()
 				;;
 
 			--net-root-filesystem)
-				LB_NET_ROOT_FILESYSTEM="${2}"
+				Echo_warning "--net-root-filesystem is an obsolete option"
 				shift 2
 				;;
 
 			--net-root-mountoptions)
-				LB_NET_ROOT_MOUNTOPTIONS="${2}"
+				Echo_warning "--net-root-mountoptions is an obsolete option"
 				shift 2
 				;;
 
@@ -715,7 +712,7 @@ Local_arguments ()
 				;;
 
 			--net-root-server)
-				LB_NET_ROOT_SERVER="${2}"
+				Echo_warning "--net-root-server is an obsolete option"
 				shift 2
 				;;
 
@@ -1268,17 +1265,8 @@ LB_LOADLIN="${LB_LOADLIN}"
 # \$LB_WIN32_LOADER: set win32-loader
 LB_WIN32_LOADER="${LB_WIN32_LOADER}"
 
-# \$LB_NET_ROOT_FILESYSTEM: set netboot filesystem
-LB_NET_ROOT_FILESYSTEM="${LB_NET_ROOT_FILESYSTEM}"
-
-# \$LB_NET_ROOT_MOUNTOPTIONS: set nfsopts
-LB_NET_ROOT_MOUNTOPTIONS="${LB_NET_ROOT_MOUNTOPTIONS}"
-
 # \$LB_NET_ROOT_PATH: set netboot server directory
 LB_NET_ROOT_PATH="${LB_NET_ROOT_PATH}"
-
-# \$LB_NET_ROOT_SERVER: set netboot server address
-LB_NET_ROOT_SERVER="${LB_NET_ROOT_SERVER}"
 
 # \$LB_NET_TARBALL: set net tarball
 LB_NET_TARBALL="${LB_NET_TARBALL}"
