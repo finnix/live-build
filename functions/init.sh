@@ -29,6 +29,16 @@ Init_config_data ()
 
 	Read_conffiles $(Common_config_files)
 	Prepare_config
+
+	# Apt v2.0.1 introduced color support, but it needs to be explicitly enabled.
+	# This is done here so that the injection of the option does not get stored in the config file.
+	if [ "${_COLOR_OUT}" = "true" ] && [ "${_COLOR_ERR}" = "true" ]; then
+		APT_OPTIONS="${APT_OPTIONS} -o APT::Color=true"
+		APTITUDE_OPTIONS="${APTITUDE_OPTIONS} -o APT::Color=true"
+	else
+		APT_OPTIONS="${APT_OPTIONS} -o APT::Color=false"
+		APTITUDE_OPTIONS="${APTITUDE_OPTIONS} -o APT::Color=false"
+	fi
 }
 
 # "Auto" script redirection.

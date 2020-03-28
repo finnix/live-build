@@ -133,15 +133,6 @@ Prepare_config ()
 	APT_OPTIONS="${APT_OPTIONS:---yes}"
 	APTITUDE_OPTIONS="${APTITUDE_OPTIONS:---assume-yes}"
 
-	# Apt v2.0.1 introduced color support, but it needs to be explicitly enabled
-	if [ "${_COLOR_OUT}" = "true" ] && [ "${_COLOR_ERR}" = "true" ]; then
-		APT_OPTIONS="${APT_OPTIONS} -o APT::Color=true"
-		APTITUDE_OPTIONS="${APTITUDE_OPTIONS} -o APT::Color=true"
-	else
-		APT_OPTIONS="${APT_OPTIONS} -o APT::Color=false"
-		APTITUDE_OPTIONS="${APTITUDE_OPTIONS} -o APT::Color=false"
-	fi
-
 	BZIP2_OPTIONS="${BZIP2_OPTIONS:--6}"
 	GZIP_OPTIONS="${GZIP_OPTIONS:--6}"
 	LZIP_OPTIONS="${LZIP_OPTIONS:--6}"
