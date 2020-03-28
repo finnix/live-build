@@ -601,30 +601,225 @@ Validate_config ()
 #  - string lengths within permitted ranges
 Validate_config_permitted_values ()
 {
+	if [ "${LB_APT_INDICES}" != "true" ] && [ "${LB_APT_INDICES}" != "false" ]; then
+		Echo_error "Value for LB_APT_INDICES (--apt-indices) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_APT_RECOMMENDS}" != "true" ] && [ "${LB_APT_RECOMMENDS}" != "false" ]; then
+		Echo_error "Value for LB_APT_RECOMMENDS (--apt-recommends) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_APT_SECURE}" != "true" ] && [ "${LB_APT_SECURE}" != "false" ]; then
+		Echo_error "Value for LB_APT_SECURE (--apt-secure) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_APT_SOURCE_ARCHIVES}" != "true" ] && [ "${LB_APT_SOURCE_ARCHIVES}" != "false" ]; then
+		Echo_error "Value for LB_APT_SOURCE_ARCHIVES (--apt-source-archives) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_BACKPORTS}" != "true" ] && [ "${LB_BACKPORTS}" != "false" ]; then
+		Echo_error "Value for LB_BACKPORTS (--backports) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_BUILD_WITH_CHROOT}" != "true" ] && [ "${LB_BUILD_WITH_CHROOT}" != "false" ]; then
+		Echo_error "Value for LB_BUILD_WITH_CHROOT (--build-with-chroot) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_CACHE}" != "true" ] && [ "${LB_CACHE}" != "false" ]; then
+		Echo_error "Value for LB_CACHE (--cache) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_CACHE_INDICES}" != "true" ] && [ "${LB_CACHE_INDICES}" != "false" ]; then
+		Echo_error "Value for LB_CACHE_INDICES (--cache-indices) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_CACHE_PACKAGES}" != "true" ] && [ "${LB_CACHE_PACKAGES}" != "false" ]; then
+		Echo_error "Value for LB_CACHE_PACKAGES (--cache-packages) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_DEBIAN_INSTALLER_GUI}" != "true" ] && [ "${LB_DEBIAN_INSTALLER_GUI}" != "false" ]; then
+		Echo_error "Value for LB_DEBIAN_INSTALLER_GUI (--debian-installer-gui) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_FIRMWARE_BINARY}" != "true" ] && [ "${LB_FIRMWARE_BINARY}" != "false" ]; then
+		Echo_error "Value for LB_FIRMWARE_BINARY (--firmware-binary) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_FIRMWARE_CHROOT}" != "true" ] && [ "${LB_FIRMWARE_CHROOT}" != "false" ]; then
+		Echo_error "Value for LB_FIRMWARE_CHROOT (--firmware-chroot) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_LOADLIN}" != "true" ] && [ "${LB_LOADLIN}" != "false" ]; then
+		Echo_error "Value for LB_LOADLIN (--loadlin) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_NET_TARBALL}" != "true" ] && [ "${LB_NET_TARBALL}" != "false" ]; then
+		Echo_error "Value for LB_NET_TARBALL (--net-tarball) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_ONIE}" != "true" ] && [ "${LB_ONIE}" != "false" ]; then
+		Echo_error "Value for LB_ONIE (--onie) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_SECURITY}" != "true" ] && [ "${LB_SECURITY}" != "false" ]; then
+		Echo_error "Value for LB_SECURITY (--security) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_SOURCE}" != "true" ] && [ "${LB_SOURCE}" != "false" ]; then
+		Echo_error "Value for LB_SOURCE (--source) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_UPDATES}" != "true" ] && [ "${LB_UPDATES}" != "false" ]; then
+		Echo_error "Value for LB_UPDATES (--updates) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_WIN32_LOADER}" != "true" ] && [ "${LB_WIN32_LOADER}" != "false" ]; then
+		Echo_error "Value for LB_WIN32_LOADER (--win32-loader) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_ZSYNC}" != "true" ] && [ "${LB_ZSYNC}" != "false" ]; then
+		Echo_error "Value for LB_ZSYNC (--zsync) can only be 'true' or 'false'!"
+		exit 1
+	fi
+
+	if ! In_list "${LB_APT}" apt aptitude; then
+		Echo_error "You have specified an invalid value for LB_APT (--apt)."
+		exit 1
+	fi
+
+	if ! In_list "${LB_BINARY_FILESYSTEM}" fat16 fat32 ext2 ext3 ext4 ntfs; then
+		Echo_error "You have specified an invalid value for LB_BINARY_FILESYSTEM (--binary-filesystem)."
+		exit 1
+	fi
+
 	if ! In_list "${LIVE_IMAGE_TYPE}" iso iso-hybrid hdd tar netboot; then
 		Echo_error "You have specified an invalid value for --binary-image."
 		exit 1
 	fi
 
+	if [ -z "${LB_BOOTLOADERS}" ]; then
+		Echo_warning "You have specified no bootloaders; I predict that you will experience some problems!"
+	else
+		local BOOTLOADER
+		for BOOTLOADER in ${LB_BOOTLOADERS}; do
+			if ! In_list "${BOOTLOADER}" grub-legacy grub-pc grub-efi syslinux; then
+				Echo_error "The following is not a valid bootloader: '%s'" "${BOOTLOADER}"
+				exit 1
+			fi
+		done
+	fi
+
+	local CACHE_STAGE
+	for CACHE_STAGE in ${LB_CACHE_STAGES}; do
+		if ! In_list "${CACHE_STAGE}" bootstrap chroot installer binary source; then
+			Echo_warning "The following is not a valid stage: '%s'" "${CACHE_STAGE}"
+		fi
+	done
+
+	if ! In_list "${LB_CHECKSUMS}" md5 sha1 sha224 sha256 sha384 sha512 none; then
+		Echo_error "You have specified an invalid value for LB_CHECKSUMS (--checksums)."
+		exit 1
+	fi
+
+	if ! In_list "${LB_CHROOT_FILESYSTEM}" ext2 ext3 ext4 squashfs jffs2 none; then
+		Echo_error "You have specified an invalid value for LB_CHROOT_FILESYSTEM (--chroot-filesystem)."
+		exit 1
+	fi
+
+	if ! In_list "${LB_COMPRESSION}" bzip2 gzip lzip xz none; then
+		Echo_error "You have specified an invalid value for LB_COMPRESSION (--compression)."
+		exit 1
+	fi
+
+	if ! In_list "${LB_DEBCONF_FRONTEND}" dialog editor noninteractive readline; then
+		Echo_error "You have specified an invalid value for LB_DEBCONF_FRONTEND (--debconf-frontend)."
+		exit 1
+	fi
+
+	if ! In_list "${LB_DEBCONF_PRIORITY}" low medium high critical; then
+		Echo_error "You have specified an invalid value for LB_DEBCONF_PRIORITY (--debconf-priority)."
+		exit 1
+	fi
+
+	if ! In_list "${LB_DEBIAN_INSTALLER}" cdrom netinst netboot businesscard live none; then
+		Echo_error "You have specified an invalid value for LB_DEBIAN_INSTALLER (--debian-installer)."
+		exit 1
+	fi
+
 	if echo ${LB_HDD_LABEL} | grep -qs ' '; then
-		Echo_error "Whitespace is not currently supported in hdd labels."
+		Echo_error "Whitespace is not currently supported in HDD labels (LB_HDD_LABEL; --hdd-label)."
+		exit 1
+	fi
+
+	if ! In_list "${LB_INITRAMFS}" none live-boot; then
+		Echo_error "You have specified an invalid value for LB_INITRAMFS (--initramfs)."
+		exit 1
+	fi
+
+	if ! In_list "${LB_INITRAMFS_COMPRESSION}" bzip2 gzip lzma; then
+		Echo_error "You have specified an invalid value for LB_INITRAMFS_COMPRESSION (--initramfs-compression)."
+		exit 1
+	fi
+
+	if ! In_list "${LB_INITSYSTEM}" sysvinit systemd none; then
+		Echo_error "You have specified an invalid value for LB_INITSYSTEM (--initsystem)."
+		exit 1
+	fi
+
+	if ! In_list "${LB_INTERACTIVE}" true shell x11 xnest false; then
+		Echo_error "You have specified an invalid value for LB_INTERACTIVE (--interactive)."
 		exit 1
 	fi
 
 	if [ "$(echo \"${LB_ISO_APPLICATION}\" | wc -c)" -gt 128 ]; then
-		Echo_warning "You have specified a value of LB_ISO_APPLICATION that is too long; the maximum length is 128 characters."
+		Echo_warning "You have specified a value of LB_ISO_APPLICATION (--iso-application) that is too long; the maximum length is 128 characters."
 	fi
 
 	if [ "$(echo \"${LB_ISO_PREPARER}\" | wc -c)" -gt  128 ]; then
-		Echo_warning "You have specified a value of LB_ISO_PREPARER that is too long; the maximum length is 128 characters."
+		Echo_warning "You have specified a value of LB_ISO_PREPARER (--iso-preparer) that is too long; the maximum length is 128 characters."
 	fi
 
 	if [ "$(echo \"${LB_ISO_PUBLISHER}\" | wc -c)" -gt 128 ]; then
-		Echo_warning "You have specified a value of LB_ISO_PUBLISHER that is too long; the maximum length is 128 characters."
+		Echo_warning "You have specified a value of LB_ISO_PUBLISHER (--iso-publisher) that is too long; the maximum length is 128 characters."
 	fi
 
 	if [ "$(eval "echo \"${LB_ISO_VOLUME}\"" | wc -c)" -gt 32 ]; then
-		Echo_warning "You have specified a value of LB_ISO_VOLUME that is too long; the maximum length is 32 characters."
+		Echo_warning "You have specified a value of LB_ISO_VOLUME (--iso-volume) that is too long; the maximum length is 32 characters."
+	fi
+
+	if ! In_list "${LB_MEMTEST}" memtest86+ memtest86 none; then
+		Echo_error "You have specified an invalid value for LB_MEMTEST (--memtest)."
+		exit 1
+	fi
+
+	if ! In_list "${LB_NET_COW_FILESYSTEM}" nfs cfs; then
+		Echo_error "You have specified an invalid value for LB_NET_COW_FILESYSTEM (--net-cow-filesystem)."
+		exit 1
+	fi
+
+	if ! In_list "${LB_NET_ROOT_FILESYSTEM}" nfs cfs; then
+		Echo_error "You have specified an invalid value for LB_NET_ROOT_FILESYSTEM (--net-root-filesystem)."
+		exit 1
+	fi
+
+	if ! In_list "${LB_SOURCE_IMAGES}" iso netboot tar hdd; then
+		Echo_error "You have specified an invalid value for LB_SOURCE_IMAGES (--source-images)."
+		exit 1
+	fi
+
+	if ! In_list "${LB_SYSTEM}" live normal; then
+		Echo_error "You have specified an invalid value for LB_SYSTEM (--system)."
+		exit 1
+	fi
+
+	if ! In_list "${LB_TASKSEL}" apt aptitude tasksel; then
+		Echo_error "You have specified an invalid value for LB_TASKSEL (--tasksel)."
+		exit 1
+	fi
+
+	if ! In_list "${LB_UEFI_SECURE_BOOT}" auto enable disable; then
+		Echo_error "You have specified an invalid value for LB_UEFI_SECURE_BOOT (--uefi-secure-boot)."
+		exit 1
 	fi
 }
 
