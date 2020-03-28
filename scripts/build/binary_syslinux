@@ -49,7 +49,7 @@ esac
 
 # Assembling image specifics
 case "${LIVE_IMAGE_TYPE}" in
-	iso*)
+	iso|iso-hybrid)
 		_BOOTLOADER="isolinux"
 		_TARGET="binary/isolinux"
 		;;
@@ -59,7 +59,7 @@ case "${LIVE_IMAGE_TYPE}" in
 		_TARGET="tftpboot"
 		;;
 
-	hdd*|*)
+	hdd|tar)
 		case ${LB_BINARY_FILESYSTEM} in
 			fat*|ntfs)
 				_BOOTLOADER="syslinux"

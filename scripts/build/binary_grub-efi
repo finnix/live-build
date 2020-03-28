@@ -40,7 +40,7 @@ Check_crossarchitectures
 
 # Setting destination directory
 case "${LIVE_IMAGE_TYPE}" in
-	hdd*|netboot)
+	hdd|netboot)
 		Echo_warning "Bootloader in this image type not yet supported by live-build."
 		Echo_error "This would produce a not bootable image, aborting (FIXME)."
 		exit 1

@@ -40,11 +40,9 @@ then
 	cd "${OLDPWD}"
 
 	# Removing symlinks
-	case "${LIVE_IMAGE_TYPE}" in
-		hdd*)
-			find binary -type l | xargs rm -f
-			;;
-	esac
+	if [ "${LIVE_IMAGE_TYPE}" = "hdd" ]; then
+		find binary -type l | xargs rm -f
+	fi
 fi
 
 # Creating stage file

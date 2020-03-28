@@ -374,7 +374,7 @@ Set_config_defaults ()
 		case "${LB_ARCHITECTURES}" in
 			amd64|i386)
 				case "${LIVE_IMAGE_TYPE}" in
-					hdd*|netboot)
+					hdd|netboot)
 						LB_BOOTLOADERS="syslinux"
 						;;
 					*)
@@ -451,11 +451,11 @@ Set_config_defaults ()
 	if [ -n "${LB_DEBIAN_INSTALLER_PRESEEDFILE}" ]
 	then
 		case "${LIVE_IMAGE_TYPE}" in
-			iso*)
+			iso|iso-hybrid)
 				_LB_BOOTAPPEND_PRESEED="file=/cdrom/install/${LB_DEBIAN_INSTALLER_PRESEEDFILE}"
 				;;
 
-			hdd*)
+			hdd)
 				_LB_BOOTAPPEND_PRESEED="file=/hd-media/install/${LB_DEBIAN_INSTALLER_PRESEEDFILE}"
 				;;
 
@@ -469,6 +469,9 @@ Set_config_defaults ()
 						_LB_BOOTAPPEND_PRESEED="file=/${LB_DEBIAN_INSTALLER_PRESEEDFILE}"
 						;;
 				esac
+				;;
+
+			tar)
 				;;
 		esac
 	fi
@@ -618,8 +621,13 @@ Check_config_defaults ()
 		esac
 	fi
 
+	if ! In_list "${LIVE_IMAGE_TYPE}" iso iso-hybrid hdd tar netboot; then
+		Echo_error "You have specified an invalid value for --binary-image."
+		exit 1
+	fi
+
 	case "${LIVE_IMAGE_TYPE}" in
-		hdd*)
+		hdd)
 			case "${LB_FIRST_BOOTLOADER}" in
 				grub-legacy)
 					Echo_error "You have selected a combination of bootloader and image type that is currently not supported by live-build. Please use either another bootloader or a different image type."

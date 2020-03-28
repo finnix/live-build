@@ -64,7 +64,7 @@ case "${LIVE_IMAGE_TYPE}" in
 		_IMAGES="${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.img"
 		;;
 
-	net)
+	netboot)
 		_IMAGES="${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.netboot.tar*"
 		;;
 

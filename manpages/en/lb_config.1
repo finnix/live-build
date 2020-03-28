@@ -36,7 +36,7 @@
 .br
 	[\fB\-\-binary\-filesystem\fR fat16|fat32|ext2|ext3|ext4|ntfs]
 .br
-	[\-b|\fB\-\-binary\-images\fR iso|iso\-hybrid|netboot|tar|hdd]
+	[\-b|\fB\-\-binary\-image\fR iso|iso\-hybrid|netboot|tar|hdd]
 .br
 	[\fB\-\-bootappend\-install\fR \fIPARAMETER\fR|"\fIPARAMETERS\fR"]
 .br
@@ -276,8 +276,8 @@ defines which package archive areas (comma or space separated) of a debian packa
 defines if debian backports package archives should be included in the image or not.
 .IP "\fB\-\-binary\-filesystem\fR fat16|fat32|ext2|ext3|ext4|ntfs" 4
 defines the filesystem to be used in the image type. This only has an effect if the selected binary image type lets you choose a filesystem. For example, when selection ISO the resulting CD/DVD has always the filesystem ISO9660. When building HDD images for USB sticks, this is active. Note that it defaults to fat16 on all architectures except sparc where it defaults to ext4. Also note that if you choose fat16 and your resulting binary image gets bigger than 2GB, the binary filesystem automatically gets switched to fat32.
-.IP "\-b|\fB\-\-binary\-images\fR iso|iso\-hybrid|netboot|tar|hdd" 4
-defines the image type to build. By default, for images using syslinux this is set to iso\-hybrid to build CD/DVD images that may also be used like HDD images, for non\-syslinux images, it defaults to ISO.
+.IP "\-b|\fB\-\-binary\-image\fR iso|iso\-hybrid|netboot|tar|hdd" 4
+defines the image type to build. By default, for images using syslinux this is set to 'iso\-hybrid' to build CD/DVD images that may also be used like HDD images, for non\-syslinux images, it defaults to 'iso'.
 .IP "\fB\-\-bootappend\-install\fR \fIPARAMETER\fR|""\fIPARAMETERS\fR""" 4
 sets boot parameters specific to debian\-installer, if included.
 .IP "\fB\-\-bootappend\-live\fR \fIPARAMETER\fR|""\fIPARAMETERS\fR""" 4

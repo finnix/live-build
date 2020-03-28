@@ -49,7 +49,7 @@ Install_package
 
 # Setting destination directory
 case "${LIVE_IMAGE_TYPE}" in
-	hdd*|netboot)
+	hdd|netboot)
 		Echo_warning "Bootloader in this image type not yet supported by live-build."
 		Echo_error "This would produce a not bootable image, aborting (FIXME)."
 		exit 1
@@ -60,11 +60,11 @@ esac
 mkdir -p binary/boot/grub/i386-pc
 
 case ${LIVE_IMAGE_TYPE} in
-	iso*)
+	iso|iso-hybrid)
 		FILES="chroot/usr/lib/grub/i386-pc/*.mod chroot/usr/lib/grub/i386-pc/*.lst chroot/usr/lib/grub/i386-pc/efiemu??.o chroot/usr/share/grub/*.pf2"
 		;;
 
-	hdd*|tar)
+	hdd|tar)
 		FILES="chroot/usr/lib/grub/i386-pc/*"
 		;;
 esac

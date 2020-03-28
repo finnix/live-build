@@ -73,10 +73,6 @@ case "${LIVE_IMAGE_TYPE}" in
 		DESTDIR="tftpboot/debian-install/${LB_ARCHITECTURES}"
 		;;
 
-	hdd*|tar)
-		DESTDIR="binary/install"
-		;;
-
 	*)
 		DESTDIR="binary/install"
 		;;

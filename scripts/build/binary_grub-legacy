@@ -104,7 +104,7 @@ esac
 
 # Setting destination directory
 case "${LIVE_IMAGE_TYPE}" in
-	iso*|tar)
+	iso|iso-hybrid|tar)
 		case "${LB_INITRAMFS}" in
 			live-boot)
 				DESTDIR_LIVE="binary/live"
@@ -118,7 +118,7 @@ case "${LIVE_IMAGE_TYPE}" in
 		DESTDIR_INSTALL="binary/install"
 		;;
 
-	hdd*|netboot)
+	hdd|netboot)
 		Echo_warning "Bootloader in this image type not yet supported by live-build."
 		Echo_error "This would produce a not bootable image, aborting (FIXME)."
 		exit 1
@@ -214,11 +214,11 @@ mkdir -p binary/boot/grub
 cp -r "${_SOURCE}"/* binary/boot/grub
 
 case ${LIVE_IMAGE_TYPE} in
-	iso*)
+	iso|iso-hybrid)
 		FILES="chroot/usr/lib/grub/*/stage2_eltorito"
 		;;
 
-	hdd*|tar)
+	hdd|tar)
 		FILES="chroot/usr/lib/grub/*/stage1 chroot/usr/lib/grub/*/e2fs_stage1_5 chroot/usr/lib/grub/*/stage2"
 		;;
 esac
