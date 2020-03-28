@@ -1423,9 +1423,6 @@ EOF
 mkdir -p auto
 mkdir -p local/bin
 
-# Validate config again
-Validate_config
-
 if [ "${_CLEAN}" = "true" ]
 then
 	# Remove empty directories in config tree
