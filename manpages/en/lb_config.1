@@ -30,7 +30,7 @@
 .br
 	[\-a|\fB\-\-architecture\fR \fIARCHITECTURE\fR]
 .br
-	[\fB\-\-archive\-areas\fR \fIARCHIVE_AREA\fR|\fI"ARCHIVE_AREAS"\fR]
+	[\fB\-\-archive\-areas\fR \fIARCHIVE_AREA\fR|"\fIARCHIVE_AREAS\fR"]
 .br
 	[\fB\-\-backports\fR true|false]
 .br
@@ -38,17 +38,17 @@
 .br
 	[\-b|\fB\-\-binary\-images\fR iso|iso\-hybrid|netboot|tar|hdd]
 .br
-	[\fB\-\-bootappend\-install\fR \fIPARAMETER\fR|\fI"PARAMETERS"\fR]
+	[\fB\-\-bootappend\-install\fR \fIPARAMETER\fR|"\fIPARAMETERS\fR"]
 .br
-	[\fB\-\-bootappend\-live\fR \fIPARAMETER\fR|\fI"PARAMETERS"\fR]
+	[\fB\-\-bootappend\-live\fR \fIPARAMETER\fR|"\fIPARAMETERS\fR"]
 .br
-	[\fB\-\-bootappend\-live\-failsafe\fR \fIPARAMETER\fR|\fI"PARAMETERS"\fR]
+	[\fB\-\-bootappend\-live\-failsafe\fR \fIPARAMETER\fR|"\fIPARAMETERS\fR"]
 .br
-	[\fB\-\-bootloaders\fR grub-legacy|grub-pc|syslinux|grub-efi|\fI"BOOTLOADERS"\fR]
+	[\fB\-\-bootloaders\fR grub-legacy|grub-pc|syslinux|grub-efi|"\fIBOOTLOADERS\fR"]
 .br
 	[\fB\-\-bootstrap\-qemu\-arch \fIARCH\fR]
 .br
-	[\fB\-\-bootstrap\-qemu\-exclude \fIPACKAGES\fR]
+	[\fB\-\-bootstrap\-qemu\-exclude PACKAGE|"\fIPACKAGES\fR"]
 .br
 	[\fB\-\-bootstrap\-qemu\-static \fIPATH\fR]
 .br
@@ -62,7 +62,7 @@
 .br
 	[\fB\-\-cache\-packages\fR true|false]
 .br
-	[\fB\-\-cache\-stages\fR \fISTAGE\fR|\fI"STAGES"\fR]
+	[\fB\-\-cache\-stages\fR \fISTAGE\fR|"\fISTAGES\fR"]
 .br
 	[\fB\-\-checksums\fR md5|sha1|sha224|sha256|sha384|sha512|none]
 .br
@@ -90,7 +90,7 @@
 .br
 	[\fB\-\-debian\-installer\-preseedfile\fR \fIFILE\fR|\fIURL\fR]
 .br
-	[\fB\-\-debootstrap\-options\fR \fIOPTIONS\fR]
+	[\fB\-\-debootstrap\-options\fR \fIOPTION\fR|"\fIOPTIONS\fR"]
 .br
 	[\fB\-\-debootstrap\-script\fR \fISCRIPT\fR]
 .br
@@ -142,11 +142,11 @@
 .br
 	[\fB\-\-jffs2\-eraseblock\fR \fISIZE\fR]
 .br
-	[\fB\-\-keyring\-packages\fR \fIPACKAGE\fI|\fI"PACKAGES"\fR]
+	[\fB\-\-keyring\-packages\fR \fIPACKAGE\fI|"\fIPACKAGES\fR"]
 .br
-	[\-k|\fB\-\-linux\-flavours\fR \fIFLAVOUR\fR|\fI"FLAVOURS"\fR]
+	[\-k|\fB\-\-linux\-flavours\fR \fIFLAVOUR\fR|"\fIFLAVOURS\fR"]
 .br
-	[\fB\-\-linux\-packages\fR \fI"PACKAGES"\fR]
+	[\fB\-\-linux\-packages\fR "\fIPACKAGES\fR"]
 .br
 	[\fB\-\-loadlin\fR true|false]
 .br
@@ -168,7 +168,7 @@
 .br
 	[\fB\-\-net\-cow\-filesystem\fR nfs|cfs]
 .br
-	[\fB\-\-net\-cow\-mountoptions\fR \fIOPTIONS\fR]
+	[\fB\-\-net\-cow\-mountoptions\fR \fIOPTION\fR|"\fIOPTIONS\fR"]
 .br
 	[\fB\-\-net\-cow\-path\fR \fIPATH\fR]
 .br
@@ -176,7 +176,7 @@
 .br
 	[\fB\-\-net\-root\-filesystem\fR nfs|cfs]
 .br
-	[\fB\-\-net\-root\-mountoptions\fR \fIOPTIONS\fR]
+	[\fB\-\-net\-root\-mountoptions\fR \fIOPTION\fR|"\fIOPTIONS\fR"]
 .br
 	[\fB\-\-net\-root\-path\fR \fIPATH\fR]
 .br
@@ -188,9 +188,9 @@
 .br
 	[\fB\-\-onie\fR true|false]
 .br
-	[\fB\-\-onie\-kernel\-cmdline\fR \fI"OPTION1 OPTION2"\fR]
+	[\fB\-\-onie\-kernel\-cmdline\fR \fIOPTION\fR|"\fIOPTIONS\fR"]
 .br
-	[\fB\-\-parent\-archive\-areas\fR \fIARCHIVE_AREA\fR|\fI"ARCHIVE_AREAS"\fR]
+	[\fB\-\-parent\-archive\-areas\fR \fIARCHIVE_AREA\fR|"\fIARCHIVE_AREAS\fR"]
 .br
 	[\fB\-\-parent\-debian\-installer\-distribution\fR daily|\fICODENAME\fR]
 .br
@@ -289,7 +289,7 @@ sets boot parameters specific to debian\-live failsafe boot entries. A complete 
 defines which bootloaders to use in the generated image. This only has an effect if the selected binary image type lets you choose the bootloader. For example, if you build an ISO then syslinux (or more precise, isolinux) is always used. Also note that not all combinations of binary images types and bootloaders are supported (\fBlb config\fR will fail to create such an unsupported configuration and will give a explanation about it). For HDD images on amd64 and i386, the default is syslinux. This option supports more than one bootloader to be specified (space or comma separated) in order to allow for both BIOS and EFI bootloaders to be included, though note that only one of each type can be used (i.e. do not try to use two BIOS bootloaders).
 .IP "\fB\-\-bootstrap\-qemu\-arch \fIARCH\fR" 4
 sets the architectures to use foreign bootstrap. Defaults to empty.
-.IP "\fB\-\-bootstrap\-qemu\-exclude \fIPACKAGES\fR" 4
+.IP "\fB\-\-bootstrap\-qemu\-exclude PACKAGE|""\fIPACKAGES\fR""" 4
 sets the packages to exclude during foreign bootstrap. Defaults to empty.
 .IP "\fB\-\-bootstrap\-qemu\-static \fIPATH\fR" 4
 sets the static qemu binary for foreign bootstrap. Defaults to empty.
@@ -331,7 +331,7 @@ defines the distribution where the debian\-installer files should be taken out f
 defines whether the graphical version of the debian\-installer should be provided alongside the text based one. This defaults to true.
 .IP "\fB\-\-debian\-installer\-preseedfile\fR \fIFILE\fR|\fIURL\fR" 4
 sets the filename or URL for an optionally used and included preseeding file for debian\-installer. If config/binary_debian\-installer/preseed.cfg exists, it will be used by default. 
-.IP "\fB\-\-debootstrap\-options\fR \fIOPTIONS\fR" 4
+.IP "\fB\-\-debootstrap\-options\fR \fIOPTION\fR|""\fIOPTIONS\fR""" 4
 passes the given options to debootstrap when setting up the base system.
 .IP "\fB\-\-debootstrap\-script\fR \fISCRIPT\fR" 4
 tells debootstrap to use an alternate bootstrap script (last parameter to debootstrap).
@@ -436,7 +436,7 @@ defines if a compressed tarball should be created. Disabling this options leads 
 turns off color in the messages.
 .IP "\fB\-\-onie\fR true|false" 4
 defines if an ONIE.bin image is generated. ONIE binaries can be loaded by supported systems, and will in turn boot the live image. Note that ISO or hybrid-iso are the only formats supported. For more information visit <\fIhttp://onie.org/\fR>. Default is false.
-.IP "\fB\-\-onie\-kernel\-cmdline\fR \fI""OPTION1 OPTION2""\fR" 4
+.IP "\fB\-\-onie\-kernel\-cmdline\fR \fIOPTION\fR|""\fIOPTIONS\fR""" 4
 defines additional kernel command line options that the ONIE system will use when booting the image. Default is empty string.
 .IP "\fB\-\-parent\-archive\-areas\fR \fIARCHIVE_AREA\fR|""\fIARCHIVE_AREAS\fR""" 4
 defines the archive areas for derivatives of the resulting live system (space separated).
