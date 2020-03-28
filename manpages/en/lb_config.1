@@ -218,7 +218,7 @@
 .br
 	[\fB\-\-source\fR true|false]
 .br
-	[\-s|\fB\-\-source\-images\fR iso|netboot|tar|hdd]
+	[\-s|\fB\-\-source\-images\fR iso|netboot|tar|hdd|"\fIIMAGES\fR"]
 .br
 	[\fB\-\-swap\-file\-path PATH]
 .br
@@ -467,7 +467,7 @@ defines if the security repositories specified in the security mirror options sh
 .IP "\fB\-\-source\fR true|false" 4
 defines if a corresponding source image to the binary image should be build. By default this is false because most people do not require this and would require to download quite a few source packages. However, if you distribute your live image to others, you should make sure you build it with a source image alongside to help enable you to comply with licensing terms.
 .IP "\-s|\fB\-\-source\-images\fR iso|netboot|tar|hdd" 4
-defines the image type for the source image. Default is tar.
+defines the image type for the source image. Default is tar. More than one can be specified (space separated).
 .IP "\fB\-\-swap\-file\-path\fR \fIPATH\fR" 4
 defines the path to a swap file to create in the binary image. Default is not to create a swap file.
 .IP "\fB\-\-swap\-file\-size\fR \fIMB\fR" 4
