@@ -21,30 +21,12 @@ USAGE="${PROGRAM} [--force]"
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
-if [ "${_DEBUG}" = "true" ]
-then
-	WGET_OPTIONS="${WGET_OPTIONS} --verbose"
-elif [ "${_QUIET}" = "true" ]
-then
-	WGET_OPTIONS="${WGET_OPTIONS} --quiet"
-else
-	WGET_OPTIONS="${WGET_OPTIONS} --no-verbose"
+if ! In_list "${LB_DEBIAN_INSTALLER}" cdrom netinst netboot businesscard live; then
+	if [ "${LB_DEBIAN_INSTALLER}" = "none" ]; then
+		Echo_message "No installer wanted, skipping..."
+	fi
+	exit 0
 fi
-
-# Check d-i configuration
-case "${LB_DEBIAN_INSTALLER}" in
-	cdrom|netinst|netboot|businesscard|live)
-		;;
-
-	none)
-		exit 0
-		;;
-
-	*)
-		Echo_error "debian-installer flavour %s not supported." "${LB_DEBIAN_INSTALLER}"
-		exit 1
-		;;
-esac
 
 Echo_message "Begin installing debian-installer..."
 
@@ -66,6 +48,16 @@ Restore_package_cache binary
 
 # Installing depends
 Install_package
+
+if [ "${_DEBUG}" = "true" ]
+then
+	WGET_OPTIONS="${WGET_OPTIONS} --verbose"
+elif [ "${_QUIET}" = "true" ]
+then
+	WGET_OPTIONS="${WGET_OPTIONS} --quiet"
+else
+	WGET_OPTIONS="${WGET_OPTIONS} --no-verbose"
+fi
 
 # Setting destination directory
 case "${LIVE_IMAGE_TYPE}" in
