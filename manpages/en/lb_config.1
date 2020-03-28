@@ -164,14 +164,6 @@
 .br
 	[\fB\-\-mode\fR debian]
 .br
-	[\fB\-\-net\-cow\-filesystem\fR nfs|cfs]
-.br
-	[\fB\-\-net\-cow\-mountoptions\fR \fIOPTION\fR|"\fIOPTIONS\fR"]
-.br
-	[\fB\-\-net\-cow\-path\fR \fIPATH\fR]
-.br
-	[\fB\-\-net\-cow\-server\fR \fIIP\fR|\fIHOSTNAME\fR]
-.br
 	[\fB\-\-net\-root\-filesystem\fR nfs|cfs]
 .br
 	[\fB\-\-net\-root\-mountoptions\fR \fIOPTION\fR|"\fIOPTIONS\fR"]
@@ -404,21 +396,6 @@ sets the location of the debian security package mirror that will be used to fet
 sets the location of the mirror that will be used to fetch the debian installer images of the derivative. By default, this points to the same mirror used to build the live system, i.e. the value of \-\-mirror\-chroot.
 .IP "\fB\-\-mode\fR debian" 4
 defines a global mode to load project specific defaults. By default this is set to debian.
-.IP "\fB\-\-net\-cow\-filesystem\fR nfs|cfs" 4
-defines the filesystem type for the copy\-on\-write layer and defaults to nfs.
-.IP "\fB\-\-net\-cow\-mountoptions\fR \fIOPTIONS\fR" 4
-sets additional options for mounting the copy\-on\-write layer in netboot images and is by default empty.
-.IP "\fB\-\-net\-cow\-path\fR \fIPATH\fR" 4
-defines the path to client writable filesystem. Anywhere that \fIclient_mac_address\fR is specified in the path live\-boot will substitute the MAC address of the client delimited with hyphens.
-.PP
-.IP "" 4
-Example:
-.br
-/export/hosts/client_mac_address
-.br
-/export/hosts/00\-16\-D3\-33\-92\-E8
-.IP "\fB\-\-net\-cow\-server\fR \fIIP\fR|\fIHOSTNAME\fR" 4
-sets the IP or hostname that will be configured in the bootloader configuration for the copy\-on\-write filesystem of your netboot image and is by default empty.
 .IP "\fB\-\-net\-root\-filesystem\fR nfs|cfs" 4
 defines the filesystem that will be configured in the bootloader configuration for your netboot image. This defaults to nfs.
 .IP "\fB\-\-net\-root\-mountoptions\fR \fIOPTIONS\fR" 4

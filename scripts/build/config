@@ -95,10 +95,6 @@ USAGE="${PROGRAM}   [--apt apt|apt-get|aptitude]\n\
 \t    [--mirror-chroot-security URL]\n\
 \t    [--mirror-debian-installer URL]\n\
 \t    [--mode debian]\n\
-\t    [--net-cow-filesystem nfs|cfs]\n\
-\t    [--net-cow-mountoptions OPTION|\"OPTIONS\"]\n\
-\t    [--net-cow-path PATH]\n\
-\t    [--net-cow-server IP|HOSTNAME]\n\
 \t    [--net-root-filesystem nfs|cfs]\n\
 \t    [--net-root-mountoptions OPTION|\"OPTIONS\"]\n\
 \t    [--net-root-path PATH]\n\
@@ -684,22 +680,22 @@ Local_arguments ()
 				;;
 
 			--net-cow-filesystem)
-				LB_NET_COW_FILESYSTEM="${2}"
+				Echo_warning "--net-cow-filesystem is an obsolete option"
 				shift 2
 				;;
 
 			--net-cow-mountoptions)
-				LB_NET_COW_MOUNTOPTIONS="${2}"
+				Echo_warning "--net-cow-mountoptions is an obsolete option"
 				shift 2
 				;;
 
 			--net-cow-path)
-				LB_NET_COW_PATH="${2}"
+				Echo_warning "--net-cow-path is an obsolete option"
 				shift 2
 				;;
 
 			--net-cow-server)
-				LB_NET_COW_SERVER="${2}"
+				Echo_warning "--net-cow-server is an obsolete option"
 				shift 2
 				;;
 
@@ -1283,18 +1279,6 @@ LB_NET_ROOT_PATH="${LB_NET_ROOT_PATH}"
 
 # \$LB_NET_ROOT_SERVER: set netboot server address
 LB_NET_ROOT_SERVER="${LB_NET_ROOT_SERVER}"
-
-# \$LB_NET_COW_FILESYSTEM: set net client cow filesystem
-LB_NET_COW_FILESYSTEM="${LB_NET_COW_FILESYSTEM}"
-
-# \$LB_NET_COW_MOUNTOPTIONS: set cow mount options
-LB_NET_COW_MOUNTOPTIONS="${LB_NET_COW_MOUNTOPTIONS}"
-
-# \$LB_NET_COW_PATH: set cow directory
-LB_NET_COW_PATH="${LB_NET_COW_PATH}"
-
-# \$LB_NET_COW_SERVER: set cow server
-LB_NET_COW_SERVER="${LB_NET_COW_SERVER}"
 
 # \$LB_NET_TARBALL: set net tarball
 LB_NET_TARBALL="${LB_NET_TARBALL}"

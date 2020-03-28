@@ -127,12 +127,6 @@ then
 	LB_BOOTAPPEND_LIVE="${LB_BOOTAPPEND_LIVE} union=${LB_UNION_FILESYSTEM}"
 fi
 
-if [ -n "${LB_NET_COW_PATH}" ]
-then
-	Echo_error "Net cow not yet supported on grub-legacy"
-	exit 1
-fi
-
 LB_BOOTAPPEND_LIVE="$(echo ${LB_BOOTAPPEND_LIVE} | sed -e 's|  ||')"
 
 # Assembling kernel configuration
