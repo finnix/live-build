@@ -857,7 +857,7 @@ Local_arguments ()
 				;;
 
 			*)
-				Echo_error "Internal error %s" "${0}"
+				Echo_error "Internal error, unhandled option: %s" "${1}"
 				exit 1
 				;;
 		esac
