@@ -936,9 +936,9 @@ then
 	Read_conffiles "${_CONFFILE}"
 fi
 
-# Setting and checking defaults
+# Setting and validating config
 Set_config_defaults
-Check_config_defaults
+Validate_config
 
 # Creating or updating saved config
 
@@ -1412,8 +1412,8 @@ EOF
 mkdir -p auto
 mkdir -p local/bin
 
-# Check defaults again
-Check_config_defaults
+# Validate config again
+Validate_config
 
 if [ "${_CLEAN}" = "true" ]
 then

@@ -589,7 +589,7 @@ Set_config_defaults ()
 	LB_BOOTSTRAP_QEMU_STATIC="${LB_BOOTSTRAP_QEMU_STATIC:-}"
 }
 
-Check_config_defaults ()
+Validate_config ()
 {
 	case "${LB_BINARY_FILESYSTEM}" in
 		ntfs)
