@@ -592,13 +592,47 @@ Prepare_config ()
 
 Validate_config ()
 {
-	if [ "${LB_BINARY_FILESYSTEM}" = "ntfs" ] && [ ! $(which ntfs-3g) ]; then
-		Echo_error "Using ntfs as the binary filesystem is currently only supported if ntfs-3g is installed on the host system."
+	Validate_config_permitted_values
+	Validate_config_dependencies
+}
+
+# Check values are individually permitted, including:
+#  - value in list of available values
+#  - string lengths within permitted ranges
+Validate_config_permitted_values ()
+{
+	if ! In_list "${LIVE_IMAGE_TYPE}" iso iso-hybrid hdd tar netboot; then
+		Echo_error "You have specified an invalid value for --binary-image."
 		exit 1
 	fi
 
 	if echo ${LB_HDD_LABEL} | grep -qs ' '; then
-		Echo_error "There are currently no whitespaces supported in hdd labels."
+		Echo_error "Whitespace is not currently supported in hdd labels."
+		exit 1
+	fi
+
+	if [ "$(echo \"${LB_ISO_APPLICATION}\" | wc -c)" -gt 128 ]; then
+		Echo_warning "You have specified a value of LB_ISO_APPLICATION that is too long; the maximum length is 128 characters."
+	fi
+
+	if [ "$(echo \"${LB_ISO_PREPARER}\" | wc -c)" -gt  128 ]; then
+		Echo_warning "You have specified a value of LB_ISO_PREPARER that is too long; the maximum length is 128 characters."
+	fi
+
+	if [ "$(echo \"${LB_ISO_PUBLISHER}\" | wc -c)" -gt 128 ]; then
+		Echo_warning "You have specified a value of LB_ISO_PUBLISHER that is too long; the maximum length is 128 characters."
+	fi
+
+	if [ "$(eval "echo \"${LB_ISO_VOLUME}\"" | wc -c)" -gt 32 ]; then
+		Echo_warning "You have specified a value of LB_ISO_VOLUME that is too long; the maximum length is 32 characters."
+	fi
+}
+
+# Check option combinations and other extra stuff
+Validate_config_dependencies ()
+{
+	if [ "${LB_BINARY_FILESYSTEM}" = "ntfs" ] && [ ! $(which ntfs-3g) ]; then
+		Echo_error "Using ntfs as the binary filesystem is currently only supported if ntfs-3g is installed on the host system."
 		exit 1
 	fi
 
@@ -624,32 +658,10 @@ Validate_config ()
 		fi
 	fi
 
-	if ! In_list "${LIVE_IMAGE_TYPE}" iso iso-hybrid hdd tar netboot; then
-		Echo_error "You have specified an invalid value for --binary-image."
-		exit 1
-	fi
-
 	if [ "${LIVE_IMAGE_TYPE}" = "hdd" ] && [ "${LB_FIRST_BOOTLOADER}" = "grub-legacy" ]; then
 		Echo_error "You have selected a combination of bootloader and image type that is currently not supported by live-build. Please use either another bootloader or a different image type."
 		exit 1
 	fi
-
-	if [ "$(echo \"${LB_ISO_APPLICATION}\" | wc -c)" -gt 128 ]; then
-		Echo_warning "You have specified a value of LB_ISO_APPLICATION that is too long; the maximum length is 128 characters."
-	fi
-
-	if [ "$(echo \"${LB_ISO_PREPARER}\" | wc -c)" -gt  128 ]; then
-		Echo_warning "You have specified a value of LB_ISO_PREPARER that is too long; the maximum length is 128 characters."
-	fi
-
-	if [ "$(echo \"${LB_ISO_PUBLISHER}\" | wc -c)" -gt 128 ]; then
-		Echo_warning "You have specified a value of LB_ISO_PUBLISHER that is too long; the maximum length is 128 characters."
-	fi
-
-	if [ "$(eval "echo \"${LB_ISO_VOLUME}\"" | wc -c)" -gt 32 ]; then
-		Echo_warning "You have specified a value of LB_ISO_VOLUME that is too long; the maximum length is 32 characters."
-	fi
-
 }
 
 Get_configuration ()
