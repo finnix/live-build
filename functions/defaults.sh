@@ -578,6 +578,15 @@ Set_config_defaults ()
 	# Setting image type
 	LB_SOURCE_IMAGES="${LB_SOURCE_IMAGES:-tar}"
 	LB_SOURCE_IMAGES="$(echo "${LB_SOURCE_IMAGES}" | tr "," " ")"
+
+	# Architectures to use foreign bootstrap for
+	LB_BOOTSTRAP_QEMU_ARCHITECTURES="${LB_BOOTSTRAP_QEMU_ARCHITECTURES:-}"
+
+	# Packages to exclude for the foreign/ports bootstrapping
+	LB_BOOTSTRAP_QEMU_EXCLUDE="${LB_BOOTSTRAP_QEMU_EXCLUDE:-}"
+
+	# Ports using foreign bootstrap need a working qemu-*-system. This is the location it
+	LB_BOOTSTRAP_QEMU_STATIC="${LB_BOOTSTRAP_QEMU_STATIC:-}"
 }
 
 Check_config_defaults ()
@@ -656,14 +665,5 @@ Check_config_defaults ()
 	then
 		Echo_warning "You have specified a value of LB_ISO_VOLUME that is too long; the maximum length is 32 characters."
 	fi
-
-	# Architectures to use foreign bootstrap for
-	LB_BOOTSTRAP_QEMU_ARCHITECTURES="${LB_BOOTSTRAP_QEMU_ARCHITECTURES:-}"
-
-	# Packages to exclude for the foreign/ports bootstrapping
-	LB_BOOTSTRAP_QEMU_EXCLUDE="${LB_BOOTSTRAP_QEMU_EXCLUDE:-}"
-
-	# Ports using foreign bootstrap need a working qemu-*-system. This is the location it
-	LB_BOOTSTRAP_QEMU_STATIC="${LB_BOOTSTRAP_QEMU_STATIC:-}"
 
 }
