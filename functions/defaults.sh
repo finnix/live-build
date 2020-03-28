@@ -574,6 +574,7 @@ Set_config_defaults ()
 
 	# Setting image type
 	LB_SOURCE_IMAGES="${LB_SOURCE_IMAGES:-tar}"
+	LB_SOURCE_IMAGES="$(echo "${LB_SOURCE_IMAGES}" | tr "," " ")"
 }
 
 Check_config_defaults ()
