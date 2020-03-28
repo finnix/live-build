@@ -18,7 +18,7 @@ Chroot ()
 	# Executing commands in chroot
 	Echo_debug "Executing: %s" "${COMMANDS}"
 
-	ENV=""
+	local ENV=""
 
 	local _FILE
 	for _FILE in config/environment config/environment.chroot
