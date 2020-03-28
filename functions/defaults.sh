@@ -616,7 +616,7 @@ Check_config_defaults ()
 	case "${LIVE_IMAGE_TYPE}" in
 		hdd*)
 			case "${LB_FIRST_BOOTLOADER}" in
-				grub)
+				grub-legacy)
 					Echo_error "You have selected a combination of bootloader and image type that is currently not supported by live-build. Please use either another bootloader or a different image type."
 					exit 1
 					;;

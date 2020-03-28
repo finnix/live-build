@@ -55,7 +55,7 @@ Check_package host /sbin/losetup mount
 
 for BOOTLOADER in $(echo "${LB_BOOTLOADERS}" | tr "," "\n"); do
 	case "${BOOTLOADER}" in
-		grub)
+		grub-legacy)
 			Check_package chroot /usr/sbin/grub grub
 			;;
 	esac

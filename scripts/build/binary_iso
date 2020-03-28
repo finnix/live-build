@@ -120,7 +120,7 @@ do
 		XORRISO_OPTIONS="${XORRISO_OPTIONS} -eltorito-alt-boot "
 	fi
 	case "${BOOTLOADER}" in
-		grub)
+		grub-legacy)
 			XORRISO_OPTIONS="${XORRISO_OPTIONS} -no-emul-boot -boot-load-size 4 -boot-info-table"
 			XORRISO_OPTIONS="${XORRISO_OPTIONS} -b boot/grub/stage2_eltorito"
 			XORRISO_EXCLUDE="boot/grub/stage2_eltorito"
