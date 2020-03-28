@@ -668,3 +668,33 @@ Validate_config ()
 	fi
 
 }
+
+Get_configuration ()
+{
+	local CONFIGURATION_FILE="${1}"
+	local FIELD_NAME="${2}"
+	local FIELD_BODY
+
+	if [ -e "${CONFIGURATION_FILE}" ]
+	then
+		FIELD_BODY="$(grep ^${FIELD_NAME}: ${CONFIGURATION_FILE} | awk '{ $1=""; print $0 }' | sed -e 's|^ ||')"
+	fi
+
+	echo ${FIELD_BODY}
+}
+
+Set_configuration ()
+{
+	local CONFIGURATION_FILE="${1}"
+	local FIELD_NAME="${2}"
+	local FIELD_BODY="${3}"
+
+	if grep -qs "^${FIELD_NAME}:" "${CONFIGURATION_FILE}"
+	then
+		# Update configuration
+		sed -i -e "s|^${FIELD_NAME}:.*$|${FIELD_NAME}: ${FIELD_BODY}|" "${CONFIGURATION_FILE}"
+	else
+		# Append configuration
+		echo "${FIELD_NAME}: ${FIELD_BODY}" >> "${CONFIGURATION_FILE}"
+	fi
+}
