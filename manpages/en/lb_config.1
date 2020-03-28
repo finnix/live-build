@@ -232,6 +232,8 @@
 .br
 	[\fB\-\-updates\fR true|false]
 .br
+	[\fB\-\-validate\fR]
+.br
 	[\fB\-\-verbose\fR]
 .br
 	[\fB\-\-win32\-loader\fR true|false]
@@ -479,6 +481,8 @@ selects which program is used to install tasks. By default, this is set to tasks
 enables or disables Secure Boot support when using grub-efi, by installing signed shim and grub-efi packages. By default, this is set to auto, which means if the packages are available they will be installed, but if not only a warning will be printed and the normal non-signed grub-efi will be used.
 .IP "\fB\-\-updates\fR true|false" 4
 defines if debian updates package archives should be included in the image or not.
+.IP "\fB\-\-validate\fR" 4
+requests that the config be validated only, not changed, thus after the validation check the script ends rather than writing an updated config. Please note that at the time of writing, many options do not have corresponding validation checks.
 .IP "\fB\-\-verbose\fR" 4
 increases the verbosity of messages output by \fBlb build\fR.
 .IP "\fB\-\-win32\-loader\fR true|false" 4

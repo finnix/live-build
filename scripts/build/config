@@ -129,6 +129,7 @@ USAGE="${PROGRAM}   [--apt apt|aptitude]\n\
 \t    [--tasksel apt|aptitude|tasksel]\n\
 \t    [--uefi-secure-boot auto|enable|disable]\n\
 \t    [--updates true|false]\n\
+\t    [--validate]\n\
 \t    [--verbose]\n\
 \t    [--win32-loader true|false]\n\
 \t    [--zsync true|false]"
@@ -159,7 +160,7 @@ Local_arguments ()
 		net-root-path:,net-root-server:,net-cow-filesystem:,net-cow-mountoptions:,net-cow-path:,
 		net-cow-server:,net-tarball:,onie:,onie-kernel-cmdline:,firmware-binary:,firmware-chroot:,swap-file-path:,swap-file-size:,
 		loadlin:,win32-loader:,source:,source-images:,breakpoints,conffile:,color,no-color,debug,force,
-		help,ignore-system-defaults,quiet,usage,verbose,version,bootstrap-qemu-static:,bootstrap-qemu-arch:,
+		help,ignore-system-defaults,quiet,usage,validate,verbose,version,bootstrap-qemu-static:,bootstrap-qemu-arch:,
 		uefi-secure-boot:,
 		bootstrap-qemu-exclude:"
 	# Remove spaces added by indentation
@@ -218,6 +219,11 @@ Local_arguments ()
 				done
 
 				exit 0
+				;;
+
+			--validate)
+				_VALIDATE_MODE="true"
+				shift
 				;;
 
 			--clean)
@@ -939,6 +945,11 @@ fi
 # Setting and validating config
 Prepare_config
 Validate_config
+
+if [ "${_VALIDATE_MODE}" = "true" ]; then
+	Echo_message "Validation check complete! Please address any problem notices given above."
+	exit 0
+fi
 
 # Creating or updating saved config
 
