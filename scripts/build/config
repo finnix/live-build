@@ -200,6 +200,24 @@ Local_arguments ()
 	while true
 	do
 		case "${1}" in
+
+			# Config script specific options
+
+			--clean)
+				_CLEAN="true"
+				shift
+				;;
+
+			--config)
+				_CONFIG="${2}"
+				shift 2
+				;;
+
+			-c|--conffile)
+				_CONFFILE="${2}"
+				shift 2
+				;;
+
 			--dump)
 				# Dump version
 				local VERSION_DPKG
@@ -238,17 +256,69 @@ Local_arguments ()
 				exit 0
 				;;
 
+			--ignore-system-defaults)
+				shift
+				;;
+
 			--validate)
 				_VALIDATE_MODE="true"
 				shift
 				;;
 
-			--clean)
-				_CLEAN="true"
+			# General options
+
+			--breakpoints)
+				_BREAKPOINTS="true"
 				shift
 				;;
 
-			# config/common
+			--color)
+				_COLOR="true"
+				shift
+				;;
+
+			--debug)
+				_DEBUG="true"
+				shift
+				;;
+
+			--force)
+				_FORCE="true"
+				shift
+				;;
+
+			-h|--help)
+				Help
+				shift
+				;;
+
+			--no-color)
+				_COLOR="false"
+				shift
+				;;
+
+			--quiet)
+				_QUIET="true"
+				shift
+				;;
+
+			-u|--usage)
+				Usage
+				shift
+				;;
+
+			--verbose)
+				_VERBOSE="true"
+				shift
+				;;
+
+			-v|--version)
+				echo "${VERSION}"
+				exit 0
+				;;
+
+			# Build config options
+
 			--apt)
 				LB_APT="${2}"
 				shift 2
@@ -274,11 +344,6 @@ Local_arguments ()
 				shift 2
 				;;
 
-			--aptitude-options)
-				APTITUDE_OPTIONS="${2}"
-				shift 2
-				;;
-
 			--apt-pipeline)
 				LB_APT_PIPELINE="${2}"
 				shift 2
@@ -299,13 +364,73 @@ Local_arguments ()
 				shift 2
 				;;
 
-			--debootstrap-options)
-				DEBOOTSTRAP_OPTIONS="${2}"
+			--aptitude-options)
+				APTITUDE_OPTIONS="${2}"
 				shift 2
 				;;
 
-			--debootstrap-script)
-				DEBOOTSTRAP_SCRIPT="${2}"
+			-a|--architecture|--architectures)
+				LB_ARCHITECTURES="${2}"
+				shift 2
+				;;
+
+			--archive-areas)
+				LB_ARCHIVE_AREAS="${2}"
+				shift 2
+				;;
+
+			--backports)
+				LB_BACKPORTS="${2}"
+				shift 2
+				;;
+
+			--binary-filesystem)
+				LB_BINARY_FILESYSTEM="${2}"
+				shift 2
+				;;
+
+			-b|--binary-image|--binary-images)
+				LIVE_IMAGE_TYPE="${2}"
+				shift 2
+				;;
+
+			--bootappend-install)
+				LB_BOOTAPPEND_INSTALL="${2}"
+				shift 2
+				;;
+
+			--bootappend-live)
+				LB_BOOTAPPEND_LIVE="${2}"
+				shift 2
+				;;
+
+			--bootappend-live-failsafe)
+				LB_BOOTAPPEND_LIVE_FAILSAFE="${2}"
+				shift 2
+				;;
+
+			--bootloaders|--bootloader)
+				LB_BOOTLOADERS="${2}"
+				shift 2
+				;;
+
+			--bootstrap-qemu-arch)
+				LB_BOOTSTRAP_QEMU_ARCHITECTURES="${2}"
+				shift 2
+				;;
+
+			--bootstrap-qemu-exclude)
+				LB_BOOTSTRAP_QEMU_EXCLUDE="${2}"
+				shift 2
+				;;
+
+			--bootstrap-qemu-static)
+				LB_BOOTSTRAP_QEMU_STATIC="${2}"
+				shift 2
+				;;
+
+			--build-with-chroot)
+				LB_BUILD_WITH_CHROOT="${2}"
 				shift 2
 				;;
 
@@ -329,6 +454,21 @@ Local_arguments ()
 				shift 2
 				;;
 
+			--checksums)
+				LB_CHECKSUMS="${2}"
+				shift 2
+				;;
+
+			--chroot-filesystem)
+				LB_CHROOT_FILESYSTEM="${2}"
+				shift 2
+				;;
+
+			--compression)
+				LB_COMPRESSION="${2}"
+				shift 2
+				;;
+
 			--debconf-frontend)
 				LB_DEBCONF_FRONTEND="${2}"
 				shift 2
@@ -336,6 +476,96 @@ Local_arguments ()
 
 			--debconf-priority)
 				LB_DEBCONF_PRIORITY="${2}"
+				shift 2
+				;;
+
+			--debian-installer)
+				LB_DEBIAN_INSTALLER="${2}"
+				shift 2
+				;;
+
+			--debian-installer-distribution)
+				LB_DEBIAN_INSTALLER_DISTRIBUTION="${2}"
+				shift 2
+				;;
+
+			--debian-installer-gui)
+				LB_DEBIAN_INSTALLER_GUI="${2}"
+				shift 2
+				;;
+
+			--debian-installer-preseedfile)
+				LB_DEBIAN_INSTALLER_PRESEEDFILE="${2}"
+				shift 2
+				;;
+
+			--debootstrap-options)
+				DEBOOTSTRAP_OPTIONS="${2}"
+				shift 2
+				;;
+
+			--debootstrap-script)
+				DEBOOTSTRAP_SCRIPT="${2}"
+				shift 2
+				;;
+
+			-d|--distribution)
+				LB_DISTRIBUTION="${2}"
+				shift 2
+				;;
+
+			--distribution-binary)
+				LB_DISTRIBUTION_BINARY="${2}"
+				shift 2
+				;;
+
+			--distribution-chroot)
+				LB_DISTRIBUTION_CHROOT="${2}"
+				shift 2
+				;;
+
+			--fdisk)
+				Echo_warning "--fdisk is an obsolete option"
+				shift 2
+				;;
+
+			--firmware-binary)
+				LB_FIRMWARE_BINARY="${2}"
+				shift 2
+				;;
+
+			--firmware-chroot)
+				LB_FIRMWARE_CHROOT="${2}"
+				shift 2
+				;;
+
+			--grub-splash)
+				Echo_warning "--grub-splash is an obsolete option"
+				shift 2
+				;;
+
+			--gzip-options)
+				GZIP_OPTIONS="${2}"
+				shift 2
+				;;
+
+			--hdd-label)
+				LB_HDD_LABEL="${2}"
+				shift 2
+				;;
+
+			--hdd-partition-start)
+				LB_HDD_PARTITION_START="${2}"
+				shift 2
+				;;
+
+			--hdd-size)
+				LB_HDD_SIZE="${2}"
+				shift 2
+				;;
+
+			--image-name)
+				LIVE_IMAGE_NAME="${2}"
 				shift 2
 				;;
 
@@ -354,291 +584,8 @@ Local_arguments ()
 				shift 2
 				;;
 
-			--fdisk)
-				Echo_warning "--fdisk is an obsolete option"
-				shift 2
-				;;
-
-			--losetup)
-				Echo_warning "--losetup is an obsolete option"
-				shift 2
-				;;
-
-			--mode)
-				LB_MODE="${2}"
-				shift 2
-				;;
-
-			--system)
-				LB_SYSTEM="${2}"
-				shift 2
-				;;
-
-			--tasksel)
-				LB_TASKSEL="${2}"
-				shift 2
-				;;
-
-			# config/bootstrap
-			-a|--architecture|--architectures)
-				LB_ARCHITECTURES="${2}"
-				shift 2
-				;;
-
-			-d|--distribution)
-				LB_DISTRIBUTION="${2}"
-				shift 2
-				;;
-
-			--parent-distribution)
-				LB_PARENT_DISTRIBUTION="${2}"
-				shift 2
-				;;
-
-			--distribution-chroot)
-				LB_DISTRIBUTION_CHROOT="${2}"
-				shift 2
-				;;
-
-			--parent-distribution-chroot)
-				LB_PARENT_DISTRIBUTION_CHROOT="${2}"
-				shift 2
-				;;
-
-			--distribution-binary)
-				LB_DISTRIBUTION_BINARY="${2}"
-				shift 2
-				;;
-
-			--parent-distribution-binary)
-				LB_PARENT_DISTRIBUTION_BINARY="${2}"
-				shift 2
-				;;
-
-			-m|--parent-mirror-bootstrap)
-				LB_PARENT_MIRROR_BOOTSTRAP="${2}"
-				shift 2
-				;;
-
-			--parent-mirror-chroot)
-				LB_PARENT_MIRROR_CHROOT="${2}"
-				shift 2
-				;;
-
-			--parent-mirror-chroot-security)
-				LB_PARENT_MIRROR_CHROOT_SECURITY="${2}"
-				shift 2
-				;;
-
-			--parent-mirror-binary)
-				LB_PARENT_MIRROR_BINARY="${2}"
-				shift 2
-				;;
-
-			--parent-mirror-binary-security)
-				LB_PARENT_MIRROR_BINARY_SECURITY="${2}"
-				shift 2
-				;;
-
-			--parent-mirror-debian-installer)
-				LB_PARENT_MIRROR_DEBIAN_INSTALLER="${2}"
-				shift 2
-				;;
-
-			--mirror-bootstrap)
-				LB_MIRROR_BOOTSTRAP="${2}"
-				shift 2
-				;;
-
-			--mirror-chroot)
-				LB_MIRROR_CHROOT="${2}"
-				shift 2
-				;;
-
-			--mirror-chroot-security)
-				LB_MIRROR_CHROOT_SECURITY="${2}"
-				shift 2
-				;;
-
-			--mirror-binary)
-				LB_MIRROR_BINARY="${2}"
-				shift 2
-				;;
-
-			--mirror-binary-security)
-				LB_MIRROR_BINARY_SECURITY="${2}"
-				shift 2
-				;;
-
-			--mirror-debian-installer)
-				LB_MIRROR_DEBIAN_INSTALLER="${2}"
-				shift 2
-				;;
-
-			--archive-areas)
-				LB_ARCHIVE_AREAS="${2}"
-				shift 2
-				;;
-
-			--parent-archive-areas)
-				LB_PARENT_ARCHIVE_AREAS="${2}"
-				shift 2
-				;;
-
-			# config/chroot
-			--chroot-filesystem)
-				LB_CHROOT_FILESYSTEM="${2}"
-				shift 2
-				;;
-
-			--gzip-options)
-				GZIP_OPTIONS="${2}"
-				shift 2
-				;;
-
-			--image-name)
-				LIVE_IMAGE_NAME="${2}"
-				shift 2
-				;;
-
 			--interactive)
 				LB_INTERACTIVE="${2}"
-				shift 2
-				;;
-
-			--keyring-packages)
-				LB_KEYRING_PACKAGES="${2}"
-				shift 2
-				;;
-
-			-k|--linux-flavours)
-				LB_LINUX_FLAVOURS_WITH_ARCH="${2}"
-				shift 2
-				;;
-
-			--linux-packages)
-				LB_LINUX_PACKAGES="${2}"
-				shift 2
-				;;
-
-			--security)
-				LB_SECURITY="${2}"
-				shift 2
-				;;
-
-			--updates)
-				LB_UPDATES="${2}"
-				shift 2
-				;;
-
-			--backports)
-				LB_BACKPORTS="${2}"
-				shift 2
-				;;
-
-			# config/binary
-			--binary-filesystem)
-				LB_BINARY_FILESYSTEM="${2}"
-				shift 2
-				;;
-
-			-b|--binary-image|--binary-images)
-				LIVE_IMAGE_TYPE="${2}"
-				shift 2
-				;;
-
-			--bootappend-live)
-				LB_BOOTAPPEND_LIVE="${2}"
-				shift 2
-				;;
-
-			--bootappend-live-failsafe)
-				LB_BOOTAPPEND_LIVE_FAILSAFE="${2}"
-				shift 2
-				;;
-
-			--bootappend-install)
-				LB_BOOTAPPEND_INSTALL="${2}"
-				shift 2
-				;;
-
-			--bootloaders|--bootloader)
-				LB_BOOTLOADERS="${2}"
-				shift 2
-				;;
-
-			--checksums)
-				LB_CHECKSUMS="${2}"
-				shift 2
-				;;
-
-			--compression)
-				LB_COMPRESSION="${2}"
-				shift 2
-				;;
-
-			--config)
-				_CONFIG="${2}"
-				shift 2
-				;;
-
-			--zsync)
-				LB_ZSYNC="${2}"
-				shift 2
-				;;
-
-			--build-with-chroot)
-				LB_BUILD_WITH_CHROOT="${2}"
-				shift 2
-				;;
-
-			--debian-installer)
-				LB_DEBIAN_INSTALLER="${2}"
-				shift 2
-				;;
-
-			--debian-installer-distribution)
-				LB_DEBIAN_INSTALLER_DISTRIBUTION="${2}"
-				shift 2
-				;;
-
-			--parent-debian-installer-distribution)
-				LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="${2}"
-				shift 2
-				;;
-
-			--debian-installer-preseedfile)
-				LB_DEBIAN_INSTALLER_PRESEEDFILE="${2}"
-				shift 2
-				;;
-
-			--debian-installer-gui)
-				LB_DEBIAN_INSTALLER_GUI="${2}"
-				shift 2
-				;;
-
-			--grub-splash)
-				Echo_warning "--grub-splash is an obsolete option"
-				shift 2
-				;;
-
-			--isohybrid-options)
-				LB_ISOHYBRID_OPTIONS="${2}"
-				shift 2
-				;;
-
-			--hdd-label)
-				LB_HDD_LABEL="${2}"
-				shift 2
-				;;
-
-			--hdd-size)
-				LB_HDD_SIZE="${2}"
-				shift 2
-				;;
-
-			--hdd-partition-start)
-				LB_HDD_PARTITION_START="${2}"
 				shift 2
 				;;
 
@@ -662,8 +609,38 @@ Local_arguments ()
 				shift 2
 				;;
 
+			--isohybrid-options)
+				LB_ISOHYBRID_OPTIONS="${2}"
+				shift 2
+				;;
+
 			--jffs2-eraseblock)
 				LB_JFFS2_ERASEBLOCK="${2}"
+				shift 2
+				;;
+
+			--keyring-packages)
+				LB_KEYRING_PACKAGES="${2}"
+				shift 2
+				;;
+
+			-k|--linux-flavours)
+				LB_LINUX_FLAVOURS_WITH_ARCH="${2}"
+				shift 2
+				;;
+
+			--linux-packages)
+				LB_LINUX_PACKAGES="${2}"
+				shift 2
+				;;
+
+			--loadlin)
+				LB_LOADLIN="${2}"
+				shift 2
+				;;
+
+			--losetup)
+				Echo_warning "--losetup is an obsolete option"
 				shift 2
 				;;
 
@@ -672,23 +649,38 @@ Local_arguments ()
 				shift 2
 				;;
 
-			--net-root-filesystem)
-				LB_NET_ROOT_FILESYSTEM="${2}"
+			--mirror-binary)
+				LB_MIRROR_BINARY="${2}"
 				shift 2
 				;;
 
-			--net-root-mountoptions)
-				LB_NET_ROOT_MOUNTOPTIONS="${2}"
+			--mirror-binary-security)
+				LB_MIRROR_BINARY_SECURITY="${2}"
 				shift 2
 				;;
 
-			--net-root-path)
-				LB_NET_ROOT_PATH="${2}"
+			--mirror-bootstrap)
+				LB_MIRROR_BOOTSTRAP="${2}"
 				shift 2
 				;;
 
-			--net-root-server)
-				LB_NET_ROOT_SERVER="${2}"
+			--mirror-chroot)
+				LB_MIRROR_CHROOT="${2}"
+				shift 2
+				;;
+
+			--mirror-chroot-security)
+				LB_MIRROR_CHROOT_SECURITY="${2}"
+				shift 2
+				;;
+
+			--mirror-debian-installer)
+				LB_MIRROR_DEBIAN_INSTALLER="${2}"
+				shift 2
+				;;
+
+			--mode)
+				LB_MODE="${2}"
 				shift 2
 				;;
 
@@ -712,6 +704,26 @@ Local_arguments ()
 				shift 2
 				;;
 
+			--net-root-filesystem)
+				LB_NET_ROOT_FILESYSTEM="${2}"
+				shift 2
+				;;
+
+			--net-root-mountoptions)
+				LB_NET_ROOT_MOUNTOPTIONS="${2}"
+				shift 2
+				;;
+
+			--net-root-path)
+				LB_NET_ROOT_PATH="${2}"
+				shift 2
+				;;
+
+			--net-root-server)
+				LB_NET_ROOT_SERVER="${2}"
+				shift 2
+				;;
+
 			--net-tarball)
 				LB_NET_TARBALL="${2}"
 				shift 2
@@ -727,13 +739,73 @@ Local_arguments ()
 				shift 2
 				;;
 
-			--firmware-binary)
-				LB_FIRMWARE_BINARY="${2}"
+			--parent-archive-areas)
+				LB_PARENT_ARCHIVE_AREAS="${2}"
 				shift 2
 				;;
 
-			--firmware-chroot)
-				LB_FIRMWARE_CHROOT="${2}"
+			--parent-debian-installer-distribution)
+				LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="${2}"
+				shift 2
+				;;
+
+			--parent-distribution)
+				LB_PARENT_DISTRIBUTION="${2}"
+				shift 2
+				;;
+
+			--parent-distribution-binary)
+				LB_PARENT_DISTRIBUTION_BINARY="${2}"
+				shift 2
+				;;
+
+			--parent-distribution-chroot)
+				LB_PARENT_DISTRIBUTION_CHROOT="${2}"
+				shift 2
+				;;
+
+			--parent-mirror-binary)
+				LB_PARENT_MIRROR_BINARY="${2}"
+				shift 2
+				;;
+
+			--parent-mirror-binary-security)
+				LB_PARENT_MIRROR_BINARY_SECURITY="${2}"
+				shift 2
+				;;
+
+			-m|--parent-mirror-bootstrap)
+				LB_PARENT_MIRROR_BOOTSTRAP="${2}"
+				shift 2
+				;;
+
+			--parent-mirror-chroot)
+				LB_PARENT_MIRROR_CHROOT="${2}"
+				shift 2
+				;;
+
+			--parent-mirror-chroot-security)
+				LB_PARENT_MIRROR_CHROOT_SECURITY="${2}"
+				shift 2
+				;;
+
+			--parent-mirror-debian-installer)
+				LB_PARENT_MIRROR_DEBIAN_INSTALLER="${2}"
+				shift 2
+				;;
+
+			--security)
+				LB_SECURITY="${2}"
+				shift 2
+				;;
+
+			--source)
+				LB_SOURCE="${2}"
+				shift 2
+				;;
+
+			-s|--source-images)
+				LB_SOURCE_IMAGES="${2}"
 				shift 2
 				;;
 
@@ -747,13 +819,23 @@ Local_arguments ()
 				shift 2
 				;;
 
+			--system)
+				LB_SYSTEM="${2}"
+				shift 2
+				;;
+
+			--tasksel)
+				LB_TASKSEL="${2}"
+				shift 2
+				;;
+
 			--uefi-secure-boot)
 				LB_UEFI_SECURE_BOOT="${2}"
 				shift 2
 				;;
 
-			--loadlin)
-				LB_LOADLIN="${2}"
+			--updates)
+				LB_UPDATES="${2}"
 				shift 2
 				;;
 
@@ -762,91 +844,12 @@ Local_arguments ()
 				shift 2
 				;;
 
-			--bootstrap-qemu-arch)
-				LB_BOOTSTRAP_QEMU_ARCHITECTURES="${2}"
+			--zsync)
+				LB_ZSYNC="${2}"
 				shift 2
 				;;
 
-			--bootstrap-qemu-exclude)
-				LB_BOOTSTRAP_QEMU_EXCLUDE="${2}"
-				shift 2
-				;;
-
-			--bootstrap-qemu-static)
-				LB_BOOTSTRAP_QEMU_STATIC="${2}"
-				shift 2
-				;;
-
-			# config/source
-			--source)
-				LB_SOURCE="${2}"
-				shift 2
-				;;
-
-			-s|--source-images)
-				LB_SOURCE_IMAGES="${2}"
-				shift 2
-				;;
-
-			# other
-			--breakpoints)
-				_BREAKPOINTS="true"
-				shift
-				;;
-
-			-c|--conffile)
-				_CONFFILE="${2}"
-				shift 2
-				;;
-
-			--color)
-				_COLOR="true"
-				shift
-				;;
-
-			--no-color)
-				_COLOR="false"
-				shift
-				;;
-
-			--debug)
-				_DEBUG="true"
-				shift
-				;;
-
-			--force)
-				_FORCE="true"
-				shift
-				;;
-
-			-h|--help)
-				Help
-				shift
-				;;
-
-			--ignore-system-defaults)
-				shift
-				;;
-
-			--quiet)
-				_QUIET="true"
-				shift
-				;;
-
-			-u|--usage)
-				Usage
-				shift
-				;;
-
-			--verbose)
-				_VERBOSE="true"
-				shift
-				;;
-
-			-v|--version)
-				echo "${VERSION}"
-				exit 0
-				;;
+			# Other
 
 			--)
 				shift
