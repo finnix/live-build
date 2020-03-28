@@ -986,111 +986,86 @@ cat > config/common << EOF
 # config/common - common options for live-build(7)
 
 # \$LB_APT: set package manager
-# (Default: ${LB_APT})
 LB_APT="${LB_APT}"
 
 # \$LB_APT_FTP_PROXY: set apt/aptitude ftp proxy
-# (Default: autodetected or empty)
 LB_APT_FTP_PROXY="${LB_APT_FTP_PROXY}"
 
 # \$LB_APT_HTTP_PROXY: set apt/aptitude http proxy
-# (Default: autodetected or empty)
 LB_APT_HTTP_PROXY="${LB_APT_HTTP_PROXY}"
 
 # \$LB_APT_PIPELINE: set apt/aptitude pipeline depth
-# (Default: ${LB_APT_PIPELINE})
 LB_APT_PIPELINE="${LB_APT_PIPELINE}"
 
 # \$LB_APT_RECOMMENDS: set apt/aptitude recommends
-# (Default: ${LB_APT_RECOMMENDS})
 LB_APT_RECOMMENDS="${LB_APT_RECOMMENDS}"
 
 # \$LB_APT_SECURE: set apt/aptitude security
-# (Default: ${LB_APT_SECURE})
 LB_APT_SECURE="${LB_APT_SECURE}"
 
 # \$LB_APT_SOURCE_ARCHIVES: set apt/aptitude source entries in sources.list
-# (Default: ${LB_APT_SOURCE_ARCHIVES})
 LB_APT_SOURCE_ARCHIVES="${LB_APT_SOURCE_ARCHIVES}"
 
 # \$LB_CACHE: control cache
-# (Default: ${LB_CACHE})
 LB_CACHE="${LB_CACHE}"
 
 # \$LB_CACHE_INDICES: control if downloaded package indices should be cached
-# (Default: ${LB_CACHE_INDICES})
 LB_CACHE_INDICES="${LB_CACHE_INDICES}"
 
 # \$LB_CACHE_PACKAGES: control if downloaded packages files should be cached
-# (Default: ${LB_CACHE_PACKAGES})
 LB_CACHE_PACKAGES="${LB_CACHE_PACKAGES}"
 
 # \$LB_CACHE_STAGES: control if completed stages should be cached
-# (Default: ${LB_CACHE_STAGES})
 LB_CACHE_STAGES="${LB_CACHE_STAGES}"
 
 # \$LB_DEBCONF_FRONTEND: set debconf(1) frontend to use
-# (Default: ${LB_DEBCONF_FRONTEND})
 LB_DEBCONF_FRONTEND="${LB_DEBCONF_FRONTEND}"
 
 # \$LB_DEBCONF_PRIORITY: set debconf(1) priority to use
-# (Default: ${LB_DEBCONF_PRIORITY})
 LB_DEBCONF_PRIORITY="${LB_DEBCONF_PRIORITY}"
 
 # \$LB_INITRAMFS: set initramfs hook
-# (Default: ${LB_INITRAMFS})
 LB_INITRAMFS="${LB_INITRAMFS}"
 
 # \$LB_INITRAMFS_COMPRESSION: set initramfs compression
-# (Default: ${LB_INITRAMFS_COMPRESSION})
 LB_INITRAMFS_COMPRESSION="${LB_INITRAMFS_COMPRESSION}"
 
 # \$LB_INITSYSTEM: set init system
-# (Default: ${LB_INITSYSTEM})
 LB_INITSYSTEM="${LB_INITSYSTEM}"
 
 # \$LB_MODE: set distribution mode
-# (Default: ${LB_MODE})
 LB_MODE="${LB_MODE}"
 
 # \$LB_SYSTEM: set system type
-# (Default: ${LB_SYSTEM})
 LB_SYSTEM="${LB_SYSTEM}"
 
 # \$LB_TASKSEL: set tasksel program
-# (Default: ${LB_TASKSEL})
 LB_TASKSEL="${LB_TASKSEL}"
 
 # live-build options
 
 # \$_BREAKPOINTS: enable breakpoints
 # If set here, overrides the command line option
-# (Default: ${_BREAKPOINTS})
 #_BREAKPOINTS="${_BREAKPOINTS}"
 
 # \$_DEBUG: enable debug
 # If set here, overrides the command line option
-# (Default: ${_DEBUG})
 #_DEBUG="${_DEBUG}"
 
 # \$_COLOR: enable color
 # If set here, overrides the command line option
-# (Default: ${_COLOR})
 #_COLOR="${_COLOR}"
 
 # \$_FORCE: enable force
 # If set here, overrides the command line option
-# (Default: ${_FORCE})
 #_FORCE="${_FORCE}"
 
 # \$_QUIET: enable quiet
 # If set here, overrides the command line option
-# (Default: ${_QUIET})
 #_QUIET="${_QUIET}"
 
 # \$_VERBOSE: enable verbose
 # If set here, overrides the command line option
-# (Default: ${_VERBOSE})
 #_VERBOSE="${_VERBOSE}"
 
 # Internal stuff (FIXME)
@@ -1107,91 +1082,69 @@ cat > config/bootstrap << EOF
 # config/bootstrap - options for live-build(7), bootstrap stage
 
 # \$LB_DISTRIBUTION: select distribution to use
-# (Default: ${LB_DISTRIBUTION})
 LB_DISTRIBUTION="${LB_DISTRIBUTION}"
 
 # \$LB_PARENT_DISTRIBUTION: select parent distribution to use
-# (Default: ${LB_PARENT_DISTRIBUTION})
 LB_PARENT_DISTRIBUTION="${LB_PARENT_DISTRIBUTION}"
 
 # \$LB_DISTRIBUTION_CHROOT: select distribution to use in the chroot
-# (Default: ${LB_DISTRIBUTION_CHROOT})
 LB_DISTRIBUTION_CHROOT="${LB_DISTRIBUTION_CHROOT}"
 
 # \$LB_PARENT_DISTRIBUTION_CHROOT: select parent distribution to use in the chroot
-# (Default: ${LB_PARENT_DISTRIBUTION_CHROOT})
 LB_PARENT_DISTRIBUTION_CHROOT="${LB_PARENT_DISTRIBUTION_CHROOT}"
 
 # \$LB_DISTRIBUTION_BINARY: select distribution to use in the final image
-# (Default: ${LB_DISTRIBUTION_BINARY})
 LB_DISTRIBUTION_BINARY="${LB_DISTRIBUTION_BINARY}"
 
 # \$LB_PARENT_DISTRIBUTION_BINARY: select parent distribution to use in the final image
-# (Default: ${LB_PARENT_DISTRIBUTION_BINARY})
 LB_PARENT_DISTRIBUTION_BINARY="${LB_PARENT_DISTRIBUTION_BINARY}"
 
 # \$LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION: select parent distribution for debian-installer to use
-# (Default: ${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION})
 LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}"
 
 # \$LB_PARENT_MIRROR_BOOTSTRAP: set parent mirror to bootstrap from
-# (Default: ${LB_PARENT_MIRROR_BOOTSTRAP})
 LB_PARENT_MIRROR_BOOTSTRAP="${LB_PARENT_MIRROR_BOOTSTRAP}"
 
 # \$LB_PARENT_MIRROR_CHROOT: set parent mirror to fetch packages from
-# (Default: ${LB_PARENT_MIRROR_CHROOT})
 LB_PARENT_MIRROR_CHROOT="${LB_PARENT_MIRROR_CHROOT}"
 
 # \$LB_PARENT_MIRROR_CHROOT_SECURITY: set security parent mirror to fetch packages from
-# (Default: ${LB_PARENT_MIRROR_CHROOT_SECURITY})
 LB_PARENT_MIRROR_CHROOT_SECURITY="${LB_PARENT_MIRROR_CHROOT_SECURITY}"
 
 # \$LB_PARENT_MIRROR_BINARY: set parent mirror which ends up in the image
-# (Default: ${LB_PARENT_MIRROR_BINARY})
 LB_PARENT_MIRROR_BINARY="${LB_PARENT_MIRROR_BINARY}"
 
 # \$LB_PARENT_MIRROR_BINARY_SECURITY: set security parent mirror which ends up in the image
-# (Default: ${LB_PARENT_MIRROR_BINARY_SECURITY})
 LB_PARENT_MIRROR_BINARY_SECURITY="${LB_PARENT_MIRROR_BINARY_SECURITY}"
 
 # \$LB_PARENT_MIRROR_DEBIAN_INSTALLER: set debian-installer parent mirror
-# (Default: ${LB_PARENT_MIRROR_BOOTSTRAP})
 LB_PARENT_MIRROR_DEBIAN_INSTALLER="${LB_PARENT_MIRROR_DEBIAN_INSTALLER}"
 
 # \$LB_MIRROR_BOOTSTRAP: set mirror to bootstrap from
-# (Default: ${LB_MIRROR_BOOTSTRAP})
 LB_MIRROR_BOOTSTRAP="${LB_MIRROR_BOOTSTRAP}"
 
 # \$LB_MIRROR_CHROOT: set mirror to fetch packages from
-# (Default: ${LB_MIRROR_CHROOT})
 LB_MIRROR_CHROOT="${LB_MIRROR_CHROOT}"
 
 # \$LB_MIRROR_CHROOT_SECURITY: set security mirror to fetch packages from
-# (Default: ${LB_MIRROR_CHROOT_SECURITY})
 LB_MIRROR_CHROOT_SECURITY="${LB_MIRROR_CHROOT_SECURITY}"
 
 # \$LB_MIRROR_BINARY: set mirror which ends up in the image
-# (Default: ${LB_MIRROR_BINARY})
 LB_MIRROR_BINARY="${LB_MIRROR_BINARY}"
 
 # \$LB_MIRROR_BINARY_SECURITY: set security mirror which ends up in the image
-# (Default: ${LB_MIRROR_BINARY_SECURITY})
 LB_MIRROR_BINARY_SECURITY="${LB_MIRROR_BINARY_SECURITY}"
 
 # \$LB_MIRROR_DEBIAN_INSTALLER: set debian-installer mirror
-# (Default: ${LB_MIRROR_BOOTSTRAP})
 LB_MIRROR_DEBIAN_INSTALLER="${LB_MIRROR_DEBIAN_INSTALLER}"
 
 # \$LB_BOOTSTRAP_QEMU_ARCHITECTURES: architectures to use foreign bootstrap
-# (Default: ${LB_BOOTSTRAP_QEMU_ARCHITECTURES})
 LB_BOOTSTRAP_QEMU_ARCHITECTURES="${LB_BOOTSTRAP_QEMU_ARCHITECTURES}"
 
 # \$LB_BOOTSTRAP_QEMU_EXCLUDE: packages to exclude during foreign bootstrap
-# (Default: ${LB_BOOTSTRAP_QEMU_EXCLUDE})
 LB_BOOTSTRAP_QEMU_EXCLUDE="${LB_BOOTSTRAP_QEMU_EXCLUDE}"
 
 # \$LB_BOOTSTRAP_QEMU_STATIC: static qemu binary for foreign bootstrap
-# (Default: ${LB_BOOTSTRAP_QEMU_STATIC})
 LB_BOOTSTRAP_QEMU_STATIC="${LB_BOOTSTRAP_QEMU_STATIC}"
 EOF
 
@@ -1207,47 +1160,37 @@ cat > config/chroot << EOF
 # config/chroot - options for live-build(7), chroot stage
 
 # \$LB_CHROOT_FILESYSTEM: set chroot filesystem
-# (Default: ${LB_CHROOT_FILESYSTEM})
 LB_CHROOT_FILESYSTEM="${LB_CHROOT_FILESYSTEM}"
 
 # \$LB_UNION_FILESYSTEM: set union filesystem
-# (Default: ${LB_UNION_FILESYSTEM})
 LB_UNION_FILESYSTEM="${LB_UNION_FILESYSTEM}"
 
 # \$LB_INTERACTIVE: set interactive build
-# (Default: ${LB_INTERACTIVE})
 LB_INTERACTIVE="${LB_INTERACTIVE}"
 
 # \$LB_KEYRING_PACKAGES: set keyring packages
-# (Default: empty)
 LB_KEYRING_PACKAGES="${LB_KEYRING_PACKAGES}"
 
 # \$LB_LINUX_FLAVOURS: set kernel flavour to use
 # This is kept for backwards compatibility
-# (Default: autodetected)
 if [ -n "${LB_LINUX_FLAVOURS}" ]
 then
 	LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS}"
 fi
 
 # \$LB_LINUX_FLAVOURS_WITH_ARCH: set kernel flavour to use (with arch)
-# (Default: autodetected)
 LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS_WITH_ARCH}"
 
 # \$LB_LINUX_PACKAGES: set kernel packages to use
-# (Default: autodetected)
 LB_LINUX_PACKAGES="${LB_LINUX_PACKAGES}"
 
 # \$LB_SECURITY: enable security updates
-# (Default: ${LB_SECURITY})
 LB_SECURITY="${LB_SECURITY}"
 
 # \$LB_UPDATES: enable updates updates
-# (Default: ${LB_UPDATES})
 LB_UPDATES="${LB_UPDATES}"
 
 # \$LB_BACKPORTS: enable backports updates
-# (Default: ${LB_BACKPORTS})
 LB_BACKPORTS="${LB_BACKPORTS}"
 EOF
 
@@ -1262,168 +1205,127 @@ cat > config/binary << EOF
 # config/binary - options for live-build(7), binary stage
 
 # \$LB_BINARY_FILESYSTEM: set image filesystem
-# (Default: ${LB_BINARY_FILESYSTEM})
 LB_BINARY_FILESYSTEM="${LB_BINARY_FILESYSTEM}"
 
 # \$LB_APT_INDICES: set apt/aptitude generic indices
-# (Default: ${LB_APT_INDICES})
 LB_APT_INDICES="${LB_APT_INDICES}"
 
 # \$LB_BOOTAPPEND_LIVE: set boot parameters
-# (Default: empty)
 LB_BOOTAPPEND_LIVE="${LB_BOOTAPPEND_LIVE}"
 
 # \$LB_BOOTAPPEND_INSTALL: set boot parameters
-# (Default: empty)
 LB_BOOTAPPEND_INSTALL="${LB_BOOTAPPEND_INSTALL}"
 
 # \$LB_BOOTAPPEND_LIVE_FAILSAFE: set boot parameters
-# (Default: empty)
 LB_BOOTAPPEND_LIVE_FAILSAFE="${LB_BOOTAPPEND_LIVE_FAILSAFE}"
 
 # \$LB_BOOTLOADERS: set bootloaders
-# (Default: ${LB_BOOTLOADERS})
 LB_BOOTLOADERS="${LB_BOOTLOADERS}"
 
 # \$LB_CHECKSUMS: set checksums
-# (Default: ${LB_CHECKSUMS})
 LB_CHECKSUMS="${LB_CHECKSUMS}"
 
 # \$LB_COMPRESSION: set compression
-# (Default: ${LB_COMPRESSION})
 LB_COMPRESSION="${LB_COMPRESSION}"
 
 # \$LB_ZSYNC: set zsync
-# (Default: ${LB_ZSYNC})
 LB_ZSYNC="${LB_ZSYNC}"
 
 # \${LB_BUILD_WITH_CHROOT: control if we build binary images chrooted
-# (Default: ${LB_BUILD_WITH_CHROOT})
 # DO NEVER, *NEVER*, *N*E*V*E*R* SET THIS OPTION to false.
 LB_BUILD_WITH_CHROOT="${LB_BUILD_WITH_CHROOT}"
 
 # \$LB_DEBIAN_INSTALLER: set debian-installer
-# (Default: ${LB_DEBIAN_INSTALLER})
 LB_DEBIAN_INSTALLER="${LB_DEBIAN_INSTALLER}"
 
 # \$LB_DEBIAN_INSTALLER_DISTRIBUTION: set debian-installer suite
-# (Default: empty)
 LB_DEBIAN_INSTALLER_DISTRIBUTION="${LB_DEBIAN_INSTALLER_DISTRIBUTION}"
 
 # \$LB_DEBIAN_INSTALLER_PRESEEDFILE: set debian-installer preseed filename/url
-# (Default: ${LB_DEBIAN_INSTALLER_PRESEEDFILE})
 LB_DEBIAN_INSTALLER_PRESEEDFILE="${LB_DEBIAN_INSTALLER_PRESEEDFILE}"
 
 # \$LB_DEBIAN_INSTALLER_GUI: toggle use of GUI debian-installer
-# (Default: ${LB_DEBIAN_INSTALLER_GUI})
 LB_DEBIAN_INSTALLER_GUI="${LB_DEBIAN_INSTALLER_GUI}"
 
 # \$LB_HDD_LABEL: set hdd label
-# (Default: ${LB_HDD_LABEL})
 LB_HDD_LABEL="${LB_HDD_LABEL}"
 
 # \$LB_HDD_SIZE: set hdd filesystem size
-# (Default: ${LB_HDD_SIZE})
 LB_HDD_SIZE="${LB_HDD_SIZE}"
 
 # \$LB_HDD_PARTITION_START: set start of partition for the hdd target for BIOSes that expect a specific boot partition start (e.g. "63s"). If empty, use optimal layout.
-# (Default: ${LB_HDD_PARTITION_START})
 LB_HDD_PARTITION_START="${LB_HDD_PARTITION_START}"
 
 # \$LB_ISO_APPLICATION: set iso author
-# (Default: ${LB_ISO_APPLICATION})
 LB_ISO_APPLICATION="${LB_ISO_APPLICATION}"
 
 # \$LB_ISO_PREPARER: set iso preparer
-# (Default: ${LB_ISO_PREPARER})
 LB_ISO_PREPARER="${LB_ISO_PREPARER}"
 
 # \$LB_ISO_PUBLISHER: set iso publisher
-# (Default: ${LB_ISO_PUBLISHER})
 LB_ISO_PUBLISHER="${LB_ISO_PUBLISHER}"
 
 # \$LB_ISO_VOLUME: set iso volume (max 32 chars)
-# (Default: ${LB_ISO_VOLUME})
 LB_ISO_VOLUME="${LB_ISO_VOLUME}"
 
 # \$LB_JFFS2_ERASEBLOCK: set jffs2 eraseblock size
-# (Default: unset)
 LB_JFFS2_ERASEBLOCK=""
 
 # \$LB_MEMTEST: set memtest
-# (Default: ${LB_MEMTEST})
 LB_MEMTEST="${LB_MEMTEST}"
 
 # \$LB_LOADLIN: set loadlin
-# (Default: ${LB_LOADLIN})
 LB_LOADLIN="${LB_LOADLIN}"
 
 # \$LB_WIN32_LOADER: set win32-loader
-# (Default: ${LB_WIN32_LOADER})
 LB_WIN32_LOADER="${LB_WIN32_LOADER}"
 
 # \$LB_NET_ROOT_FILESYSTEM: set netboot filesystem
-# (Default: ${LB_NET_ROOT_FILESYSTEM})
 LB_NET_ROOT_FILESYSTEM="${LB_NET_ROOT_FILESYSTEM}"
 
 # \$LB_NET_ROOT_MOUNTOPTIONS: set nfsopts
-# (Default: empty)
 LB_NET_ROOT_MOUNTOPTIONS="${LB_NET_ROOT_MOUNTOPTIONS}"
 
 # \$LB_NET_ROOT_PATH: set netboot server directory
-# (Default: ${LB_NET_ROOT_PATH})
 LB_NET_ROOT_PATH="${LB_NET_ROOT_PATH}"
 
 # \$LB_NET_ROOT_SERVER: set netboot server address
-# (Default: ${LB_NET_ROOT_SERVER})
 LB_NET_ROOT_SERVER="${LB_NET_ROOT_SERVER}"
 
 # \$LB_NET_COW_FILESYSTEM: set net client cow filesystem
-# (Default: ${LB_NET_COW_FILESYSTEM})
 LB_NET_COW_FILESYSTEM="${LB_NET_COW_FILESYSTEM}"
 
 # \$LB_NET_COW_MOUNTOPTIONS: set cow mount options
-# (Default: empty)
 LB_NET_COW_MOUNTOPTIONS="${LB_NET_COW_MOUNTOPTIONS}"
 
 # \$LB_NET_COW_PATH: set cow directory
-# (Default: ${LB_NET_COW_PATH})
 LB_NET_COW_PATH="${LB_NET_COW_PATH}"
 
 # \$LB_NET_COW_SERVER: set cow server
-# (Default: ${LB_NET_COW_SERVER})
 LB_NET_COW_SERVER="${LB_NET_COW_SERVER}"
 
 # \$LB_NET_TARBALL: set net tarball
-# (Default: ${LB_NET_TARBALL})
 LB_NET_TARBALL="${LB_NET_TARBALL}"
 
 # \$LB_ONIE: set onie
-# (Default: ${LB_ONIE})
 LB_ONIE="${LB_ONIE}"
 
 # \$LB_ONIE_KERNEL_CMDLINE: set onie additional kernel cmdline options
-# (Default: ${LB_ONIE_KERNEL_CMDLINE})
 LB_ONIE_KERNEL_CMDLINE="${LB_ONIE_KERNEL_CMDLINE}"
 
 # \$LB_FIRMWARE_BINARY: include firmware packages in debian-installer
-# (Default: ${LB_FIRMWARE_BINARY})
 LB_FIRMWARE_BINARY="${LB_FIRMWARE_BINARY}"
 
 # \$LB_FIRMWARE_CHROOT: include firmware packages in the live image
-# (Default: ${LB_FIRMWARE_CHROOT})
 LB_FIRMWARE_CHROOT="${LB_FIRMWARE_CHROOT}"
 
 # \$LB_SWAP_FILE_PATH: set swap file path
-# (Default: ${LB_SWAP_FILE_PATH})
 LB_SWAP_FILE_PATH="${LB_SWAP_FILE_PATH}"
 
 # \$LB_SWAP_FILE_SIZE: set swap file size
-# (Default: ${LB_SWAP_FILE_SIZE})
 LB_SWAP_FILE_SIZE="${LB_SWAP_FILE_SIZE}"
 
 # \$LB_UEFI_SECURE_BOOT: enable/disable UEFI secure boot
-# (Default: ${LB_UEFI_SECURE_BOOT})
 LB_UEFI_SECURE_BOOT="${LB_UEFI_SECURE_BOOT}"
 EOF
 
@@ -1432,11 +1334,9 @@ cat > config/source << EOF
 # config/source - options for live-build(7), source stage
 
 # \$LB_SOURCE: set source option
-# (Default: ${LB_SOURCE})
 LB_SOURCE="${LB_SOURCE}"
 
 # \$LB_SOURCE_IMAGES: set image type
-# (Default: ${LB_SOURCE_IMAGES})
 LB_SOURCE_IMAGES="${LB_SOURCE_IMAGES}"
 EOF
 
