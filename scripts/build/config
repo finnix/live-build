@@ -77,7 +77,7 @@ USAGE="${PROGRAM}   [--apt apt|aptitude]\n\
 \t    [--initramfs none|live-boot]\n\
 \t    [--initramfs-compression bzip2|gzip|lzma]\n\
 \t    [--initsystem sysvinit|systemd|none]\n\
-\t    [--interactive shell]\n\
+\t    [--interactive true|shell|x11|xnest|false]\n\
 \t    [--iso-application NAME]\n\
 \t    [--iso-preparer NAME]\n\
 \t    [--iso-publisher NAME]\n\
