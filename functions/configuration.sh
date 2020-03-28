@@ -434,6 +434,7 @@ Prepare_config ()
 	LB_MEMTEST="${LB_MEMTEST:-none}"
 	if [ "${LB_MEMTEST}" = "false" ]; then
 		LB_MEMTEST="none"
+		Echo_warning "A value of 'false' for option LB_MEMTEST is deprecated, please use 'none' in future."
 	fi
 
 	case "${LB_ARCHITECTURES}" in
