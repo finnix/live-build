@@ -592,26 +592,17 @@ Prepare_config ()
 
 Validate_config ()
 {
-	case "${LB_BINARY_FILESYSTEM}" in
-		ntfs)
-			if [ ! $(which ntfs-3g) ]
-			then
-				Echo_error "Using ntfs as the binary filesystem is currently only supported if ntfs-3g is installed on the host system."
-
-				exit 1
-			fi
-			;;
-	esac
-
-	if echo ${LB_HDD_LABEL} | grep -qs ' '
-	then
-		Echo_error "There are currently no whitespaces supported in hdd labels."
-
+	if [ "${LB_BINARY_FILESYSTEM}" = "ntfs" ] && [ ! $(which ntfs-3g) ]; then
+		Echo_error "Using ntfs as the binary filesystem is currently only supported if ntfs-3g is installed on the host system."
 		exit 1
 	fi
 
-	if [ "${LB_DEBIAN_INSTALLER}" != "none" ]
-	then
+	if echo ${LB_HDD_LABEL} | grep -qs ' '; then
+		Echo_error "There are currently no whitespaces supported in hdd labels."
+		exit 1
+	fi
+
+	if [ "${LB_DEBIAN_INSTALLER}" != "none" ]; then
 		# d-i true, no caching
 		if ! In_list "bootstrap" ${LB_CACHE_STAGES} || [ "${LB_CACHE}" != "true" ] || [ "${LB_CACHE_PACKAGES}" != "true" ]
 		then
@@ -619,16 +610,11 @@ Validate_config ()
 		fi
 	fi
 
-	if [ "${LB_FIRST_BOOTLOADER}" = "syslinux" ]
-	then
+	if [ "${LB_FIRST_BOOTLOADER}" = "syslinux" ]; then
 		# syslinux + fat or ntfs, or extlinux + ext[234] or btrfs
-		case "${LB_BINARY_FILESYSTEM}" in
-			fat*|ntfs|ext[234]|btrfs)
-				;;
-			*)
-				Echo_warning "You have selected values of LB_BOOTLOADERS and LB_BINARY_FILESYSTEM which are incompatible - the syslinux family only support FAT, NTFS, ext[234] or btrfs filesystems."
-				;;
-		esac
+		if ! In_list "${LB_BINARY_FILESYSTEM}" fat16 fat32 ntfs ext2 ext3 ext4 btrfs; then
+			Echo_warning "You have selected values of LB_BOOTLOADERS and LB_BINARY_FILESYSTEM which are incompatible - the syslinux family only support FAT, NTFS, ext[234] or btrfs filesystems."
+		fi
 	fi
 
 	if ! In_list "${LIVE_IMAGE_TYPE}" iso iso-hybrid hdd tar netboot; then
@@ -636,34 +622,24 @@ Validate_config ()
 		exit 1
 	fi
 
-	case "${LIVE_IMAGE_TYPE}" in
-		hdd)
-			case "${LB_FIRST_BOOTLOADER}" in
-				grub-legacy)
-					Echo_error "You have selected a combination of bootloader and image type that is currently not supported by live-build. Please use either another bootloader or a different image type."
-					exit 1
-					;;
-			esac
-			;;
-	esac
+	if [ "${LIVE_IMAGE_TYPE}" = "hdd" ] && [ "${LB_FIRST_BOOTLOADER}" = "grub-legacy" ]; then
+		Echo_error "You have selected a combination of bootloader and image type that is currently not supported by live-build. Please use either another bootloader or a different image type."
+		exit 1
+	fi
 
-	if [ "$(echo \"${LB_ISO_APPLICATION}\" | wc -c)" -gt 128 ]
-	then
+	if [ "$(echo \"${LB_ISO_APPLICATION}\" | wc -c)" -gt 128 ]; then
 		Echo_warning "You have specified a value of LB_ISO_APPLICATION that is too long; the maximum length is 128 characters."
 	fi
 
-	if [ "$(echo \"${LB_ISO_PREPARER}\" | wc -c)" -gt  128 ]
-	then
+	if [ "$(echo \"${LB_ISO_PREPARER}\" | wc -c)" -gt  128 ]; then
 		Echo_warning "You have specified a value of LB_ISO_PREPARER that is too long; the maximum length is 128 characters."
 	fi
 
-	if [ "$(echo \"${LB_ISO_PUBLISHER}\" | wc -c)" -gt 128 ]
-	then
+	if [ "$(echo \"${LB_ISO_PUBLISHER}\" | wc -c)" -gt 128 ]; then
 		Echo_warning "You have specified a value of LB_ISO_PUBLISHER that is too long; the maximum length is 128 characters."
 	fi
 
-	if [ "$(eval "echo \"${LB_ISO_VOLUME}\"" | wc -c)" -gt 32 ]
-	then
+	if [ "$(eval "echo \"${LB_ISO_VOLUME}\"" | wc -c)" -gt 32 ]; then
 		Echo_warning "You have specified a value of LB_ISO_VOLUME that is too long; the maximum length is 32 characters."
 	fi
 
