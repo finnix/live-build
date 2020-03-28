@@ -13,7 +13,6 @@ New_configuration ()
 {
 	## Runtime
 
-	# Image: Architecture
 	if [ $(which dpkg) ]
 	then
 		CURRENT_IMAGE_ARCHITECTURE="$(dpkg --print-architecture)"
@@ -33,37 +32,31 @@ New_configuration ()
 		esac
 	fi
 
-
 	## Configuration
 
-	# Configuration-Version
 	LIVE_CONFIGURATION_VERSION="${LIVE_CONFIGURATION_VERSION:-$(Get_configuration config/build Configuration-Version)}"
 	LIVE_CONFIGURATION_VERSION="${LIVE_CONFIGURATION_VERSION:-${LIVE_BUILD_VERSION}}"
 	export LIVE_CONFIGURATION_VERSION
 
-	# Image: Name
 	LIVE_IMAGE_NAME="${LIVE_IMAGE_NAME:-$(Get_configuration config/build Name)}"
 	LIVE_IMAGE_NAME="${LIVE_IMAGE_NAME:-live-image}"
 	export LIVE_IMAGE_NAME
 
-	# Image: Architecture (FIXME: Support and default to 'any')
+	# (FIXME: Support and default to 'any')
 	LB_ARCHITECTURES="${LB_ARCHITECTURES:-$(Get_configuration config/build Architecture)}"
 	LB_ARCHITECTURES="${LB_ARCHITECTURES:-${CURRENT_IMAGE_ARCHITECTURE}}"
 	export LB_ARCHITECTURES
 
-	# Image: Archive Areas
 	LB_ARCHIVE_AREAS="${LB_ARCHIVE_AREAS:-$(Get_configuration config/build Archive-Areas)}"
 	LB_ARCHIVE_AREAS="${LB_ARCHIVE_AREAS:-main}"
 	LB_ARCHIVE_AREAS="$(echo "${LB_ARCHIVE_AREAS}" | tr "," " ")"
 	export LB_ARCHIVE_AREAS
 
-	# Image: Archive Areas
 	LB_PARENT_ARCHIVE_AREAS="${LB_PARENT_ARCHIVE_AREAS:-$(Get_configuration config/build Parent-Archive-Areas)}"
 	LB_PARENT_ARCHIVE_AREAS="${LB_PARENT_ARCHIVE_AREAS:-${LB_ARCHIVE_AREAS}}"
 	LB_PARENT_ARCHIVE_AREAS="$(echo "${LB_PARENT_ARCHIVE_AREAS}" | tr "," " ")"
 	export LB_PARENT_ARCHIVE_AREAS
 
-	# Image: Type
 	LIVE_IMAGE_TYPE="${LIVE_IMAGE_TYPE:-$(Get_configuration config/build Type)}"
 	LIVE_IMAGE_TYPE="${LIVE_IMAGE_TYPE:-iso-hybrid}"
 	export LIVE_IMAGE_TYPE
@@ -75,12 +68,8 @@ Prepare_config ()
 	# FIXME
 	New_configuration
 
-	## config/common
-
-	# Setting system type
 	LB_SYSTEM="${LB_SYSTEM:-live}"
 
-	# Setting mode (currently: debian)
 	if [ $(which lsb_release) ]
 	then
 		local _DISTRIBUTOR
@@ -99,7 +88,6 @@ Prepare_config ()
 		LB_MODE="${LB_MODE:-debian}"
 	fi
 
-	# Setting distribution name
 	LB_DERIVATIVE="false"
 	LB_DISTRIBUTION="${LB_DISTRIBUTION:-buster}"
 	LB_DISTRIBUTION_CHROOT="${LB_DISTRIBUTION_CHROOT:-${LB_DISTRIBUTION}}"
@@ -115,23 +103,15 @@ Prepare_config ()
 	fi
 	LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION:-${LB_PARENT_DISTRIBUTION_CHROOT}}"
 
-	# Setting package manager
 	LB_APT="${LB_APT:-apt}"
 
-	# Setting apt ftp proxy
 	LB_APT_FTP_PROXY="${LB_APT_FTP_PROXY}"
-
-	# Setting apt http proxy
 	LB_APT_HTTP_PROXY="${LB_APT_HTTP_PROXY}"
-
-	# Setting apt pipeline
-	# LB_APT_PIPELINE
 
 	APT_OPTIONS="${APT_OPTIONS:---yes}"
 	APTITUDE_OPTIONS="${APTITUDE_OPTIONS:---assume-yes}"
 
 	BZIP2_OPTIONS="${BZIP2_OPTIONS:--6}"
-
 	GZIP_OPTIONS="${GZIP_OPTIONS:--6}"
 
 	if gzip --help | grep -qs "\-\-rsyncable"
@@ -140,17 +120,13 @@ Prepare_config ()
 	fi
 
 	LZIP_OPTIONS="${LZIP_OPTIONS:--6}"
-
 	LZMA_OPTIONS="${LZMA_OPTIONS:--6}"
-
 	XZ_OPTIONS="${XZ_OPTIONS:--6}"
 
-	# Setting apt settings
 	LB_APT_RECOMMENDS="${LB_APT_RECOMMENDS:-true}"
 	LB_APT_SECURE="${LB_APT_SECURE:-true}"
 	LB_APT_SOURCE_ARCHIVES="${LB_APT_SOURCE_ARCHIVES:-true}"
 
-	# Setting cache option
 	LB_CACHE="${LB_CACHE:-true}"
 	if [ "${LB_CACHE}" = "false" ]
 	then
@@ -164,11 +140,9 @@ Prepare_config ()
 	fi
 	LB_CACHE_STAGES="$(echo "${LB_CACHE_STAGES}" | tr "," " ")"
 
-	# Setting debconf frontend
 	LB_DEBCONF_FRONTEND="${LB_DEBCONF_FRONTEND:-noninteractive}"
 	LB_DEBCONF_PRIORITY="${LB_DEBCONF_PRIORITY:-critical}"
 
-	# Setting initramfs hook
 	case "${LB_SYSTEM}" in
 		live)
 			LB_INITRAMFS="${LB_INITRAMFS:-live-boot}"
@@ -181,7 +155,6 @@ Prepare_config ()
 
 	LB_INITRAMFS_COMPRESSION="${LB_INITRAMFS_COMPRESSION:-gzip}"
 
-	# Setting initsystem
 	case "${LB_SYSTEM}" in
 		live)
 			LB_INITSYSTEM="${LB_INITSYSTEM:-systemd}"
@@ -200,10 +173,8 @@ Prepare_config ()
 		_LINUX32=""
 	fi
 
-	# Setting tasksel
 	LB_TASKSEL="${LB_TASKSEL:-apt}"
 
-	# Setting live build options
 	# Colouring is re-evaluated here just incase a hard coded override was given in the saved config
 	case "${_COLOR}" in
 		true)
@@ -232,9 +203,7 @@ Prepare_config ()
 		APTITUDE_OPTIONS="${APTITUDE_OPTIONS} -o APT::Color=false"
 	fi
 
-	## config/bootstrap
-
-	# Setting mirrors
+	# Mirrors:
 	# *_MIRROR_CHROOT: to fetch packages from
 	# *_MIRROR_BOOTSTRAP: to fetch packages from
 	# *_MIRROR_CHROOT_SECURITY: security mirror to fetch packages from
@@ -259,21 +228,14 @@ Prepare_config ()
 	LB_MIRROR_DEBIAN_INSTALLER="${LB_MIRROR_DEBIAN_INSTALLER:-${LB_MIRROR_CHROOT}}"
 	LB_PARENT_MIRROR_DEBIAN_INSTALLER="${LB_PARENT_MIRROR_DEBIAN_INSTALLER:-${LB_PARENT_MIRROR_CHROOT}}"
 
-	## config/chroot
-
-	# Setting chroot filesystem
 	LB_CHROOT_FILESYSTEM="${LB_CHROOT_FILESYSTEM:-squashfs}"
 
-	# Setting union filesystem
 	LB_UNION_FILESYSTEM="${LB_UNION_FILESYSTEM:-overlay}"
 
-	# Setting interactive shell/X11/Xnest
 	LB_INTERACTIVE="${LB_INTERACTIVE:-false}"
 
-	# Setting keyring packages
 	LB_KEYRING_PACKAGES="${LB_KEYRING_PACKAGES:-debian-archive-keyring}"
 
-	# Setting linux flavour string
 	case "${LB_ARCHITECTURES}" in
 		arm64)
 			LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS_WITH_ARCH:-arm64}"
@@ -324,11 +286,8 @@ Prepare_config ()
 		LB_LINUX_FLAVOURS="${LB_LINUX_FLAVOURS:+$LB_LINUX_FLAVOURS }${ARCH_FILTERED_FLAVOUR}"
 	done
 
-
-	# Set linux packages
 	LB_LINUX_PACKAGES="${LB_LINUX_PACKAGES:-linux-image}"
 
-	# Setting security updates option
 	case "${LB_PARENT_DISTRIBUTION_BINARY}" in
 		sid)
 			LB_SECURITY="${LB_SECURITY:-false}"
@@ -339,7 +298,6 @@ Prepare_config ()
 			;;
 	esac
 
-	# Setting updates updates option
 	case "${LB_PARENT_DISTRIBUTION_BINARY}" in
 		sid)
 			LB_UPDATES="${LB_UPDATES:-false}"
@@ -350,12 +308,8 @@ Prepare_config ()
 			;;
 	esac
 
-	## config/binary
-
-	# Setting image filesystem
 	LB_BINARY_FILESYSTEM="${LB_BINARY_FILESYSTEM:-fat32}"
 
-	# Setting image type
 	case "${LB_ARCHITECTURES}" in
 		amd64|i386)
 			LIVE_IMAGE_TYPE="${LIVE_IMAGE_TYPE:-iso-hybrid}"
@@ -366,10 +320,8 @@ Prepare_config ()
 			;;
 	esac
 
-	# Setting apt indices
 	LB_APT_INDICES="${LB_APT_INDICES:-true}"
 
-	# Setting bootloader
 	if [ -z "${LB_BOOTLOADERS}" ]
 	then
 		case "${LB_ARCHITECTURES}" in
@@ -389,21 +341,16 @@ Prepare_config ()
 
 	LB_FIRST_BOOTLOADER=$(echo "${LB_BOOTLOADERS}" | awk '{ print $1 }')
 
-	# Setting checksums
 	LB_CHECKSUMS="${LB_CHECKSUMS:-sha256}"
 
-	# Setting compression
 	LB_COMPRESSION="${LB_COMPRESSION:-none}"
 
-	# Setting zsync
 	LB_ZSYNC="${LB_ZSYNC:-true}"
 
-	# Setting chroot option
 	LB_BUILD_WITH_CHROOT="${LB_BUILD_WITH_CHROOT:-true}"
 
 	LB_BUILD_WITH_TMPFS="${LB_BUILD_WITH_TMPFS:-false}"
 
-	# Setting debian-installer option
 	LB_DEBIAN_INSTALLER="${LB_DEBIAN_INSTALLER:-none}"
 	if [ "${LB_DEBIAN_INSTALLER}" = "false" ]
 	then
@@ -418,10 +365,8 @@ Prepare_config ()
 
 	LB_DEBIAN_INSTALLER_DISTRIBUTION="${LB_DEBIAN_INSTALLER_DISTRIBUTION:-${LB_DISTRIBUTION}}"
 
-	# Setting debian-installer-gui
 	LB_DEBIAN_INSTALLER_GUI="${LB_DEBIAN_INSTALLER_GUI:-true}"
 
-	# Setting debian-installer preseed filename
 	if [ -z "${LB_DEBIAN_INSTALLER_PRESEEDFILE}" ]
 	then
 		if Find_files config/debian-installer/preseed.cfg
@@ -435,7 +380,6 @@ Prepare_config ()
 		fi
 	fi
 
-	# Setting boot parameters
 	case "${LB_INITRAMFS}" in
 		live-boot)
 			LB_BOOTAPPEND_LIVE="${LB_BOOTAPPEND_LIVE:-boot=live components quiet splash}"
@@ -484,31 +428,20 @@ Prepare_config ()
 
 	LB_BOOTAPPEND_INSTALL="$(echo ${LB_BOOTAPPEND_INSTALL} | sed -e 's/[ \t]*$//')"
 
-	# Setting iso author
 	LB_ISO_APPLICATION="${LB_ISO_APPLICATION:-Debian Live}"
-
-	# Set iso preparer
 	LB_ISO_PREPARER="${LB_ISO_PREPARER:-live-build \$VERSION; https://salsa.debian.org/live-team/live-build}"
-
-	# Set iso publisher
 	LB_ISO_PUBLISHER="${LB_ISO_PUBLISHER:-Debian Live project; https://wiki.debian.org/DebianLive; debian-live@lists.debian.org}"
 
-	# Setting hdd options
 	LB_HDD_LABEL="${LB_HDD_LABEL:-DEBIAN_LIVE}"
-
-	# Setting hdd size
 	LB_HDD_SIZE="${LB_HDD_SIZE:-auto}"
 
-	# Setting iso volume
 	LB_ISO_VOLUME="${LB_ISO_VOLUME:-Debian ${LB_DISTRIBUTION} \$(date +%Y%m%d-%H:%M)}"
 
-	# Setting memtest option
 	LB_MEMTEST="${LB_MEMTEST:-none}"
 	if [ "${LB_MEMTEST}" = "false" ]; then
 		LB_MEMTEST="none"
 	fi
 
-	# Setting loadlin option
 	case "${LB_ARCHITECTURES}" in
 		amd64|i386)
 			if [ "${LB_DEBIAN_INSTALLER}" != "none" ]
@@ -524,7 +457,6 @@ Prepare_config ()
 			;;
 	esac
 
-	# Setting win32-loader option
 	case "${LB_ARCHITECTURES}" in
 		amd64|i386)
 			if [ "${LB_DEBIAN_INSTALLER}" != "none" ]
@@ -540,53 +472,29 @@ Prepare_config ()
 			;;
 	esac
 
-	# Setting netboot filesystem
 	LB_NET_ROOT_FILESYSTEM="${LB_NET_ROOT_FILESYSTEM:-nfs}"
-
-	# Setting netboot server path
 	LB_NET_ROOT_PATH="${LB_NET_ROOT_PATH:-/srv/${LB_MODE}-live}"
-
-	# Setting netboot server address
 	LB_NET_ROOT_SERVER="${LB_NET_ROOT_SERVER:-192.168.1.1}"
-
-	# Setting net cow filesystem
 	LB_NET_COW_FILESYSTEM="${LB_NET_COW_FILESYSTEM:-nfs}"
-
-	# Setting net tarball
 	LB_NET_TARBALL="${LB_NET_TARBALL:-true}"
 
-	# Setting onie
 	LB_ONIE="${LB_ONIE:-false}"
-
-	# Setting onie additional kernel cmdline options
 	LB_ONIE_KERNEL_CMDLINE="${LB_ONIE_KERNEL_CMDLINE:-}"
 
-	# Setting firmware option
 	LB_FIRMWARE_CHROOT="${LB_FIRMWARE_CHROOT:-true}"
 	LB_FIRMWARE_BINARY="${LB_FIRMWARE_BINARY:-true}"
 
-	# Setting swap file
 	LB_SWAP_FILE_SIZE="${LB_SWAP_FILE_SIZE:-512}"
 
-	# Setting UEFI Secure Boot
 	LB_UEFI_SECURE_BOOT="${LB_UEFI_SECURE_BOOT:-auto}"
 
-	## config/source
-
-	# Setting source option
 	LB_SOURCE="${LB_SOURCE:-false}"
-
-	# Setting image type
 	LB_SOURCE_IMAGES="${LB_SOURCE_IMAGES:-tar}"
 	LB_SOURCE_IMAGES="$(echo "${LB_SOURCE_IMAGES}" | tr "," " ")"
 
-	# Architectures to use foreign bootstrap for
+	# Foreign/port bootstrapping
 	LB_BOOTSTRAP_QEMU_ARCHITECTURES="${LB_BOOTSTRAP_QEMU_ARCHITECTURES:-}"
-
-	# Packages to exclude for the foreign/ports bootstrapping
 	LB_BOOTSTRAP_QEMU_EXCLUDE="${LB_BOOTSTRAP_QEMU_EXCLUDE:-}"
-
-	# Ports using foreign bootstrap need a working qemu-*-system. This is the location it
 	LB_BOOTSTRAP_QEMU_STATIC="${LB_BOOTSTRAP_QEMU_STATIC:-}"
 }
 
