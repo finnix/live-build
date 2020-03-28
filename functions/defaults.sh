@@ -159,6 +159,7 @@ Set_config_defaults ()
 		LB_CACHE_PACKAGES="${LB_CACHE_PACKAGES:-true}"
 		LB_CACHE_STAGES="${LB_CACHE_STAGES:-bootstrap}"
 	fi
+	LB_CACHE_STAGES="$(echo "${LB_CACHE_STAGES}" | tr "," " ")"
 
 	# Setting debconf frontend
 	LB_DEBCONF_FRONTEND="${LB_DEBCONF_FRONTEND:-noninteractive}"
@@ -596,7 +597,7 @@ Check_config_defaults ()
 	if [ "${LB_DEBIAN_INSTALLER}" != "none" ]
 	then
 		# d-i true, no caching
-		if ! echo ${LB_CACHE_STAGES} | grep -qs "bootstrap\b" || [ "${LB_CACHE}" != "true" ] || [ "${LB_CACHE_PACKAGES}" != "true" ]
+		if ! In_list "bootstrap" ${LB_CACHE_STAGES} || [ "${LB_CACHE}" != "true" ] || [ "${LB_CACHE_PACKAGES}" != "true" ]
 		then
 			Echo_warning "You have selected values of LB_CACHE, LB_CACHE_PACKAGES, LB_CACHE_STAGES and LB_DEBIAN_INSTALLER which will result in 'bootstrap' packages not being cached. This configuration is potentially unsafe as the bootstrap packages are re-used when integrating the Debian Installer."
 		fi
