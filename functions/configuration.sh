@@ -617,6 +617,13 @@ Validate_config ()
 		fi
 	fi
 
+	if In_list "grub-pc" ${LB_BOOTLOADERS} || In_list "grub-efi" ${LB_BOOTLOADERS} || In_list "grub-legacy" ${LB_BOOTLOADERS}; then
+		if In_list "${LIVE_IMAGE_TYPE}" hdd netboot; then
+			Echo_error "You have selected an invalid combination of bootloaders and live image type; the grub-* bootloaders are not compatible with hdd and netboot types."
+			exit 1
+		fi
+	fi
+
 	if ! In_list "${LIVE_IMAGE_TYPE}" iso iso-hybrid hdd tar netboot; then
 		Echo_error "You have specified an invalid value for --binary-image."
 		exit 1

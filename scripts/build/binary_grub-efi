@@ -21,6 +21,10 @@ USAGE="${PROGRAM} [--force]"
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
+if In_list "${LIVE_IMAGE_TYPE}" hdd netboot; then
+	exit 0
+fi
+
 Check_Any_Bootloader_Role "grub-efi"
 
 Echo_message "Begin preparing Grub based EFI support..."
@@ -37,15 +41,6 @@ Acquire_lockfile
 # Check architecture
 Check_architectures amd64 i386 arm64 armhf
 Check_crossarchitectures
-
-# Setting destination directory
-case "${LIVE_IMAGE_TYPE}" in
-	hdd|netboot)
-		Echo_warning "Bootloader in this image type not yet supported by live-build."
-		Echo_error "This would produce a not bootable image, aborting (FIXME)."
-		exit 1
-		;;
-esac
 
 # Checking depends
 case "${LB_ARCHITECTURES}" in
