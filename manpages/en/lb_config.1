@@ -272,7 +272,7 @@ defines the default options that will be appended to every aptitude call that is
 .IP "\-a|\fB\-\-architecture\fR \fIARCHITECTURE\fR" 4
 defines the architecture of the to be built image. By default, this is set to the host architecture. Note that you cannot crossbuild for another architecture if your host system is not able to execute binaries for the target architecture natively. For example, building amd64 images on i386 and vice versa is possible if you have a 64bit capable i386 processor and the right kernel. But building powerpc images on an i386 system is not possible.
 .IP "\fB\-\-archive\-areas\fR \fIARCHIVE_AREA\fR|""\fIARCHIVE_AREAS\fR""" 4
-defines which package archive areas (space separated) of a debian package archive should be used for configured debian package mirrors. By default, this is set to main. Remember to check the licenses of each package with respect to their redistributability in your juristiction when enabling contrib or non\-free with this mechanism.
+defines which package archive areas (comma or space separated) of a debian package archive should be used for configured debian package mirrors. By default, this is set to main. Remember to check the licenses of each package with respect to their redistributability in your juristiction when enabling contrib or non\-free with this mechanism.
 .IP "\fB\-\-backports\fR true|false" 4
 defines if debian backports package archives should be included in the image or not.
 .IP "\fB\-\-binary\-filesystem\fR fat16|fat32|ext2|ext3|ext4|ntfs" 4
@@ -439,7 +439,7 @@ defines if an ONIE.bin image is generated. ONIE binaries can be loaded by suppor
 .IP "\fB\-\-onie\-kernel\-cmdline\fR \fIOPTION\fR|""\fIOPTIONS\fR""" 4
 defines additional kernel command line options that the ONIE system will use when booting the image. Default is empty string.
 .IP "\fB\-\-parent\-archive\-areas\fR \fIARCHIVE_AREA\fR|""\fIARCHIVE_AREAS\fR""" 4
-defines the archive areas for derivatives of the resulting live system (space separated).
+defines the archive areas for derivatives of the resulting live system (comma or space separated).
 .IP "\fB\-\-parent\-debian\-installer\-distribution\fR daily|\fICODENAME\fR" 4
 defines the parent debian\-installer distribution for derivatives of the resulting live system.
 .IP "\fB\-\-parent\-distribution\fR \fICODENAME\fR" 4

@@ -54,11 +54,13 @@ New_configuration ()
 	# Image: Archive Areas
 	LB_ARCHIVE_AREAS="${LB_ARCHIVE_AREAS:-$(Get_configuration config/build Archive-Areas)}"
 	LB_ARCHIVE_AREAS="${LB_ARCHIVE_AREAS:-main}"
+	LB_ARCHIVE_AREAS="$(echo "${LB_ARCHIVE_AREAS}" | tr "," " ")"
 	export LB_ARCHIVE_AREAS
 
 	# Image: Archive Areas
 	LB_PARENT_ARCHIVE_AREAS="${LB_PARENT_ARCHIVE_AREAS:-$(Get_configuration config/build Parent-Archive-Areas)}"
 	LB_PARENT_ARCHIVE_AREAS="${LB_PARENT_ARCHIVE_AREAS:-${LB_ARCHIVE_AREAS}}"
+	LB_PARENT_ARCHIVE_AREAS="$(echo "${LB_PARENT_ARCHIVE_AREAS}" | tr "," " ")"
 	export LB_PARENT_ARCHIVE_AREAS
 
 	# Image: Type
