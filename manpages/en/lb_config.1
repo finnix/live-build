@@ -138,8 +138,6 @@
 .br
 	[\fB\-\-iso\-volume\fR \fINAME\fR]
 .br
-	[\fB\-\-isohybrid\-options\fR \fIOPTION\fR|"\fIOPTIONS\fR"]
-.br
 	[\fB\-\-jffs2\-eraseblock\fR \fISIZE\fR]
 .br
 	[\fB\-\-keyring\-packages\fR \fIPACKAGE\fI|"\fIPACKAGES\fR"]
@@ -380,8 +378,6 @@ sets the PREPARER field in the header of a resulting CD/DVD image. By default th
 sets the PUBLISHED field in the header of a resulting CD/DVD image. By default, this is set to 'Debian Live project; https://wiki.debian.org/DebianLive; debian\-live@lists.debian.org'. Remember to change this to the appropriate value when distributing custom and unofficial images.
 .IP "\fB\-\-iso\-volume\fR \fINAME\fR" 4
 sets the VOLUME field in the header of a resulting CD/DVD and defaults to 'Debian (\fIDISTRIBUTION\fR) (\fIDATE\fR)' whereas DISTRIBUTION the distribution name, and DATE with the current date and time of the generation.
-.IP "\fB\-\-isohybrid\-options\fR \fIOPTION\fR|""\fIOPTIONS\fR""" 4
-defines options to pass to isohybrid.
 .IP "\fB\-\-jffs2\-eraseblock\fR \fISIZE\fR" 4
 sets the eraseblock size for a JFFS2 (Second Journaling Flash File System) filesystem. The default is 64 KiB. If you use an erase block size different than the erase block size of the target MTD device, JFFS2 may not perform optimally. If the SIZE specified is below 4096, the units are assumed to be KiB.
 .IP "\fB\-\-keyring\-packages\fR \fIPACKAGE\fI|""\fIPACKAGES\fR""" 4

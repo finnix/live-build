@@ -82,7 +82,6 @@ USAGE="${PROGRAM}   [--apt apt|apt-get|aptitude]\n\
 \t    [--iso-preparer NAME]\n\
 \t    [--iso-publisher NAME]\n\
 \t    [--iso-volume NAME]\n\
-\t    [--isohybrid-options OPTION|\"OPTIONS\"]\n\
 \t    [--jffs2-eraseblock SIZE]\n\
 \t    [--keyring-packages PACKAGE|\"PACKAGES\"]\n\
 \t    [-k|--linux-flavours FLAVOUR|\"FLAVOURS\"]\n\
@@ -610,7 +609,7 @@ Local_arguments ()
 				;;
 
 			--isohybrid-options)
-				LB_ISOHYBRID_OPTIONS="${2}"
+				Echo_warning "--isohybrid-options is an obsolete option"
 				shift 2
 				;;
 
