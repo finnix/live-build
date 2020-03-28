@@ -17,7 +17,7 @@ set -e
 # Setting static variables
 PROGRAM="lb config"
 DESCRIPTION="Create configuration for live-build(7)"
-USAGE="${PROGRAM}   [--apt apt|aptitude]\n\
+USAGE="${PROGRAM}   [--apt apt|apt-get|aptitude]\n\
 \t    [--apt-ftp-proxy URL]\n\
 \t    [--apt-http-proxy URL]\n\
 \t    [--apt-indices true|false]\n\

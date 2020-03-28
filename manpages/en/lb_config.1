@@ -8,7 +8,7 @@
 .PP
 \fBlb config\fR
 .br
-	[\fB\-\-apt\fR apt|aptitude]
+	[\fB\-\-apt\fR apt|apt-get|aptitude]
 .br
 	[\fB\-\-apt\-ftp\-proxy\fR \fIURL\fR]
 .br
@@ -250,7 +250,7 @@ Note: \fBlb config\fR tries to be smart and sets defaults for some options depen
 .SH OPTIONS
 In addition to its specific options \fBlb config\fR understands all generic live\-build options. See \fIlive\-build\fR(7) for a complete list of all generic live\-build options.
 .PP
-.IP "\fB\-\-apt\fR apt|aptitude" 4
+.IP "\fB\-\-apt\fR apt|apt-get|aptitude" 4
 defines if apt\-get or aptitude is used to install packages when building the image. The default is apt.
 .IP "\fB\-\-apt\-ftp\-proxy\fR \fIURL\fR" 4
 sets the FTP proxy to be used by apt. By default, this is empty. Note that this variable is only for the proxy that gets used by apt internally within the chroot, it is not used for anything else.

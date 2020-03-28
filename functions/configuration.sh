@@ -587,7 +587,7 @@ Validate_config_permitted_values ()
 		exit 1
 	fi
 
-	if ! In_list "${LB_APT}" apt aptitude; then
+	if ! In_list "${LB_APT}" apt apt-get aptitude; then
 		Echo_error "You have specified an invalid value for LB_APT (--apt)."
 		exit 1
 	fi
