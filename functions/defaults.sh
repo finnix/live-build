@@ -69,7 +69,8 @@ New_configuration ()
 	export LIVE_IMAGE_TYPE
 }
 
-Set_config_defaults ()
+# Prepare config for use, filling in defaults where no value provided for instance
+Prepare_config ()
 {
 	# FIXME
 	New_configuration

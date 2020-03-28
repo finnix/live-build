@@ -937,7 +937,7 @@ then
 fi
 
 # Setting and validating config
-Set_config_defaults
+Prepare_config
 Validate_config
 
 # Creating or updating saved config

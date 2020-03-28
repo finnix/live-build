@@ -28,7 +28,7 @@ Init_config_data ()
 	Arguments "${@}"
 
 	Read_conffiles $(Common_config_files)
-	Set_config_defaults
+	Prepare_config
 }
 
 # "Auto" script redirection.
