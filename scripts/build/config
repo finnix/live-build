@@ -1171,13 +1171,6 @@ LB_INTERACTIVE="${LB_INTERACTIVE}"
 # \$LB_KEYRING_PACKAGES: set keyring packages
 LB_KEYRING_PACKAGES="${LB_KEYRING_PACKAGES}"
 
-# \$LB_LINUX_FLAVOURS: set kernel flavour to use
-# This is kept for backwards compatibility
-if [ -n "${LB_LINUX_FLAVOURS}" ]
-then
-	LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS}"
-fi
-
 # \$LB_LINUX_FLAVOURS_WITH_ARCH: set kernel flavour to use (with arch)
 LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS_WITH_ARCH}"
 

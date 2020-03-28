@@ -234,6 +234,10 @@ Prepare_config ()
 
 	LB_KEYRING_PACKAGES="${LB_KEYRING_PACKAGES:-debian-archive-keyring}"
 
+	# first, handle existing LB_LINUX_FLAVOURS for backwards compatibility
+	if [ -n "${LB_LINUX_FLAVOURS}" ]; then
+		LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS}"
+	fi
 	case "${LB_ARCHITECTURES}" in
 		arm64)
 			LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS_WITH_ARCH:-arm64}"
