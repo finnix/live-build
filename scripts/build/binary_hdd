@@ -53,7 +53,7 @@ Check_package chroot /sbin/parted parted
 Check_package host /sbin/fdisk fdisk
 Check_package host /sbin/losetup mount
 
-for BOOTLOADER in $(echo "${LB_BOOTLOADERS}" | tr "," "\n"); do
+for BOOTLOADER in ${LB_BOOTLOADERS}; do
 	case "${BOOTLOADER}" in
 		grub-legacy)
 			Check_package chroot /usr/sbin/grub grub

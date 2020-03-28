@@ -104,8 +104,6 @@ fi
 # Set an explicit modification date
 XORRISO_OPTIONS="${XORRISO_OPTIONS} --modification-date=$(date --utc --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y%m%d%H%m%S00)"
 
-OLDIFS="$IFS"
-IFS=","
 BOOTLOADER_NUMBER=0
 for BOOTLOADER in ${LB_BOOTLOADERS}
 do
@@ -156,7 +154,6 @@ do
 	esac
 
 done
-IFS="$OLDIFS"
 
 #if [ "${LB_DEBIAN_INSTALLER}" != "live" ]
 #then

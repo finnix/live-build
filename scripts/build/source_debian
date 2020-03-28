@@ -54,7 +54,7 @@ Chroot chroot "sh source-selection.sh"
 rm -f chroot/source-selection.sh
 mv chroot/source-selection.txt ./
 
-for BOOTLOADER in $(echo "${LB_BOOTLOADERS}" | tr "," "\n"); do
+for BOOTLOADER in ${LB_BOOTLOADERS}; do
 	echo "${BOOTLOADER}" >> source-selection.txt
 done
 

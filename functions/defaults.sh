@@ -381,8 +381,9 @@ Set_config_defaults ()
 				;;
 		esac
 	fi
+	LB_BOOTLOADERS="$(echo "${LB_BOOTLOADERS}" | tr "," " ")"
 
-	LB_FIRST_BOOTLOADER=$(echo "${LB_BOOTLOADERS}" | awk -F, '{ print $1 }')
+	LB_FIRST_BOOTLOADER=$(echo "${LB_BOOTLOADERS}" | awk '{ print $1 }')
 
 	# Setting checksums
 	LB_CHECKSUMS="${LB_CHECKSUMS:-sha256}"
