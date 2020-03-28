@@ -35,7 +35,7 @@ USAGE="${PROGRAM}   [--apt apt|aptitude]\n\
 \t    [--bootappend-install PARAMETER|\"PARAMETERS\"]\n\
 \t    [--bootappend-live PARAMETER|\"PARAMETERS\"]\n\
 \t    [--bootappend-live-failsafe PARAMETER|\"PARAMETERS\"]\n\
-\t    [--bootloaders grub-legacy|grub-pc|syslinux|grub-efi]\n\
+\t    [--bootloaders grub-legacy|grub-pc|syslinux|grub-efi|\"BOOTLOADERS\"]\n\
 \t    [--bootstrap-qemu-arch ARCH]\n\
 \t    [--bootstrap-qemu-exclude PACKAGES]\n\
 \t    [--bootstrap-qemu-static PATH]\n\
