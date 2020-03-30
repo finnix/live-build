@@ -13,7 +13,7 @@ Arguments ()
 {
 	local ARGUMENTS
 	local ERR=0
-	ARGUMENTS="$(getopt --longoptions breakpoints,color,no-color,conffile:,debug,force,help,quiet,usage,verbose,version --name=${PROGRAM} --options c:huv --shell sh -- "${@}")" || ERR=$?
+	ARGUMENTS="$(getopt --longoptions breakpoints,color,debug,force,help,no-color,quiet,usage,verbose,version --name=${PROGRAM} --options huv --shell sh -- "${@}")" || ERR=$?
 
 	if [ $ERR -eq 1 ]; then
 		Echo_error "invalid arguments"
@@ -45,11 +45,6 @@ Arguments ()
 				_COLOR_OUT="false"
 				_COLOR_ERR="false"
 				shift
-				;;
-
-			-c|--conffile)
-				_CONFFILE="${2}"
-				shift 2
 				;;
 
 			--debug)
