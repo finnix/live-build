@@ -16,7 +16,7 @@ set -e
 
 # Setting static variables
 DESCRIPTION="Cache chroot stage"
-USAGE="${PROGRAM} [--force]"
+USAGE="${PROGRAM} {restore|save} [--force]"
 
 _ACTION="${1}"
 shift
