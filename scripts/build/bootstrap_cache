@@ -18,6 +18,14 @@ set -e
 DESCRIPTION="Cache bootstrap stage"
 USAGE="${PROGRAM} [--force]"
 
+_ACTION="${1}"
+shift
+
+if ! In_list "${_ACTION}" restore save; then
+	Echo_error "Invalid action parameter"
+	exit 1
+fi
+
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
@@ -26,14 +34,6 @@ Check_crossarchitectures
 
 if ! In_list "bootstrap" ${LB_CACHE_STAGES}; then
 	exit 0
-fi
-
-_ACTION="${1}"
-shift
-
-if ! In_list "${_ACTION}" restore save; then
-	Echo_error "Invalid action parameter"
-	exit 1
 fi
 
 # Set non-default stage file name

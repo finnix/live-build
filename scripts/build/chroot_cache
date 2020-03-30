@@ -18,6 +18,9 @@ set -e
 DESCRIPTION="Cache chroot stage"
 USAGE="${PROGRAM} [--force]"
 
+_ACTION="${1}"
+shift
+
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
@@ -25,9 +28,6 @@ if ! In_list "chroot" ${LB_CACHE_STAGES}
 then
 	exit 0
 fi
-
-_ACTION="${1}"
-shift
 
 # Set non-default stage file name
 # Setting to default name with appended action name
