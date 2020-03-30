@@ -294,7 +294,7 @@ Local_arguments ()
 				;;
 
 			-u|--usage)
-				Usage
+				Usage 0
 				shift
 				;;
 

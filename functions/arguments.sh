@@ -127,7 +127,7 @@ Arguments ()
 					fi
 					exit 0
 				elif [ "${IS_FRONTEND}" = "true" ]; then
-					Usage
+					Usage 0
 				fi
 				;;
 
@@ -137,7 +137,7 @@ Arguments ()
 				;;
 
 			-u|--usage)
-				Usage
+				Usage 0
 				shift
 				;;
 

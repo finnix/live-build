@@ -11,6 +11,10 @@
 
 Usage ()
 {
+	if [ -z "${1}" ]; then
+		Echo_error "Usage() requires an exit code"
+	fi
+
 	echo "${PROGRAM_NAME} - ${DESCRIPTION}"
 	printf "\nUsage:\n\n"
 
@@ -25,5 +29,5 @@ Usage ()
 	echo
 	echo "Try \"${PROGRAM} --help\" for more information."
 
-	exit 1
+	exit $1
 }
