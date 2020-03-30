@@ -69,12 +69,15 @@ case "${LB_ARCHITECTURES}" in
 		# Removing depends
 		Remove_package
 
+		mkdir -p binary/install
+
 cat > binary/install/install.bat << EOF
 \tools\loadlin.exe vmlinuz initrd=initrd.gz
 EOF
 
-		if [ -e binary/install/gtk ]
-		then
+		if [ "${LB_DEBIAN_INSTALLER_GUI}" = "true" ]; then
+
+			mkdir -p binary/install/gtk
 
 cat > binary/install/gtk/install.bat << EOF
 \tools\loadlin.exe \install\vmlinuz initrd=initrd.gz vga=788
