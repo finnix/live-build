@@ -9,16 +9,13 @@
 \fBlb\fR \fICOMMAND\fR [\fIOPTIONS\fR]
 
 .SH DESCRIPTION
-.\" FIXME
 live\-build is a set of scripts to build live system images. The idea behind live\-build is a tool suite that uses a configuration directory to completely automate and customize all aspects of building a Live image.
 .PP
 The \fICOMMAND\fR is a name of a live\-build command (see below).
 .PP
 More documentation about how to use live\-build is available in the individual manpages for each helper and in the manual at <\fIhttps://live-team.pages.debian.net/live-manual/\fR>.
-.\" FIXME
 
 .SH OPTIONS
-.\" FIXME
 .SS Shared live\-build options
 The following command line options are supported by all live\-build programs.
 .IP "\fB-h, \-\-help\fR" 4
@@ -43,18 +40,14 @@ disable color use in messages.
 be quiet.
 .IP "\fB\-\-verbose\fR" 4
 be verbose.
-.\" FIXME
 
 .SH LIVE\-BUILD COMMANDS
-.\" FIXME
 We divide live\-build into high level ("porcelain") commands, secondary major build stage ("porcelain") commands, and low level ("plumbing") commands.
 .PP
 Here is the complete list of all available live\-build commands. See their man
 pages for additional documentation.
-.\" FIXME
 
 .SH HIGH\-LEVEL COMMANDS (PORCELAIN)
-.\" FIXME
 We separate the porcelain commands into the main commands and some ancillary user utilities.
 .SS Main porcelain commands
 .IP "\fBlb config\fR(1)" 4
@@ -66,10 +59,8 @@ cleans up system build directories
 .SS Ancillary Commands
 .IP "\fBlb\fR(1)" 4
 generic live\-build script execution wrapper
-.\" FIXME
 
 .SH SECONDARY\-LEVEL BUILD COMMANDS (PORCELAIN)
-.\" FIXME
 The following are the commands that execute each major stage of the build process, in their necessary order of execution. Normally a user might just execute the higher level \fBlb build\fR(1) command rather than use these individually.
 .IP "\fBlb bootstrap\fR(1)" 4
 executes the first build stage, creating (bootstraping) a basic Debian root filesystem
@@ -81,10 +72,8 @@ executes the third build stage, obtaining installer components (optional)
 executes the fourth build stage, generating the binary (live) image
 .IP "\fBlb source\fR(1)" 4
 executes the fifth build stage, generating a corresponding source image (optional)
-.\" FIXME
 
 .SH LOW\-LEVEL COMMANDS (PLUMBING) - BUILD STAGE COMPONENTS
-.\" FIXME
 The actual work of live\-build is implemented in the low-level commands, called plumbing. They are not supposed to be used by end users, who should stick with porcelains as they ensure that all the different plumbing commands are executed in the right order. However, if you intend to reuse live\-build commands in your own scripts, then the plumbings might be of interest for you.
 .PP
 Note that the interface (set of options and the semantics) to these low\-level commands are meant to be a lot more stable than Porcelain level commands. The interface to Porcelain commands on the other hand are subject to change in order to improve the end user experience.
@@ -187,10 +176,8 @@ compiles the final source image into an ISO file
 copies live-build config into source
 .IP "\fBlb source_tar\fR(1)" 4
 compiles the final source image into a tar archive
-.\" FIXME
 
 .SH LOW\-LEVEL COMMANDS (PLUMBING) - CHROOT PREP COMPONENTS
-.\" FIXME
 The notes above under the section regarding build-stage specific low-level plumbing commands also apply here.
 .PP
 The following chroot_ prefixed commands are used throughout the various primary stages of the build process to apply and remove modifications to a chroot root filesystem. Generally these are used to apply modification that setup the chroot for use (execution of programs within it) during the build process, and later to remove those modification, unmounting things that were mounted, and making the chroot suitable for use as the root filesystem of the live OS to be bundled into the live image.
@@ -224,10 +211,8 @@ manages mounting of /sys
 manages the /usr/sbin/policy\-rc.d file
 .IP "\fBlb chroot_tmpfs\fR(1)" 4
 manages configuration of dpkg to use a tmpfs filesystem
-.\" FIXME
 
 .SH CONFIG FILES
-.\" FIXME
 Many live\-build commands make use of files in the \fIconfig/\fR directory to control what they do. Besides the common \fIconfig/common\fR, which is used by all live\-build commands, some additional files can be used to configure the behavior of specific live\-build commands. These files are typically named config/stage or config/stage_helper (where "stage" of course, is replaced with the name of the stage that they belong to, and "helper" with the name of the helper).
 .PP
 For example, lb bootstrap_debootstrap uses files named config/bootstrap and config/bootstrap_debootstrap to read the options it will use. See the man pages of individual commands for details about the names and formats of the files they use. Generally, these files contain variables with values assigned, one variable per line. Some programs in live\-build use pairs of values or slightly more complicated variable assignments.
@@ -237,7 +222,6 @@ Note that live\-build will respect environment variables which are present in th
 In some rare cases, you may want to have different versions of these files for different architectures or distributions. If files named config/stage.arch or config/stage_helper.arch, and config/stage.dist or config/stage_helper.dist exist, where "arch" is the same as the output of "dpkg \-\-print\-architecture" and "dist" is the same as the codename of the target distribution, then they will be used in preference to other, more general files.
 .PP
 All config files are shell scripts which are sourced by a live\-build program. That means they have to follow the normal shell syntax. You can also put comments in these files; lines beginning with "#" are ignored.
-.\" FIXME
 
 .SH FILES
 .IP "\fB/etc/live/build.conf\fR" 4
