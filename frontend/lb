@@ -42,22 +42,6 @@ esac
 COMMAND="${1}"
 shift
 
-ENV=""
-
-if [ "${COMMAND}" != "config" ]; then
-	# Checking user account
-	if [ "$(id -u)" -ne "0" ]; then
-		Echo_error "Root privileges needed!"
-		exit 1
-	fi
-fi
-
-for _FILE in config/environment config/environment.binary; do
-	if [ -e "${_FILE}" ]; then
-		ENV="${ENV} $(grep -v '^#' ${_FILE})"
-	fi
-done
-
 if [ -x "${LIVE_BUILD}/scripts/build/${COMMAND}" ]; then
 	# User has live-build copied locally in the system
 	SCRIPT="${LIVE_BUILD}/scripts/build/${COMMAND}"
@@ -74,6 +58,21 @@ else
 	Echo_error "No such script: ${COMMAND}"
 	exit 1
 fi
+
+if [ "${COMMAND}" != "config" ]; then
+	# Checking user account
+	if [ "$(id -u)" -ne "0" ]; then
+		Echo_error "Root privileges needed!"
+		exit 1
+	fi
+fi
+
+ENV=""
+for _FILE in config/environment config/environment.binary; do
+	if [ -e "${_FILE}" ]; then
+		ENV="${ENV} $(grep -v '^#' ${_FILE})"
+	fi
+done
 
 _CMD_LABEL="lb ${COMMAND}"
 if [ "${_COLOR_OUT}" = "true" ]; then
