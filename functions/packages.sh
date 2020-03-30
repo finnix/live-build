@@ -52,11 +52,11 @@ Remove_package ()
 	then
 		case "${LB_APT}" in
 			apt|apt-get)
-				Chroot chroot "apt-get remove --purge ${APT_OPTIONS} ${_LB_PACKAGES}"
+				Chroot chroot "apt-get remove --auto-remove --purge ${APT_OPTIONS} ${_LB_PACKAGES}"
 				;;
 
 			aptitude)
-				Chroot chroot "aptitude purge ${APTITUDE_OPTIONS} ${_LB_PACKAGES}"
+				Chroot chroot "aptitude purge --purge-unused ${APTITUDE_OPTIONS} ${_LB_PACKAGES}"
 				;;
 		esac
 	fi
