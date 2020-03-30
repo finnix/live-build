@@ -55,7 +55,7 @@ elif [ $(which "${COMMAND}") ]; then
 	# User has live-build commands in path
 	SCRIPT="${COMMAND}"
 else
-	Echo_error "No such script: ${COMMAND}"
+	Echo_error "Unknown command: ${COMMAND}"
 	exit 1
 fi
 
