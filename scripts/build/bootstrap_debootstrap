@@ -95,7 +95,7 @@ fi
 Echo_breakage "Running debootstrap... "
 
 # Run appropriate bootstrap, i.e. foreign or regular bootstrap
-if [ "${LB_BOOTSTRAP_QEMU_ARCHITECTURES}" = "${LB_ARCHITECTURE}" ]; then
+if [ "${LB_BOOTSTRAP_QEMU_ARCHITECTURE}" = "${LB_ARCHITECTURE}" ]; then
 
 	if [ -n "${LB_BOOTSTRAP_QEMU_EXCLUDE}" ]
 	then

@@ -25,13 +25,13 @@ Check_architectures ()
 		fi
 	done
 
-	if [ "${ARCHITECTURES}" = "${LB_BOOTSTRAP_QEMU_ARCHITECTURES}" ]
+	if [ "${ARCHITECTURES}" = "${LB_BOOTSTRAP_QEMU_ARCHITECTURE}" ]
 	then
 		VALID=true
 
 		if [ ! -e "${LB_BOOTSTRAP_QEMU_STATIC}" ]
 		then
-			Echo_warning "skipping %s, qemu-static binary ${LB_BOOTSTRAP_QEMU_ARCHITECTURES} was not found"
+			Echo_warning "skipping %s, qemu-static binary ${LB_BOOTSTRAP_QEMU_ARCHITECTURE} was not found"
 			VALID=false
 		fi
 
@@ -75,12 +75,12 @@ Check_crossarchitectures ()
 			;;
 	esac
 
-	if [ "${LB_ARCHITECTURE}" = "${LB_BOOTSTRAP_QEMU_ARCHITECTURES}" ]
+	if [ "${LB_ARCHITECTURE}" = "${LB_BOOTSTRAP_QEMU_ARCHITECTURE}" ]
 	then
 
 		if [ ! -e "${LB_BOOTSTRAP_QEMU_STATIC}" ]
 		then
-			Echo_warning "skipping %s, qemu-static binary ${LB_BOOTSTRAP_QEMU_ARCHITECTURES} was not found"
+			Echo_warning "skipping %s, qemu-static binary ${LB_BOOTSTRAP_QEMU_ARCHITECTURE} was not found"
 			exit 0
 		fi
 
