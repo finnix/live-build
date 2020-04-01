@@ -24,13 +24,17 @@ Init_config_data "${@}"
 # Check architecture
 Check_crossarchitectures
 
-if ! In_list "bootstrap" ${LB_CACHE_STAGES}
-then
+if ! In_list "bootstrap" ${LB_CACHE_STAGES}; then
 	exit 0
 fi
 
 _ACTION="${1}"
 shift
+
+if ! In_list "${_ACTION}" restore save; then
+	Echo_error "Invalid action parameter"
+	exit 1
+fi
 
 # Set non-default stage file name
 # Note, this (plus the applicable extension added below) must match that used in `bootstrap_debootstrap`
