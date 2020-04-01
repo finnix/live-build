@@ -52,7 +52,7 @@ Init_config_data "${@}"
 Check_config_defaults
 
 Echo_message "live-build ${LIVE_BUILD_VERSION}"
-Echo_message "Building config tree for a ${LB_MODE}/${LB_DISTRIBUTION_BINARY}/${LB_ARCHITECTURES} system"
+Echo_message "Building for a ${LB_MODE}/${LB_DISTRIBUTION_BINARY}/${LB_ARCHITECTURES} system"
 
 # Stage #1: Bootstrap new root filesystem
 lb bootstrap ${@}
