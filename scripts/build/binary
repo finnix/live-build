@@ -31,9 +31,9 @@ Setup_clean_exit
 lb binary_chroot "${@}"
 
 # Chroot preparation component lists
-# We deliberately exclude 'debianchroot' and 'tmpfs'
+# We deliberately exclude 'debianchroot'
 CHROOT_PREP_MOUNTS="devpts proc selinuxfs sysfs"
-CHROOT_PREP_OTHER="dpkg sysv-rc hosts resolv hostname"
+CHROOT_PREP_OTHER="dpkg tmpfs sysv-rc hosts resolv hostname"
 
 if [ "${LB_BUILD_WITH_CHROOT}" = "true" ]
 then
