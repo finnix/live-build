@@ -74,7 +74,7 @@ Require_stagefiles ()
 	local FILE
 	local MISSING=""
 	local MISSING_COUNT=0
-	for FILE in ${@}; do
+	for FILE in "${@}"; do
 		if [ ! -f ".build/${FILE}" ]; then
 			MISSING_COUNT=$(( $MISSING_COUNT + 1 ))
 			MISSING="${MISSING:+$MISSING }${FILE}"

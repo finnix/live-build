@@ -28,38 +28,38 @@ Init_config_data "${@}"
 Setup_clean_exit
 
 # Bootstrapping system
-lb bootstrap_cache restore ${@}
-lb bootstrap_debootstrap ${@}
-lb bootstrap_cache save ${@}
+lb bootstrap_cache restore "${@}"
+lb bootstrap_debootstrap "${@}"
+lb bootstrap_cache save "${@}"
 
 # Configuring chroot
-lb chroot_devpts install ${@}
-lb chroot_proc install ${@}
-lb chroot_selinuxfs install ${@}
-lb chroot_sysfs install ${@}
-lb chroot_debianchroot install ${@}
-lb chroot_dpkg install ${@}
-lb chroot_tmpfs install ${@}
-lb chroot_sysv-rc install ${@}
-lb chroot_hosts install ${@}
-lb chroot_resolv install ${@}
-lb chroot_hostname install ${@}
-lb chroot_apt install ${@}
+lb chroot_devpts install "${@}"
+lb chroot_proc install "${@}"
+lb chroot_selinuxfs install "${@}"
+lb chroot_sysfs install "${@}"
+lb chroot_debianchroot install "${@}"
+lb chroot_dpkg install "${@}"
+lb chroot_tmpfs install "${@}"
+lb chroot_sysv-rc install "${@}"
+lb chroot_hosts install "${@}"
+lb chroot_resolv install "${@}"
+lb chroot_hostname install "${@}"
+lb chroot_apt install "${@}"
 
-lb bootstrap_archives binary ${@}
+lb bootstrap_archives binary "${@}"
 
 # Deconfiguring chroot
-lb chroot_apt remove ${@}
-lb chroot_hostname remove ${@}
-lb chroot_resolv remove ${@}
-lb chroot_hosts remove ${@}
-lb chroot_sysv-rc remove ${@}
-lb chroot_tmpfs remove ${@}
-lb chroot_dpkg remove ${@}
-lb chroot_debianchroot remove ${@}
-lb chroot_sysfs remove ${@}
-lb chroot_selinuxfs remove ${@}
-lb chroot_proc remove ${@}
-lb chroot_devpts remove ${@}
+lb chroot_apt remove "${@}"
+lb chroot_hostname remove "${@}"
+lb chroot_resolv remove "${@}"
+lb chroot_hosts remove "${@}"
+lb chroot_sysv-rc remove "${@}"
+lb chroot_tmpfs remove "${@}"
+lb chroot_dpkg remove "${@}"
+lb chroot_debianchroot remove "${@}"
+lb chroot_sysfs remove "${@}"
+lb chroot_selinuxfs remove "${@}"
+lb chroot_proc remove "${@}"
+lb chroot_devpts remove "${@}"
 
 Echo_message "Bootstrap stage completed"

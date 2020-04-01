@@ -20,10 +20,8 @@ In_list ()
 	shift
 
 	local ITEM
-	for ITEM in ${@}
-	do
-		if [ "${NEEDLE}" = "${ITEM}" ]
-		then
+	for ITEM in "${@}"; do
+		if [ "${NEEDLE}" = "${ITEM}" ]; then
 			return 0
 		fi
 	done
@@ -34,8 +32,7 @@ In_list ()
 Truncate ()
 {
 	local FILE
-	for FILE in ${@}
-	do
+	for FILE in "${@}"; do
 		if [ ! -L ${FILE} ]
 		then
 			: > ${FILE}

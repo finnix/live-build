@@ -17,8 +17,7 @@ Get_conffiles ()
 		FILES="${LB_CONFIG}"
 	else
 		local FILE
-		for FILE in ${@}
-		do
+		for FILE in "${@}"; do
 			FILES="${FILES} ${FILE} ${FILE}.${LB_ARCHITECTURES} ${FILE}.${DISTRIBUTION}"
 			FILES="${FILES} config/$(echo ${PROGRAM} | sed -e 's|^lb_||')"
 			FILES="${FILES} config/$(echo ${PROGRAM} | sed -e 's|^lb_||').${ARCHITECTURE}"

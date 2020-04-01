@@ -16,11 +16,11 @@ Apt ()
 
 	case "${LB_APT}" in
 		apt|apt-get)
-			Chroot ${CHROOT} apt-get ${APT_OPTIONS} ${@}
+			Chroot ${CHROOT} apt-get ${APT_OPTIONS} "${@}"
 			;;
 
 		aptitude)
-			Chroot ${CHROOT} aptitude ${APTITUDE_OPTIONS} ${@}
+			Chroot ${CHROOT} aptitude ${APTITUDE_OPTIONS} "${@}"
 			;;
 	esac
 }

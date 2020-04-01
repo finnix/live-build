@@ -26,8 +26,7 @@ Expand_packagelist ()
 		local _LB_NESTED=0
 		local _LB_ENABLED=1
 
-		for _LB_SEARCH_PATH in ${@}
-		do
+		for _LB_SEARCH_PATH in "${@}"; do
 			if [ -e "${_LB_SEARCH_PATH}/${_LB_LIST_NAME}" ]
 			then
 				_LB_LIST_LOCATION="${_LB_SEARCH_PATH}/${_LB_LIST_NAME}"
