@@ -18,7 +18,7 @@ Check_architectures ()
 	local ARCHITECTURE
 	for ARCHITECTURE in ${ARCHITECTURES}
 	do
-		if [ "$(echo ${LB_ARCHITECTURES} | grep ${ARCHITECTURE})" ]
+		if [ "$(echo ${LB_ARCHITECTURE} | grep ${ARCHITECTURE})" ]
 		then
 			VALID=true
 			break
@@ -75,7 +75,7 @@ Check_crossarchitectures ()
 			;;
 	esac
 
-	if [ "${LB_ARCHITECTURES}" = "${LB_BOOTSTRAP_QEMU_ARCHITECTURES}" ]
+	if [ "${LB_ARCHITECTURE}" = "${LB_BOOTSTRAP_QEMU_ARCHITECTURES}" ]
 	then
 
 		if [ ! -e "${LB_BOOTSTRAP_QEMU_STATIC}" ]

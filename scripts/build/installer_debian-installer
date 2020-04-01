@@ -62,7 +62,7 @@ fi
 # Setting destination directory
 case "${LIVE_IMAGE_TYPE}" in
 	netboot)
-		DESTDIR="tftpboot/debian-install/${LB_ARCHITECTURES}"
+		DESTDIR="tftpboot/debian-install/${LB_ARCHITECTURE}"
 		;;
 
 	*)
@@ -89,7 +89,7 @@ case "${LB_DEBIAN_INSTALLER}" in
 esac
 
 # Set architecture-specific variables
-case "${LB_ARCHITECTURES}" in
+case "${LB_ARCHITECTURE}" in
 	armel)
 		DEFAULT_FLAVOUR="$(echo ${LB_LINUX_FLAVOURS} | awk '{ print $1 }')"
 		case "${DI_IMAGE_TYPE}" in
@@ -109,11 +109,11 @@ case "${LB_ARCHITECTURES}" in
 	powerpc)
 		case "${DI_IMAGE_TYPE}" in
 			cdrom)
-				DI_REMOTE_BASE="${LB_ARCHITECTURES}/cdrom"
+				DI_REMOTE_BASE="${LB_ARCHITECTURE}/cdrom"
 			;;
 
 			netboot)
-				DI_REMOTE_BASE="${LB_ARCHITECTURES}/netboot"
+				DI_REMOTE_BASE="${LB_ARCHITECTURE}/netboot"
 				;;
 		esac
 
@@ -124,8 +124,8 @@ case "${LB_ARCHITECTURES}" in
 	*)
 		case "${DI_IMAGE_TYPE}" in
 			netboot)
-				DI_REMOTE_BASE="netboot/debian-installer/${LB_ARCHITECTURES}"
-				DI_REMOTE_BASE_GTK="netboot/gtk/debian-installer/${LB_ARCHITECTURES}"
+				DI_REMOTE_BASE="netboot/debian-installer/${LB_ARCHITECTURE}"
+				DI_REMOTE_BASE_GTK="netboot/gtk/debian-installer/${LB_ARCHITECTURE}"
 				DI_REMOTE_KERNEL="linux"
 				;;
 
@@ -227,7 +227,7 @@ INITRD_GI="gtk/initrd.gz"
 DESTDIR_GI="${DESTDIR}/gtk"
 
 # Debian Installer daily builds
-DAILY_DI_URL="https://d-i.debian.org/daily-images/${LB_ARCHITECTURES}/daily"
+DAILY_DI_URL="https://d-i.debian.org/daily-images/${LB_ARCHITECTURE}/daily"
 
 case "${LB_DERIVATIVE}" in
 	false)
@@ -238,7 +238,7 @@ case "${LB_DERIVATIVE}" in
 
 			URL="${DAILY_DI_URL}"
 		else
-			URL="${LB_MIRROR_DEBIAN_INSTALLER}/dists/${LB_DEBIAN_INSTALLER_DISTRIBUTION}/main/installer-${LB_ARCHITECTURES}/current/images"
+			URL="${LB_MIRROR_DEBIAN_INSTALLER}/dists/${LB_DEBIAN_INSTALLER_DISTRIBUTION}/main/installer-${LB_ARCHITECTURE}/current/images"
 		fi
 		;;
 
@@ -249,7 +249,7 @@ case "${LB_DERIVATIVE}" in
 
 			URL="${DAILY_DI_URL}"
 		else
-			URL="${LB_PARENT_MIRROR_DEBIAN_INSTALLER}/dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/main/installer-${LB_ARCHITECTURES}/current/images"
+			URL="${LB_PARENT_MIRROR_DEBIAN_INSTALLER}/dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/main/installer-${LB_ARCHITECTURE}/current/images"
 		fi
 esac
 
@@ -263,7 +263,7 @@ Download_file "${DESTDIR}"/"${INITRD_DI}" ${URL}/${DI_REMOTE_BASE}/initrd.gz
 DOWNLOAD_GTK_INSTALLER=false
 if [ "${LB_DEBIAN_INSTALLER_GUI}" = "true" ]
 then
-	case "${LB_ARCHITECTURES}" in
+	case "${LB_ARCHITECTURE}" in
 		amd64|i386)
 			DOWNLOAD_GTK_INSTALLER=true
 			;;
@@ -289,7 +289,7 @@ then
 	# Downloading additional packages
 	mkdir -p chroot/binary.deb/archives/partial
 
-	case "${LB_ARCHITECTURES}" in
+	case "${LB_ARCHITECTURE}" in
 		amd64)
 			DI_REQ_PACKAGES="lilo grub-pc"
 			DI_PACKAGES="linux-image-amd64"
@@ -429,9 +429,9 @@ then
 	Echo_debug "Including local debs"
 
 	# Including local debs
-	if Find_files config/packages.binary/*_"${LB_ARCHITECTURES}".deb || Find_files config/packages/*_"${LB_ARCHITECTURES}".deb
+	if Find_files config/packages.binary/*_"${LB_ARCHITECTURE}".deb || Find_files config/packages/*_"${LB_ARCHITECTURE}".deb
 	then
-		for FILE in config/packages.binary/*_"${LB_ARCHITECTURES}".deb config/packages/*_"${LB_ARCHITECTURES}".deb
+		for FILE in config/packages.binary/*_"${LB_ARCHITECTURE}".deb config/packages/*_"${LB_ARCHITECTURE}".deb
 		do
 			if [ -e "${FILE}" ]
 			then
@@ -454,7 +454,7 @@ then
 	# Generating deb indices
 	Echo_debug "Generating deb indices"
 	for _ARCHIVE_AREA in $(cd binary/pool && ls); do
-		INDICE_DIR="dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/${_ARCHIVE_AREA}/binary-${LB_ARCHITECTURES}"
+		INDICE_DIR="dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/${_ARCHIVE_AREA}/binary-${LB_ARCHITECTURE}"
 		mkdir -p "binary/${INDICE_DIR}"
 
 		mv binary chroot/root
@@ -497,12 +497,12 @@ EOF
 
 	# Downloading udeb indices
 	Echo_debug "Downloading udeb indices"
-	Download_file Packages.gz "${LB_PARENT_MIRROR_CHROOT}"/dists/"${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}"/main/debian-installer/binary-"${LB_ARCHITECTURES}"/Packages.gz
+	Download_file Packages.gz "${LB_PARENT_MIRROR_CHROOT}"/dists/"${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}"/main/debian-installer/binary-"${LB_ARCHITECTURE}"/Packages.gz
 	gunzip -c Packages.gz > Packages
 
 	if [ "${LB_DERIVATIVE}" = "true" ]
 	then
-		Download_file Packages.derivative.gz "${LB_MIRROR_CHROOT}"/dists/"${LB_DEBIAN_INSTALLER_DISTRIBUTION}"/main/debian-installer/binary-"${LB_ARCHITECTURES}"/Packages.gz
+		Download_file Packages.derivative.gz "${LB_MIRROR_CHROOT}"/dists/"${LB_DEBIAN_INSTALLER_DISTRIBUTION}"/main/debian-installer/binary-"${LB_ARCHITECTURE}"/Packages.gz
 		gunzip -c Packages.derivative.gz > Packages.derivative
 	fi
 
@@ -583,9 +583,9 @@ EOF
 	Echo_debug "Including local udebs"
 
 	# Including local udebs
-	if Find_files ../config/packages.binary/*_"${LB_ARCHITECTURES}".udeb || Find_files ../config/packages/*_"${LB_ARCHITECTURES}".udeb
+	if Find_files ../config/packages.binary/*_"${LB_ARCHITECTURE}".udeb || Find_files ../config/packages/*_"${LB_ARCHITECTURE}".udeb
 	then
-		for FILE in ../config/packages.binary/*_"${LB_ARCHITECTURES}".udeb ../config/packages/*_"${LB_ARCHITECTURES}".udeb
+		for FILE in ../config/packages.binary/*_"${LB_ARCHITECTURE}".udeb ../config/packages/*_"${LB_ARCHITECTURE}".udeb
 		do
 			if [ -e "${FILE}" ]
 			then
@@ -620,7 +620,7 @@ EOF
 		then
 			grep -v "^#" "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/udeb_exclude" > exclude || true
 			grep -v "^#" "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/exclude-udebs" >> exclude || true
-			grep -v "^#" "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/exclude-udebs-${LB_ARCHITECTURES}" >> exclude || true
+			grep -v "^#" "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/exclude-udebs-${LB_ARCHITECTURE}" >> exclude || true
 
 			continue
 		fi
@@ -657,7 +657,7 @@ EOF
 	# Creating udeb indices
 	Echo_debug "Generating udeb indices"
 
-	UDEB_INDICE_DIR="dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/main/debian-installer/binary-${LB_ARCHITECTURES}"
+	UDEB_INDICE_DIR="dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/main/debian-installer/binary-${LB_ARCHITECTURE}"
 
 	mkdir -p "${UDEB_INDICE_DIR}"
 
@@ -715,7 +715,7 @@ cd /root/binary && apt-ftparchive \
 	${_LB_APT_VERSION_OPT} \
 	-o APT::FTPArchive::Release::Codename="${LB_PARENT_DISTRIBUTION_BINARY}" \
 	-o APT::FTPArchive::Release::Date="$(date -R)" \
-	-o APT::FTPArchive::Release::Architectures="${LB_ARCHITECTURES}" \
+	-o APT::FTPArchive::Release::Architectures="${LB_ARCHITECTURE}" \
 	-o APT::FTPArchive::Release::Components="${LB_PARENT_ARCHIVE_AREAS}" \
 	-o APT::FTPArchive::Release::Description="Last updated: $(date -R)" \
 	release dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION} > dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/Release

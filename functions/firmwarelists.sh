@@ -22,9 +22,9 @@ Firmware_List_From_Contents () {
 	local _ARCHIVE_AREA
 	for _ARCHIVE_AREA in ${ARCHIVE_AREAS}
 	do
-		local CONTENTS_URL="${MIRROR_CHROOT}/dists/${DISTRO_CHROOT}/${_ARCHIVE_AREA}/Contents-${LB_ARCHITECTURES}.gz"
+		local CONTENTS_URL="${MIRROR_CHROOT}/dists/${DISTRO_CHROOT}/${_ARCHIVE_AREA}/Contents-${LB_ARCHITECTURE}.gz"
 		local CONTENTS_FILEDIR="cache/contents.chroot/${DISTRO_CHROOT}/${_ARCHIVE_AREA}"
-		local CONTENTS_FILE="${CONTENTS_FILEDIR}/contents-${LB_ARCHITECTURES}.gz"
+		local CONTENTS_FILE="${CONTENTS_FILEDIR}/contents-${LB_ARCHITECTURE}.gz"
 
 		mkdir -p "${CONTENTS_FILEDIR}"
 

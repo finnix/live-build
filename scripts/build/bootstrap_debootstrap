@@ -48,9 +48,9 @@ Acquire_lockfile
 mkdir -p chroot
 
 # Setting debootstrap options
-if [ -n "${LB_ARCHITECTURES}" ]
+if [ -n "${LB_ARCHITECTURE}" ]
 then
-	DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS} --arch=${LB_ARCHITECTURES}"
+	DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS} --arch=${LB_ARCHITECTURE}"
 fi
 
 if [ "${LB_ARCHIVE_AREAS}" != "main" ]
@@ -95,7 +95,7 @@ fi
 Echo_breakage "Running debootstrap... "
 
 # Run appropriate bootstrap, i.e. foreign or regular bootstrap
-if [ "${LB_BOOTSTRAP_QEMU_ARCHITECTURES}" = "${LB_ARCHITECTURES}" ]; then
+if [ "${LB_BOOTSTRAP_QEMU_ARCHITECTURES}" = "${LB_ARCHITECTURE}" ]; then
 
 	if [ -n "${LB_BOOTSTRAP_QEMU_EXCLUDE}" ]
 	then

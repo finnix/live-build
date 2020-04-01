@@ -37,7 +37,7 @@ Check_stagefile
 # Acquire lock file
 Acquire_lockfile
 
-if [ "${LB_ARCHITECTURES}" != "amd64" ] && [ "${LB_ARCHITECTURES}" != "i386" ]
+if [ "${LB_ARCHITECTURE}" != "amd64" ] && [ "${LB_ARCHITECTURE}" != "i386" ]
 then
 	Echo_warning "Skipping binary_memtest, foreign architecture."
 	exit 0

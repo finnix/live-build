@@ -43,9 +43,9 @@ New_configuration ()
 	export LIVE_IMAGE_NAME
 
 	# (FIXME: Support and default to 'any')
-	LB_ARCHITECTURES="${LB_ARCHITECTURES:-$(Get_configuration config/build Architecture)}"
-	LB_ARCHITECTURES="${LB_ARCHITECTURES:-${CURRENT_IMAGE_ARCHITECTURE}}"
-	export LB_ARCHITECTURES
+	LB_ARCHITECTURE="${LB_ARCHITECTURE:-$(Get_configuration config/build Architecture)}"
+	LB_ARCHITECTURE="${LB_ARCHITECTURE:-${CURRENT_IMAGE_ARCHITECTURE}}"
+	export LB_ARCHITECTURE
 
 	LB_ARCHIVE_AREAS="${LB_ARCHIVE_AREAS:-$(Get_configuration config/build Archive-Areas)}"
 	LB_ARCHIVE_AREAS="${LB_ARCHIVE_AREAS:-main}"
@@ -182,7 +182,7 @@ Prepare_config ()
 			;;
 	esac
 
-	if [ "${LB_ARCHITECTURES}" = "i386" ] && [ "${CURRENT_IMAGE_ARCHITECTURE}" = "amd64" ]
+	if [ "${LB_ARCHITECTURE}" = "i386" ] && [ "${CURRENT_IMAGE_ARCHITECTURE}" = "amd64" ]
 	then
 		# Use linux32 when building amd64 images on i386
 		_LINUX32="linux32"
@@ -228,7 +228,7 @@ Prepare_config ()
 	if [ -n "${LB_LINUX_FLAVOURS}" ]; then
 		LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS}"
 	fi
-	case "${LB_ARCHITECTURES}" in
+	case "${LB_ARCHITECTURE}" in
 		arm64)
 			LB_LINUX_FLAVOURS_WITH_ARCH="${LB_LINUX_FLAVOURS_WITH_ARCH:-arm64}"
 			;;
@@ -266,7 +266,7 @@ Prepare_config ()
 			;;
 
 		*)
-			Echo_error "Architecture(s) ${LB_ARCHITECTURES} not yet supported (FIXME)"
+			Echo_error "Architecture(s) ${LB_ARCHITECTURE} not yet supported (FIXME)"
 			exit 1
 			;;
 	esac
@@ -302,7 +302,7 @@ Prepare_config ()
 			;;
 	esac
 
-	case "${LB_ARCHITECTURES}" in
+	case "${LB_ARCHITECTURE}" in
 		amd64|i386)
 			LIVE_IMAGE_TYPE="${LIVE_IMAGE_TYPE:-iso-hybrid}"
 			;;
@@ -314,7 +314,7 @@ Prepare_config ()
 
 	if [ -z "${LB_BOOTLOADERS}" ]
 	then
-		case "${LB_ARCHITECTURES}" in
+		case "${LB_ARCHITECTURE}" in
 			amd64|i386)
 				case "${LIVE_IMAGE_TYPE}" in
 					hdd|netboot)
@@ -431,7 +431,7 @@ Prepare_config ()
 		Echo_warning "A value of 'false' for option LB_MEMTEST is deprecated, please use 'none' in future."
 	fi
 
-	case "${LB_ARCHITECTURES}" in
+	case "${LB_ARCHITECTURE}" in
 		amd64|i386)
 			if [ "${LB_DEBIAN_INSTALLER}" != "none" ]; then
 				LB_LOADLIN="${LB_LOADLIN:-true}"
@@ -445,7 +445,7 @@ Prepare_config ()
 			;;
 	esac
 
-	case "${LB_ARCHITECTURES}" in
+	case "${LB_ARCHITECTURE}" in
 		amd64|i386)
 			if [ "${LB_DEBIAN_INSTALLER}" != "none" ]; then
 				LB_WIN32_LOADER="${LB_WIN32_LOADER:-true}"

@@ -47,7 +47,7 @@ case "${LB_INITRAMFS}" in
 		;;
 esac
 
-case "${LB_ARCHITECTURES}" in
+case "${LB_ARCHITECTURE}" in
 	powerpc)
 		LINUX="vmlinux"
 		;;

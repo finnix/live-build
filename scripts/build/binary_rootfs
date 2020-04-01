@@ -32,7 +32,7 @@ Check_stagefile
 # Acquire lock file
 Acquire_lockfile
 
-case "${LB_ARCHITECTURES}" in
+case "${LB_ARCHITECTURE}" in
 	amd64|i386)
 		LINUX="vmlinuz"
 		;;

@@ -37,25 +37,25 @@ Check_stagefile
 Acquire_lockfile
 
 # Remove old binary
-rm -f ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.tar.bz2 ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.tar.gz ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.tar.lz ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.tar
+rm -f ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.tar.bz2 ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.tar.gz ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.tar.lz ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.tar
 
-tar cf ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.tar.tar binary
+tar cf ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.tar.tar binary
 
 case "${LB_COMPRESSION}" in
 	bzip2)
-		bzip2 ${BZIP2_OPTIONS} ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.tar.tar
+		bzip2 ${BZIP2_OPTIONS} ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.tar.tar
 		;;
 
 	gzip)
-		gzip ${GZIP_OPTIONS} ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.tar.tar
+		gzip ${GZIP_OPTIONS} ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.tar.tar
 		;;
 
 	lzip)
-		lzip ${LZIP_OPTIONS} ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.tar.tar
+		lzip ${LZIP_OPTIONS} ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.tar.tar
 		;;
 
 	xz)
-		xz ${XZ_OPTIONS} ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.tar.tar
+		xz ${XZ_OPTIONS} ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.tar.tar
 		;;
 
 	none)

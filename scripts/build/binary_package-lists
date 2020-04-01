@@ -132,9 +132,9 @@ then
 
 		SECTION="$(basename ${SECTION})"
 
-		mkdir -p ${DISTS}/${LB_PARENT_DISTRIBUTION_BINARY}/${SECTION}/binary-${LB_ARCHITECTURES}
-		apt-ftparchive packages ${POOL}/${SECTION} > ${DISTS}/${LB_PARENT_DISTRIBUTION_BINARY}/${SECTION}/binary-${LB_ARCHITECTURES}/Packages
-		gzip -9 -c ${DISTS}/${LB_PARENT_DISTRIBUTION_BINARY}/${SECTION}/binary-${LB_ARCHITECTURES}/Packages > ${DISTS}/${LB_PARENT_DISTRIBUTION_BINARY}/${SECTION}/binary-${LB_ARCHITECTURES}/Packages.gz
+		mkdir -p ${DISTS}/${LB_PARENT_DISTRIBUTION_BINARY}/${SECTION}/binary-${LB_ARCHITECTURE}
+		apt-ftparchive packages ${POOL}/${SECTION} > ${DISTS}/${LB_PARENT_DISTRIBUTION_BINARY}/${SECTION}/binary-${LB_ARCHITECTURE}/Packages
+		gzip -9 -c ${DISTS}/${LB_PARENT_DISTRIBUTION_BINARY}/${SECTION}/binary-${LB_ARCHITECTURE}/Packages > ${DISTS}/${LB_PARENT_DISTRIBUTION_BINARY}/${SECTION}/binary-${LB_ARCHITECTURE}/Packages.gz
 	done
 
 	if [ -d dists/${LB_PARENT_DISTRIBUTION_BINARY} ]; then
@@ -145,7 +145,7 @@ then
 			${_LB_APT_VERSION_OPT} \
 			-o APT::FTPArchive::Release::Codename="${LB_PARENT_DISTRIBUTION_BINARY}" \
 			-o APT::FTPArchive::Release::Date="$(date -R)" \
-			-o APT::FTPArchive::Release::Architectures="${LB_ARCHITECTURES}" \
+			-o APT::FTPArchive::Release::Architectures="${LB_ARCHITECTURE}" \
 			-o APT::FTPArchive::Release::Components="${LB_PARENT_ARCHIVE_AREAS}" \
 			-o APT::FTPArchive::Release::Description="Last updated: $(date -R)" \
 			release dists/${LB_PARENT_DISTRIBUTION_BINARY} \

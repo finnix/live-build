@@ -198,7 +198,6 @@ fi
 _VERSION="${_VERSION:-none}"
 
 _DISTRIBUTION="${LB_DISTRIBUTION_BINARY}"
-_ARCHITECTURE="${LB_ARCHITECTURES}"
 
 _DATE=$(date -R)
 _YEAR="$(date +%Y)"
@@ -228,7 +227,7 @@ do
 			-e "s|@DISTRIBUTION@|${_DISTRIBUTION}|g" \
 			-e "s|@PARENT_DISTRIBUTION@|${LB_PARENT_DISTRIBUTION_BINARY}|g" \
 			-e "s|@VERSION@|${_VERSION}|g" \
-			-e "s|@ARCHITECTURE@|${_ARCHITECTURE}|g" \
+			-e "s|@ARCHITECTURE@|${LB_ARCHITECTURE}|g" \
 			-e "s|@DATE@|${_DATE}|g" \
 			-e "s|@YEAR@|${_YEAR}|g" \
 			-e "s|@MONTH@|${_MONTH}|g" \

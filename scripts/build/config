@@ -361,7 +361,7 @@ Local_arguments ()
 				;;
 
 			-a|--architecture|--architectures)
-				LB_ARCHITECTURES="${2}"
+				LB_ARCHITECTURE="${2}"
 				shift 2
 				;;
 
@@ -966,10 +966,10 @@ fi
 
 if [ ! -e config ]
 then
-	Echo_message "Creating config tree for a ${LB_MODE}/${LB_DISTRIBUTION_BINARY}/${LB_ARCHITECTURES} system"
+	Echo_message "Creating config tree for a ${LB_MODE}/${LB_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE} system"
 	mkdir config
 else
-	Echo_message "Updating config tree for a ${LB_MODE}/${LB_DISTRIBUTION_BINARY}/${LB_ARCHITECTURES} system"
+	Echo_message "Updating config tree for a ${LB_MODE}/${LB_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE} system"
 fi
 
 # Creating live-build configuration
@@ -1364,7 +1364,7 @@ fi
 
 cat > config/build << EOF
 [Image]
-Architecture: ${LB_ARCHITECTURES}
+Architecture: ${LB_ARCHITECTURE}
 Archive-Areas: ${LB_ARCHIVE_AREAS}
 Distribution-Chroot: ${LB_DISTRIBUTION_CHROOT}
 Distribution-Binary: ${LB_DISTRIBUTION_BINARY}

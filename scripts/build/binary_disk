@@ -38,7 +38,7 @@ Acquire_lockfile
 
 mkdir -p binary/.disk
 
-ARCHITECTURE="$(echo ${LB_ARCHITECTURES} | sed -e 's| |/|g')"
+ARCHITECTURE="$(echo ${LB_ARCHITECTURE} | sed -e 's| |/|g')"
 DISTRIBUTION="$(echo ${LB_DISTRIBUTION_BINARY} | cut -b 1 | tr '[a-z]' '[A-Z]')"
 DISTRIBUTION="${DISTRIBUTION}$(echo ${LB_DISTRIBUTION_BINARY} | cut -b 2-)"
 
@@ -135,13 +135,13 @@ do
 	then
 		case "${LB_DEBIAN_INSTALLER}" in
 			cdrom)
-				cp "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURES}_udeb_include" binary/.disk/udeb_include
+				cp "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE}_udeb_include" binary/.disk/udeb_include
 				;;
 			netinst|live)
-				cp "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURES}_netinst_udeb_include" binary/.disk/udeb_include
+				cp "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE}_netinst_udeb_include" binary/.disk/udeb_include
 				;;
 			businesscard)
-				cp "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURES}_businesscard_udeb_include" binary/.disk/udeb_include
+				cp "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE}_businesscard_udeb_include" binary/.disk/udeb_include
 				;;
 			none|netboot)
 				;;
