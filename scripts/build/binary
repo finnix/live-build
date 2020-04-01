@@ -30,18 +30,16 @@ Setup_clean_exit
 # Preparing root filesystem
 lb binary_chroot "${@}"
 
+# Chroot preparation component lists
+# We deliberately exclude 'debianchroot' and 'tmpfs'
+CHROOT_PREP_MOUNTS="devpts proc selinuxfs sysfs"
+CHROOT_PREP_OTHER="dpkg sysv-rc hosts resolv hostname"
+
 if [ "${LB_BUILD_WITH_CHROOT}" = "true" ]
 then
 	# Configuring chroot
-	lb chroot_devpts install "${@}"
-	lb chroot_proc install "${@}"
-	lb chroot_selinuxfs install "${@}"
-	lb chroot_sysfs install "${@}"
-	lb chroot_hosts install "${@}"
-	lb chroot_resolv install "${@}"
-	lb chroot_hostname install "${@}"
-	lb chroot_dpkg install "${@}"
-	lb chroot_sysv-rc install "${@}"
+	lb chroot_prep install "${CHROOT_PREP_MOUNTS}" "${@}"
+	lb chroot_prep install "${CHROOT_PREP_OTHER}" "${@}"
 	lb chroot_apt install-binary "${@}"
 	lb chroot_archives chroot install "${@}"
 fi
@@ -68,10 +66,7 @@ lb binary_checksums "${@}"
 
 if [ "${LB_BUILD_WITH_CHROOT}" != "true" ]
 then
-	lb chroot_devpts install "${@}"
-	lb chroot_proc install "${@}"
-	lb chroot_selinuxfs install "${@}"
-	lb chroot_sysfs install "${@}"
+	lb chroot_prep install "${CHROOT_PREP_MOUNTS}" "${@}"
 fi
 
 # Building images
@@ -89,16 +84,9 @@ then
 	Remove_stagefile chroot_archives
 
 	lb chroot_apt remove "${@}"
-	lb chroot_hostname remove "${@}"
-	lb chroot_resolv remove "${@}"
-	lb chroot_hosts remove "${@}"
-	lb chroot_sysv-rc remove "${@}"
-	lb chroot_dpkg remove "${@}"
+	lb chroot_prep remove "${CHROOT_PREP_OTHER}" "${@}"
 fi
 
-lb chroot_sysfs remove "${@}"
-lb chroot_selinuxfs remove "${@}"
-lb chroot_proc remove "${@}"
-lb chroot_devpts remove "${@}"
+lb chroot_prep remove "${CHROOT_PREP_MOUNTS}" "${@}"
 
 Echo_message "Binary stage completed"

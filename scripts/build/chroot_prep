@@ -1,0 +1,69 @@
+#!/bin/sh
+
+## live-build(7) - System Build Scripts
+## Copyright (C) 2020 The Debian Live team
+##
+## This program comes with ABSOLUTELY NO WARRANTY; for details see COPYING.
+## This is free software, and you are welcome to redistribute it
+## under certain conditions; see COPYING for details.
+
+
+set -e
+
+# Including common functions
+[ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
+
+# Setting static variables
+DESCRIPTION="Prep chroot"
+USAGE="${PROGRAM} {install|remove} {all|\"HELPERS\"} [--force]"
+
+# Processing arguments and configuration files
+Init_config_data "${@}"
+
+# Requiring stage file
+Require_stagefiles config bootstrap
+
+ACTION="${1}"
+HELPERS="${2}"
+shift 2
+
+if ! In_list "${ACTION}" install remove; then
+	Echo_error "Invalid action parameter"
+	exit 1
+fi
+
+if [ -z "${HELPERS}" ]; then
+	Echo_error "You must specify which helpers to run"
+	exit 1
+fi
+
+if [ "${HELPERS}" = "all" ]; then
+	# Use default set of all helpers (except chroot_archives which cannot be supported due to different parameter needs)
+	HELPERS="devpts proc selinuxfs sysfs debianchroot dpkg tmpfs sysv-rc hosts resolv hostname apt"
+else
+	# Support both comma and space separation
+	# Support with and without 'chroot_' script filename prefix
+	HELPERS="$(echo "${HELPERS}" | sed -e 's|,| |g' -e 's|^chroot_||g')"
+fi
+
+if In_list "prep" ${HELPERS}; then
+	Echo_error "Recursive!"
+	exit 1
+fi
+
+if In_list "archives" ${HELPERS}; then
+	Echo_error "The chroot_archives helper cannot be used through chroot_prep!"
+	exit 1
+fi
+
+if [ "${_ACTION}" = "remove" ]; then
+	HELPERS_REVERSED=""
+	for HELPER in $HELPERS; do
+		HELPERS_REVERSED="${HELPER}${HELPERS_REVERSED:+ $HELPERS_REVERSED}"
+	done
+	HELPERS="${HELPERS_REVERSED}"
+fi
+
+for HELPER in $HELPERS; do
+	lb "chroot_${HELPER}" "${ACTION}" "${@}"
+done

@@ -196,6 +196,10 @@ compiles the final source image into a tar archive
 The notes above under the section regarding build-stage specific low-level plumbing commands also apply here.
 .PP
 The following chroot_ prefixed commands are used throughout the various primary stages of the build process to apply and remove modifications to a chroot root filesystem. Generally these are used to apply modification that setup the chroot for use (execution of programs within it) during the build process, and later to remove those modification, unmounting things that were mounted, and making the chroot suitable for use as the root filesystem of the live OS to be bundled into the live image.
+.PP
+Note that the \fBlb chroot_prep\fR(1) command can be used to run these components in bulk.
+.IP "\fBlb chroot_prep\fR(1)" 4
+a helper to run the below components in bulk, usable for all those that can be controlled with a single parameter of 'install' or 'remove' (thus excluding \fBlb chroot_archives\fR(1) and also \fBlb chroot_apt\fR(1) when run with 'install-binary'). The first parameter it takes is the execution mode - install or remove - to pass along. The second parameter is the set of helpers to run (they can be space or comma separated; remember to quote if space separated). Any remaining parameters (i.e. options like --force) are passed along. The second can be simply 'all' in which case a default set of all (applicable) components are used. Components can be specified without their filename 'chroot_' prefix for brevity. In remove mode the list of components are run in reverse order, so no need to provide them in reverse order yourself.
 .IP "\fBlb chroot_apt\fR(1)" 4
 manages apt configuration; in apply mode it applies configuration for use during build process, and in remove mode removes that configuration
 .IP "\fBlb chroot_archives\fR(1)" 4
