@@ -355,7 +355,7 @@ then
 			else
 				for _ARCHIVE_AREA in ${LB_ARCHIVE_AREAS}
 				do
-					if ! In_list ${_ARCHIVE_AREA} "${LB_PARENT_ARCHIVE_AREAS}"
+					if ! In_list ${_ARCHIVE_AREA} ${LB_PARENT_ARCHIVE_AREAS}
 					then
 						DERIVATIVE_ARCHIVE_AREAS="${DERIVATIVE_ARCHIVE_AREAS} ${DERIVATIVE_ARCHIVE_AREAS}"
 					fi
@@ -541,7 +541,7 @@ EOF
 		done
 		for _UDEB in ${UDEBS}
 		do
-			if ! In_list "$(basename ${_UDEB} | awk -F_ '{ print $1 }')" "${_UDEBS_DERIVED_NAMES}"
+			if ! In_list "$(basename ${_UDEB} | awk -F_ '{ print $1 }')" ${_UDEBS_DERIVED_NAMES}
 			then
 				_UDEBS_FILTERED="${_UDEBS_FILTERED} ${_UDEB}"
 			fi

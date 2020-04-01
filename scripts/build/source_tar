@@ -26,8 +26,7 @@ then
 	exit 0
 fi
 
-if ! In_list tar "${LB_SOURCE_IMAGES}"
-then
+if ! In_list tar ${LB_SOURCE_IMAGES}; then
 	exit 0
 fi
 
