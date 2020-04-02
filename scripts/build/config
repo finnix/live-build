@@ -211,13 +211,10 @@ Local_arguments ()
 
 			--dump)
 				# Dump version
-				local VERSION_DPKG
-				if [ $(which dpkg-query) ]
-				then
-					VERSION_DPKG="$(dpkg-query -f='${Version}' --show live-build)"
+				Echo "This is live-build version %s" "${VERSION}"
+				if [ $(which dpkg-query) ]; then
+					Echo "Installed version reported by dpkg is %s" "$(dpkg-query -f='${Version}' --show live-build)"
 				fi
-
-				Echo "%s: This is live-build version %s" "${0}" "${VERSION_DPKG:-${VERSION}}"
 
 				# Dump conffile contents
 				Print_conffiles $(Common_config_files)
