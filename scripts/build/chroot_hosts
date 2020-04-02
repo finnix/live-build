@@ -61,6 +61,9 @@ EOF
 	remove)
 		Echo_message "Deconfiguring file /etc/hosts"
 
+		# Checking stage file
+		Ensure_stagefile_exists
+
 		# Acquire lock file
 		Acquire_lockfile
 

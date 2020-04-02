@@ -50,6 +50,9 @@ case "${1}" in
 	remove)
 		Echo_message "Deconfiguring file /etc/debian_chroot"
 
+		# Checking stage file
+		Ensure_stagefile_exists
+
 		# Acquire lock file
 		Acquire_lockfile
 

@@ -27,10 +27,8 @@ Check_stagefile ()
 	NAME="$(basename ${FILE})"
 
 	# Checking stage file
-	if [ -f "${FILE}" ]
-	then
-		if [ "${_FORCE}" != "true" ]
-		then
+	if [ -f "${FILE}" ]; then
+		if [ "${_FORCE}" != "true" ]; then
 			# Skip execution
 			Echo_warning "Skipping %s, already done" "${NAME}"
 			exit 0
@@ -38,6 +36,27 @@ Check_stagefile ()
 			# Force execution
 			Echo_message "Forcing %s" "${NAME}"
 			rm -f "${FILE}"
+		fi
+	fi
+}
+
+# Used by chroot preperation scripts in removal mode
+Ensure_stagefile_exists ()
+{
+	local FILE
+	local NAME
+	FILE=".build/${1:-$(Stagefile_name)}"
+	NAME="$(basename ${FILE})"
+
+	# Checking stage file
+	if [ ! -f "${FILE}" ]; then
+		if [ "${_FORCE}" != "true" ]; then
+			# Skip execution
+			Echo_warning "Skipping removal of %s, it is not applied" "${NAME}"
+			exit 0
+		else
+			# Force execution
+			Echo_message "Forcing %s" "${NAME}"
 		fi
 	fi
 }

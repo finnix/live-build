@@ -64,6 +64,9 @@ case "${1}" in
 	remove)
 		Echo_message "Deconfiguring file /etc/resolv.conf"
 
+		# Checking stage file
+		Ensure_stagefile_exists
+
 		# Acquire lock file
 		Acquire_lockfile
 

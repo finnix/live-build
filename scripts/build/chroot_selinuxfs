@@ -50,6 +50,9 @@ case "${1}" in
 	remove)
 		Echo_message "Begin unmounting /sys/fs/selinux..."
 
+		# Checking stage file
+		Ensure_stagefile_exists
+
 		# Acquire lock file
 		Acquire_lockfile
 

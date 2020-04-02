@@ -56,6 +56,9 @@ EOF
 	remove)
 		Echo_message "Deconfiguring file /usr/sbin/policy-rc.d"
 
+		# Checking stage file
+		Ensure_stagefile_exists
+
 		# Acquire lock file
 		Acquire_lockfile
 
