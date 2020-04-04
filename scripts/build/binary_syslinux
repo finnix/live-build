@@ -101,10 +101,16 @@ Restore_package_cache binary
 # Installing depends
 Install_package
 
+# Ensure fresh
+rm -rf ${_TARGET}
+mkdir -p ${_TARGET}
+
 # Copying files
 case "${LB_BUILD_WITH_CHROOT}" in
 	true)
-		mkdir -p ${_TARGET}
+		# Ensure fresh
+		rm -rf chroot/root/${_BOOTLOADER}
+		rm -rf chroot/root/${_BOOTLOADER}.tmp
 		mkdir -p chroot/root/${_BOOTLOADER}
 
 		# Copy in two steps since the theme can have absolute symlinks and would therefore not be dereferenced correctly
@@ -122,8 +128,6 @@ case "${LB_BUILD_WITH_CHROOT}" in
 		;;
 
 	false)
-		mkdir -p ${_TARGET}
-
 		cp -aL ${_SOURCE_COMMON}/* ${_TARGET} > /dev/null 2>&1 || true
 		cp -aLf ${_SOURCE}/* ${_TARGET} > /dev/null 2>&1 || true
 		if [ -e "${_SOURCE_USER_COMMON}" ]; then
@@ -155,8 +159,8 @@ then
 			# Rename kernel files
 			# If multiple initrd images are being generated (by DKMS packages, etc),
 			# we likely only want the latest version.
-			ln $(ls -r1 --sort=version binary/${_INITRAMFS}/vmlinuz-* | head -n 1) binary/${_INITRAMFS}/vmlinuz
-			ln $(ls -r1 --sort=version binary/${_INITRAMFS}/initrd.img-* | head -n 1) binary/${_INITRAMFS}/initrd.img
+			ln -f $(ls -r1 --sort=version binary/${_INITRAMFS}/vmlinuz-* | head -n 1) binary/${_INITRAMFS}/vmlinuz
+			ln -f $(ls -r1 --sort=version binary/${_INITRAMFS}/initrd.img-* | head -n 1) binary/${_INITRAMFS}/initrd.img
 
 			sed -e "s|@FLAVOUR@|${LB_LINUX_FLAVOURS}|g" \
 			    -e "s|@LINUX@|/${_INITRAMFS}/vmlinuz|g" \
@@ -176,8 +180,8 @@ then
 				# Rename kernel files
 				# If multiple initrd images are being generated (by DKMS packages, etc),
 				# we likely only want the latest version.
-				ln $(ls -r1 --sort=version binary/${_INITRAMFS}/vmlinuz-*-${_FLAVOUR} | head -n 1) binary/${_INITRAMFS}/vmlinuz${_NUMBER}
-				ln $(ls -r1 --sort=version binary/${_INITRAMFS}/initrd.img-*-${_FLAVOUR} | head -n 1) binary/${_INITRAMFS}/initrd${_NUMBER}.img
+				ln -f $(ls -r1 --sort=version binary/${_INITRAMFS}/vmlinuz-*-${_FLAVOUR} | head -n 1) binary/${_INITRAMFS}/vmlinuz${_NUMBER}
+				ln -f $(ls -r1 --sort=version binary/${_INITRAMFS}/initrd.img-*-${_FLAVOUR} | head -n 1) binary/${_INITRAMFS}/initrd${_NUMBER}.img
 
 				if [ "${_NUMBER}" -gt 1 ]
 				then
