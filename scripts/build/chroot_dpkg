@@ -38,8 +38,6 @@ case "${1}" in
 		Chroot chroot dpkg-divert --rename --quiet --add /sbin/start-stop-daemon
 		ln -fs /bin/true chroot/sbin/start-stop-daemon
 
-		chmod 755 chroot/sbin/start-stop-daemon
-
 		# Disable dpkg syncing
 
 cat > chroot/etc/dpkg/dpkg.cfg.d/live-build << EOF
