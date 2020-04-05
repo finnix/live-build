@@ -16,14 +16,7 @@ set -e
 
 # Setting static variables
 DESCRIPTION="Manage /etc/apt/sources.list"
-USAGE="${PROGRAM} {source|binary} [--force]"
-
-_PASS="${1}"
-shift
-
-if [ "${_PASS}" != "binary" ] && [ "${_PASS}" != "source" ]; then
-	Usage
-fi
+USAGE="${PROGRAM} [--force]"
 
 # Processing arguments and configuration files
 Init_config_data "${@}"
@@ -49,7 +42,7 @@ then
 fi
 
 # Configure custom sources.list
-Create_apt_sources_list chroot "${_PASS}"
+Create_apt_sources_list chroot
 
 # Adding local apt sources (chroot)
 for FILE in config/archives/*.list config/archives/*.list.chroot
@@ -61,12 +54,6 @@ do
 		    -e "s|@ARCHIVE_AREAS@|${LB_ARCHIVE_AREAS}|g" \
 		    -e "s|@PARENT_ARCHIVE_AREAS@|${LB_PARENT_ARCHIVE_AREAS}|g" \
 		"${FILE}" > "chroot/etc/apt/sources.list.d/$(basename ${FILE} .chroot)"
-
-		if [ "${_PASS}" != "source" ] && [ "${LB_APT_SOURCE_ARCHIVES}" = "false" ]
-		then
-			# Disable source archives
-			sed -i "s/^deb-src/#deb-src/g" "chroot/etc/apt/sources.list.d/$(basename ${FILE} .chroot)"
-		fi
 	fi
 done
 

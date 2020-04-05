@@ -35,7 +35,7 @@ lb bootstrap_cache save "${@}"
 # Configuring chroot
 lb chroot_prep install all-except-archives "${@}"
 
-lb bootstrap_archives binary "${@}"
+lb bootstrap_archives "${@}"
 
 # Deconfiguring chroot
 lb chroot_prep remove all-except-archives "${@}"
