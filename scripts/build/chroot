@@ -31,8 +31,7 @@ Setup_clean_exit
 lb chroot_cache restore "${@}"
 
 # Configuring chroot
-lb chroot_prep install all "${@}"
-lb chroot_archives chroot install "${@}"
+lb chroot_prep install all mode-archives-chroot "${@}"
 
 # Customizing chroot
 lb chroot_linux-image "${@}"
@@ -56,8 +55,7 @@ lb chroot_interactive "${@}"
 Chroot chroot "dpkg-query -W" > chroot.packages.live
 
 # Deconfiguring chroot
-lb chroot_archives chroot remove "${@}"
-lb chroot_prep remove all "${@}"
+lb chroot_prep remove all mode-archives-chroot "${@}"
 
 # Saving live OS chroot to cache
 lb chroot_cache save "${@}"

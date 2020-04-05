@@ -32,11 +32,10 @@ fi
 # Setting up cleanup function
 Setup_clean_exit
 
-CHROOT_PREP="hosts resolv hostname"
+CHROOT_PREP="hosts resolv hostname archives"
 
 # Configuring chroot (enabling networking)
-lb chroot_prep install "${CHROOT_PREP}" "${@}"
-lb chroot_archives source install "${@}"
+lb chroot_prep install "${CHROOT_PREP}" mode-archives-source "${@}"
 
 # Preparing images
 lb source_live "${@}"
@@ -51,7 +50,6 @@ lb source_tar "${@}"
 lb source_hdd "${@}"
 
 # Deconfiguring chroot
-lb chroot_archives source remove "${@}"
-lb chroot_prep remove "${CHROOT_PREP}" "${@}"
+lb chroot_prep remove "${CHROOT_PREP}" mode-archives-source "${@}"
 
 Echo_message "Source stage completed"

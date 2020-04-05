@@ -33,14 +33,14 @@ lb binary_chroot "${@}"
 # Chroot preparation component lists
 # We deliberately exclude 'debianchroot'
 CHROOT_PREP_MOUNTS="devpts proc selinuxfs sysfs"
-CHROOT_PREP_OTHER="dpkg tmpfs sysv-rc hosts resolv hostname"
+CHROOT_PREP_OTHER="dpkg tmpfs sysv-rc hosts resolv hostname apt"
 
-if [ "${LB_BUILD_WITH_CHROOT}" = "true" ]
-then
+if [ "${LB_BUILD_WITH_CHROOT}" = "true" ]; then
 	# Configuring chroot
+	# FIXME: cannot run in 'all' mode while excluding 'debianchroot', do we really need to exclude it?
+	#lb chroot_prep install all mode-apt-install-binary mode-archives-chroot "${@}"
 	lb chroot_prep install "${CHROOT_PREP_MOUNTS}" "${@}"
-	lb chroot_prep install "${CHROOT_PREP_OTHER}" "${@}"
-	lb chroot_apt install-binary "${@}"
+	lb chroot_prep install "${CHROOT_PREP_OTHER}" mode-apt-install-binary mode-archives-chroot "${@}"
 	lb chroot_archives chroot install "${@}"
 fi
 
@@ -64,8 +64,7 @@ lb binary_grub-efi "${@}"
 lb binary_hooks "${@}"
 lb binary_checksums "${@}"
 
-if [ "${LB_BUILD_WITH_CHROOT}" != "true" ]
-then
+if [ "${LB_BUILD_WITH_CHROOT}" != "true" ]; then
 	lb chroot_prep install "${CHROOT_PREP_MOUNTS}" "${@}"
 fi
 
@@ -78,12 +77,10 @@ lb binary_hdd "${@}"
 
 lb binary_zsync "${@}"
 
-if [ "${LB_BUILD_WITH_CHROOT}" = "true" ]
-then
+if [ "${LB_BUILD_WITH_CHROOT}" = "true" ]; then
 	# Deconfiguring chroot
 	Remove_stagefile chroot_archives
 
-	lb chroot_apt remove "${@}"
 	lb chroot_prep remove "${CHROOT_PREP_OTHER}" "${@}"
 fi
 

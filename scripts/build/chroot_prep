@@ -15,7 +15,7 @@ set -e
 
 # Setting static variables
 DESCRIPTION="Prep chroot"
-USAGE="${PROGRAM} {install|remove} {all|\"HELPERS\"} [--force]"
+USAGE="${PROGRAM} {install|remove} {all|all-except-archives|\"HELPERS\"} [MODE[ MODE..]] [--force]"
 
 # Processing arguments and configuration files
 Init_config_data "${@}"
@@ -37,22 +37,60 @@ if [ -z "${HELPERS}" ]; then
 	exit 1
 fi
 
-if [ "${HELPERS}" = "all" ]; then
-	# Use default set of all helpers (except chroot_archives which cannot be supported due to different parameter needs)
-	HELPERS="devpts proc selinuxfs sysfs debianchroot dpkg tmpfs sysv-rc hosts resolv hostname apt"
-else
-	# Support both comma and space separation
-	# Support with and without 'chroot_' script filename prefix
-	HELPERS="$(echo "${HELPERS}" | sed -e 's|,| |g' -e 's|^chroot_||g')"
-fi
+ARCHIVES_PASS=""
+APT_ACTION="${ACTION}"
+
+MODES="mode-archives-chroot \
+       mode-archives-binary \
+       mode-archives-source \
+       mode-apt-install-binary"
+
+while In_list "${1}" $MODES; do
+	case "${1}" in
+		mode-archives-chroot)
+			ARCHIVES_PASS="chroot"
+			;;
+		mode-archives-binary)
+			ARCHIVES_PASS="binary"
+			;;
+		mode-archives-source)
+			ARCHIVES_PASS="source"
+			;;
+		mode-apt-install-binary)
+			APT_ACTION="install-binary"
+			;;
+		*)
+			Echo_error "Internal failure, case not covered"
+			exit 1
+			;;
+	esac
+	shift
+done
+
+# Default set, EXCLUDING 'archives'
+DEFAULT_HELPERS="devpts proc selinuxfs sysfs debianchroot dpkg tmpfs sysv-rc hosts resolv hostname apt"
+
+case "${HELPERS}" in
+	all)
+		HELPERS="${DEFAULT_HELPERS} archives"
+		;;
+	all-except-archives)
+		HELPERS="${DEFAULT_HELPERS}"
+		;;
+	*)
+		# Support both comma and space separation
+		# Support with and without 'chroot_' script filename prefix
+		HELPERS="$(echo "${HELPERS}" | sed -e 's|,| |g' -e 's|^chroot_||g')"
+		;;
+esac
 
 if In_list "prep" ${HELPERS}; then
 	Echo_error "Recursive!"
 	exit 1
 fi
 
-if In_list "archives" ${HELPERS}; then
-	Echo_error "The chroot_archives helper cannot be used through chroot_prep!"
+if In_list "archives" ${HELPERS} && [ -z "${ARCHIVES_PASS}" ]; then
+	Echo_error "Use of the archives component through chroot_prep requires specifying a mode-archives-* mode"
 	exit 1
 fi
 
@@ -65,5 +103,15 @@ if [ "${_ACTION}" = "remove" ]; then
 fi
 
 for HELPER in $HELPERS; do
-	lb "chroot_${HELPER}" "${ACTION}" "${@}"
+	case "${HELPER}" in
+		archives)
+			lb "chroot_${HELPER}" "${ARCHIVES_PASS}" "${ACTION}" "${@}"
+			;;
+		apt)
+			lb "chroot_${HELPER}" "${APT_ACTION}" "${@}"
+			;;
+		*)
+			lb "chroot_${HELPER}" "${ACTION}" "${@}"
+			;;
+	esac
 done

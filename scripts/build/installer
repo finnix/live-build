@@ -29,8 +29,7 @@ Setup_clean_exit
 
 if [ "${LB_BUILD_WITH_CHROOT}" = "true" ]; then
 	# Configuring chroot
-	lb chroot_prep install all "${@}"
-	lb chroot_archives chroot install "${@}"
+	lb chroot_prep install all mode-archives-chroot "${@}"
 fi
 
 # Building installer
@@ -39,8 +38,7 @@ lb installer_preseed "${@}"
 
 if [ "${LB_BUILD_WITH_CHROOT}" = "true" ]; then
 	# Deconfiguring chroot
-	lb chroot_archives chroot remove "${@}"
-	lb chroot_prep remove all "${@}"
+	lb chroot_prep remove all mode-archives-chroot "${@}"
 fi
 
 Echo_message "Installer stage completed"
