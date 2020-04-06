@@ -42,7 +42,7 @@ Check_stagefile
 Acquire_lockfile
 
 # Remove old binary
-rm -f ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar.gz ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar.bz2 ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar.xz ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar.xz
+rm -f ${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar ${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar.gz ${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar.bz2 ${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar.xz ${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar.xz
 
 # Creating image file
 ROOT_DIR=${LB_MODE}-live
@@ -57,23 +57,23 @@ cd binary.tmp
 mkdir tftpboot/live
 mv */live/vmlinuz* */live/initrd* tftpboot/live
 
-tar cf ../${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar *
+tar cf ../${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar *
 
 case "${LB_COMPRESSION}" in
 	bzip2)
-		bzip2 ${BZIP2_OPTIONS} ../${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar
+		bzip2 ${BZIP2_OPTIONS} ../${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar
 		;;
 
 	gzip)
-		gzip ${GZIP_OPTIONS} ../${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar
+		gzip ${GZIP_OPTIONS} ../${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar
 		;;
 
 	lzip)
-		lzip ${LZIP_OPTIONS} ../${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar
+		lzip ${LZIP_OPTIONS} ../${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar
 		;;
 
 	xz)
-		xz ${XZ_OPTIONS} ../${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar
+		xz ${XZ_OPTIONS} ../${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.netboot.tar
 		;;
 
 	none)

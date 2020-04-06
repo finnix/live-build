@@ -79,7 +79,7 @@ EOF
 
 	# File list
 	cd ${DIRECTORY}
-	find . | sed -e 's|^.||g' | grep "^/" | sort > ../../${LIVE_IMAGE_NAME}-source.$(basename ${DIRECTORY}).contents
+	find . | sed -e 's|^.||g' | grep "^/" | sort > ../../${LB_IMAGE_NAME}-source.$(basename ${DIRECTORY}).contents
 	cd "${OLDPWD}"
 done
 

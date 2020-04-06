@@ -29,10 +29,10 @@ fi
 
 case "${LIVE_IMAGE_TYPE}" in
 	iso)
-		IMAGE="${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.iso"
+		IMAGE="${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.iso"
 		;;
 	iso-hybrid)
-		IMAGE="${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.hybrid.iso"
+		IMAGE="${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.hybrid.iso"
 		;;
 	*)
 		exit 0

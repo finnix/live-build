@@ -85,9 +85,9 @@ Restore_package_cache binary
 Install_package
 
 # Remove old binary
-if [ -f ${LIVE_IMAGE_NAME}.img ]
+if [ -f ${LB_IMAGE_NAME}.img ]
 then
-	rm -f ${LIVE_IMAGE_NAME}.img
+	rm -f ${LB_IMAGE_NAME}.img
 fi
 
 case "${LB_BINARY_FILESYSTEM}" in
@@ -344,7 +344,7 @@ if $MAKEDEV; then
 	mv chroot/dev.tmp chroot/dev
 fi
 
-mv chroot/binary.img ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURE}.img
+mv chroot/binary.img ${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.img
 
 # Saving cache
 Save_package_cache binary

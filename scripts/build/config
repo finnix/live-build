@@ -553,7 +553,7 @@ Local_arguments ()
 				;;
 
 			--image-name)
-				LIVE_IMAGE_NAME="${2}"
+				LB_IMAGE_NAME="${2}"
 				shift 2
 				;;
 
@@ -1030,8 +1030,8 @@ LB_MODE="${LB_MODE}"
 # \$LB_SYSTEM: set system type
 LB_SYSTEM="${LB_SYSTEM}"
 
-# \$LIVE_IMAGE_NAME: set base name of the image
-LIVE_IMAGE_NAME="${LIVE_IMAGE_NAME}"
+# \$LB_IMAGE_NAME: set base name of the image
+LB_IMAGE_NAME="${LB_IMAGE_NAME}"
 
 # \$APT_OPTIONS: set options to use with apt
 APT_OPTIONS="${APT_OPTIONS}"

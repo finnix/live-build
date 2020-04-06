@@ -53,9 +53,9 @@ Check_package chroot /usr/bin/xorriso xorriso
 Install_package
 
 # Remove old iso image
-if [ -f ${LIVE_IMAGE_NAME}-source.iso ]
+if [ -f ${LB_IMAGE_NAME}-source.iso ]
 then
-	rm -f ${LIVE_IMAGE_NAME}-source.iso
+	rm -f ${LB_IMAGE_NAME}-source.iso
 fi
 
 # Handle xorriso generic options
@@ -107,7 +107,7 @@ Chroot chroot "sh source.sh"
 
 # Move image
 mv chroot/source ./
-mv chroot/source.iso ${LIVE_IMAGE_NAME}-source.iso
+mv chroot/source.iso ${LB_IMAGE_NAME}-source.iso
 rm -f chroot/source.sh
 
 # Removing depends

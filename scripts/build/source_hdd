@@ -51,15 +51,15 @@ Check_package host /sbin/losetup mount
 Install_package
 
 # Remove old source
-if [ -f ${LIVE_IMAGE_NAME}-source.img ]
+if [ -f ${LB_IMAGE_NAME}-source.img ]
 then
-	rm -f ${LIVE_IMAGE_NAME}-source.img
+	rm -f ${LB_IMAGE_NAME}-source.img
 fi
 
 # Everything which comes here needs to be cleaned up,
 DU_DIM="$(du -ms source | cut -f1)"
 REAL_DIM="$(Calculate_partition_size ${DU_DIM} ${LB_BINARY_FILESYSTEM})"
-dd if=/dev/zero of=${LIVE_IMAGE_NAME}-source.img bs=1024k count=0 seek=${REAL_DIM}
+dd if=/dev/zero of=${LB_IMAGE_NAME}-source.img bs=1024k count=0 seek=${REAL_DIM}
 MAKEDEV=false
 FREELO="$(losetup -f)"
 if [ ! -b chroot/${FREELO} ]
@@ -90,12 +90,12 @@ case "${LB_BINARY_FILESYSTEM}" in
 esac
 
 Echo_warning "!!! The following error/warning messages can be ignored !!!"
-Losetup $FREELO ${LIVE_IMAGE_NAME}-source.img 0
+Losetup $FREELO ${LB_IMAGE_NAME}-source.img 0
 Chroot chroot "parted -s ${FREELO} mklabel msdos" || true
 Chroot chroot "parted -a optimal -s ${FREELO} mkpart primary ${PARTITION_TYPE} 0.0 100%" || true
 Lodetach ${FREELO}
 
-Losetup $FREELO ${LIVE_IMAGE_NAME}-source.img 1
+Losetup $FREELO ${LB_IMAGE_NAME}-source.img 1
 
 case "${LB_BINARY_FILESYSTEM}" in
 	ext2|ext3|ext4)
@@ -134,7 +134,7 @@ Lodetach ${FREELO}
 Echo_warning "!!! The above error/warning messages can be ignored !!!"
 
 FREELO="$(losetup -f)"
-Losetup "$FREELO" ${LIVE_IMAGE_NAME}-source.img 0
+Losetup "$FREELO" ${LB_IMAGE_NAME}-source.img 0
 Chroot chroot "parted -s ${FREELO} set 1 lba off" || true
 Lodetach ${FREELO}
 
