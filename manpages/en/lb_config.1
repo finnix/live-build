@@ -1,4 +1,4 @@
-.TH LIVE\-BUILD 1 2020\-03\-30 1:20191222 "Debian Live Project"
+.TH LIVE\-BUILD 1 2020\-04\-06 1:20191222 "Debian Live Project"
 
 .SH NAME
 \fBlb_config\fR \- Create config directory
@@ -225,7 +225,7 @@
 .PP
 \fBlb config\fR populates the configuration directory for live\-build. This directory is named 'config' and is created in the current directory where \fBlb config\fR was executed.
 .PP
-Note: \fBlb config\fR tries to be smart and sets defaults for some options depending upon the settings of others. However, this only typically happens when no existing saved config exists, because values are only automatically set when not already defined (and running \fBlb config\fR involves loading any existing config). This means that when generating a new configuration, you should typically first ensure that any existing saved config files are removed (by deletion of \fBconfig/{binary,build,bootstrap,chroot,common,source}\fR), before then calling \fBlb config\fR just once with \fBall\fR necessary options specified. Calling it when an existing saved config exists risks ending up with a non\-working configuration, depending on the options changed, since in doing so other options may end up with different values than they otherwise might have had had automatic setting of them not been blocked by an existing saved value. In some cases invalid combinations will be noticed and reported as an error or warning, but this is not always the case and should not be relied upon.
+Note: \fBlb config\fR tries to be smart and sets defaults for some options depending upon the settings of others. However, this only typically happens when no existing saved config exists, because values are only automatically set when not already defined (and running \fBlb config\fR involves loading any existing config). This means that when generating a new configuration, you should typically first ensure that any existing saved config files are removed (by deletion of \fBconfig/{binary,bootstrap,chroot,common,source}\fR), before then calling \fBlb config\fR just once with \fBall\fR necessary options specified. Calling it when an existing saved config exists risks ending up with a non\-working configuration, depending on the options changed, since in doing so other options may end up with different values than they otherwise might have had had automatic setting of them not been blocked by an existing saved value. In some cases invalid combinations will be noticed and reported as an error or warning, but this is not always the case and should not be relied upon.
 
 .SH OPTIONS
 In addition to its specific options \fBlb config\fR understands all generic live\-build options. See \fIlive\-build\fR(7) for a complete list of all generic live\-build options.

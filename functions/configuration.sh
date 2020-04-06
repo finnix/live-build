@@ -9,69 +9,9 @@
 ## under certain conditions; see COPYING for details.
 
 
-New_configuration ()
-{
-	## Runtime
-
-	if [ $(which dpkg) ]
-	then
-		CURRENT_IMAGE_ARCHITECTURE="$(dpkg --print-architecture)"
-	else
-		case "$(uname -m)" in
-			x86_64)
-				CURRENT_IMAGE_ARCHITECTURE="amd64"
-				;;
-
-			i?86)
-				CURRENT_IMAGE_ARCHITECTURE="i386"
-				;;
-
-			*)
-				Echo_warning "Unable to determine current architecture, using ${CURRENT_IMAGE_ARCHITECTURE}"
-				;;
-		esac
-	fi
-
-	## Configuration
-
-	LIVE_CONFIGURATION_VERSION="${LIVE_CONFIGURATION_VERSION:-$(Get_configuration config/build Configuration-Version)}"
-	LIVE_CONFIGURATION_VERSION="${LIVE_CONFIGURATION_VERSION:-${LIVE_BUILD_VERSION}}"
-	export LIVE_CONFIGURATION_VERSION
-
-	LIVE_IMAGE_NAME="${LIVE_IMAGE_NAME:-$(Get_configuration config/build Name)}"
-	LIVE_IMAGE_NAME="${LIVE_IMAGE_NAME:-live-image}"
-	export LIVE_IMAGE_NAME
-
-	# (FIXME: Support and default to 'any')
-	LB_ARCHITECTURE="${LB_ARCHITECTURE:-$(Get_configuration config/build Architecture)}"
-	LB_ARCHITECTURE="${LB_ARCHITECTURE:-${CURRENT_IMAGE_ARCHITECTURE}}"
-	export LB_ARCHITECTURE
-
-	# For backwards compat with custom hooks and conditional includes
-	LB_ARCHITECTURES=${LB_ARCHITECTURE}
-	export LB_ARCHITECTURES
-
-	LB_ARCHIVE_AREAS="${LB_ARCHIVE_AREAS:-$(Get_configuration config/build Archive-Areas)}"
-	LB_ARCHIVE_AREAS="${LB_ARCHIVE_AREAS:-main}"
-	LB_ARCHIVE_AREAS="$(echo "${LB_ARCHIVE_AREAS}" | tr "," " ")"
-	export LB_ARCHIVE_AREAS
-
-	LB_PARENT_ARCHIVE_AREAS="${LB_PARENT_ARCHIVE_AREAS:-$(Get_configuration config/build Parent-Archive-Areas)}"
-	LB_PARENT_ARCHIVE_AREAS="${LB_PARENT_ARCHIVE_AREAS:-${LB_ARCHIVE_AREAS}}"
-	LB_PARENT_ARCHIVE_AREAS="$(echo "${LB_PARENT_ARCHIVE_AREAS}" | tr "," " ")"
-	export LB_PARENT_ARCHIVE_AREAS
-
-	LIVE_IMAGE_TYPE="${LIVE_IMAGE_TYPE:-$(Get_configuration config/build Type)}"
-	LIVE_IMAGE_TYPE="${LIVE_IMAGE_TYPE:-iso-hybrid}"
-	export LIVE_IMAGE_TYPE
-}
-
 # Prepare config for use, filling in defaults where no value provided for instance
 Prepare_config ()
 {
-	# FIXME
-	New_configuration
-
 	# Colouring is re-evaluated here just incase a hard coded override was given in the saved config
 	case "${_COLOR}" in
 		true)
@@ -90,6 +30,8 @@ Prepare_config ()
 	_FORCE="${_FORCE:-false}"
 	_QUIET="${_QUIET:-false}"
 	_VERBOSE="${_VERBOSE:-false}"
+
+	LIVE_CONFIGURATION_VERSION="${LIVE_CONFIGURATION_VERSION:-${LIVE_BUILD_VERSION}}"
 
 	LB_SYSTEM="${LB_SYSTEM:-live}"
 
@@ -115,6 +57,37 @@ Prepare_config ()
 	LB_DISTRIBUTION="${LB_DISTRIBUTION:-buster}"
 	LB_DISTRIBUTION_CHROOT="${LB_DISTRIBUTION_CHROOT:-${LB_DISTRIBUTION}}"
 	LB_DISTRIBUTION_BINARY="${LB_DISTRIBUTION_BINARY:-${LB_DISTRIBUTION_CHROOT}}"
+
+	LIVE_IMAGE_NAME="${LIVE_IMAGE_NAME:-live-image}"
+	LIVE_IMAGE_TYPE="${LIVE_IMAGE_TYPE:-iso-hybrid}"
+
+	if [ -z "${LB_ARCHITECTURE}" ]; then
+		if [ $(which dpkg) ]; then
+			LB_ARCHITECTURE="$(dpkg --print-architecture)"
+		else
+			case "$(uname -m)" in
+				x86_64)
+					LB_ARCHITECTURE="amd64"
+					;;
+
+				i?86)
+					LB_ARCHITECTURE="i386"
+					;;
+
+				*)
+					Echo_error "Unable to determine current architecture"
+					exit 1
+					;;
+			esac
+		fi
+	fi
+	# For backwards compat with custom hooks and conditional includes
+	LB_ARCHITECTURES="${LB_ARCHITECTURE}"
+
+	LB_ARCHIVE_AREAS="${LB_ARCHIVE_AREAS:-main}"
+	LB_PARENT_ARCHIVE_AREAS="${LB_PARENT_ARCHIVE_AREAS:-${LB_ARCHIVE_AREAS}}"
+	LB_ARCHIVE_AREAS="$(echo "${LB_ARCHIVE_AREAS}" | tr "," " ")"
+	LB_PARENT_ARCHIVE_AREAS="$(echo "${LB_PARENT_ARCHIVE_AREAS}" | tr "," " ")"
 
 	LB_BACKPORTS="${LB_BACKPORTS:-false}"
 	if [ -n "$LB_PARENT_DISTRIBUTION" ]; then
@@ -741,35 +714,5 @@ Validate_config_dependencies ()
 	if [ "${LIVE_IMAGE_TYPE}" = "hdd" ] && [ "${LB_FIRST_BOOTLOADER}" = "grub-legacy" ]; then
 		Echo_error "You have selected a combination of bootloader and image type that is currently not supported by live-build. Please use either another bootloader or a different image type."
 		exit 1
-	fi
-}
-
-Get_configuration ()
-{
-	local CONFIGURATION_FILE="${1}"
-	local FIELD_NAME="${2}"
-	local FIELD_BODY
-
-	if [ -e "${CONFIGURATION_FILE}" ]
-	then
-		FIELD_BODY="$(grep ^${FIELD_NAME}: ${CONFIGURATION_FILE} | awk '{ $1=""; print $0 }' | sed -e 's|^ ||')"
-	fi
-
-	echo ${FIELD_BODY}
-}
-
-Set_configuration ()
-{
-	local CONFIGURATION_FILE="${1}"
-	local FIELD_NAME="${2}"
-	local FIELD_BODY="${3}"
-
-	if grep -qs "^${FIELD_NAME}:" "${CONFIGURATION_FILE}"
-	then
-		# Update configuration
-		sed -i -e "s|^${FIELD_NAME}:.*$|${FIELD_NAME}: ${FIELD_BODY}|" "${CONFIGURATION_FILE}"
-	else
-		# Append configuration
-		echo "${FIELD_NAME}: ${FIELD_BODY}" >> "${CONFIGURATION_FILE}"
 	fi
 }
