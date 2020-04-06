@@ -1033,6 +1033,21 @@ LB_SYSTEM="${LB_SYSTEM}"
 # \$LIVE_IMAGE_NAME: set base name of the image
 LIVE_IMAGE_NAME="${LIVE_IMAGE_NAME}"
 
+# \$APT_OPTIONS: set options to use with apt
+APT_OPTIONS="${APT_OPTIONS}"
+
+# \$APTITUDE_OPTIONS: set options to use with aptitude
+APTITUDE_OPTIONS="${APTITUDE_OPTIONS}"
+
+# \$DEBOOTSTRAP_OPTIONS: set options to use with debootstrap
+DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS}"
+
+# \$DEBOOTSTRAP_SCRIPT: set script to use with debootstrap
+DEBOOTSTRAP_SCRIPT="${DEBOOTSTRAP_SCRIPT}"
+
+# \$GZIP_OPTIONS: set options to use with gzip
+GZIP_OPTIONS="${GZIP_OPTIONS}"
+
 # live-build options
 
 # \$_BREAKPOINTS: enable breakpoints
@@ -1058,13 +1073,6 @@ LIVE_IMAGE_NAME="${LIVE_IMAGE_NAME}"
 # \$_VERBOSE: enable verbose
 # If set here, overrides the command line option
 #_VERBOSE="${_VERBOSE}"
-
-# Internal stuff (FIXME)
-APT_OPTIONS="${APT_OPTIONS}"
-APTITUDE_OPTIONS="${APTITUDE_OPTIONS}"
-DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS}"
-DEBOOTSTRAP_SCRIPT="${DEBOOTSTRAP_SCRIPT}"
-GZIP_OPTIONS="${GZIP_OPTIONS}"
 EOF
 
 # Creating lb_bootstrap_* configuration
