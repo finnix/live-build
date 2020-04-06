@@ -86,9 +86,9 @@ Restore_package_cache binary
 Install_package
 
 # Remove old binary
-if [ -f ${LIVE_iMAGE_NAME}.img ]
+if [ -f ${LIVE_IMAGE_NAME}.img ]
 then
-	rm -f ${LIVE_iMAGE_NAME}.img
+	rm -f ${LIVE_IMAGE_NAME}.img
 fi
 
 case "${LB_BINARY_FILESYSTEM}" in
