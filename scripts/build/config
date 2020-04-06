@@ -378,7 +378,7 @@ Local_arguments ()
 				;;
 
 			-b|--binary-image|--binary-images)
-				LIVE_IMAGE_TYPE="${2}"
+				LB_IMAGE_TYPE="${2}"
 				shift 2
 				;;
 
@@ -1205,8 +1205,8 @@ mkdir -p config/bootloaders
 cat > config/binary << EOF
 # config/binary - options for live-build(7), binary stage
 
-# \$LIVE_IMAGE_TYPE: set image type
-LIVE_IMAGE_TYPE="${LIVE_IMAGE_TYPE}"
+# \$LB_IMAGE_TYPE: set image type
+LB_IMAGE_TYPE="${LB_IMAGE_TYPE}"
 
 # \$LB_BINARY_FILESYSTEM: set image filesystem
 LB_BINARY_FILESYSTEM="${LB_BINARY_FILESYSTEM}"

@@ -21,7 +21,7 @@ USAGE="${PROGRAM} [--force]"
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
-if In_list "${LIVE_IMAGE_TYPE}" hdd netboot; then
+if In_list "${LB_IMAGE_TYPE}" hdd netboot; then
 	exit 0
 fi
 
@@ -200,7 +200,7 @@ fi
 mkdir -p binary/boot/grub
 cp -r "${_SOURCE}"/* binary/boot/grub
 
-case ${LIVE_IMAGE_TYPE} in
+case ${LB_IMAGE_TYPE} in
 	iso|iso-hybrid)
 		FILES="chroot/usr/lib/grub/*/stage2_eltorito"
 		;;

@@ -32,7 +32,7 @@ Check_stagefile
 # Acquire lock file
 Acquire_lockfile
 
-case "${LIVE_IMAGE_TYPE}" in
+case "${LB_IMAGE_TYPE}" in
 	netboot)
 		if [ ! -f chroot/sbin/mount.cifs ]
 		then

@@ -60,8 +60,10 @@ Prepare_config ()
 	LB_DISTRIBUTION_BINARY="${LB_DISTRIBUTION_BINARY:-${LB_DISTRIBUTION_CHROOT}}"
 
 	LB_IMAGE_NAME="${LB_IMAGE_NAME:-live-image}"
-	LIVE_IMAGE_NAME="${LB_IMAGE_NAME}" #for backwards compatibility with hooks
-	LIVE_IMAGE_TYPE="${LIVE_IMAGE_TYPE:-iso-hybrid}"
+	LB_IMAGE_TYPE="${LB_IMAGE_TYPE:-iso-hybrid}"
+	#for backwards compatibility with hooks
+	LIVE_IMAGE_NAME="${LB_IMAGE_NAME}"
+	LIVE_IMAGE_TYPE="${LB_IMAGE_TYPE}"
 
 	if [ -z "${LB_ARCHITECTURE}" ]; then
 		if [ $(which dpkg) ]; then
@@ -283,11 +285,11 @@ Prepare_config ()
 
 	case "${LB_ARCHITECTURE}" in
 		amd64|i386)
-			LIVE_IMAGE_TYPE="${LIVE_IMAGE_TYPE:-iso-hybrid}"
+			LB_IMAGE_TYPE="${LB_IMAGE_TYPE:-iso-hybrid}"
 			;;
 
 		*)
-			LIVE_IMAGE_TYPE="${LIVE_IMAGE_TYPE:-iso}"
+			LB_IMAGE_TYPE="${LB_IMAGE_TYPE:-iso}"
 			;;
 	esac
 
@@ -295,7 +297,7 @@ Prepare_config ()
 	then
 		case "${LB_ARCHITECTURE}" in
 			amd64|i386)
-				case "${LIVE_IMAGE_TYPE}" in
+				case "${LB_IMAGE_TYPE}" in
 					hdd|netboot)
 						LB_BOOTLOADERS="syslinux"
 						;;
@@ -363,7 +365,7 @@ Prepare_config ()
 	local _LB_BOOTAPPEND_PRESEED
 	if [ -n "${LB_DEBIAN_INSTALLER_PRESEEDFILE}" ]
 	then
-		case "${LIVE_IMAGE_TYPE}" in
+		case "${LB_IMAGE_TYPE}" in
 			iso|iso-hybrid)
 				_LB_BOOTAPPEND_PRESEED="file=/cdrom/install/${LB_DEBIAN_INSTALLER_PRESEEDFILE}"
 				;;
@@ -567,7 +569,7 @@ Validate_config_permitted_values ()
 		exit 1
 	fi
 
-	if ! In_list "${LIVE_IMAGE_TYPE}" iso iso-hybrid hdd tar netboot; then
+	if ! In_list "${LB_IMAGE_TYPE}" iso iso-hybrid hdd tar netboot; then
 		Echo_error "You have specified an invalid value for --binary-image."
 		exit 1
 	fi
@@ -707,13 +709,13 @@ Validate_config_dependencies ()
 	fi
 
 	if In_list "grub-pc" ${LB_BOOTLOADERS} || In_list "grub-efi" ${LB_BOOTLOADERS} || In_list "grub-legacy" ${LB_BOOTLOADERS}; then
-		if In_list "${LIVE_IMAGE_TYPE}" hdd netboot; then
+		if In_list "${LB_IMAGE_TYPE}" hdd netboot; then
 			Echo_error "You have selected an invalid combination of bootloaders and live image type; the grub-* bootloaders are not compatible with hdd and netboot types."
 			exit 1
 		fi
 	fi
 
-	if [ "${LIVE_IMAGE_TYPE}" = "hdd" ] && [ "${LB_FIRST_BOOTLOADER}" = "grub-legacy" ]; then
+	if [ "${LB_IMAGE_TYPE}" = "hdd" ] && [ "${LB_FIRST_BOOTLOADER}" = "grub-legacy" ]; then
 		Echo_error "You have selected a combination of bootloader and image type that is currently not supported by live-build. Please use either another bootloader or a different image type."
 		exit 1
 	fi

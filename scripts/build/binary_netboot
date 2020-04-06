@@ -21,7 +21,7 @@ USAGE="${PROGRAM} [--force]"
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
-if [ "${LIVE_IMAGE_TYPE}" != "netboot" ]; then
+if [ "${LB_IMAGE_TYPE}" != "netboot" ]; then
 	exit 0
 fi
 

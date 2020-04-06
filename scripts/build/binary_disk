@@ -21,7 +21,7 @@ USAGE="${PROGRAM} [--force]"
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
-if ! In_list "${LIVE_IMAGE_TYPE}" iso iso-hybrid hdd; then
+if ! In_list "${LB_IMAGE_TYPE}" iso iso-hybrid hdd; then
 	exit 0
 fi
 

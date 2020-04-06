@@ -21,7 +21,7 @@ USAGE="${PROGRAM} [--force]"
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
-case "${LIVE_IMAGE_TYPE}" in
+case "${LB_IMAGE_TYPE}" in
 	iso)
 		IMAGE="${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.iso"
 		;;
@@ -66,7 +66,7 @@ fi
 XORRISO_OPTIONS="-R -r -J -joliet-long -l -cache-inodes -iso-level 3"
 
 # Handle xorriso live-build specific options
-if [ "${LIVE_IMAGE_TYPE}" = "iso-hybrid" ]
+if [ "${LB_IMAGE_TYPE}" = "iso-hybrid" ]
 then
 	XORRISO_OPTIONS="${XORRISO_OPTIONS} -isohybrid-mbr /usr/lib/ISOLINUX/isohdpfx.bin -partition_offset 16"
 fi

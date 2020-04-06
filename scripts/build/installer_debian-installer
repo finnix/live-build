@@ -60,7 +60,7 @@ else
 fi
 
 # Setting destination directory
-case "${LIVE_IMAGE_TYPE}" in
+case "${LB_IMAGE_TYPE}" in
 	netboot)
 		DESTDIR="tftpboot/debian-install/${LB_ARCHITECTURE}"
 		;;
@@ -76,7 +76,7 @@ case "${LB_DEBIAN_INSTALLER}" in
 		DI_IMAGE_TYPE="netboot"
 		;;
 	*)
-		case "${LIVE_IMAGE_TYPE}" in
+		case "${LB_IMAGE_TYPE}" in
 			netboot)
 				DI_IMAGE_TYPE="netboot"
 				;;
@@ -734,7 +734,7 @@ EOF
 		DISTRIBUTIONS="${DISTRIBUTIONS} ${LB_PARENT_DISTRIBUTION_BINARY}"
 	fi
 
-	case "${LIVE_IMAGE_TYPE}" in
+	case "${LB_IMAGE_TYPE}" in
 		hdd)
 			case "${LB_BINARY_FILESYSTEM}" in
 				fat*|ntfs)
