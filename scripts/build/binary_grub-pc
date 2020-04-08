@@ -74,6 +74,40 @@ fi
 # Copying grub
 cp ${FILES} binary/boot/grub/i386-pc
 
+# Create eltorito image for ISO cases
+if [ "${LIVE_IMAGE_TYPE}" = "iso" ] || [ "${LIVE_IMAGE_TYPE}" = "iso-hybrid" ]; then
+
+	cat > binary.sh << EOF
+#!/bin/sh
+
+INPUT_DIR="/usr/lib/grub/i386-pc"
+
+# build core.img
+CORE_IMG=\$(mktemp)
+grub-mkimage -d \${INPUT_DIR} -o \${CORE_IMG} -O i386-pc --prefix=/boot/grub biosdisk iso9660
+
+# build grub_eltorito image
+cat \${INPUT_DIR}/cdboot.img \${CORE_IMG} > grub_eltorito
+
+rm -f \${CORE_IMG}
+EOF
+
+	case "${LB_BUILD_WITH_CHROOT}" in
+		true)
+			mv binary.sh chroot
+			Chroot chroot "sh binary.sh"
+			mv chroot/grub_eltorito binary/boot/grub/grub_eltorito
+			rm -f chroot/binary.sh
+			;;
+
+		false)
+			sh binary.sh
+			mv grub_eltorito binary/boot/grub/grub_eltorito
+			rm -f binary.sh
+			;;
+	esac
+fi
+
 # Saving cache
 Save_package_cache binary
 
