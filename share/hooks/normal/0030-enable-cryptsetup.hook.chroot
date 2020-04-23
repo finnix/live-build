@@ -10,12 +10,12 @@ then
 	then
 		mkdir -p /etc/initramfs-tools/conf.d
 
-cat > /etc/initramfs-tools/conf.d/cryptsetup << EOF
-# /etc/initramfs-tools/conf.d/cryptsetup
+		cat > /etc/initramfs-tools/conf.d/cryptsetup <<-EOF
+		# /etc/initramfs-tools/conf.d/cryptsetup
 
-CRYPTSETUP=yes
-export CRYPTSETUP
-EOF
+		CRYPTSETUP=yes
+		export CRYPTSETUP
+		EOF
 
 	fi
 fi
