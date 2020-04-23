@@ -25,14 +25,7 @@ Auto_build_config ()
 
 Init_config_data ()
 {
-	# Here we ignore the consumption of option arguments, we would have to return REMAINING_ARGS
-	# for use in a `set -- $REMAINING_ARGS` (or `eval set -- "$REMAINING_ARGS"`) if we wanted to
-	# remove them from the set of args for calling scripts to make use of, in which case we might
-	# as well just move use of the function out of here. Note that currently scripts taking args
-	# like `$_PASS` do so as the first arg to the script, thus then just ignore any following
-	# option args (and capture them before arg processing takes place).
 	Arguments "${@}"
-	unset REMAINING_ARGS
 
 	Read_conffiles $(Common_config_files)
 	Prepare_config
