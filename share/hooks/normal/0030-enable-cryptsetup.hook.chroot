@@ -18,4 +18,13 @@ then
 		EOF
 
 	fi
+
+	if [ -e /etc/cryptsetup-initramfs/conf-hook ]; then
+		if grep -q '^#CRYPTSETUP=' /etc/cryptsetup-initramfs/conf-hook; then
+			sed -i -e 's/^#CRYPTSETUP=.*/CRYPTSETUP=y/' \
+			    /etc/cryptsetup-initramfs/conf-hook
+		else
+			echo "CRYPTSETUP=y" >>/etc/cryptsetup-initramfs/conf-hook
+		fi
+	fi
 fi
