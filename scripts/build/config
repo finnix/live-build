@@ -707,7 +707,7 @@ Local_arguments ()
 				;;
 
 			--net-root-path)
-				LB_NET_ROOT_PATH="${2}"
+				Echo_warning "--net-root-path is an obsolete option"
 				shift 2
 				;;
 
@@ -1264,9 +1264,6 @@ LB_LOADLIN="${LB_LOADLIN}"
 
 # \$LB_WIN32_LOADER: set win32-loader
 LB_WIN32_LOADER="${LB_WIN32_LOADER}"
-
-# \$LB_NET_ROOT_PATH: set netboot server directory
-LB_NET_ROOT_PATH="${LB_NET_ROOT_PATH}"
 
 # \$LB_NET_TARBALL: set net tarball
 LB_NET_TARBALL="${LB_NET_TARBALL}"

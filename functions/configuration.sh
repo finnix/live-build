@@ -469,7 +469,6 @@ Prepare_config ()
 			;;
 	esac
 
-	LB_NET_ROOT_PATH="${LB_NET_ROOT_PATH:-/srv/${LB_MODE}-live}"
 	LB_NET_TARBALL="${LB_NET_TARBALL:-true}"
 
 	LB_ONIE="${LB_ONIE:-false}"

@@ -45,17 +45,9 @@ Acquire_lockfile
 rm -f ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.netboot.tar ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.netboot.tar.gz ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.netboot.tar.bz2 ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.netboot.tar.xz ${LIVE_IMAGE_NAME}-${LB_ARCHITECTURES}.netboot.tar.xz
 
 # Creating image file
-ROOT_DIR=$(basename ${LB_NET_ROOT_PATH})
+ROOT_DIR=${LB_MODE}-live
 
-if [ "${ROOT_DIR}" = "chroot" ]
-then
-	mv chroot chroot.tmp
-fi
-
-if [ "${ROOT_DIR}" != "binary" ]
-then
-	mv binary ${ROOT_DIR}
-fi
+mv binary ${ROOT_DIR}
 
 mkdir binary.tmp
 mv ${ROOT_DIR} tftpboot binary.tmp
@@ -92,15 +84,7 @@ mv * ../
 cd "${OLDPWD}"
 rmdir binary.tmp
 
-if [ "${ROOT_DIR}" != "binary" ]
-then
-	mv ${ROOT_DIR} binary
-fi
-
-if [ "${ROOT_DIR}" = "chroot" ]
-then
-	mv chroot.tmp chroot
-fi
+mv ${ROOT_DIR} binary
 
 # Creating stage file
 Create_stagefile
