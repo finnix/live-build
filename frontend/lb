@@ -40,9 +40,6 @@ elif [ -x "local/live-build/scripts/build/${COMMAND}" ]; then
 elif [ -x /usr/lib/live/build/${COMMAND} ]; then
 	# User has live-build installed in the system
 	SCRIPT=/usr/lib/live/build/"${COMMAND}"
-elif [ $(which "${COMMAND}") ]; then
-	# User has live-build commands in path
-	SCRIPT="${COMMAND}"
 else
 	Echo_error "Unknown command: ${COMMAND}"
 	exit 1
