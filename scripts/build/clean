@@ -144,7 +144,7 @@ do
 			;;
 
 		-u|--usage)
-			Usage 0
+			Usage --exit
 			;;
 
 		-v|--version)
@@ -153,7 +153,7 @@ do
 			;;
 
 		*)
-			Usage 1
+			Usage --fail
 			;;
 	esac
 done

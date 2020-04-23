@@ -11,10 +11,6 @@
 
 Usage ()
 {
-	if [ -z "${1}" ]; then
-		Echo_error "Usage() requires an exit code"
-	fi
-
 	echo "${PROGRAM_NAME} - ${DESCRIPTION}"
 	printf "\nUsage:\n\n"
 
@@ -29,5 +25,18 @@ Usage ()
 	echo
 	echo "Try \"${PROGRAM} --help\" for more information."
 
-	exit $1
+	case $1 in
+		--fail)
+			exit 1
+			;;
+		--exit)
+			exit 0
+			;;
+		"")
+			:
+			;;
+		*)
+			Echo_error "Unexpected parameter to Usage(): $1"
+			;;
+	esac
 }

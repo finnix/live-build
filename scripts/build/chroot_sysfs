@@ -61,6 +61,6 @@ case "${1}" in
 		;;
 
 	*)
-		Usage 1
+		Usage --fail
 		;;
 esac

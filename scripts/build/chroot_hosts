@@ -83,6 +83,6 @@ EOF
 		;;
 
 	*)
-		Usage 1
+		Usage --fail
 		;;
 esac

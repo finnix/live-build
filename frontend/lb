@@ -25,7 +25,7 @@ Arguments frontend "${@}"
 eval set -- "${REMAINING_ARGS}"
 
 if [ -z "${1}" ]; then
-	Usage 1
+	Usage --fail
 fi
 
 COMMAND="${1}"

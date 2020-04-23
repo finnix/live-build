@@ -23,7 +23,7 @@ _ACTION="${2}"
 shift 2
 
 if ! In_list "${_PASS}" "binary" "chroot" "source"; then
-	Usage 1
+	Usage --fail
 fi
 
 # Processing arguments and configuration files
@@ -441,6 +441,6 @@ case "${_ACTION}" in
 		;;
 
 	*)
-		Usage 1
+		Usage --fail
 		;;
 esac
