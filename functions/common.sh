@@ -11,10 +11,8 @@
 
 PROGRAM_NAME="live-build"
 PROGRAM="lb"
-VERSION="$(if [ -e ${LIVE_BUILD}/VERSION ]; then cat ${LIVE_BUILD}/VERSION; else cat /usr/share/live/build/VERSION; fi)"
-CONFIG_VERSION="$(echo ${VERSION} | awk -F- '{ print $1 }')"
+VERSION="$(if [ -e ${LIVE_BUILD}/debian/changelog ]; then sed -e 's/.*(\(.*\)).*/\1/; s/^[0-9]://; q' ${LIVE_BUILD}/debian/changelog; else cat /usr/share/live/build/VERSION; fi)"
 
-# FIXME
-LIVE_BUILD_VERSION="${CONFIG_VERSION}"
+LIVE_BUILD_VERSION="${VERSION}"
 
 PATH="${PWD}/local/bin:${PATH}"
