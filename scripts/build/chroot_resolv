@@ -54,7 +54,9 @@ case "${1}" in
 		if [ -f /etc/resolv.conf ]
 		then
 			# Copy resolv file
-			cp -a /etc/resolv.conf chroot/etc/resolv.conf
+			cp /etc/resolv.conf chroot/etc/resolv.conf
+			chmod 644 chroot/etc/resolv.conf
+			Chroot chroot "chown root:root /etc/resolv.conf"
 		fi
 
 		# Creating stage file
@@ -75,7 +77,7 @@ case "${1}" in
 			# Copying local resolv.conf
 			cp config/includes.chroot/etc/resolv.conf chroot/etc/resolv.conf
 			chmod 644 chroot/etc/resolv.conf
-			chown root:root chroot/etc/resolv.conf
+			Chroot chroot "chown root:root /etc/resolv.conf"
 			rm -f chroot/etc/resolv.conf.orig
 		elif [ -e chroot/etc/resolv.conf.orig ] || [ -L chroot/etc/resolv.conf.orig ]
 		then
