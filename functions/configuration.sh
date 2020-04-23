@@ -47,6 +47,10 @@ New_configuration ()
 	LB_ARCHITECTURE="${LB_ARCHITECTURE:-${CURRENT_IMAGE_ARCHITECTURE}}"
 	export LB_ARCHITECTURE
 
+	# For backwards compat with custom hooks and conditional includes
+	LB_ARCHITECTURES=${LB_ARCHITECTURE}
+	export LB_ARCHITECTURES
+
 	LB_ARCHIVE_AREAS="${LB_ARCHIVE_AREAS:-$(Get_configuration config/build Archive-Areas)}"
 	LB_ARCHIVE_AREAS="${LB_ARCHIVE_AREAS:-main}"
 	LB_ARCHIVE_AREAS="$(echo "${LB_ARCHIVE_AREAS}" | tr "," " ")"
