@@ -1156,13 +1156,6 @@ LB_BOOTSTRAP_QEMU_STATIC="${LB_BOOTSTRAP_QEMU_STATIC}"
 EOF
 
 # Creating lb_chroot_* configuration
-mkdir -p config/archives
-mkdir -p config/apt
-mkdir -p config/packages
-mkdir -p config/packages.chroot
-mkdir -p config/package-lists
-mkdir -p config/preseed
-
 cat > config/chroot << EOF
 # config/chroot - options for live-build(7), chroot stage
 
@@ -1195,13 +1188,6 @@ LB_BACKPORTS="${LB_BACKPORTS}"
 EOF
 
 # Creating lb_binary_* configuration
-mkdir -p config/debian-installer
-mkdir -p config/includes.installer
-mkdir -p config/packages.binary
-mkdir -p config/package-lists
-mkdir -p config/rootfs
-mkdir -p config/bootloaders
-
 cat > config/binary << EOF
 # config/binary - options for live-build(7), binary stage
 
@@ -1321,20 +1307,25 @@ LB_SOURCE_IMAGES="${LB_SOURCE_IMAGES}"
 EOF
 
 mkdir -p auto
+mkdir -p config/apt
+mkdir -p config/archives
+mkdir -p config/bootloaders
+mkdir -p config/debian-installer
+mkdir -p config/hooks/live
+mkdir -p config/hooks/normal
+mkdir -p config/includes
+mkdir -p config/includes.binary
+mkdir -p config/includes.bootstrap
+mkdir -p config/includes.chroot
+mkdir -p config/includes.installer
+mkdir -p config/includes.source
+mkdir -p config/package-lists
+mkdir -p config/packages
+mkdir -p config/packages.binary
+mkdir -p config/packages.chroot
+mkdir -p config/preseed
+mkdir -p config/rootfs
 mkdir -p local/bin
-
-if [ "${_CLEAN}" = "true" ]
-then
-	# Remove empty directories in config tree
-	rmdir --ignore-fail-on-non-empty auto > /dev/null 2>&1 || true
-	rmdir --ignore-fail-on-non-empty config/*/ > /dev/null 2>&1 || true
-	rmdir --ignore-fail-on-non-empty config > /dev/null 2>&1 || true
-	rmdir --ignore-fail-on-non-empty local/*/ > /dev/null 2>&1 || true
-	rmdir --ignore-fail-on-non-empty local > /dev/null 2>&1 || true
-fi
-
-mkdir -p config/hooks/normal config/hooks/live
-mkdir -p config/includes config/includes.bootstrap config/includes.chroot config/includes.binary config/includes.source
 
 Echo_message "Symlinking hooks..."
 
@@ -1356,8 +1347,6 @@ done
 
 if [ ! -e config/package-lists/live.list.chroot ]
 then
-	mkdir -p config/package-lists
-
 	case "${LB_INITRAMFS}" in
 		live-boot)
 			echo "live-boot" > config/package-lists/live.list.chroot
@@ -1383,6 +1372,17 @@ then
 			;;
 esac
 
+fi
+
+# Remove empty directories (if user has requested via --clean)
+if [ "${_CLEAN}" = "true" ]; then
+	# Note, the point of the error handling here is for avoiding failure and messy output
+	# should a permissions failure block deletion.
+	rmdir --ignore-fail-on-non-empty auto >/dev/null 2>&1 || true
+	rmdir --ignore-fail-on-non-empty config/*/ >/dev/null 2>&1 || true
+	rmdir --ignore-fail-on-non-empty config >/dev/null 2>&1 || true
+	rmdir --ignore-fail-on-non-empty local/*/ >/dev/null 2>&1 || true
+	rmdir --ignore-fail-on-non-empty local >/dev/null 2>&1 || true
 fi
 
 # Creating stage file
