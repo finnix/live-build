@@ -140,7 +140,7 @@ do
 			;;
 
 		-h|--help)
-			Help
+			Man
 			;;
 
 		-u|--usage)

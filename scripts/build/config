@@ -276,7 +276,7 @@ Local_arguments ()
 				;;
 
 			-h|--help)
-				Help
+				Man
 				shift
 				;;
 
