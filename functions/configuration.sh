@@ -714,9 +714,4 @@ Validate_config_dependencies ()
 			exit 1
 		fi
 	fi
-
-	if [ "${LB_IMAGE_TYPE}" = "hdd" ] && [ "${LB_FIRST_BOOTLOADER}" = "grub-legacy" ]; then
-		Echo_error "You have selected a combination of bootloader and image type that is currently not supported by live-build. Please use either another bootloader or a different image type."
-		exit 1
-	fi
 }
