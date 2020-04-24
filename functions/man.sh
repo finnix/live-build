@@ -11,9 +11,21 @@
 
 Man ()
 {
+	local BASENAME
+	BASENAME=$(basename ${0})
 	if [ $(which man) ]
 	then
-		man ${PROGRAM} $(basename ${0})
-		exit 0
+		case $BASENAME in
+			$PROGRAM)
+				man ${PROGRAM}
+				;;
+			*)
+				man ${PROGRAM} $(basename ${0})
+				;;
+		esac
+	else
+		Echo_warning "man is not installed, falling back to usage output."
+		Usage
 	fi
+	exit 0
 }
