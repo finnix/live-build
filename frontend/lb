@@ -19,25 +19,26 @@ DESCRIPTION="Utility to build live systems"
 HELP=""
 USAGE="lb {clean|config|build}"
 
-case "${1}" in
-	-h|--help)
-		if [ $(which man) ]; then
-			man lb
-		else
-			Usage
-		fi
-		exit 0
-		;;
+# This bits of code relies on the fact that we only accept
+# options without values before the real command.
+GLOBAL_ARGS=""
+while true; do
+	case $1 in
+		-*)
+			GLOBAL_ARGS="${GLOBAL_ARGS:+$GLOBAL_ARGS }$1"
+			shift
+			;;
+		*)
+			break
+			;;
+	esac
+done
+Arguments $GLOBAL_ARGS
 
-	""|-u|--usage)
-		Usage
-		;;
-
-	-v|--version)
-		echo "${VERSION}"
-		exit 0
-		;;
-esac
+if [ $# = 0 ]; then
+	Echo_error "Missing sub-command"
+	Usage --fail
+fi
 
 COMMAND="${1}"
 shift
