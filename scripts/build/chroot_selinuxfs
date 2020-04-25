@@ -24,27 +24,31 @@ Init_config_data "${@}"
 # Requiring stage file
 Require_stagefiles config bootstrap
 
+# Skip if selinux is not enabled
+if [ ! -e /sys/fs/selinux/enforce ] || [ "$(cat /sys/fs/selinux/enforce)" != "1" ]
+then
+	Echo_debug "Skipping due to selinux being disabled..."
+	exit 0
+fi
+
 case "${1}" in
 	install)
-		if [ -e /sys/fs/selinux/enforce ] && [ "$(cat /sys/fs/selinux/enforce)" = "1" ]
-		then
-			Echo_message "Begin mounting /sys/fs/selinux..."
+		Echo_message "Begin mounting /sys/fs/selinux..."
 
-			# Checking stage file
-			Check_stagefile
+		# Checking stage file
+		Check_stagefile
 
-			# Acquire lock file
-			Acquire_lockfile
+		# Acquire lock file
+		Acquire_lockfile
 
-			# Create mountpoint
-			mkdir -p chroot/sys/fs/selinux
+		# Create mountpoint
+		mkdir -p chroot/sys/fs/selinux
 
-			# Mounting /sys/fs/selinux
-			mount -t selinuxfs -o x-gvfs-hide selinuxfs-live chroot/sys/fs/selinux
+		# Mounting /sys/fs/selinux
+		mount -t selinuxfs -o x-gvfs-hide selinuxfs-live chroot/sys/fs/selinux
 
-			# Creating stage file
-			Create_stagefile
-		fi
+		# Creating stage file
+		Create_stagefile
 		;;
 
 	remove)
