@@ -282,7 +282,7 @@ else
 	sed -i -e "s#@OPTIONAL_MEMTEST_INCLUDE@#include memtest.cfg#g" "${_TARGET}"/advanced.cfg
 fi
 
-if [ -e "${_TARGET}/splash.svg" ]
+if [ -e "${_TARGET}/splash.svg" ] && [ ! -e "${_TARGET}/splash.png" ]
 then
 	case "${LB_BUILD_WITH_CHROOT}" in
 		true)
@@ -296,9 +296,8 @@ then
 			rsvg-convert --format png --height 480 --width 640 "${_TARGET}/splash.svg" -o "${_TARGET}/splash.png"
 			;;
 	esac
-
-	rm -f "${_TARGET}/splash.svg"
 fi
+rm -f "${_TARGET}/splash.svg"
 
 # Tweak the grub theme to reuse the syslinux background image
 if [ -e binary/boot/grub/live-theme/theme.txt ]; then
