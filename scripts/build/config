@@ -922,7 +922,7 @@ fi
 if [ "${1}" = "noauto" ]; then
 	shift
 else
-	Maybe_auto_redirect config
+	Maybe_auto_redirect config "${@}"
 fi
 
 # Reading config defaults configured at system level

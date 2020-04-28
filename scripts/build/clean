@@ -18,7 +18,7 @@ set -e
 if [ "${1}" = "noauto" ]; then
 	shift
 else
-	Maybe_auto_redirect clean
+	Maybe_auto_redirect clean "${@}"
 fi
 
 # Setting static variables

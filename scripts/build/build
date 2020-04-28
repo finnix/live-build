@@ -21,7 +21,7 @@ Auto_build_config
 if [ "${1}" = "noauto" ]; then
 	shift
 else
-	Maybe_auto_redirect build
+	Maybe_auto_redirect build "${@}"
 fi
 
 # Setting static variables
