@@ -245,6 +245,7 @@ Local_arguments ()
 				;;
 
 			--ignore-system-defaults)
+				_IGNORE_SYSTEM_DEFAULTS="true"
 				shift
 				;;
 
@@ -928,8 +929,7 @@ fi
 # Reading config defaults configured at system level
 if ls /etc/live/build.conf > /dev/null 2>&1 || ls /etc/live/build/* > /dev/null 2>&1
 then
-	if In_list "--ignore-system-defaults" "${@}"
-	then
+	if [ "${_IGNORE_SYSTEM_DEFAULTS}" = "true" ]; then
 		Echo_message "Ignoring defaults in %s" "/etc/live/build.conf"
 	else
 		Echo_message "Using defaults in %s" "/etc/live/build.conf"
