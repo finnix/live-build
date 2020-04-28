@@ -48,6 +48,7 @@ STAGEFILES_DIR="$(Stagefiles_dir)"
 for ARGUMENT in "${@}"; do
 	case "${ARGUMENT}" in
 		--all)
+			Echo_debug "Running --all"
 			"${0}" noauto --chroot
 			"${0}" noauto --binary
 			"${0}" noauto --stage
@@ -59,10 +60,12 @@ for ARGUMENT in "${@}"; do
 			;;
 
 		--cache)
+			Echo_debug "Cleaning cache"
 			rm -rf cache
 			;;
 
 		--chroot)
+			# This one is not debug because it can potentially take some time
 			Echo_message "Cleaning chroot"
 			umount -f chroot/run > /dev/null 2>&1 || true
 			umount -f chroot/sys > /dev/null 2>&1 || true
@@ -87,6 +90,7 @@ for ARGUMENT in "${@}"; do
 			;;
 
 		--binary)
+			Echo_debug "Cleaning binary"
 			umount -f binary.tmp > /dev/null 2>&1 || true
 			rm -rf binary.tmp binary.deb binary.udeb
 			rm -f ${LB_IMAGE_NAME}*.iso
@@ -106,11 +110,13 @@ for ARGUMENT in "${@}"; do
 			;;
 
 		--remove)
+			Echo_debug "Running --remove"
 			"${0}" noauto --all
 			rm -rf cache/packages.*
 			;;
 
 		--purge)
+			Echo_debug "Running --purge"
 			"${0}" noauto --all
 			"${0}" noauto --cache
 
@@ -121,10 +127,12 @@ for ARGUMENT in "${@}"; do
 			;;
 
 		--stage)
+			Echo_debug "Cleaning stage files"
 			rm -rf "${STAGEFILES_DIR}"/*
 			;;
 
 		--source)
+			Echo_debug "Cleaning source"
 			rm -f ${LB_IMAGE_NAME}-source*.iso
 			rm -f ${LB_IMAGE_NAME}-source*.img
 			rm -f ${LB_IMAGE_NAME}-source*.tar
