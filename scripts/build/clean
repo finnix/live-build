@@ -39,17 +39,13 @@ fi
 
 Remove_lockfile
 
-if [ -z "${1}" ]
-then
-	ARGUMENTS="--all"
-else
-	ARGUMENTS="${@}"
+if [ $# -eq 0 ]; then
+	set -- "--all"
 fi
 
 STAGEFILES_DIR="$(Stagefiles_dir)"
 
-for ARGUMENT in ${ARGUMENTS}
-do
+for ARGUMENT in "${@}"; do
 	case "${ARGUMENT}" in
 		--all)
 			"${0}" noauto --chroot
