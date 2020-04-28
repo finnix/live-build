@@ -106,13 +106,13 @@ for ARGUMENT in "${@}"; do
 			;;
 
 		--remove)
-			"${0}" --all
+			"${0}" noauto --all
 			rm -rf cache/packages.*
 			;;
 
 		--purge)
-			"${0}" --all
-			"${0}" --cache
+			"${0}" noauto --all
+			"${0}" noauto --cache
 
 			if [ -e auto/config ]
 			then
