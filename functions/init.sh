@@ -79,5 +79,7 @@ Maybe_auto_redirect ()
 		Echo_message "Executing ${AUTO_SCRIPT} script."
 		./"${AUTO_SCRIPT}" "${@}"
 		exit ${?}
+	elif [ -f "${AUTO_SCRIPT}" ]; then
+		Echo_warning "The ${AUTO_SCRIPT} script exists but is not executable, ignoring."
 	fi
 }
