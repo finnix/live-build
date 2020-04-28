@@ -18,7 +18,9 @@ Get_conffiles ()
 	else
 		local FILE
 		for FILE in "${@}"; do
-			FILES="${FILES} ${FILE} ${FILE}.${LB_ARCHITECTURE} ${FILE}.${DISTRIBUTION}"
+			FILES="${FILES} ${FILE}"
+			FILES="${FILES} ${LB_ARCHITECTURE:+$FILE.$LB_ARCHITECTURE}"
+			FILES="${FILES} ${DISTRIBUTION:+$FILE.$DISTRIBUTION}"
 		done
 	fi
 
