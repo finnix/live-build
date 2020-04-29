@@ -40,7 +40,7 @@ Check_stagefile ()
 	fi
 }
 
-# Used by chroot preperation scripts in removal mode
+# Used by chroot preparation scripts in removal mode
 Ensure_stagefile_exists ()
 {
 	local FILE

@@ -1222,7 +1222,7 @@ LB_COMPRESSION="${LB_COMPRESSION}"
 LB_ZSYNC="${LB_ZSYNC}"
 
 # Control if we build binary images chrooted
-# DO NEVER, *NEVER*, *N*E*V*E*R* SET THIS OPTION to false.
+# NEVER, *EVER*, *E*V*E*R* SET THIS OPTION to false.
 LB_BUILD_WITH_CHROOT="${LB_BUILD_WITH_CHROOT}"
 
 # Set debian-installer
