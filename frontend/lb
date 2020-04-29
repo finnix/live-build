@@ -76,6 +76,6 @@ _CMD_LABEL="lb ${COMMAND}"
 if [ "${_COLOR_OUT}" = "true" ]; then
 	_CMD_LABEL="${CYAN}${_CMD_LABEL}${NO_COLOR}"
 fi
-Echo "[%s] ${_CMD_LABEL} %s" "$(date +'%F %T')" "$(echo ${@})"
+Echo "[%s] ${_CMD_LABEL} %s" "$(date +'%F %T')" "$(echo ${GLOBAL_ARGS} ${@})"
 
-exec /usr/bin/env ${ENV} "${SCRIPT}" "${@}"
+exec /usr/bin/env ${ENV} "${SCRIPT}" ${GLOBAL_ARGS} "${@}"
