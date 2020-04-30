@@ -203,8 +203,6 @@ fi
 # Assembling debian-installer configuration
 if [ "${LB_DEBIAN_INSTALLER}" != "none" ]; then
 	ENABLE_INSTALL_MENU="true"
-	LINUX_INSTALL="source /boot/grub/install_start.cfg"
-	LINUX_ADVANCED_INSTALL="source /boot/grub/install.cfg"
 
 	KERNEL_DI="/install/vmlinuz"
 	INITRD_DI="/install/initrd.gz"
@@ -250,8 +248,6 @@ escape_for_sed() {
 # Those without '@' markers are for backwards compatibility
 sed -i \
     -e "s|@LINUX_LIVE@|$(escape_for_sed "${LINUX_LIVE}")|" \
-    -e "s|@LINUX_INSTALL@|${LINUX_INSTALL}|" \
-    -e "s|@LINUX_ADVANCED_INSTALL@|${LINUX_ADVANCED_INSTALL}|" \
     -e "s|@KERNEL_GI@|${KERNEL_GI}|" \
     -e "s|@INITRD_GI@|${INITRD_GI}|" \
     -e "s|@APPEND_GI@|${APPEND_GI}|" \
@@ -270,8 +266,8 @@ sed -i \
     -e "s|@MEMTEST_BIN@|${MEMTEST_BIN}|" \
     -e "s|@MEMTEST_VERSION@|${LB_MEMTEST}|" \
     -e "s|LINUX_LIVE|$(escape_for_sed "${LINUX_LIVE}")|" \
-    -e "s|LINUX_INSTALL|${LINUX_INSTALL}|" \
-    -e "s|LINUX_ADVANCED_INSTALL|${LINUX_ADVANCED_INSTALL}|" \
+    -e "s|LINUX_INSTALL|source /boot/grub/install_start.cfg|" \
+    -e "s|LINUX_ADVANCED_INSTALL|source /boot/grub/install.cfg|" \
     -e "s|MEMTEST|${MEMTEST}|" \
     -e "s|KERNEL_GI|${KERNEL_GI}|" \
     -e "s|INITRD_GI|${INITRD_GI}|" \
