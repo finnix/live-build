@@ -245,6 +245,10 @@ escape_for_sed() {
 	echo -n "$1" | perl -npe 's/\n/\\n/gm'
 }
 
+# These must be held in variables to avoid mistake by checkbashisms
+LINUX_INSTALL="source /boot/grub/install_start.cfg"
+LINUX_ADVANCED_INSTALL="source /boot/grub/install.cfg"
+
 # Those without '@' markers are for backwards compatibility
 sed -i \
     -e "s|@LINUX_LIVE@|$(escape_for_sed "${LINUX_LIVE}")|" \
@@ -266,8 +270,8 @@ sed -i \
     -e "s|@MEMTEST_BIN@|${MEMTEST_BIN}|" \
     -e "s|@MEMTEST_VERSION@|${LB_MEMTEST}|" \
     -e "s|LINUX_LIVE|$(escape_for_sed "${LINUX_LIVE}")|" \
-    -e "s|LINUX_INSTALL|source /boot/grub/install_start.cfg|" \
-    -e "s|LINUX_ADVANCED_INSTALL|source /boot/grub/install.cfg|" \
+    -e "s|LINUX_INSTALL|${LINUX_INSTALL}|" \
+    -e "s|LINUX_ADVANCED_INSTALL|${LINUX_ADVANCED_INSTALL}|" \
     -e "s|MEMTEST|${MEMTEST}|" \
     -e "s|KERNEL_GI|${KERNEL_GI}|" \
     -e "s|INITRD_GI|${INITRD_GI}|" \
