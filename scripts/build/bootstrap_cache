@@ -55,6 +55,20 @@ case "${_ACTION}" in
 			# Removing old chroot
 			rm -rf chroot
 
+			# Catch failure condition.
+			# The installer stage, if not 'none' or 'live' needs to copy cached
+			# bootstrap packages, and will error if these do not exist. This
+			# could be the case if bootstrap is cached but the packages were
+			# wiped from the cache. This detects this condition and if it is the
+			# case, ignores the cached bootstrap, forcing it to be rebuilt thus
+			# re-caching the packages.
+			if ! In_list "${LB_DEBIAN_INSTALLER}" live none &&
+			   ! ls cache/packages.bootstrap/*.deb > /dev/null 2>&1
+			then
+				Echo_message "Cached bootstrap packages required but missing, ignoring cached bootstrap to force rebuild."
+				exit 0
+			fi
+
 			# Restoring old cache
 			cp -a cache/bootstrap chroot
 
