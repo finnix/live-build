@@ -192,8 +192,8 @@ if [ $_COUNT -gt 1 ]; then
 fi
 
 # Replace placeholder with compiled live entries temporarily held in live.cfg.tmp
-sed -i -e "/@LINUX_LIVE@/ r ${LIVE_ENTRIES_TMP}" "${_TARGET}"/*.cfg
-sed -i -e "/LINUX_LIVE/ r ${LIVE_ENTRIES_TMP}" "${_TARGET}"/*.cfg #backwards compatibility
+sed -i -e "/@LINUX_LIVE@/r ${LIVE_ENTRIES_TMP}" -e "/@LINUX_LIVE@/d" "${_TARGET}"/*.cfg
+sed -i -e "/LINUX_LIVE/r ${LIVE_ENTRIES_TMP}" -e "/LINUX_LIVE/d" "${_TARGET}"/*.cfg #backwards compatibility
 rm -f "${LIVE_ENTRIES_TMP}"
 
 # Assembling debian-installer configuration
