@@ -212,7 +212,7 @@ Local_arguments ()
 			--dump)
 				# Dump version
 				Echo "This is live-build version %s" "${VERSION}"
-				if [ $(which dpkg-query) ]; then
+				if command -v dpkg-query >/dev/null; then
 					Echo "Installed version reported by dpkg is %s" "$(dpkg-query -f='${Version}' --show live-build)"
 				fi
 

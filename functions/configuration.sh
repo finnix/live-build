@@ -36,7 +36,7 @@ Prepare_config ()
 
 	LB_SYSTEM="${LB_SYSTEM:-live}"
 
-	if [ $(which lsb_release) ]
+	if command -v lsb_release >/dev/null
 	then
 		local _DISTRIBUTOR
 		_DISTRIBUTOR="$(lsb_release -is | tr "[A-Z]" "[a-z]")"
@@ -66,7 +66,7 @@ Prepare_config ()
 	LIVE_IMAGE_TYPE="${LB_IMAGE_TYPE}"
 
 	if [ -z "${LB_ARCHITECTURE}" ]; then
-		if [ $(which dpkg) ]; then
+		if command -v dpkg >/dev/null; then
 			LB_ARCHITECTURE="$(dpkg --print-architecture)"
 		else
 			case "$(uname -m)" in
@@ -688,7 +688,7 @@ Validate_config_permitted_values ()
 # Check option combinations and other extra stuff
 Validate_config_dependencies ()
 {
-	if [ "${LB_BINARY_FILESYSTEM}" = "ntfs" ] && [ ! $(which ntfs-3g) ]; then
+	if [ "${LB_BINARY_FILESYSTEM}" = "ntfs" ] && ! command -v ntfs-3g >/dev/null; then
 		Echo_error "Using ntfs as the binary filesystem is currently only supported if ntfs-3g is installed on the host system."
 		exit 1
 	fi

@@ -13,7 +13,7 @@ Man ()
 {
 	local BASENAME
 	BASENAME=$(basename ${0})
-	if [ $(which man) ]
+	if command -v man >/dev/null
 	then
 		case $BASENAME in
 			$PROGRAM)

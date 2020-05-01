@@ -53,7 +53,7 @@ Check_architectures ()
 Check_crossarchitectures ()
 {
 	local HOST
-	if [ $(which dpkg) ]
+	if command -v dpkg >/dev/null
 	then
 		HOST="$(dpkg --print-architecture)"
 	else
