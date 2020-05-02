@@ -18,13 +18,16 @@ set -e
 DESCRIPTION="Manage /etc/debian_chroot"
 USAGE="${PROGRAM} {install|remove} [--force]"
 
+_ACTION="${1}"
+shift
+
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
 # Requiring stage file
 Require_stagefiles config bootstrap
 
-case "${1}" in
+case "${_ACTION}" in
 	install)
 		Echo_message "Configuring file /etc/debian_chroot"
 
@@ -70,6 +73,7 @@ case "${1}" in
 		;;
 
 	*)
+		Echo_error "Invalid action parameter: '${_ACTION}'"
 		Usage --fail
 		;;
 esac

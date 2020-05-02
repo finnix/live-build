@@ -441,6 +441,7 @@ case "${_ACTION}" in
 		;;
 
 	*)
+		Echo_error "Invalid action parameter: '${_ACTION}'"
 		Usage --fail
 		;;
 esac
