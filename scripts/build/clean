@@ -159,6 +159,7 @@ for ARGUMENT in "${@}"; do
 			;;
 
 		*)
+			Echo_error "invalid arguments"
 			Usage --fail
 			;;
 	esac
