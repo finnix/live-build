@@ -1345,33 +1345,24 @@ do
 	fi
 done
 
-if [ ! -e config/package-lists/live.list.chroot ]
-then
-	case "${LB_INITRAMFS}" in
-		live-boot)
-			echo "live-boot" > config/package-lists/live.list.chroot
-			echo "live-config" >> config/package-lists/live.list.chroot
+LIVE_PKG_LIST="config/package-lists/live.list.chroot"
+if [ ! -e "${LIVE_PKG_LIST}" ]; then
+	NEEDED_PACKAGES=""
+	if [ "${LB_INITRAMFS}" = "live-boot" ]; then
+		NEEDED_PACKAGES="live-boot live-config"
+		case "${LB_INITSYSTEM}" in
+			systemd)
+				NEEDED_PACKAGES="${NEEDED_PACKAGES} live-config-systemd"
+				;;
 
-			case "${LB_INITSYSTEM}" in
-				none)
-					# do nothing
-					;;
-
-				systemd)
-					echo "live-config-systemd" >> config/package-lists/live.list.chroot
-					;;
-
-				sysvinit)
-					echo "live-config-${LB_INITSYSTEM}" >> config/package-lists/live.list.chroot
-					echo "sysvinit-core" >> config/package-lists/live.list.chroot
-					;;
-			esac
-			;;
-
-		*)
-			;;
-esac
-
+			sysvinit)
+				NEEDED_PACKAGES="${NEEDED_PACKAGES} live-config-sysvinit sysvinit-core"
+				;;
+		esac
+	fi
+	for PKG in $NEEDED_PACKAGES; do
+		echo "${PKG}" >> "${LIVE_PKG_LIST}"
+	done
 fi
 
 # Remove empty directories (if user has requested via --clean)
