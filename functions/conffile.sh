@@ -9,6 +9,11 @@
 ## under certain conditions; see COPYING for details.
 
 
+Common_conffiles ()
+{
+	echo "config/all config/common config/bootstrap config/chroot config/binary config/source"
+}
+
 Get_conffiles ()
 {
 	local FILES

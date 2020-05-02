@@ -217,7 +217,7 @@ Local_arguments ()
 				fi
 
 				# Dump conffile contents
-				Print_conffiles $(Common_config_files)
+				Print_conffiles $(Common_conffiles)
 
 				# Dump contents of directories that contain text files
 				local DIRECTORY
@@ -939,7 +939,7 @@ then
 fi
 
 # Reading existing saved configuration
-Read_conffiles $(Common_config_files)
+Read_conffiles $(Common_conffiles)
 
 # Processing arguments again to overwrite just-read previously saved settings as necessary
 Local_arguments "${@}"

@@ -9,11 +9,6 @@
 ## under certain conditions; see COPYING for details.
 
 
-Common_config_files ()
-{
-	echo "config/all config/common config/bootstrap config/chroot config/binary config/source"
-}
-
 Auto_build_config ()
 {
 	# Automatically build config
@@ -27,7 +22,7 @@ Init_config_data ()
 {
 	Arguments "${@}"
 
-	Read_conffiles $(Common_config_files)
+	Read_conffiles $(Common_conffiles)
 	Prepare_config
 
 	# Apt v2.0.1 introduced color support, but it needs to be explicitly enabled.
