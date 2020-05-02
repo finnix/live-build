@@ -28,58 +28,9 @@ Arguments ()
 	while true
 	do
 		case "${1}" in
-			--breakpoints)
-				_BREAKPOINTS="true"
+			--breakpoints|--color|--debug|--force|-h|--help|--no-color|--quiet|-u|--usage|--verbose|-v|--version)
+				Handle_common_option "${1}"
 				shift
-				;;
-
-			--color)
-				_COLOR="true"
-				_COLOR_OUT="true"
-				_COLOR_ERR="true"
-				shift
-				;;
-
-			--no-color)
-				_COLOR="false"
-				_COLOR_OUT="false"
-				_COLOR_ERR="false"
-				shift
-				;;
-
-			--debug)
-				_DEBUG="true"
-				shift
-				;;
-
-			--force)
-				_FORCE="true"
-				shift
-				;;
-
-			-h|--help)
-				Man
-				shift
-				;;
-
-			--quiet)
-				_QUIET="true"
-				shift
-				;;
-
-			-u|--usage)
-				Usage --exit
-				shift
-				;;
-
-			--verbose)
-				_VERBOSE="true"
-				shift
-				;;
-
-			-v|--version)
-				echo "${VERSION}"
-				exit 0
 				;;
 
 			--)
@@ -93,4 +44,59 @@ Arguments ()
 				;;
 		esac
 	done
+}
+
+Handle_common_option ()
+{
+	case "${1}" in
+		--breakpoints)
+			_BREAKPOINTS="true"
+			;;
+
+		--color)
+			_COLOR="true"
+			_COLOR_OUT="true"
+			_COLOR_ERR="true"
+			;;
+
+		--no-color)
+			_COLOR="false"
+			_COLOR_OUT="false"
+			_COLOR_ERR="false"
+			;;
+
+		--debug)
+			_DEBUG="true"
+			;;
+
+		--force)
+			_FORCE="true"
+			;;
+
+		-h|--help)
+			Man
+			;;
+
+		--quiet)
+			_QUIET="true"
+			;;
+
+		-u|--usage)
+			Usage --exit
+			;;
+
+		--verbose)
+			_VERBOSE="true"
+			;;
+
+		-v|--version)
+			echo "${VERSION}"
+			exit 0
+			;;
+
+		*)
+			Echo_error "Internal error: Unknown common option '%s'" "${1}"
+			exit 1
+			;;
+	esac
 }

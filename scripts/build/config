@@ -256,8 +256,8 @@ Local_arguments ()
 
 			# General options
 
-			--breakpoints)
-				_BREAKPOINTS="true"
+			--breakpoints|--debug|--force|-h|--help|--quiet|-u|--usage|--verbose|-v|--version)
+				Handle_common_option "${1}"
 				shift
 				;;
 
@@ -266,44 +266,9 @@ Local_arguments ()
 				shift
 				;;
 
-			--debug)
-				_DEBUG="true"
-				shift
-				;;
-
-			--force)
-				_FORCE="true"
-				shift
-				;;
-
-			-h|--help)
-				Man
-				shift
-				;;
-
 			--no-color)
 				_COLOR="false"
 				shift
-				;;
-
-			--quiet)
-				_QUIET="true"
-				shift
-				;;
-
-			-u|--usage)
-				Usage --exit
-				shift
-				;;
-
-			--verbose)
-				_VERBOSE="true"
-				shift
-				;;
-
-			-v|--version)
-				echo "${VERSION}"
-				exit 0
 				;;
 
 			# Build config options
