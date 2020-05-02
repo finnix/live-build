@@ -18,11 +18,11 @@ set -e
 DESCRIPTION="Cache bootstrap stage"
 USAGE="${PROGRAM} {restore|save} [--force]"
 
-_ACTION="${1}"
-shift
-
 # Processing arguments and configuration files
 Init_config_data "${@}"
+
+_ACTION="${1}"
+shift
 
 # Check architecture
 Check_crossarchitectures

@@ -18,6 +18,9 @@ set -e
 DESCRIPTION="Manage /etc/apt/sources.list"
 USAGE="${PROGRAM} {source|binary|chroot} {install|remove} [--force]"
 
+# Processing arguments and configuration files
+Init_config_data "${@}"
+
 _PASS="${1}"
 _ACTION="${2}"
 shift 2
@@ -25,9 +28,6 @@ shift 2
 if ! In_list "${_PASS}" "binary" "chroot" "source"; then
 	Usage --fail
 fi
-
-# Processing arguments and configuration files
-Init_config_data "${@}"
 
 # Requiring stage file
 Require_stagefiles config bootstrap

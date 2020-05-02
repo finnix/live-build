@@ -18,11 +18,11 @@ set -e
 DESCRIPTION="Cache chroot stage"
 USAGE="${PROGRAM} {restore|save} [--force]"
 
-_ACTION="${1}"
-shift
-
 # Processing arguments and configuration files
 Init_config_data "${@}"
+
+_ACTION="${1}"
+shift
 
 if ! In_list "chroot" ${LB_CACHE_STAGES}
 then

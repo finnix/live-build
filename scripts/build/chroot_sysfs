@@ -18,11 +18,11 @@ set -e
 DESCRIPTION="Mount /sys"
 USAGE="${PROGRAM} {install|remove} [--force]"
 
-_ACTION="${1}"
-shift
-
 # Processing arguments and configuration files
 Init_config_data "${@}"
+
+_ACTION="${1}"
+shift
 
 # Requiring stage file
 Require_stagefiles config bootstrap

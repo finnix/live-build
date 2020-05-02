@@ -18,11 +18,11 @@ set -e
 DESCRIPTION="Use tmpfs to speedup the build"
 USAGE="${PROGRAM} {install|remove} [--force]"
 
-_ACTION="${1}"
-shift
-
 # Processing arguments and configuration files
 Init_config_data "${@}"
+
+_ACTION="${1}"
+shift
 
 if [ "${LB_BUILD_WITH_TMPFS}" != "true" ]
 then
