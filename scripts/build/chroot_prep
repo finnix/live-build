@@ -94,7 +94,7 @@ if In_list "archives" ${HELPERS} && [ -z "${ARCHIVES_PASS}" ]; then
 	exit 1
 fi
 
-if In_list "archives" ${HELPERS} && [ ! -e .build/bootstrap ]; then
+if In_list "archives" ${HELPERS} && ! Stagefile_exists bootstrap; then
 	Echo_warning "The 'archives' helper is selected, but the bootstrap stage has not completed."
 fi
 

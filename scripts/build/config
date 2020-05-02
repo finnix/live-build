@@ -871,7 +871,7 @@ fi
 
 # Ignoring --config if CWD already has a config
 # Only print warning from direct execution, not when run from auto script redirection, to avoid repetition
-if [ -e .build/config ] && [ -n "${_CONFIG}" ]
+if Stagefile_exists && [ -n "${_CONFIG}" ]
 then
 	if [ "${1}" != "noauto" ]
 	then

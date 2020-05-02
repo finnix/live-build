@@ -21,7 +21,7 @@ Exit ()
 
 	# Skip if we have not yet completed the initial bootstrapping (bootstrap_debootstrap)
 	# (nothing to be done; avoids unhelpful messages)
-	if [ ! -e .build/bootstrap ]; then
+	if ! Stagefile_exists bootstrap; then
 		return ${VALUE}
 	fi
 
@@ -43,10 +43,12 @@ Exit ()
 		done
 	fi
 
-	rm -f .build/chroot_devpts
-	rm -f .build/chroot_proc
-	rm -f .build/chroot_selinuxfs
-	rm -f .build/chroot_sysfs
+	STAGEFILES_DIR="$(Stagefiles_dir)"
+
+	rm -f "${STAGEFILES_DIR}"/chroot_devpts
+	rm -f "${STAGEFILES_DIR}"/chroot_proc
+	rm -f "${STAGEFILES_DIR}"/chroot_selinuxfs
+	rm -f "${STAGEFILES_DIR}"/chroot_sysfs
 
 	Echo_message "Saving caches..."
 
@@ -54,7 +56,7 @@ Exit ()
 	# but let's assume that if there's any binary stage file arround
 	# we are in binary stage.
 
-	if ls .build/binary* > /dev/null 2>&1
+	if ls "${STAGEFILES_DIR}"/binary* > /dev/null 2>&1
 	then
 		Save_package_cache binary
 	else

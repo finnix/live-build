@@ -12,7 +12,7 @@
 Auto_build_config ()
 {
 	# Automatically build config
-	if [ -x auto/config ] && [ ! -e .build/config ]; then
+	if [ -x auto/config ] && ! Stagefile_exists config; then
 		Echo_message "Automatically populating config tree."
 		lb config
 	fi

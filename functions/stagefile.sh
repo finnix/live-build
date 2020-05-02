@@ -9,6 +9,11 @@
 ## under certain conditions; see COPYING for details.
 
 
+Stagefiles_dir ()
+{
+	echo ".build"
+}
+
 # Get the default filename for a script's stagefile (the name of the script
 # file itself). A suffix can be appended via providing as a param.
 Stagefile_name ()
@@ -17,6 +22,14 @@ Stagefile_name ()
 	local FILENAME
 	FILENAME="$(basename $0)"
 	echo ${FILENAME}${SUFFIX:+.$SUFFIX}
+}
+
+Stagefile_exists ()
+{
+	if [ -f ".build/${1:-$(Stagefile_name)}" ]; then
+		return 0
+	fi
+	return 1
 }
 
 Check_stagefile ()
