@@ -21,11 +21,6 @@ USAGE="${PROGRAM} {restore|save} [--force]"
 _ACTION="${1}"
 shift
 
-if ! In_list "${_ACTION}" restore save; then
-	Echo_error "Invalid action parameter"
-	exit 1
-fi
-
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
@@ -97,5 +92,10 @@ case "${_ACTION}" in
 
 		# Creating stage file
 		Create_stagefile "${STAGE_FILE}"
+		;;
+
+	*)
+		Echo_error "Invalid action parameter: '${_ACTION}'"
+		Usage --fail
 		;;
 esac

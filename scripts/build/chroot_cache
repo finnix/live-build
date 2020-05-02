@@ -76,4 +76,9 @@ case "${_ACTION}" in
 		# Creating stage file
 		Create_stagefile "${STAGE_FILE}"
 		;;
+
+	*)
+		Echo_error "Invalid action parameter: '${_ACTION}'"
+		Usage --fail
+		;;
 esac
