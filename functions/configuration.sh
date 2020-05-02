@@ -36,24 +36,7 @@ Prepare_config ()
 
 	LB_SYSTEM="${LB_SYSTEM:-live}"
 
-	if command -v lsb_release >/dev/null
-	then
-		local _DISTRIBUTOR
-		_DISTRIBUTOR="$(lsb_release -is | tr "[A-Z]" "[a-z]")"
-
-		case "${_DISTRIBUTOR}" in
-			debian)
-				LB_MODE="${LB_MODE:-${_DISTRIBUTOR}}"
-				;;
-
-			*)
-				LB_MODE="${LB_MODE:-debian}"
-				;;
-		esac
-	else
-		LB_MODE="${LB_MODE:-debian}"
-	fi
-
+	LB_MODE="${LB_MODE:-debian}"
 	LB_DERIVATIVE="false"
 	LB_DISTRIBUTION="${LB_DISTRIBUTION:-buster}"
 	LB_DISTRIBUTION_CHROOT="${LB_DISTRIBUTION_CHROOT:-${LB_DISTRIBUTION}}"
