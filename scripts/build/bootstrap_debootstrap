@@ -24,8 +24,6 @@ Init_config_data "${@}"
 if ! command -v debootstrap >/dev/null
 then
 	Echo_error "debootstrap - command not found"
-	Echo_verbose "debootstrap can be obtained from http://ftp.debian.org/debian/pool/main/d/debootstrap/"
-	Echo_verbose "On Debian based systems, debootstrap can be installed with 'apt-get install debootstrap'."
 	exit 1
 fi
 
