@@ -26,6 +26,7 @@ _ACTION="${2}"
 shift 2
 
 if ! In_list "${_PASS}" "binary" "chroot" "source"; then
+	Echo_error "Invalid pass parameter: '${_PASS}'"
 	Usage --fail
 fi
 
