@@ -11,12 +11,15 @@
 
 Arguments ()
 {
+	local LONGOPTS="breakpoints,color,debug,force,help,no-color,quiet,usage,verbose,version"
+	local SHORTOPTS="huv"
+
 	local ARGUMENTS
 	local ERR=0
-	ARGUMENTS="$(getopt --longoptions breakpoints,color,debug,force,help,no-color,quiet,usage,verbose,version --name=${PROGRAM} --options huv --shell sh -- "${@}")" || ERR=$?
+	ARGUMENTS="$(getopt --shell sh --name ${PROGRAM} --longoptions $LONGOPTS --options $SHORTOPTS -- "${@}")" || ERR=$?
 
 	if [ $ERR -eq 1 ]; then
-		Echo_error "invalid arguments"
+		Echo_error "invalid argument(s)"
 		exit 1
 	elif [ $ERR -ne 0 ]; then
 		Echo_error "getopt failure"
@@ -25,11 +28,11 @@ Arguments ()
 
 	eval set -- "${ARGUMENTS}"
 
-	while true
-	do
-		case "${1}" in
+	while true; do
+		local ARG="${1}"
+		case "${ARG}" in
 			--breakpoints|--color|--debug|--force|-h|--help|--no-color|--quiet|-u|--usage|--verbose|-v|--version)
-				Handle_common_option "${1}"
+				Handle_common_option "${ARG}"
 				shift
 				;;
 
@@ -39,7 +42,7 @@ Arguments ()
 				;;
 
 			*)
-				Echo_error "internal error %s" "${0}"
+				Echo_error "Internal error, unhandled option: %s" "${ARG}"
 				exit 1
 				;;
 		esac
