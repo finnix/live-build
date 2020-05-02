@@ -21,9 +21,10 @@ Get_conffiles ()
 	then
 		FILES="${LB_CONFIG}"
 	else
+		# List standard files first, then possible user arch/dist overrides
+		FILES="${@}"
 		local FILE
 		for FILE in "${@}"; do
-			FILES="${FILES} ${FILE}"
 			FILES="${FILES} ${LB_ARCHITECTURE:+$FILE.$LB_ARCHITECTURE}"
 			FILES="${FILES} ${LB_DISTRIBUTION:+$FILE.$LB_DISTRIBUTION}"
 		done
