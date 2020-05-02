@@ -88,17 +88,3 @@ Echo_file ()
 		echo "${1}: ${LINE}" >&3
 	done < "${1}"
 }
-
-Echo_breakage ()
-{
-	case "${LB_PARENT_DISTRIBUTION_BINARY}" in
-		sid)
-			Echo_message "If the following stage fails, the most likely cause of the problem is with your mirror configuration, a caching proxy or the sid distribution."
-			;;
-		*)
-			Echo_message "If the following stage fails, the most likely cause of the problem is with your mirror configuration or a caching proxy."
-			;;
-	esac
-
-	Echo_message "${@}"
-}

@@ -42,6 +42,11 @@ Check_stagefile "bootstrap_cache.restore"
 # Acquire lock file
 Acquire_lockfile
 
+Print_breakage ()
+{
+	Echo_message "If the following stage fails, the most likely cause of the problem is with your mirror configuration or a caching proxy."
+}
+
 # Creating chroot directory
 mkdir -p chroot
 
@@ -79,7 +84,8 @@ then
 		cp cache/packages.bootstrap/*.deb chroot/var/cache/apt/archives
 	fi
 
-	Echo_breakage "Running debootstrap (download-only)... "
+	Print_breakage
+	Echo_message "Running debootstrap (download-only)..."
 	debootstrap ${DEBOOTSTRAP_OPTIONS} --download-only "${LB_PARENT_DISTRIBUTION_CHROOT}" chroot "${LB_PARENT_MIRROR_BOOTSTRAP}" ${DEBOOTSTRAP_SCRIPT}
 
 	# Removing old cache
@@ -90,7 +96,8 @@ then
 	cp chroot/var/cache/apt/archives/*.deb cache/packages.bootstrap
 fi
 
-Echo_breakage "Running debootstrap... "
+Print_breakage
+Echo_message "Running debootstrap..."
 
 # Run appropriate bootstrap, i.e. foreign or regular bootstrap
 if [ "${LB_BOOTSTRAP_QEMU_ARCHITECTURE}" = "${LB_ARCHITECTURE}" ]; then
