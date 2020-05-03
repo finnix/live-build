@@ -390,7 +390,7 @@ Prepare_config ()
 	LB_BOOTAPPEND_INSTALL="$(echo ${LB_BOOTAPPEND_INSTALL} | sed -e 's/[ \t]*$//')"
 
 	LB_ISO_APPLICATION="${LB_ISO_APPLICATION:-Debian Live}"
-	LB_ISO_PREPARER="${LB_ISO_PREPARER:-live-build \$VERSION; https://salsa.debian.org/live-team/live-build}"
+	LB_ISO_PREPARER="${LB_ISO_PREPARER:-live-build @LB_VERSION@; https://salsa.debian.org/live-team/live-build}"
 	LB_ISO_PUBLISHER="${LB_ISO_PUBLISHER:-Debian Live project; https://wiki.debian.org/DebianLive; debian-live@lists.debian.org}"
 	LB_ISO_VOLUME="${LB_ISO_VOLUME:-Debian ${LB_DISTRIBUTION} \$(date $DATE_UTC_OPTION +%Y%m%d-%H:%M)}"
 

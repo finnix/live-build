@@ -88,6 +88,7 @@ fi
 
 if [ -n "${LB_ISO_PREPARER}" ] && [ "${LB_ISO_PREPARER}" != "none" ]
 then
+	LB_ISO_PREPARER="$(echo "${LB_ISO_PREPARER}" | sed "s|@LB_VERSION@|${VERSION}|")"
 	XORRISO_OPTIONS="${XORRISO_OPTIONS} -p \"${LB_ISO_PREPARER}\""
 fi
 
