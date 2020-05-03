@@ -215,13 +215,13 @@ _VERSION="${_VERSION:-none}"
 
 _DISTRIBUTION="${LB_DISTRIBUTION_BINARY}"
 
-_DATE=$(date -R)
-_YEAR="$(date +%Y)"
-_MONTH="$(date +%m)"
-_DAY="$(date +%d)"
-_HOUR="$(date +%H)"
-_MINUTE="$(date +%M)"
-_SECOND="$(date +%S)"
+_DATE="$(date -R)"
+_YEAR="$(date -d "${_DATE}" +%Y)"
+_MONTH="$(date -d "${_DATE}" +%m)"
+_DAY="$(date -d "${_DATE}" +%d)"
+_HOUR="$(date -d "${_DATE}" +%H)"
+_MINUTE="$(date -d "${_DATE}" +%M)"
+_SECOND="$(date -d "${_DATE}" +%S)"
 
 _LINUX_VERSIONS="$(for _LINUX in chroot/boot/vmlinuz-* ; do chroot chroot apt-cache policy $(basename ${_LINUX} | sed -e 's|vmlinuz-|linux-image-|') | awk '/Installed: / { print $2 }' ; done | sort -Vru | tr "\n" " ")"
 
