@@ -252,7 +252,7 @@
          style="font-style:normal;font-weight:bold;font-size:13.3333px;line-height:1.2;-inkscape-font-specification:'DejaVu Sans Bold'"
          sodipodi:role="line"
          x="190.68135"
-         y="679.47504">Built: @YEAR@-@MONTH@-@DAY@ @HOUR@:@MINUTE@:@SECOND@</tspan><tspan
+         y="679.47504">Built: @YEAR@-@MONTH@-@DAY@ @HOUR@:@MINUTE@:@SECOND@ @TIMEZONE@</tspan><tspan
          id="tspan3098"
          style="font-style:normal;font-weight:bold;font-size:13.3333px;line-height:1.2;-inkscape-font-specification:'DejaVu Sans Bold'"
          sodipodi:role="line"
