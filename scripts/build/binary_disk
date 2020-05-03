@@ -109,7 +109,9 @@ case "${LB_DEBIAN_INSTALLER}" in
 		;;
 esac
 
-echo "${TITLE} ${VERSION} \"${DISTRIBUTION}\" - ${STRING} ${DISK_LABEL} Binary $(date +%Y%m%d-%H:%M)" > binary/.disk/info
+_DATE="$(date +%Y%m%d-%H:%M)"
+
+echo "${TITLE} ${VERSION} \"${DISTRIBUTION}\" - ${STRING} ${DISK_LABEL} Binary ${_DATE}" > binary/.disk/info
 
 if [ -n "${DISK_TYPE}" ]; then
 	echo "${DISK_TYPE}" > binary/.disk/cd_type
