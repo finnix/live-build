@@ -42,6 +42,14 @@ Prepare_config ()
 	LB_DISTRIBUTION_CHROOT="${LB_DISTRIBUTION_CHROOT:-${LB_DISTRIBUTION}}"
 	LB_DISTRIBUTION_BINARY="${LB_DISTRIBUTION_BINARY:-${LB_DISTRIBUTION_CHROOT}}"
 
+	LB_UTC_TIME="${LB_UTC_TIME:-false}"
+	# Set UTC option for use with `date` where applicable
+	if [ "${LB_UTC_TIME}" = "true" ]; then
+		DATE_UTC_OPTION="--utc"
+	else
+		DATE_UTC_OPTION=""
+	fi
+
 	LB_IMAGE_NAME="${LB_IMAGE_NAME:-live-image}"
 	LB_IMAGE_TYPE="${LB_IMAGE_TYPE:-iso-hybrid}"
 	#for backwards compatibility with hooks
@@ -531,6 +539,10 @@ Validate_config_permitted_values ()
 	fi
 	if [ "${LB_UPDATES}" != "true" ] && [ "${LB_UPDATES}" != "false" ]; then
 		Echo_error "Value for LB_UPDATES (--updates) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_UTC_TIME}" != "true" ] && [ "${LB_UTC_TIME}" != "false" ]; then
+		Echo_error "Value for LB_UTC_TIME (--utc-time) can only be 'true' or 'false'!"
 		exit 1
 	fi
 	if [ "${LB_WIN32_LOADER}" != "true" ] && [ "${LB_WIN32_LOADER}" != "false" ]; then
