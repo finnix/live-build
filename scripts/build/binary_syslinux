@@ -222,6 +222,8 @@ _DAY="$(date -d "${_DATE}" +%d)"
 _HOUR="$(date -d "${_DATE}" +%H)"
 _MINUTE="$(date -d "${_DATE}" +%M)"
 _SECOND="$(date -d "${_DATE}" +%S)"
+_TIMEZONE="$(date -d "${_DATE}" +%Z)"
+_TIMEZONE_NUM="$(date -d "${_DATE}" +%z)"
 
 _LINUX_VERSIONS="$(for _LINUX in chroot/boot/vmlinuz-* ; do chroot chroot apt-cache policy $(basename ${_LINUX} | sed -e 's|vmlinuz-|linux-image-|') | awk '/Installed: / { print $2 }' ; done | sort -Vru | tr "\n" " ")"
 
@@ -250,6 +252,8 @@ do
 			-e "s|@HOUR@|${_HOUR}|g" \
 			-e "s|@MINUTE@|${_MINUTE}|g" \
 			-e "s|@SECOND@|${_SECOND}|g" \
+			-e "s|@TIMEZONE@|${_TIMEZONE}|g" \
+			-e "s|@TIMEZONE_NUM@|${_TIMEZONE_NUM}|g" \
 			-e "s|@LINUX_VERSIONS@|${_LINUX_VERSIONS}|g" \
 			-e "s|@LIVE_BUILD_VERSION@|${LIVE_BUILD_VERSION}|g" \
 			-e "s|@LIVE_BOOT_VERSION@|${_LIVE_BOOT_VERSION}|g" \
