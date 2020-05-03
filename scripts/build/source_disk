@@ -85,7 +85,7 @@ then
 	esac
 fi
 
-_DATE="$(date +%Y%m%d-%H:%M)"
+_DATE="$(date $DATE_UTC_OPTION +%Y%m%d-%H:%M)"
 
 case "${LB_DEBIAN_INSTALLER}" in
 	cdrom)
