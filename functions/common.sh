@@ -10,7 +10,8 @@
 
 
 PROGRAM_NAME="live-build"
-PROGRAM="lb"
+FRONTEND="lb"
+PROGRAM="${FRONTEND} $(basename "${0}")"
 VERSION="$(if [ -e ${LIVE_BUILD}/debian/changelog ]; then sed -e 's/.*(\(.*\)).*/\1/; s/^[0-9]://; q' ${LIVE_BUILD}/debian/changelog; else cat /usr/share/live/build/VERSION; fi)"
 
 LIVE_BUILD_VERSION="${VERSION}"

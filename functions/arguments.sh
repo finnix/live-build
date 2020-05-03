@@ -16,7 +16,7 @@ Arguments ()
 
 	local ARGUMENTS
 	local ERR=0
-	ARGUMENTS="$(getopt --shell sh --name ${PROGRAM} --longoptions $LONGOPTS --options $SHORTOPTS -- "${@}")" || ERR=$?
+	ARGUMENTS="$(getopt --shell sh --name "${PROGRAM}" --longoptions $LONGOPTS --options $SHORTOPTS -- "${@}")" || ERR=$?
 
 	if [ $ERR -eq 1 ]; then
 		Echo_error "invalid argument(s)"

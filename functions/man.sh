@@ -11,18 +11,8 @@
 
 Man ()
 {
-	local BASENAME
-	BASENAME=$(basename ${0})
-	if command -v man >/dev/null
-	then
-		case $BASENAME in
-			$PROGRAM)
-				man ${PROGRAM}
-				;;
-			*)
-				man ${PROGRAM} $(basename ${0})
-				;;
-		esac
+	if command -v man >/dev/null; then
+		man ${PROGRAM}
 	else
 		Echo_warning "man is not installed, falling back to usage output."
 		Usage

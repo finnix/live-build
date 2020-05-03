@@ -15,7 +15,6 @@ set -e
 [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
 # Setting static variables
-PROGRAM="lb config"
 DESCRIPTION="Create configuration for live-build(7)"
 USAGE="${PROGRAM}   [--apt apt|apt-get|aptitude]\n\
 \t    [--apt-ftp-proxy URL]\n\

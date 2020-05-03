@@ -15,6 +15,7 @@ set -e
 [ -n "${LIVE_BUILD}" ] && [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
 # Setting static variables
+PROGRAM="${FRONTEND}"
 DESCRIPTION="Utility to build live systems"
 HELP=""
 USAGE="lb {clean|config|build}"
