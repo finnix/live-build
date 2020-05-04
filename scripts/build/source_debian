@@ -54,9 +54,12 @@ Chroot chroot "sh source-selection.sh"
 rm -f chroot/source-selection.sh
 mv chroot/source-selection.txt ./
 
-for BOOTLOADER in ${LB_BOOTLOADERS}; do
-	echo "${BOOTLOADER}" >> source-selection.txt
-done
+if [ -n "${LB_BOOTLOADER_BIOS}" ]; then
+	echo "${LB_BOOTLOADER_BIOS}" >> source-selection.txt
+fi
+if [ -n "${LB_BOOTLOADER_EFI}" ]; then
+	echo "${LB_BOOTLOADER_EFI}" >> source-selection.txt
+fi
 
 echo "live-build" >> source-selection.txt
 

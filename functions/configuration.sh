@@ -287,24 +287,33 @@ Prepare_config ()
 			;;
 	esac
 
-	if [ -z "${LB_BOOTLOADERS}" ]
-	then
-		case "${LB_ARCHITECTURE}" in
-			amd64|i386)
-				case "${LB_IMAGE_TYPE}" in
-					hdd|netboot)
-						LB_BOOTLOADERS="syslinux"
-						;;
-					*)
-						LB_BOOTLOADERS="syslinux,grub-efi"
-						;;
-				esac
-				;;
-		esac
+	case "${LB_ARCHITECTURE}" in
+		amd64|i386)
+			LB_BOOTLOADER_BIOS="${LB_BOOTLOADER_BIOS:-syslinux}"
+			if ! In_list "${LB_IMAGE_TYPE}" hdd netboot; then
+				LB_BOOTLOADER_EFI="${LB_BOOTLOADER_EFI:-grub-efi}"
+			fi
+			;;
+	esac
+	# Command line option combines BIOS and EFI selection in one.
+	# Also, need to support old config files that held `LB_BOOTLOADERS`.
+	# Note that this function does not perform validation, so none is done here.
+	if [ -n "${LB_BOOTLOADERS}" ]; then
+		LB_BOOTLOADERS="$(echo "${LB_BOOTLOADERS}" | tr "," " ")"
+		unset LB_BOOTLOADER_BIOS
+		unset LB_BOOTLOADER_EFI
+		local BOOTLOADER
+		for BOOTLOADER in $LB_BOOTLOADERS; do
+			case "${BOOTLOADER}" in
+				grub-legacy|grub-pc|syslinux)
+					LB_BOOTLOADER_BIOS="${BOOTLOADER}"
+					;;
+				grub-efi)
+					LB_BOOTLOADER_EFI="${BOOTLOADER}"
+					;;
+			esac
+		done
 	fi
-	LB_BOOTLOADERS="$(echo "${LB_BOOTLOADERS}" | tr "," " ")"
-
-	LB_FIRST_BOOTLOADER=$(echo "${LB_BOOTLOADERS}" | awk '{ print $1 }')
 
 	LB_CHECKSUMS="${LB_CHECKSUMS:-sha256}"
 
@@ -572,9 +581,18 @@ Validate_config_permitted_values ()
 		exit 1
 	fi
 
-	if [ -z "${LB_BOOTLOADERS}" ]; then
+	if [ -z "${LB_BOOTLOADER_BIOS}" ] && [ -z "${LB_BOOTLOADER_EFI}" ]; then
 		Echo_warning "You have specified no bootloaders; I predict that you will experience some problems!"
-	else
+	fi
+	if [ -n "${LB_BOOTLOADER_BIOS}" ] && ! In_list "${LB_BOOTLOADER_BIOS}" grub-legacy grub-pc syslinux; then
+		Echo_error "You have specified an invalid BIOS bootloader."
+		exit 1
+	fi
+	if [ -n "${LB_BOOTLOADER_EFI}" ] && ! In_list "${LB_BOOTLOADER_EFI}" grub-efi; then
+		Echo_error "You have specified an invalid EFI bootloader."
+		exit 1
+	fi
+	if [ -n "${LB_BOOTLOADERS}" ]; then
 		local BOOTLOADER
 		local BOOTLOADERS_BIOS=0
 		local BOOTLOADERS_EFI=0

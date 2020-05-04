@@ -21,7 +21,7 @@ USAGE="${PROGRAM} [--force]"
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
-if ! In_list "grub-efi" $LB_BOOTLOADERS; then
+if [ "${LB_BOOTLOADER_EFI}" != "grub-efi" ]; then
 	exit 0
 fi
 

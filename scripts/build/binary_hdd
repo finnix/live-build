@@ -52,15 +52,11 @@ Check_package chroot /sbin/parted parted
 Check_package host /sbin/fdisk fdisk
 Check_package host /sbin/losetup mount
 
-for BOOTLOADER in ${LB_BOOTLOADERS}; do
-	case "${BOOTLOADER}" in
-		grub-legacy)
-			Check_package chroot /usr/sbin/grub grub
-			;;
-	esac
-done
+case "${LB_BOOTLOADER_BIOS}" in
+	grub-legacy)
+		Check_package chroot /usr/sbin/grub grub
+		;;
 
-case ${LB_FIRST_BOOTLOADER} in
 	syslinux)
 		case ${LB_BINARY_FILESYSTEM} in
 			fat*|ntfs)
@@ -189,8 +185,7 @@ case "${LB_BUILD_WITH_CHROOT}" in
 		Chroot chroot "parted -s ${FREELO} set 1 boot on" || true
 		Chroot chroot "parted -s ${FREELO} set 1 lba off" || true
 
-		if [ "${LB_FIRST_BOOTLOADER}" = "syslinux" ]
-		then
+		if [ "${LB_BOOTLOADER_BIOS}" = "syslinux" ]; then
 			dd if=chroot/usr/lib/$(echo ${_BOOTLOADER} | tr [a-z] [A-Z])/mbr.bin of=${FREELO} bs=440 count=1
 		fi
 		;;
@@ -209,8 +204,7 @@ case "${LB_BUILD_WITH_CHROOT}" in
 		parted -s "${FREELO}" set 1 boot on || true
 		parted -s "${FREELO}" set 1 lba off || true
 
-		if [ "${LB_FIRST_BOOTLOADER}" = "syslinux" ]
-		then
+		if [ "${LB_BOOTLOADER_BIOS}" = "syslinux" ]; then
 			dd if=/usr/lib/$(echo ${_BOOTLOADER} | tr [a-z] [A-Z])/mbr.bin of=${FREELO} bs=440 count=1
 		fi
 		;;
@@ -275,8 +269,7 @@ cp -T ${CP_OPTIONS} binary/ chroot/binary.tmp
 
 FIXME()
 {
-if [ "${LB_FIRST_BOOTLOADER}" = "grub-legacy" ]
-then
+if [ "${LB_BOOTLOADER_BIOS}" = "grub-legacy" ]; then
 
 cat > chroot/grub.sh << EOF
 #!/bin/sh

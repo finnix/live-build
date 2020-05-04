@@ -364,6 +364,7 @@ Local_arguments ()
 				;;
 
 			--bootloaders|--bootloader)
+				# This will be split up into BIOS and EFI selections by `Prepare_config()`
 				LB_BOOTLOADERS="${2}"
 				shift 2
 				;;
@@ -1182,8 +1183,11 @@ LB_BOOTAPPEND_INSTALL="${LB_BOOTAPPEND_INSTALL}"
 # Set boot parameters
 LB_BOOTAPPEND_LIVE_FAILSAFE="${LB_BOOTAPPEND_LIVE_FAILSAFE}"
 
-# Set bootloaders
-LB_BOOTLOADERS="${LB_BOOTLOADERS}"
+# Set BIOS bootloader
+LB_BOOTLOADER_BIOS="${LB_BOOTLOADER_BIOS}"
+
+# Set EFI bootloader
+LB_BOOTLOADER_EFI="${LB_BOOTLOADER_EFI}"
 
 # Set checksums
 LB_CHECKSUMS="${LB_CHECKSUMS}"

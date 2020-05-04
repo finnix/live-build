@@ -21,7 +21,7 @@ USAGE="${PROGRAM} [--force]"
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
-if ! In_list "grub-pc" $LB_BOOTLOADERS; then
+if [ "${LB_BOOTLOADER_BIOS}" != "grub-pc" ]; then
 	exit 0
 fi
 
