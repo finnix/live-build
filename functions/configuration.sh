@@ -696,7 +696,7 @@ Validate_config_dependencies ()
 		fi
 	fi
 
-	if [ "${LB_FIRST_BOOTLOADER}" = "syslinux" ]; then
+	if In_list "syslinux" $LB_BOOTLOADERS; then
 		# syslinux + fat or ntfs, or extlinux + ext[234] or btrfs
 		if ! In_list "${LB_BINARY_FILESYSTEM}" fat16 fat32 ntfs ext2 ext3 ext4 btrfs; then
 			Echo_warning "You have selected values of LB_BOOTLOADERS and LB_BINARY_FILESYSTEM which are incompatible - the syslinux family only support FAT, NTFS, ext[234] or btrfs filesystems."
