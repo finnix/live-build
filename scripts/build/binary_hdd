@@ -61,21 +61,21 @@ for BOOTLOADER in ${LB_BOOTLOADERS}; do
 done
 
 case ${LB_FIRST_BOOTLOADER} in
-		syslinux)
-			case ${LB_BINARY_FILESYSTEM} in
-				fat*|ntfs)
-					_BOOTLOADER=syslinux
-					;;
-				ext[234]|btrfs)
-					_BOOTLOADER=extlinux
-					;;
-				*)
-					Echo_error "syslinux/extlinux doesn't support ${LB_BINARY_FILESYSTEM}"
-					exit 1
-					;;
-			esac
-			Check_package chroot /usr/bin/${_BOOTLOADER} ${_BOOTLOADER}
-			;;
+	syslinux)
+		case ${LB_BINARY_FILESYSTEM} in
+			fat*|ntfs)
+				_BOOTLOADER=syslinux
+				;;
+			ext[234]|btrfs)
+				_BOOTLOADER=extlinux
+				;;
+			*)
+				Echo_error "syslinux/extlinux doesn't support ${LB_BINARY_FILESYSTEM}"
+				exit 1
+				;;
+		esac
+		Check_package chroot /usr/bin/${_BOOTLOADER} ${_BOOTLOADER}
+		;;
 esac
 
 # Restoring cache
