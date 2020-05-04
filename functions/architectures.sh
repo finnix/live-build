@@ -12,23 +12,18 @@
 Check_architectures ()
 {
 	local ARCHITECTURE
-	for ARCHITECTURE in "${@}"
-	do
-		if [ "${ARCHITECTURE}" = "${LB_ARCHITECTURE}" ]
-		then
+	for ARCHITECTURE in "${@}"; do
+		if [ "${ARCHITECTURE}" = "${LB_ARCHITECTURE}" ]; then
 			return
 		fi
 
-		if [ "${ARCHITECTURE}" = "${LB_BOOTSTRAP_QEMU_ARCHITECTURE}" ]
-		then
-			if [ ! -e "${LB_BOOTSTRAP_QEMU_STATIC}" ]
-			then
+		if [ "${ARCHITECTURE}" = "${LB_BOOTSTRAP_QEMU_ARCHITECTURE}" ]; then
+			if [ ! -e "${LB_BOOTSTRAP_QEMU_STATIC}" ]; then
 				Echo_warning "skipping %s, qemu-static binary ${LB_BOOTSTRAP_QEMU_ARCHITECTURE} was not found" "${0}"
 				continue
 			fi
 
-			if [ ! -x "${LB_BOOTSTRAP_QEMU_STATIC}" ]
-			then
+			if [ ! -x "${LB_BOOTSTRAP_QEMU_STATIC}" ]; then
 				Echo_warning "skipping %s, qemu-static binary ${LB_BOOTSTRAP_QEMU_STATIC} is not executable" "${0}"
 				continue
 			fi
@@ -44,8 +39,7 @@ Check_architectures ()
 Check_crossarchitectures ()
 {
 	local HOST
-	if command -v dpkg >/dev/null
-	then
+	if command -v dpkg >/dev/null; then
 		HOST="$(dpkg --print-architecture)"
 	else
 		HOST="$(uname -m)"
@@ -66,23 +60,18 @@ Check_crossarchitectures ()
 			;;
 	esac
 
-	if [ "${LB_ARCHITECTURE}" = "${LB_BOOTSTRAP_QEMU_ARCHITECTURE}" ]
-	then
-
-		if [ ! -e "${LB_BOOTSTRAP_QEMU_STATIC}" ]
-		then
+	if [ "${LB_ARCHITECTURE}" = "${LB_BOOTSTRAP_QEMU_ARCHITECTURE}" ]; then
+		if [ ! -e "${LB_BOOTSTRAP_QEMU_STATIC}" ]; then
 			Echo_warning "skipping %s, qemu-static binary ${LB_BOOTSTRAP_QEMU_ARCHITECTURE} was not found" "${0}"
 			exit 0
 		fi
 
-		if [ ! -x "${LB_BOOTSTRAP_QEMU_STATIC}" ]
-		then
+		if [ ! -x "${LB_BOOTSTRAP_QEMU_STATIC}" ]; then
 			Echo_warning "skipping %s, qemu-static binary ${LB_BOOTSTRAP_QEMU_STATIC} is not executable" "${0}"
 			exit 0
 		fi
 		return
 	fi
-
 
 	Check_architectures "${CROSS}"
 }
