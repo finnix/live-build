@@ -105,56 +105,60 @@ fi
 # Set an explicit modification date
 XORRISO_OPTIONS="${XORRISO_OPTIONS} --modification-date=$(date --utc --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y%m%d%H%m%S00)"
 
-BOOTLOADER_NUMBER=0
-for BOOTLOADER in ${LB_BOOTLOADERS}
-do
-	BOOTLOADER_NUMBER=$(expr ${BOOTLOADER_NUMBER} + 1)
-	# Handle xorriso architecture specific options
+# Enable BIOS bootloader selection
+case "${LB_BOOTLOADER_BIOS}" in
+	grub-legacy)
+		XORRISO_OPTIONS="${XORRISO_OPTIONS} -no-emul-boot -boot-load-size 4 -boot-info-table"
+		XORRISO_OPTIONS="${XORRISO_OPTIONS} -b boot/grub/stage2_eltorito"
+		XORRISO_EXCLUDE="boot/grub/stage2_eltorito"
+		;;
 
-	# If the bootloader number is greater or equal than 2 it means
-	# we are not the first bootloader and thus we need to tell
-	# mkisosfs to add an additional eltorito entry
-	if [ ${BOOTLOADER_NUMBER} -ge 2 ]
-	then
-		XORRISO_OPTIONS="${XORRISO_OPTIONS} -eltorito-alt-boot "
-	fi
-	case "${BOOTLOADER}" in
-		grub-legacy)
-			XORRISO_OPTIONS="${XORRISO_OPTIONS} -no-emul-boot -boot-load-size 4 -boot-info-table"
-			XORRISO_OPTIONS="${XORRISO_OPTIONS} -b boot/grub/stage2_eltorito"
-			XORRISO_EXCLUDE="boot/grub/stage2_eltorito"
-			;;
+	grub-pc)
+		XORRISO_OPTIONS="${XORRISO_OPTIONS} -no-emul-boot -boot-load-size 4 -boot-info-table"
+		XORRISO_OPTIONS="${XORRISO_OPTIONS} -b boot/grub/grub_eltorito"
+		XORRISO_EXCLUDE="boot/grub/grub_eltorito"
+		;;
 
-		grub-pc)
-			XORRISO_OPTIONS="${XORRISO_OPTIONS} -no-emul-boot -boot-load-size 4 -boot-info-table"
-			XORRISO_OPTIONS="${XORRISO_OPTIONS} -b boot/grub/grub_eltorito"
-			XORRISO_EXCLUDE="boot/grub/grub_eltorito"
-			;;
+	syslinux)
+		XORRISO_OPTIONS="${XORRISO_OPTIONS} -b isolinux/isolinux.bin -c isolinux/boot.cat"
+		XORRISO_OPTIONS="${XORRISO_OPTIONS} -no-emul-boot -boot-load-size 4 -boot-info-table"
+		XORRISO_EXCLUDE="isolinux/isolinux.bin"
+		;;
 
-		syslinux)
-			XORRISO_OPTIONS="${XORRISO_OPTIONS} -b isolinux/isolinux.bin -c isolinux/boot.cat"
-			XORRISO_OPTIONS="${XORRISO_OPTIONS} -no-emul-boot -boot-load-size 4 -boot-info-table"
-			XORRISO_EXCLUDE="isolinux/isolinux.bin"
-			;;
+	"")
+		;;
 
-		grub-efi)
-			if [ -e binary/boot/grub/efi.img ]
-			then
-				XORRISO_OPTIONS="${XORRISO_OPTIONS} -e boot/grub/efi.img -no-emul-boot"
-				XORRISO_OPTIONS="${XORRISO_OPTIONS} -isohybrid-gpt-basdat -isohybrid-apm-hfsplus"
-			else
-				Echo_message "No EFI boot code to include in the ISO"
-			fi
-			;;
+	*)
+		Echo_error "Unhandled BIOS bootloader selection"
+		exit 1
+		;;
+esac
 
-		*)
-			Echo_warning "Bootloader on your architecture not yet supported by live-build."
-			Echo_warning "This will produce a most likely not bootable image (Continuing in 5 seconds)."
-			sleep 5
-			;;
-	esac
+# If both BIOS and EFI bootloaders are in play, we need to tell mkisosfs to add
+# an additional eltorito entry.
+if [ -n "${LB_BOOTLOADER_BIOS}" ] && [ -n "${LB_BOOTLOADER_EFI}" ]; then
+	XORRISO_OPTIONS="${XORRISO_OPTIONS} -eltorito-alt-boot"
+fi
 
-done
+# Enable EFI bootloader selection
+case "${LB_BOOTLOADER_EFI}" in
+	grub-efi)
+		if [ -e binary/boot/grub/efi.img ]; then
+			XORRISO_OPTIONS="${XORRISO_OPTIONS} -e boot/grub/efi.img -no-emul-boot"
+			XORRISO_OPTIONS="${XORRISO_OPTIONS} -isohybrid-gpt-basdat -isohybrid-apm-hfsplus"
+		else
+			Echo_message "No EFI boot code to include in the ISO"
+		fi
+		;;
+
+	"")
+		;;
+
+	*)
+		Echo_error "Unhandled EFI bootloader selection"
+		exit 1
+		;;
+esac
 
 #if [ "${LB_DEBIAN_INSTALLER}" != "live" ]
 #then
