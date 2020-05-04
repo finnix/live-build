@@ -31,6 +31,8 @@ fi
 
 Echo_message "Begin installing grub-pc..."
 
+# NOTE: We rely on `binary_grub_cfg` to generate grub.cfg and other configuration files!
+
 # Requiring stage file
 Require_stagefiles config bootstrap
 
@@ -70,8 +72,6 @@ if [ "${LB_BUILD_WITH_CHROOT}" = "false" ]
 then
 	FILES="$(echo ${FILES} | sed -e 's|chroot||g')"
 fi
-
-# We rely on: binary_loopback_cfg to generate grub.cfg and other configuration files
 
 # Copying grub
 cp ${FILES} binary/boot/grub/i386-pc

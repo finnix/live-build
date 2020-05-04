@@ -119,12 +119,14 @@ creates checksums (md5, sha1, and/or sha256) for live image content
 duplicates the chroot directory, to place a copy of what would be the completed live OS root filesystem to one side, allowing the original to continue to be used in executing certain parts of the remainder of the build process
 .IP "\fBlb binary_disk\fR(1)" 4
 creates disk information files to be added to live image
+.IP "\fBlb binary_grub_cfg\fR(1)" 4
+creates the config for grub-pc and grub-efi, and also enables loopback support (which depends upon it) in the live image
 .IP "\fBlb binary_grub-efi\fR(1)" 4
-installs grub2-efi into live image to provide image boot capability
+installs grub-efi (grub2 for EFI) into live image to provide image boot capability. It relies upon \fBlb binary_grub_cfg\fR to create the config.
 .IP "\fBlb binary_grub-legacy\fR(1)" 4
 installs grub into live image to provide image boot capability
 .IP "\fBlb binary_grub-pc\fR(1)" 4
-installs grub2 into live image to provide image boot capability
+installs grub-pc (grub2 for BIOS) into live image to provide image boot capability. It relies upon \fBlb binary_grub_cfg\fR to create the config.
 .IP "\fBlb binary_hdd\fR(1)" 4
 compiles the final live image into an HDD image file
 .IP "\fBlb binary_hooks\fR(1)" 4
@@ -137,8 +139,6 @@ compiles the final live image into an ISO file
 copies the linux\-image into the live image
 .IP "\fBlb binary_loadlin\fR(1)" 4
 bundles a copy of loadlin into the live image
-.IP "\fBlb binary_loopback_cfg\fR(1)" 4
-install loopback-cfg into the live image
 .IP "\fBlb binary_manifest\fR(1)" 4
 creates manifest of packages installed into live OS filesystem, and list of packages to be excluded by a persistence mechanism installing the live OS to disk
 .IP "\fBlb binary_memtest\fR(1)" 4

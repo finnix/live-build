@@ -31,6 +31,8 @@ fi
 
 Echo_message "Begin preparing Grub based EFI support..."
 
+# NOTE: We rely on `binary_grub_cfg` to generate grub.cfg and other configuration files!
+
 # Requiring stage file
 Require_stagefiles config bootstrap
 
@@ -294,8 +296,6 @@ rm -rf chroot/grub-efi-temp-arm64-efi
 rm -rf chroot/grub-efi-temp-arm-efi
 rm -rf chroot/grub-efi-temp-cfg
 rm -rf chroot/grub-efi-temp
-
-# We rely on: binary_loopback_cfg to generate grub.cfg and other configuration files
 
 # Creating stage file
 Create_stagefile

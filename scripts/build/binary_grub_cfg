@@ -15,17 +15,19 @@ set -e
 [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
 # Setting static variables
-DESCRIPTION="Installs loopback.cfg into binary"
+DESCRIPTION="Generates config for grub-pc and grub-efi, and installs loopback support"
 USAGE="${PROGRAM} [--force]"
 
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
-# We avoid checking if we need to be running this bootloader
-# on purpose. The reason: You will always want to have
-# a loopback.cfg file
-# TODO: Add an option to be able to disable this file creation
-Echo_message "Begin installing loopback.cfg..."
+# NOTE: This creates the config used for both grub-pc and grub-efi.
+# It also installs loopback.cfg for looback support, which depends upon that
+# config. Since loopback support is added unconditionally, this script is
+# thus run unconditionally!
+# TODO: Add an option to allow disabling loopback.cfg creation? (and thus conditionally run the script)
+
+Echo_message "Begin installing config for grub-pc and/or grub-pc, and loopback support..."
 
 # Requiring stage file
 Require_stagefiles config bootstrap
@@ -280,6 +282,7 @@ sed -i \
 sed -i -e 's|//|/|g' "${_TARGET}"/*.cfg
 sed -i -e 's|\ $||g' "${_TARGET}"/*.cfg
 
+# Add loopback support
 echo "source /boot/grub/grub.cfg" > "${_TARGET}"/loopback.cfg
 
 # Creating stage file
