@@ -73,5 +73,5 @@ Check_crossarchitectures ()
 		return
 	fi
 
-	Check_architectures "${CROSS}"
+	Check_architectures ${CROSS}
 }
