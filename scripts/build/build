@@ -48,9 +48,6 @@ fi
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
-# Validating config
-Validate_config
-
 Echo_message "live-build ${LIVE_BUILD_VERSION}"
 Echo_message "Building for a ${LB_MODE}/${LB_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE} system"
 

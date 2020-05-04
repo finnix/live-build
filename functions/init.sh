@@ -25,6 +25,12 @@ Init_config_data ()
 	Read_conffiles $(Common_conffiles)
 	Prepare_config
 
+	# Validating config
+	if [ "${CONFIG_VALIDATED}" != "true" ]; then
+		Validate_config
+		export CONFIG_VALIDATED="true"
+	fi
+
 	# Apt v2.0.1 introduced color support, but it needs to be explicitly enabled.
 	# This is done here so that the injection of the option does not get stored in the config file.
 	if [ "${_COLOR_OUT}" = "true" ] && [ "${_COLOR_ERR}" = "true" ]; then
