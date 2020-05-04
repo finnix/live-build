@@ -11,43 +11,34 @@
 
 Check_architectures ()
 {
-	local ARCHITECTURES
-	ARCHITECTURES="${@}" #must be on separate line to 'local' declaration to avoid error
-	local VALID=false
-
 	local ARCHITECTURE
-	for ARCHITECTURE in ${ARCHITECTURES}
+	for ARCHITECTURE in "${@}"
 	do
-		if [ "$(echo ${LB_ARCHITECTURE} | grep ${ARCHITECTURE})" ]
+		if [ "${ARCHITECTURE}" = "${LB_ARCHITECTURE}" ]
 		then
-			VALID=true
-			break
+			return
+		fi
+
+		if [ "${ARCHITECTURE}" = "${LB_BOOTSTRAP_QEMU_ARCHITECTURE}" ]
+		then
+			if [ ! -e "${LB_BOOTSTRAP_QEMU_STATIC}" ]
+			then
+				Echo_warning "skipping %s, qemu-static binary ${LB_BOOTSTRAP_QEMU_ARCHITECTURE} was not found" "${0}"
+				continue
+			fi
+
+			if [ ! -x "${LB_BOOTSTRAP_QEMU_STATIC}" ]
+			then
+				Echo_warning "skipping %s, qemu-static binary ${LB_BOOTSTRAP_QEMU_STATIC} is not executable" "${0}"
+				continue
+			fi
+
+			return
 		fi
 	done
 
-	if [ "${ARCHITECTURES}" = "${LB_BOOTSTRAP_QEMU_ARCHITECTURE}" ]
-	then
-		VALID=true
-
-		if [ ! -e "${LB_BOOTSTRAP_QEMU_STATIC}" ]
-		then
-			Echo_warning "skipping %s, qemu-static binary ${LB_BOOTSTRAP_QEMU_ARCHITECTURE} was not found"
-			VALID=false
-		fi
-
-		if [ ! -x "${LB_BOOTSTRAP_QEMU_STATIC}" ]
-		then
-			Echo_warning "skipping %s, qemu-static binary ${LB_BOOTSTRAP_QEMU_STATIC} is not executable"
-			VALID=false
-		fi
-
-	fi
-
-	if ! $VALID
-	then
-		Echo_warning "skipping %s, foreign architecture(s)." "${0}"
-		exit 0
-	fi
+	Echo_warning "skipping %s, foreign architecture(s)." "${0}"
+	exit 0
 }
 
 Check_crossarchitectures ()
@@ -80,13 +71,13 @@ Check_crossarchitectures ()
 
 		if [ ! -e "${LB_BOOTSTRAP_QEMU_STATIC}" ]
 		then
-			Echo_warning "skipping %s, qemu-static binary ${LB_BOOTSTRAP_QEMU_ARCHITECTURE} was not found"
+			Echo_warning "skipping %s, qemu-static binary ${LB_BOOTSTRAP_QEMU_ARCHITECTURE} was not found" "${0}"
 			exit 0
 		fi
 
 		if [ ! -x "${LB_BOOTSTRAP_QEMU_STATIC}" ]
 		then
-			Echo_warning "skipping %s, qemu-static binary ${LB_BOOTSTRAP_QEMU_STATIC} is not executable"
+			Echo_warning "skipping %s, qemu-static binary ${LB_BOOTSTRAP_QEMU_STATIC} is not executable" "${0}"
 			exit 0
 		fi
 		return
