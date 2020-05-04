@@ -10,6 +10,9 @@
 
 
 # Prepare config for use, filling in defaults where no value provided for instance
+#
+# This function should avoid performing validation checks and failing from invalid values.
+# Validation should be done through `Validate_config()`.
 Prepare_config ()
 {
 	# Colouring is re-evaluated here just incase a hard coded override was given in the saved config
