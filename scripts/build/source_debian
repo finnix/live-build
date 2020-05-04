@@ -89,8 +89,6 @@ esac
 case "${LB_ARCHITECTURE}" in
 	amd64|i386)
 		echo "mtools" >> source-selection.txt
-		echo "syslinux" >> source-selection.txt
-		echo "grub" >> source-selection.txt
 
 		if [ "${LB_MEMTEST}" != "none" ]; then
 			echo "${LB_MEMTEST}" >> source-selection.txt
