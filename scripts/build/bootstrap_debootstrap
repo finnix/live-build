@@ -32,7 +32,7 @@ Check_crossarchitectures
 
 Echo_message "Begin bootstrapping system..."
 
-Check_package chroot bin/debootstrap debootstrap
+Check_package host bin/debootstrap debootstrap
 
 # Checking stage file
 Check_stagefile "bootstrap"
