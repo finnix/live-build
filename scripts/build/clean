@@ -23,7 +23,6 @@ fi
 
 # Setting static variables
 DESCRIPTION="Clean up system build directories"
-HELP=""
 USAGE="${PROGRAM} [--all] [--cache] [--chroot] [--binary] [--purge] [--remove] [--stage] [--source]"
 
 # Reading, preparing and validating config

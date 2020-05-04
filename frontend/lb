@@ -17,7 +17,6 @@ set -e
 # Setting static variables
 PROGRAM="${FRONTEND}"
 DESCRIPTION="Utility to build live systems"
-HELP=""
 USAGE="lb {clean|config|build}"
 
 # This bits of code relies on the fact that we only accept
