@@ -21,7 +21,9 @@ USAGE="${PROGRAM} [--force]"
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
-Check_Any_Bootloader_Role "syslinux"
+if ! In_list "syslinux" $LB_BOOTLOADERS; then
+	exit 0
+fi
 
 Echo_message "Begin installing syslinux..."
 

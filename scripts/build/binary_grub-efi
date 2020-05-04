@@ -21,11 +21,13 @@ USAGE="${PROGRAM} [--force]"
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
-if In_list "${LB_IMAGE_TYPE}" hdd netboot; then
+if ! In_list "grub-efi" $LB_BOOTLOADERS; then
 	exit 0
 fi
 
-Check_Any_Bootloader_Role "grub-efi"
+if In_list "${LB_IMAGE_TYPE}" hdd netboot; then
+	exit 0
+fi
 
 Echo_message "Begin preparing Grub based EFI support..."
 

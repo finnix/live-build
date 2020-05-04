@@ -576,12 +576,35 @@ Validate_config_permitted_values ()
 		Echo_warning "You have specified no bootloaders; I predict that you will experience some problems!"
 	else
 		local BOOTLOADER
-		for BOOTLOADER in ${LB_BOOTLOADERS}; do
-			if ! In_list "${BOOTLOADER}" grub-legacy grub-pc grub-efi syslinux; then
-				Echo_error "The following is not a valid bootloader: '%s'" "${BOOTLOADER}"
-				exit 1
-			fi
+		local BOOTLOADERS_BIOS=0
+		local BOOTLOADERS_EFI=0
+		for BOOTLOADER in $LB_BOOTLOADERS; do
+			# Note, multiple instances of the same bootloader should be rejected,
+			# to avoid issues (e.g. in `binary_iso` bootloader handling).
+			case "${BOOTLOADER}" in
+				grub-legacy|grub-pc|syslinux)
+					BOOTLOADERS_BIOS=$(( $BOOTLOADERS_BIOS + 1 ))
+					;;
+				grub-efi)
+					BOOTLOADERS_EFI=$(( $BOOTLOADERS_EFI + 1 ))
+					;;
+				*)
+					Echo_error "The following is not a valid bootloader: '%s'" "${BOOTLOADER}"
+					exit 1
+					;;
+			esac
 		done
+		if [ $BOOTLOADERS_BIOS -ge 2 ]; then
+			Echo_error "Invalid bootloader selection. Multiple BIOS instances specified."
+			exit 1
+		fi
+		if [ $BOOTLOADERS_EFI -ge 2 ]; then
+			Echo_error "Invalid bootloader selection. Multiple EFI instances specified."
+			exit 1
+		fi
+		if [ $BOOTLOADERS_BIOS -eq 0 ] && [ $BOOTLOADERS_EFI -eq 0 ]; then
+			Echo_warning "You have specified no bootloaders; I predict that you will experience some problems!"
+		fi
 	fi
 
 	local CACHE_STAGE
