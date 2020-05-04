@@ -275,7 +275,7 @@ cp -T ${CP_OPTIONS} binary/ chroot/binary.tmp
 
 FIXME()
 {
-if [ "${LB_FIRST_BOOTLOADER}" = "grub" ]
+if [ "${LB_FIRST_BOOTLOADER}" = "grub-legacy" ]
 then
 
 cat > chroot/grub.sh << EOF
