@@ -39,27 +39,28 @@ Check_package ()
 # Note, reads from _LB_PACKAGES
 Install_package ()
 {
-	if [ -n "${_LB_PACKAGES}" ] && [ "${LB_BUILD_WITH_CHROOT}" != "false" ]
-	then
-		# Record in file to survive failure such that recovery can take place.
-		local LIST_FILE
-		LIST_FILE="$(Installed_tmp_packages_file)"
-		local PACKAGE
-		for PACKAGE in ${_LB_PACKAGES}; do
-			echo "${PACKAGE}" >> "${LIST_FILE}"
-		done
-
-		case "${LB_APT}" in
-			apt|apt-get)
-				Chroot chroot "apt-get install -o APT::Install-Recommends=false ${APT_OPTIONS} ${_LB_PACKAGES}"
-				;;
-
-			aptitude)
-				Chroot chroot "aptitude install --without-recommends ${APTITUDE_OPTIONS} ${_LB_PACKAGES}"
-				;;
-		esac
-		unset _LB_PACKAGES # Can clear this now
+	if [ -z "${_LB_PACKAGES}" ] || [ "${LB_BUILD_WITH_CHROOT}" != "true" ]; then
+		return
 	fi
+
+	# Record in file to survive failure such that recovery can take place.
+	local LIST_FILE
+	LIST_FILE="$(Installed_tmp_packages_file)"
+	local PACKAGE
+	for PACKAGE in ${_LB_PACKAGES}; do
+		echo "${PACKAGE}" >> "${LIST_FILE}"
+	done
+
+	case "${LB_APT}" in
+		apt|apt-get)
+			Chroot chroot "apt-get install -o APT::Install-Recommends=false ${APT_OPTIONS} ${_LB_PACKAGES}"
+			;;
+
+		aptitude)
+			Chroot chroot "aptitude install --without-recommends ${APTITUDE_OPTIONS} ${_LB_PACKAGES}"
+			;;
+	esac
+	unset _LB_PACKAGES # Can clear this now
 }
 
 Remove_package ()
