@@ -822,6 +822,15 @@ Local_arguments ()
 				;;
 		esac
 	done
+
+	# Any remaining arguments should be reported as an unexpected arguments error.
+	if [ $# -ne 0 ]; then
+		local ARG
+		for ARG in "${@}"; do
+			Echo_error "Unexpected argument found: %s" "${ARG}"
+		done
+		exit 1
+	fi
 }
 
 # Processing args such that we have a value for --config if given
