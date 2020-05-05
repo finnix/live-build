@@ -9,7 +9,13 @@
 ## under certain conditions; see COPYING for details.
 
 
-# Note, updates _LB_PACKAGES
+# The file that records temporarily installed packages.
+Installed_tmp_packages_file ()
+{
+	echo "chroot.installed_tmp_pkgs"
+}
+
+# Note, writes to _LB_PACKAGES
 Check_package ()
 {
 	local CHROOT="${1}"
@@ -30,10 +36,19 @@ Check_package ()
 	fi
 }
 
+# Note, reads from _LB_PACKAGES
 Install_package ()
 {
 	if [ -n "${_LB_PACKAGES}" ] && [ "${LB_BUILD_WITH_CHROOT}" != "false" ]
 	then
+		# Record in file to survive failure such that recovery can take place.
+		local LIST_FILE
+		LIST_FILE="$(Installed_tmp_packages_file)"
+		local PACKAGE
+		for PACKAGE in ${_LB_PACKAGES}; do
+			echo "${PACKAGE}" >> "${LIST_FILE}"
+		done
+
 		case "${LB_APT}" in
 			apt|apt-get)
 				Chroot chroot "apt-get install -o APT::Install-Recommends=false ${APT_OPTIONS} ${_LB_PACKAGES}"
@@ -43,22 +58,50 @@ Install_package ()
 				Chroot chroot "aptitude install --without-recommends ${APTITUDE_OPTIONS} ${_LB_PACKAGES}"
 				;;
 		esac
+		unset _LB_PACKAGES # Can clear this now
 	fi
 }
 
 Remove_package ()
 {
-	if [ -n "${_LB_PACKAGES}" ] && [ "${LB_BUILD_WITH_CHROOT}" != "false" ]
-	then
+	if [ "${LB_BUILD_WITH_CHROOT}" != "true" ]; then
+		return
+	fi
+
+	local LIST_FILE
+	LIST_FILE="$(Installed_tmp_packages_file)"
+
+	# List is read from file to ensure packages from any past failure are
+	# included in the list on re-running scripts to recover.
+	local PACKAGES=""
+	if [ -e "${LIST_FILE}" ]; then
+		local PACKAGE
+		while read -r PACKAGE; do
+			PACKAGES="${PACKAGES} ${PACKAGE}"
+		done < "${LIST_FILE}"
+	fi
+
+	if [ -n "${PACKAGES}" ]; then
 		case "${LB_APT}" in
 			apt|apt-get)
-				Chroot chroot "apt-get remove --auto-remove --purge ${APT_OPTIONS} ${_LB_PACKAGES}"
+				Chroot chroot "apt-get remove --auto-remove --purge ${APT_OPTIONS} ${PACKAGES}"
 				;;
 
 			aptitude)
-				Chroot chroot "aptitude purge --purge-unused ${APTITUDE_OPTIONS} ${_LB_PACKAGES}"
+				Chroot chroot "aptitude purge --purge-unused ${APTITUDE_OPTIONS} ${PACKAGES}"
 				;;
 		esac
+	fi
+
+	rm -f "${LIST_FILE}"
+}
+
+#FIXME: make use of this. see commit log that added this for details.
+# Perform temp package removal for recovery if necessary
+Cleanup_temp_packages ()
+{
+	if [ -e "$(Installed_tmp_packages_file)" ]; then
+		Remove_package
 	fi
 }
 

@@ -86,6 +86,8 @@ for ARGUMENT in "${@}"; do
 			rm -f chroot.packages.live chroot.packages.install
 			rm -f chroot.files
 
+			rm -f "$(Installed_tmp_packages_file)"
+
 			rm -f "${STAGEFILES_DIR}"/chroot*
 			;;
 
