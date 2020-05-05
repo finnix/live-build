@@ -273,7 +273,7 @@ case "${LB_BUILD_WITH_CHROOT}" in
 		Save_package_cache binary
 
 		# Removing depends
-		Remove_package
+		Remove_packages
 		;;
 
 	false)

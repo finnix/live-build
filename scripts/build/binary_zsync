@@ -118,7 +118,7 @@ done
 Save_package_cache binary
 
 # Removing depends
-Remove_package
+Remove_packages
 
 # Creating stage file
 Create_stagefile

@@ -74,7 +74,7 @@ then
 	rm -f chroot/root/packages.chroot.cfg
 
 	# Remove dependency
-	Remove_package
+	Remove_packages
 fi
 
 # Creating stage file

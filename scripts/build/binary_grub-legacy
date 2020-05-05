@@ -229,7 +229,7 @@ sed -i -e 's|\ $||g' binary/boot/grub/menu.lst
 Save_package_cache binary
 
 # Removing depends
-Remove_package
+Remove_packages
 
 # Creating stage file
 Create_stagefile

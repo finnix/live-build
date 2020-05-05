@@ -187,7 +187,7 @@ case "${_ACTION}" in
 				fi
 
 				# Removing depends
-				Remove_package
+				Remove_packages
 			else
 				Echo_warning "Local packages must be named with suffix '_all.deb' or '_\$architecture.deb'."
 			fi

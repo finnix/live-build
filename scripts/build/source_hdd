@@ -144,7 +144,7 @@ if $MAKEDEV; then
 fi
 
 # Removing depends
-Remove_package
+Remove_packages
 
 # Creating stage file
 Create_stagefile

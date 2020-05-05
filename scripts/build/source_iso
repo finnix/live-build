@@ -112,7 +112,7 @@ mv chroot/source.iso ${LB_IMAGE_NAME}-source.iso
 rm -f chroot/source.sh
 
 # Removing depends
-Remove_package
+Remove_packages
 
 # Creating stage file
 Create_stagefile

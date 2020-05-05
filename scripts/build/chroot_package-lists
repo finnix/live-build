@@ -88,7 +88,7 @@ done
 
 rm -f chroot/bin/Packages
 
-Remove_package
+Remove_packages
 
 # Saving cache
 Save_package_cache chroot

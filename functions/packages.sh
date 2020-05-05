@@ -63,7 +63,7 @@ Install_packages ()
 	unset _LB_PACKAGES # Can clear this now
 }
 
-Remove_package ()
+Remove_packages ()
 {
 	if [ "${LB_BUILD_WITH_CHROOT}" != "true" ]; then
 		return
@@ -102,7 +102,7 @@ Remove_package ()
 Cleanup_temp_packages ()
 {
 	if [ -e "$(Installed_tmp_packages_file)" ]; then
-		Remove_package
+		Remove_packages
 	fi
 }
 

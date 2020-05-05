@@ -341,7 +341,7 @@ mv chroot/binary.img ${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.img
 Save_package_cache binary
 
 # Removing depends
-Remove_package
+Remove_packages
 
 # Creating stage file
 Create_stagefile

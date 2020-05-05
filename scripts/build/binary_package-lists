@@ -159,7 +159,7 @@ then
 	rm -rf chroot/binary.deb
 
 	# Removing depends
-	Remove_package
+	Remove_packages
 
 	# Saving cache
 	Save_package_cache chroot

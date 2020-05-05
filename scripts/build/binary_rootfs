@@ -147,7 +147,7 @@ case "${LB_CHROOT_FILESYSTEM}" in
 					rm -rf chroot/chroot
 
 					# Removing depends
-					Remove_package
+					Remove_packages
 				fi
 				;;
 
@@ -213,7 +213,7 @@ case "${LB_CHROOT_FILESYSTEM}" in
 					rm -rf chroot/chroot
 
 					# Removing depends
-					Remove_package
+					Remove_packages
 				fi
 				;;
 
@@ -326,7 +326,7 @@ case "${LB_CHROOT_FILESYSTEM}" in
 					rm -rf chroot/chroot
 
 					# Removing depends
-					Remove_package
+					Remove_packages
 				fi
 				;;
 
