@@ -166,7 +166,7 @@ case "${_ACTION}" in
 				Check_package chroot /usr/bin/apt-ftparchive apt-utils
 
 				# Installing depends
-				Install_package
+				Install_packages
 
 				# Generate Packages and Packages.gz
 				echo "cd /root/packages && apt-ftparchive packages . > Packages" | Chroot chroot sh

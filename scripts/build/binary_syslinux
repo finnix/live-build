@@ -101,7 +101,7 @@ Check_package chroot /usr/bin/rsvg-convert librsvg2-bin
 Restore_package_cache binary
 
 # Installing depends
-Install_package
+Install_packages
 
 # Ensure fresh
 rm -rf ${_TARGET}

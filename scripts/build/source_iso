@@ -50,7 +50,7 @@ Acquire_lockfile
 Check_package chroot /usr/bin/xorriso xorriso
 
 # Installing depends
-Install_package
+Install_packages
 
 # Remove old iso image
 if [ -f ${LB_IMAGE_NAME}-source.iso ]

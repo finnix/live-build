@@ -90,7 +90,7 @@ case "${LB_UEFI_SECURE_BOOT}" in
 	auto)
 		# Use Check_installed, as Check_package will error out immediately
 		set +e
-		Install_package
+		Install_packages
 		set -e
 		Check_installed chroot /usr/lib/grub/${_SB_EFI_PLATFORM}-efi-signed/gcd${_SB_EFI_NAME}.efi.signed \
 			grub-efi-${_SB_EFI_DEB}-signed
@@ -110,7 +110,7 @@ case "${LB_UEFI_SECURE_BOOT}" in
 			grub-efi-${_SB_EFI_DEB}-signed
 		Check_package chroot /usr/lib/shim/shim${_SB_EFI_NAME}.efi.signed \
 			shim-signed
-		Install_package
+		Install_packages
 		Echo_message "UEFI Secure Boot support enabled."
 		;;
 	disable)
@@ -123,7 +123,7 @@ _LB_PACKAGES="${_PRE_SB_PACKAGES}"
 Restore_package_cache binary
 
 # Installing depends
-Install_package
+Install_packages
 
 # Cleanup files that we generate
 rm -rf binary/boot/efi.img binary/boot/grub/i386-efi/ binary/boot/grub/x86_64-efi binary/boot/grub/arm64-efi binary/boot/grub/arm-efi

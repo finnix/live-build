@@ -40,7 +40,7 @@ then
 	Check_package chroot /usr/bin/debconf-set-selections debconf
 
 	# Install dependency
-	Install_package
+	Install_packages
 
 	for PRESEED in config/preseed/*.cfg config/preseed/*.cfg.chroot chroot/root/packages.chroot.cfg
 	do

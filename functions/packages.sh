@@ -37,7 +37,7 @@ Check_package ()
 }
 
 # Note, reads from _LB_PACKAGES
-Install_package ()
+Install_packages ()
 {
 	if [ -z "${_LB_PACKAGES}" ] || [ "${LB_BUILD_WITH_CHROOT}" != "true" ]; then
 		return

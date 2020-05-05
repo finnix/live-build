@@ -53,7 +53,7 @@ Check_package chroot /usr/bin/grub-mkimage grub-pc
 Restore_package_cache binary
 
 # Installing depends
-Install_package
+Install_packages
 
 # Copying templates
 mkdir -p binary/boot/grub/i386-pc

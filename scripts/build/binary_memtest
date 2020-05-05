@@ -70,7 +70,7 @@ esac
 Restore_package_cache binary
 
 # Installing depends
-Install_package
+Install_packages
 
 # Setting destination directory
 case "${LB_INITRAMFS}" in

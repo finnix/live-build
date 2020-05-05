@@ -47,7 +47,7 @@ Check_package chroot /usr/bin/apt-ftparchive apt-utils
 Restore_package_cache binary
 
 # Installing depends
-Install_package
+Install_packages
 
 if [ "${_DEBUG}" = "true" ]
 then

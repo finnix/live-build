@@ -54,7 +54,7 @@ Check_package chroot /usr/bin/grep-aptavail dctrl-tools
 Restore_package_cache chroot
 
 # Installing depends
-Install_package
+Install_packages
 
 if [ -e "${LIVE_BUILD}/share/bin/Packages" ]
 then

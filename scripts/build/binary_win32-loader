@@ -48,7 +48,7 @@ case "${LB_ARCHITECTURE}" in
 		Restore_package_cache binary
 
 		# Installing depends
-		Install_package
+		Install_packages
 
 		if [ "${LB_BUILD_WITH_CHROOT}" = "true" ]
 		then

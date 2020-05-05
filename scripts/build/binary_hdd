@@ -78,7 +78,7 @@ esac
 Restore_package_cache binary
 
 # Installing depends
-Install_package
+Install_packages
 
 # Remove old binary
 if [ -f ${LB_IMAGE_NAME}.img ]

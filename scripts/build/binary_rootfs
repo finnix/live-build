@@ -78,7 +78,7 @@ case "${LB_CHROOT_FILESYSTEM}" in
 		Restore_package_cache binary
 
 		# Installing depends
-		Install_package
+		Install_packages
 
 		# Remove old image
 		if [ -f binary/${INITFS}/filesystem.${LB_CHROOT_FILESYSTEM} ]
@@ -176,7 +176,7 @@ case "${LB_CHROOT_FILESYSTEM}" in
 		Restore_package_cache binary
 
 		# Installing depends
-		Install_package
+		Install_packages
 
 		# Remove old jffs2 image
 		if [ -f binary/${INITFS}/filesystem.jffs2 ]
@@ -251,7 +251,7 @@ case "${LB_CHROOT_FILESYSTEM}" in
 		Restore_package_cache binary
 
 		# Installing depends
-		Install_package
+		Install_packages
 
 		Echo_message "Preparing squashfs image..."
 		Echo_message "This may take a while."

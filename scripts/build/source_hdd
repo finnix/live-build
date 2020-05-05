@@ -48,7 +48,7 @@ Check_package host /sbin/fdisk fdisk
 Check_package host /sbin/losetup mount
 
 # Installing depends
-Install_package
+Install_packages
 
 # Remove old source
 if [ -f ${LB_IMAGE_NAME}-source.img ]
