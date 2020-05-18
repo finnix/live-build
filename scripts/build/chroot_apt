@@ -121,11 +121,11 @@ case "${_ACTION}" in
 		then
 			CHROOT_FILE="chroot/etc/apt/preferences"
 			echo >> ${CHROOT_FILE}
-			echo "# Added by lb_chroot_apt ${@}" >> ${CHROOT_FILE}
+			echo "# Added by lb_chroot_apt ${_ACTION} ${@}" >> ${CHROOT_FILE}
 			echo "Package: *" >> ${CHROOT_FILE}
 			echo "Pin: release o=config/packages.chroot" >> ${CHROOT_FILE}
 
-			case "${1}" in
+			case "${_ACTION}" in
 				install)
 					# Ensure local packages have priority
 					echo "Pin-Priority: 1001" >> ${CHROOT_FILE}
