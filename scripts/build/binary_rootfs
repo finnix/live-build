@@ -37,7 +37,7 @@ case "${LB_ARCHITECTURE}" in
 		LINUX="vmlinuz"
 		;;
 
-	powerpc)
+	powerpc|ppc64el)
 		LINUX="vmlinux"
 		;;
 esac
