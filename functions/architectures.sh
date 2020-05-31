@@ -51,6 +51,10 @@ Check_crossarchitectures ()
 			CROSS="amd64 i386"
 			;;
 
+		arm64)
+			CROSS="arm64 armhf armel"
+			;;
+
 		powerpc|ppc64)
 			CROSS="powerpc ppc64"
 			;;
