@@ -67,10 +67,15 @@ Check_package chroot /sbin/mkfs.msdos dosfstools
 # By default (auto) do a best-effort build: if the signed binaries are available use
 # them, but don't fail if they are not, just print a warning.
 case "${LB_ARCHITECTURE}" in
-	amd64|i386)
+	amd64)
 		_SB_EFI_PLATFORM="x86_64"
 		_SB_EFI_NAME="x64"
 		_SB_EFI_DEB="amd64"
+		;;
+	i386)
+		_SB_EFI_PLATFORM="i386"
+		_SB_EFI_NAME="ia32"
+		_SB_EFI_DEB="ia32"
 		;;
 	arm64)
 		_SB_EFI_PLATFORM="arm64"
