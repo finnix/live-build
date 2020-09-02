@@ -45,7 +45,18 @@ Prepare_config ()
 	LB_DISTRIBUTION_CHROOT="${LB_DISTRIBUTION_CHROOT:-${LB_DISTRIBUTION}}"
 	LB_DISTRIBUTION_BINARY="${LB_DISTRIBUTION_BINARY:-${LB_DISTRIBUTION_CHROOT}}"
 
-	LB_UTC_TIME="${LB_UTC_TIME:-false}"
+	# Do a reproducible build, i.e. is SOURCE_DATE_EPOCH already set?
+	_REPRODUCIBLE="${SOURCE_DATE_EPOCH:-false}"
+	if [ "${_REPRODUCIBLE}" != "false" ]; then
+		_REPRODUCIBLE=true
+	fi
+	# For a reproducible build, use UTC per default, otherwise the local time
+	_UTC_TIME_DEFAULT=${_REPRODUCIBLE}
+
+	# The current time: for a unified timestamp throughout the building process
+ 	export SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-$(date '+%s')}"
+
+	LB_UTC_TIME="${LB_UTC_TIME:-${_UTC_TIME_DEFAULT}}"
 	# Set UTC option for use with `date` where applicable
 	if [ "${LB_UTC_TIME}" = "true" ]; then
 		DATE_UTC_OPTION="--utc"
