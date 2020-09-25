@@ -16,6 +16,9 @@ live-build (1:20191222) UNRELEASED; urgency=medium
   * archives: add 'pass' param validation check (Closes: #952841)
   * archives: fix deb-src entry exclusion (Closes: #952842)
 
+  [ Raphaël Hertzog ]
+  * Update renamed lintian tag names in lintian overrides.
+
  -- Raphaël Hertzog <hertzog@debian.org>  Thu, 05 Mar 2020 11:03:30 +0100
 
 live-build (1:20191221) unstable; urgency=medium
