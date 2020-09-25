@@ -105,8 +105,8 @@ Prepare_config ()
 	LB_APT_SOURCE_ARCHIVES="${LB_APT_SOURCE_ARCHIVES:-true}"
 	LB_APT_INDICES="${LB_APT_INDICES:-true}"
 
-	APT_OPTIONS="${APT_OPTIONS:---yes}"
-	APTITUDE_OPTIONS="${APTITUDE_OPTIONS:---assume-yes}"
+	APT_OPTIONS="${APT_OPTIONS:---yes -o Acquire::Retries=5}"
+	APTITUDE_OPTIONS="${APTITUDE_OPTIONS:---assume-yes -o Acquire::Retries=5}"
 
 	BZIP2_OPTIONS="${BZIP2_OPTIONS:--6}"
 	GZIP_OPTIONS="${GZIP_OPTIONS:--6}"
