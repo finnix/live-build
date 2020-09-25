@@ -1,7 +1,7 @@
 Tests: build-default-image
 Depends: live-build,
-Restrictions: needs-root, allow-stderr,
+Restrictions: needs-root, allow-stderr, needs-internet
 
 Tests: build-kali-image
 Depends: live-build, git, ca-certificates, curl,
-Restrictions: needs-root, allow-stderr, needs-recommends, flaky,
+Restrictions: needs-root, allow-stderr, needs-recommends, flaky, needs-internet
