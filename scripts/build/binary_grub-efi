@@ -256,7 +256,7 @@ size=\$((\$size + 4096 * 4))
 blocks=\$(((\$size / 1024 + 55) / 32 * 32 ))
 
 rm -f ${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img
-mkfs.msdos -C "${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img" \$blocks >/dev/null
+mkfs.msdos -C "${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img" \$blocks -i ${SOURCE_DATE_EPOCH} >/dev/null
 mmd -i "${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img" ::EFI
 mmd -i "${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img" ::EFI/boot
 mcopy -m -o -i "${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img" ${_CHROOT_DIR}/grub-efi-temp/EFI/boot/*.efi \
