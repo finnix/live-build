@@ -287,7 +287,18 @@ case "${LB_CHROOT_FILESYSTEM}" in
 			esac
 		fi
 
-		MKSQUASHFS_OPTIONS="${MKSQUASHFS_OPTIONS} -comp xz"
+		# Set squashfs compression type or default to xz
+		if [ -n "${LB_CHROOT_SQUASHFS_COMPRESSION_TYPE}" ]
+		then 
+			MKSQUASHFS_OPTIONS="${MKSQUASHFS_OPTIONS} -comp ${LB_CHROOT_SQUASHFS_COMPRESSION_TYPE}"
+		else 
+			MKSQUASHFS_OPTIONS="${MKSQUASHFS_OPTIONS} -comp xz"
+		fi
+
+		if [ -n "${LB_CHROOT_SQUASHFS_COMPRESSION_LEVEL}" ]
+		then
+			MKSQUASHFS_OPTIONS="${MKSQUASHFS_OPTIONS} -Xcompression-level ${LB_CHROOT_SQUASHFS_COMPRESSION_LEVEL}"
+		fi
 
 		case "${LB_BUILD_WITH_CHROOT}" in
 			true)

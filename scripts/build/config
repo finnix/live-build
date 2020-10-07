@@ -46,6 +46,8 @@ USAGE="${PROGRAM} [--apt apt|apt-get|aptitude]\n\
 \t    [--cache-stages STAGE|\"STAGES\"]\n\
 \t    [--checksums md5|sha1|sha224|sha256|sha384|sha512|none]\n\
 \t    [--chroot-filesystem ext2|ext3|ext4|squashfs|jffs2|none]\n\
+\t    [--chroot-squashfs-compression-level LEVEL]\n\
+\t    [--chroot-squashfs-compression-type gzip|lzma|lzo|lz4|xz|zstd]\n\
 \t    [--clean]\n\
 \t    [--color]\n\
 \t    [--compression bzip2|gzip|lzip|xz|none]\n\
@@ -138,8 +140,9 @@ Local_arguments ()
 		bootloader:,bootloaders:,bootstrap-qemu-arch:,bootstrap-qemu-exclude:,
 		bootstrap-qemu-static:,breakpoints,build-with-chroot:,
 		cache:,cache-indices:,cache-packages:,cache-stages:,checksums:,
-		chroot-filesystem:,clean,color,compression:,conffile:,config:,
-		debconf-frontend:,debconf-priority:,debian-installer:,
+		chroot-filesystem:,chroot-squashfs-compression-level:,
+		chroot-squashfs-compression-type:,clean,color,compression:,conffile:,
+		config:,debconf-frontend:,debconf-priority:,debian-installer:,
 		debian-installer-distribution:,debian-installer-gui:,
 		debian-installer-preseedfile:,debootstrap-options:,debootstrap-script:,
 		debug,distribution:,distribution-binary:,distribution-chroot:,dump,
@@ -416,6 +419,16 @@ Local_arguments ()
 
 			--chroot-filesystem)
 				LB_CHROOT_FILESYSTEM="${2}"
+				shift 2
+				;;
+
+			--chroot-squashfs-compression-level)
+				LB_CHROOT_SQUASHFS_COMPRESSION_LEVEL="${2}"
+				shift 2
+				;;
+
+			--chroot-squashfs-compression-type)
+				LB_CHROOT_SQUASHFS_COMPRESSION_TYPE="${2}"
 				shift 2
 				;;
 
@@ -1135,6 +1148,12 @@ cat > config/chroot << EOF
 
 # Set chroot filesystem
 LB_CHROOT_FILESYSTEM="${LB_CHROOT_FILESYSTEM}"
+
+# Set chroot squashfs compression level
+LB_CHROOT_SQUASHFS_COMPRESSION_LEVEL="${LB_CHROOT_SQUASHFS_COMPRESSION_LEVEL}"
+
+# Set chroot squashfs compression type
+LB_CHROOT_SQUASHFS_COMPRESSION_TYPE="${LB_CHROOT_SQUASHFS_COMPRESSION_TYPE}"
 
 # Set union filesystem
 LB_UNION_FILESYSTEM="${LB_UNION_FILESYSTEM}"
