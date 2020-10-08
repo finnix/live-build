@@ -230,11 +230,11 @@ DESTDIR_GI="${DESTDIR}/gtk"
 DAILY_DI_URL="https://d-i.debian.org/daily-images/${LB_ARCHITECTURE}/daily"
 
 case "${LB_DERIVATIVE}" in
-	false)
+	true)
 		if [ "${LB_DEBIAN_INSTALLER_DISTRIBUTION}" = "daily" ]
 		then
-			# FIXME: variable name should be decupled from derivatves
-			LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="sid"
+			# FIXME: variable name should be decoupled from derivatives
+			LB_DEBIAN_INSTALLER_DISTRIBUTION="sid"
 
 			URL="${DAILY_DI_URL}"
 		else
@@ -242,7 +242,7 @@ case "${LB_DERIVATIVE}" in
 		fi
 		;;
 
-	true)
+	false)
 		if [ "${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}" = "daily" ]
 		then
 			LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="sid"
