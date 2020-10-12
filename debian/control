@@ -27,6 +27,7 @@ Recommends:
  live-boot-doc,
  live-config-doc,
  live-manual-html | live-manual,
+ systemd-container,
  wget,
  xz-utils,
 Suggests:
