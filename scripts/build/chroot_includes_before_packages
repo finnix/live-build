@@ -15,13 +15,13 @@ set -e
 [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
 # Setting static variables
-DESCRIPTION="Copy files into chroot"
+DESCRIPTION="Copy files into chroot before packages have been installed"
 USAGE="${PROGRAM} [--force]"
 
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
-Echo_message "Begin copying chroot includes..."
+Echo_message "Begin copying chroot includes before packages have been installed..."
 
 # Requiring stage file
 Require_stagefiles config bootstrap
@@ -32,16 +32,10 @@ Check_stagefile
 # Acquire lock file
 Acquire_lockfile
 
-if Find_files config/includes.chroot/
+if Find_files config/includes.chroot_before_packages/
 then
-	# Copying includes
-	cd config/includes.chroot
-	Echo_message "Creating a tarball with files from includes.chroot..."
-	tar cf "${OLDPWD}"/chroot/includes.chroot.tar .
-	cd "${OLDPWD}"
-	Echo_message "Extracting the tarball in the chroot..."
-	Chroot chroot "tar -xvf includes.chroot.tar --no-same-owner --keep-directory-symlink --overwrite"
-	rm chroot/includes.chroot.tar
+	# Copying includes into chroot
+	Chroot_copy_dir config/includes.chroot_before_packages/
 fi
 
 # Creating stage file

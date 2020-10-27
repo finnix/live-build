@@ -1312,7 +1312,8 @@ mkdir -p config/hooks/normal
 mkdir -p config/includes
 mkdir -p config/includes.binary
 mkdir -p config/includes.bootstrap
-mkdir -p config/includes.chroot
+mkdir -p config/includes.chroot_after_packages
+mkdir -p config/includes.chroot_before_packages
 mkdir -p config/includes.installer
 mkdir -p config/includes.source
 mkdir -p config/package-lists
