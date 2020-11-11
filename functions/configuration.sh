@@ -736,7 +736,7 @@ Validate_config_dependencies ()
 		exit 1
 	fi
 
-	if [ "${LB_DEBIAN_INSTALLER}" != "none" ]; then
+	if [ "${LB_DEBIAN_INSTALLER}" != "none" ] && [ "${LB_DEBIAN_INSTALLER}" != "live" ]; then
 		# d-i true, no caching
 		if ! In_list "bootstrap" ${LB_CACHE_STAGES} || [ "${LB_CACHE}" != "true" ] || [ "${LB_CACHE_PACKAGES}" != "true" ]
 		then
