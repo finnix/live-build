@@ -283,7 +283,7 @@ sed -i -e "s#@MEMTEST_VERSION@#${LB_MEMTEST}#g" -e "s#@MEMTEST@#/${MEMTEST_PATH}
 # Replace placeholder for optional install menu entries include
 if [ "${LB_DEBIAN_INSTALLER}" = "none" ]; then
 	rm -f "${_TARGET}"/install.cfg
-	sed -i "#@OPTIONAL_INSTALLER_INCLUDE@#d" "${_TARGET}"/menu.cfg
+	sed -i "/@OPTIONAL_INSTALLER_INCLUDE@/d" "${_TARGET}"/menu.cfg
 else
 	sed -i "s#@OPTIONAL_INSTALLER_INCLUDE@#include install.cfg#g" "${_TARGET}"/menu.cfg
 fi
@@ -291,7 +291,7 @@ fi
 # Replace placeholder for optional memtest menu entry include
 if [ ! -f "binary/${MEMTEST_PATH}" ]; then
 	rm -f "${_TARGET}"/memtest.cfg
-	sed -i -e "#@OPTIONAL_MEMTEST_INCLUDE@#d" "${_TARGET}"/utilities.cfg
+	sed -i -e "/@OPTIONAL_MEMTEST_INCLUDE@/d" "${_TARGET}"/utilities.cfg
 else
 	sed -i -e "s#@OPTIONAL_MEMTEST_INCLUDE@#include memtest.cfg#g" "${_TARGET}"/utilities.cfg
 fi

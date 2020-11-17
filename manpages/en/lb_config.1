@@ -68,6 +68,10 @@
 .br
 	[\fB\-\-chroot\-filesystem\fR ext2|ext3|ext4|squashfs|jffs2|none]
 .br
+	[\fB\-\-chroot\-squashfs\-compression\-level\fR LEVEL]
+.br
+	[\fB\-\-chroot\-squashfs\-compression\-type\fR gzip|lzma|lzo|lz4|xz|zstd]
+.br
 	[\fB\-\-clean\fR]
 .br
 	[\fB\-\-color\fR]
@@ -292,6 +296,10 @@ sets which stages should be cached (a comma or space separated list). By default
 defines if the binary image should contain a file called XXXsums.txt, where XXX is one of the mentioned checksum types. This file lists all files on the image together with their checksums. This in turn can be used by \fIlive\-boot\fR(7)'s built\-in integrity\-check to verify the medium if specified at boot prompt. In general, this should not be 'none' and is an important feature of live system released to the public. However, during development of very big images it can save some time by not calculating the checksums.
 .IP "\fB\-\-chroot\-filesystem\fR ext2|ext3|ext4|squashfs|jffs2|none" 4
 defines which filesystem type should be used for the root filesystem image. If you use none, then no filesystem image is created and the root filesystem content is copied on the binary image filesystem as flat files. Depending on what binary filesystem you have chosen, it may not be possible to build with such a plain root filesystem, e.g. fat16/fat32 will not work as linux does not support running directly on them.
+.IP "\fB\-\-chroot\-squashfs\-compression\-level\fR LEVEL" 4
+defines the compression level that is used for the root filesystem image if squashfs is used. Each compression algorithm supports different levels (or none). You can look them up in the \fImksquashfs\fR help. Defaults to the default setting in \fImksquashfs\fR.
+.IP "\fB\-\-chroot\-squashfs\-compression\-type\fR gzip|lzma|lzo|lz4|xz|zstd" 4
+defines the compression algorithm that is used for the root filesystem image if squashfs is used. Defaults to xz.
 .IP "\fB\-\-clean\fR" 4
 minimizes config directory by automatically removing unused and thus empty subdirectories.
 .IP "\fB\-\-color\fR" 4

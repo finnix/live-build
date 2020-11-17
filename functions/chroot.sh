@@ -56,3 +56,23 @@ Chroot_package_list() {
 
 	dpkg-query --admindir=${CHROOT}/var/lib/dpkg -W -f'${Package}\n'
 }
+
+Chroot_copy_dir() {
+	local DIR="${1}"
+	local NAME="${2:-$(basename ${DIR})}"
+
+	Check_installed host /usr/bin/rsync rsync
+	if [ "${INSTALL_STATUS}" -eq "0" ]
+	then
+		Echo_message "Copying ${NAME} into chroot using rsync..."
+		rsync -Klrv --chown=0:0 "${DIR}" chroot/
+	else
+		cd "${DIR}"
+		Echo_message "Creating a tarball with files from ${NAME}..."
+		tar cf "${OLDPWD}"/chroot/"${NAME}".tar .
+		cd "${OLDPWD}"
+		Echo_message "Extracting the tarball in the chroot..."
+		Chroot chroot "tar -xvf ${NAME}.tar --no-same-owner --keep-directory-symlink --overwrite"
+		rm chroot/"${NAME}".tar
+	fi
+}

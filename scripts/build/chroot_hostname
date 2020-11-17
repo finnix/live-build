@@ -67,9 +67,15 @@ EOF
 		Acquire_lockfile
 
 		# Copying hostname from includes, if existing
-		if [ -e config/includes.chroot/etc/hostname ]
+		INCLUDE_DIR=$(select_includes_chroot)
+		# includes.chroot_before_packages takes the highest precedence
+		if [ -e config/includes.chroot_before_packages/etc/hostname ]
 		then
-			cp -a config/includes.chroot/etc/hostname chroot/etc/hostname
+			INCLUDE_DIR="includes.chroot_before_packages"
+		fi
+		if [ -n "${INCLUDE_DIR}" ] && [ -e config/"${INCLUDE_DIR}"/etc/hostname ]
+		then
+			cp -a config/"${INCLUDE_DIR}"/etc/hostname chroot/etc/hostname
 		fi
 
 		Echo_message "Deconfiguring file /bin/hostname"

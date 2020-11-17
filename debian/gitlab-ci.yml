@@ -4,6 +4,7 @@ include:
   - https://salsa.debian.org/salsa-ci-team/pipeline/raw/master/pipeline-jobs.yml
 
 stages:
+  - provisioning
   - build
   - publish
   - test
@@ -12,6 +13,7 @@ stages:
 pages:
   image: registry.salsa.debian.org/salsa-ci-team/ci-image-git-buildpackage:latest
   stage: deploy
+  allow_failure: true
   artifacts:
     paths:
       - public
