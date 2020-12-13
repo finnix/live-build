@@ -90,6 +90,7 @@ fi
 
 if [ -n "${LB_ISO_VOLUME}" ] && [ "${LB_ISO_VOLUME}" != "none" ]
 then
+	LB_ISO_VOLUME="$(echo "${LB_ISO_VOLUME}" | sed "s|@ISOVOLUME_TS@|$(date $DATE_UTC_OPTION +%Y%m%d-%H:%M --date @${SOURCE_DATE_EPOCH:-$(date +%s)})|")"
 	XORRISO_OPTIONS="${XORRISO_OPTIONS} -V \"${LB_ISO_VOLUME}\""
 fi
 
