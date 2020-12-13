@@ -116,7 +116,7 @@ Prepare_config ()
 
 	if gzip --help | grep -qs "\-\-rsyncable"
 	then
-		GZIP_OPTIONS="$(echo ${GZIP_OPTIONS} | sed -e 's|--rsyncable||') --rsyncable"
+		GZIP_OPTIONS="$(echo ${GZIP_OPTIONS} | sed -E -e 's|[ ]?--rsyncable||') --rsyncable"
 	fi
 
 	LB_CACHE="${LB_CACHE:-true}"
