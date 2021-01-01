@@ -116,7 +116,7 @@ Prepare_config ()
 
 	if gzip --help | grep -qs "\-\-rsyncable"
 	then
-		GZIP_OPTIONS="$(echo ${GZIP_OPTIONS} | sed -e 's|--rsyncable||') --rsyncable"
+		GZIP_OPTIONS="$(echo ${GZIP_OPTIONS} | sed -E -e 's|[ ]?--rsyncable||') --rsyncable"
 	fi
 
 	LB_CACHE="${LB_CACHE:-true}"
@@ -408,7 +408,8 @@ Prepare_config ()
 	LB_ISO_APPLICATION="${LB_ISO_APPLICATION:-Debian Live}"
 	LB_ISO_PREPARER="${LB_ISO_PREPARER:-live-build @LB_VERSION@; https://salsa.debian.org/live-team/live-build}"
 	LB_ISO_PUBLISHER="${LB_ISO_PUBLISHER:-Debian Live project; https://wiki.debian.org/DebianLive; debian-live@lists.debian.org}"
-	LB_ISO_VOLUME="${LB_ISO_VOLUME:-Debian ${LB_DISTRIBUTION} \$(date $DATE_UTC_OPTION +%Y%m%d-%H:%M)}"
+	# The string @ISOVOLUME_TS@ must have the same length as the output of `date +%Y%m%d-%H:%M`
+	LB_ISO_VOLUME="${LB_ISO_VOLUME:-Debian ${LB_DISTRIBUTION} @ISOVOLUME_TS@}"
 
 	LB_HDD_LABEL="${LB_HDD_LABEL:-DEBIAN_LIVE}"
 	LB_HDD_SIZE="${LB_HDD_SIZE:-auto}"
@@ -736,7 +737,7 @@ Validate_config_dependencies ()
 		exit 1
 	fi
 
-	if [ "${LB_DEBIAN_INSTALLER}" != "none" ]; then
+	if [ "${LB_DEBIAN_INSTALLER}" != "none" ] && [ "${LB_DEBIAN_INSTALLER}" != "live" ]; then
 		# d-i true, no caching
 		if ! In_list "bootstrap" ${LB_CACHE_STAGES} || [ "${LB_CACHE}" != "true" ] || [ "${LB_CACHE_PACKAGES}" != "true" ]
 		then
