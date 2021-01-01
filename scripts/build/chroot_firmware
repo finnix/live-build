@@ -86,9 +86,7 @@ fi
 # Drop section and keep package names only
 for _PACKAGE in ${FIRMWARE_PACKAGES}
 do
-	_PACKAGE_BASE="$(echo ${_PACKAGE} | awk -F/ '{ print $NF }')"
-	if [ "${_PACKAGE_BASE}" = "raspi-firmware" ]; then continue; fi
-	echo "${_PACKAGE_BASE}" >> chroot/root/packages.chroot
+	echo $(echo ${_PACKAGE} | awk -F/ '{ print $NF }') >> chroot/root/packages.chroot
 done
 
 # Some known licenses required to be accepted
