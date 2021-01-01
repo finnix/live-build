@@ -137,13 +137,13 @@ do
 	then
 		case "${LB_DEBIAN_INSTALLER}" in
 			cdrom)
-				cp "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE}_udeb_include" binary/.disk/udeb_include
+				cp -a "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE}_udeb_include" binary/.disk/udeb_include
 				;;
 			netinst|live)
-				cp "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE}_netinst_udeb_include" binary/.disk/udeb_include
+				cp -a "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE}_netinst_udeb_include" binary/.disk/udeb_include
 				;;
 			businesscard)
-				cp "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE}_businesscard_udeb_include" binary/.disk/udeb_include
+				cp -a "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE}_businesscard_udeb_include" binary/.disk/udeb_include
 				;;
 			none|netboot)
 				;;

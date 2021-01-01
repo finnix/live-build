@@ -53,9 +53,9 @@ case "${LB_ARCHITECTURE}" in
 		if [ "${LB_BUILD_WITH_CHROOT}" = "true" ]
 		then
 			# Copying win32-loader
-			cp -r chroot/usr/share/win32/* binary
+			cp -a chroot/usr/share/win32/* binary
 		else
-			cp -r usr/share/win32/* binary
+			cp -a usr/share/win32/* binary
 		fi
 
 		mv binary/win32-loader.exe binary/setup.exe

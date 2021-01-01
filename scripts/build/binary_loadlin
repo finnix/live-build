@@ -60,8 +60,10 @@ case "${LB_ARCHITECTURE}" in
 
 		# Copying loadlin
 		mkdir -p binary/tools
-		gunzip -c "${_PREFIX}/usr/lib/loadlin/loadlin.exe.gz" > binary/tools/loadlin.exe
-		gunzip -c "${_PREFIX}/usr/share/doc/loadlin/manual.txt.gz" > binary/tools/loadlin.txt
+		cp -a "${_PREFIX}/usr/lib/loadlin/loadlin.exe.gz" binary/tools
+		cp -a "${_PREFIX}/usr/share/doc/loadlin/manual.txt.gz" binary/tools/loadlin.txt.gz
+		gunzip binary/tools/loadlin.exe.gz
+		gunzip binary/tools/loadlin.txt.gz
 
 		# Saving cache
 		Save_package_cache binary

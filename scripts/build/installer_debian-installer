@@ -178,7 +178,7 @@ Install_file() {
 	mkdir -p "${TARGET}"/"${LETTER}"/"${SOURCE}"
 
 	# Move files
-	cp "${FILE}" "${TARGET}"/"${LETTER}"/"${SOURCE}"
+	cp -a "${FILE}" "${TARGET}"/"${LETTER}"/"${SOURCE}"
 }
 
 # Set absolute directory for caching; we require it when we call Download_file
@@ -215,7 +215,7 @@ Download_file () {
 		CP_OPTIONS="-l"
 	fi
 
-	cp -f ${CP_OPTIONS} -- "${_LB_CACHE_FILE}" "${_LB_TARGET}"
+	cp -a -f ${CP_OPTIONS} -- "${_LB_CACHE_FILE}" "${_LB_TARGET}"
 }
 
 VMLINUZ_DI="vmlinuz"
@@ -550,7 +550,7 @@ EOF
 		# Copy from cache if available, otherwise download
 		if [ -f "${UDEB_CACHE_DIR}/${_UDEB_FILENAME}" ]; then
 			Echo_debug "Copying %s from cache" "${UDEB}"
-			cp "${UDEB_CACHE_DIR}/${_UDEB_FILENAME}" ./
+			cp -a "${UDEB_CACHE_DIR}/${_UDEB_FILENAME}" ./
 		else
 			Echo_debug "Downloading %s" "${UDEB}"
 			wget ${WGET_OPTIONS} "${LB_PARENT_MIRROR_CHROOT}/${UDEB}"
@@ -566,7 +566,7 @@ EOF
 			# Copy from cache if available, otherwise download
 			if [ -f "${UDEB_CACHE_DIR}/${_UDEB_FILENAME}" ]; then
 				Echo_debug "Copying %s from cache" "${UDEB}"
-				cp "${UDEB_CACHE_DIR}/${_UDEB_FILENAME}" ./
+				cp -a "${UDEB_CACHE_DIR}/${_UDEB_FILENAME}" ./
 			else
 				Echo_debug "Downloading %s" "${UDEB}"
 				wget ${WGET_OPTIONS} "${LB_MIRROR_CHROOT}/${UDEB}"
@@ -578,7 +578,7 @@ EOF
 	Echo_debug "Refreshing udeb cache"
 	rm -rf "${UDEB_CACHE_DIR}"
 	mkdir -p "${UDEB_CACHE_DIR}"
-	cp *.udeb "${UDEB_CACHE_DIR}"
+	cp -a *.udeb "${UDEB_CACHE_DIR}"
 
 	Echo_debug "Including local udebs"
 

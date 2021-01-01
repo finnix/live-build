@@ -89,11 +89,11 @@ mkdir -p "${DESTDIR}"
 # Installing memtest
 case "${LB_BUILD_WITH_CHROOT}" in
 	true)
-		cp chroot/boot/${LB_MEMTEST}.bin "${DESTDIR}"/memtest
+		cp -a chroot/boot/${LB_MEMTEST}.bin "${DESTDIR}"/memtest
 		;;
 
 	false)
-		cp /boot/${LB_MEMTEST}.bin "${DESTDIR}"/memtest
+		cp -a /boot/${LB_MEMTEST}.bin "${DESTDIR}"/memtest
 		;;
 esac
 

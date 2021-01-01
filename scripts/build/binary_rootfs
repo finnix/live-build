@@ -278,11 +278,11 @@ case "${LB_CHROOT_FILESYSTEM}" in
 
 			case "${LB_BUILD_WITH_CHROOT}" in
 				true)
-					cp config/rootfs/squashfs.sort chroot
+					cp -a config/rootfs/squashfs.sort chroot
 					;;
 
 				false)
-					cp config/rootfs/squashfs.sort .
+					cp -a config/rootfs/squashfs.sort .
 					;;
 			esac
 		fi
@@ -304,7 +304,7 @@ case "${LB_CHROOT_FILESYSTEM}" in
 			true)
 				if [ -e config/rootfs/excludes ]
 				then
-					cp config/rootfs/excludes chroot/excludes
+					cp -a config/rootfs/excludes chroot/excludes
 
 					MKSQUASHFS_OPTIONS="${MKSQUASHFS_OPTIONS} -wildcards -ef /excludes"
 				fi

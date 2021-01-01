@@ -50,13 +50,17 @@ case "${LB_INITRAMFS}" in
 esac
 
 # Add filesystem.packages
-cp chroot.packages.live "binary/${INITFS}/filesystem.${SUFFIX}"
-echo "$(diff chroot.packages.live chroot.packages.install | awk '/^< / { print $2 }')" \
+cp -a chroot.packages.live "binary/${INITFS}/filesystem.${SUFFIX}"
+diff chroot.packages.live chroot.packages.install | awk '/^< / { print $2 }' \
 	> "binary/${INITFS}/filesystem.${SUFFIX}-remove"
+if [ ! -s "binary/${INITFS}/filesystem.${SUFFIX}-remove" ]
+then
+	rm "binary/${INITFS}/filesystem.${SUFFIX}-remove"
+fi
 
-cp chroot.packages.live ${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.packages
+cp -a chroot.packages.live ${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.packages
 
-cp chroot.files ${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.files
+cp -a chroot.files ${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.files
 
 # Creating stage file
 Create_stagefile

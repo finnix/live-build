@@ -165,8 +165,8 @@ gen_efi_boot_img(){
 	local outdir="grub-efi-temp-\${platform}"
 	"\${LIVE_BUILD_PATH}/efi-image" "${_CHROOT_DIR}/\$outdir" "\$platform" "\$efi_name" "\$netboot_prefix"
 	mkdir -p ${_CHROOT_DIR}/grub-efi-temp/EFI/boot
-	mcopy -n -i ${_CHROOT_DIR}/\$outdir/efi.img '::efi/boot/boot*.efi' ${_CHROOT_DIR}/grub-efi-temp/EFI/boot
-	cp -r "${_CHROOT_DIR}"/\$outdir/* "${_CHROOT_DIR}/grub-efi-temp/"
+	mcopy -m -n -i ${_CHROOT_DIR}/\$outdir/efi.img '::efi/boot/boot*.efi' ${_CHROOT_DIR}/grub-efi-temp/EFI/boot
+	cp -a "${_CHROOT_DIR}"/\$outdir/* "${_CHROOT_DIR}/grub-efi-temp/"
 
 	# Secure Boot support:
 	# - create the EFI directory in the ESP with uppercase letters to make
@@ -188,9 +188,9 @@ gen_efi_boot_img(){
 	if [ -r ${_CHROOT_DIR}/usr/lib/grub/\$platform-signed/gcd\$efi_name.efi.signed -a \
 			-r ${_CHROOT_DIR}/usr/lib/shim/shim\$efi_name.efi.signed -a \
 			"${LB_UEFI_SECURE_BOOT}" != "disable" ]; then
-		cp ${_CHROOT_DIR}/usr/lib/grub/\$platform-signed/gcd\$efi_name.efi.signed \
+		cp -a ${_CHROOT_DIR}/usr/lib/grub/\$platform-signed/gcd\$efi_name.efi.signed \
 			${_CHROOT_DIR}/grub-efi-temp/EFI/boot/grub\$efi_name.efi
-		cp ${_CHROOT_DIR}/usr/lib/shim/shim\$efi_name.efi.signed \
+		cp -a ${_CHROOT_DIR}/usr/lib/shim/shim\$efi_name.efi.signed \
 			${_CHROOT_DIR}/grub-efi-temp/EFI/boot/boot\$efi_name.efi
 	fi
 }
@@ -259,12 +259,12 @@ rm -f ${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img
 mkfs.msdos -C "${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img" \$blocks >/dev/null
 mmd -i "${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img" ::EFI
 mmd -i "${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img" ::EFI/boot
-mcopy -o -i "${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img" ${_CHROOT_DIR}/grub-efi-temp/EFI/boot/*.efi \
+mcopy -m -o -i "${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img" ${_CHROOT_DIR}/grub-efi-temp/EFI/boot/*.efi \
 	"::EFI/boot"
 
 mmd -i "${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img" ::boot
 mmd -i "${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img" ::boot/grub
-mcopy -o -i "${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img" ${_CHROOT_DIR}/grub-efi-temp-cfg/grub.cfg \
+mcopy -m -o -i "${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img" ${_CHROOT_DIR}/grub-efi-temp-cfg/grub.cfg \
 	"::boot/grub"
 END
 
@@ -294,7 +294,7 @@ rm -f chroot/grub-efi-temp/bootnetaa64.efi
 rm -f chroot/grub-efi-temp/bootnetarm.efi
 
 mkdir -p binary
-cp -r chroot/grub-efi-temp/* binary/
+cp -a chroot/grub-efi-temp/* binary/
 rm -rf chroot/grub-efi-temp-x86_64-efi
 rm -rf chroot/grub-efi-temp-i386-efi
 rm -rf chroot/grub-efi-temp-arm64-efi
