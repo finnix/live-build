@@ -53,6 +53,8 @@ search --file --set=root /.disk/info
 set prefix=(\$root)/boot/grub
 source \$prefix/$platform/grub.cfg
 EOF
+# Set the timestamps
+find $workdir -newermt "$(date -d@${SOURCE_DATE_EPOCH} '+%Y-%m-%d %H:%M:%S')" -exec touch '{}' -d@${SOURCE_DATE_EPOCH} ';'
 
 mkdir -p "$outdir/boot/grub/$platform"
 (for i in /usr/lib/grub/$platform/part_*.mod; do
@@ -78,6 +80,8 @@ mkfs.msdos -C "$outdir/efi.img" \
 	    / 32 * 32 )) -i ${SOURCE_DATE_EPOCH}
 mmd -i "$outdir/efi.img" ::efi
 mmd -i "$outdir/efi.img" ::efi/boot
+# Set the timestamp of the .efi file
+touch "$workdir/boot$efi_name.efi" -d@${SOURCE_DATE_EPOCH}
 mcopy -m -i "$outdir/efi.img" "$workdir/boot$efi_name.efi" \
 	"::efi/boot/boot$efi_name.efi"
 
