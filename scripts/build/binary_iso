@@ -176,6 +176,8 @@ mkdir -p binary/.disk
 cat <<-EOF >binary/.disk/mkisofs
 xorriso -as mkisofs ${XORRISO_OPTIONS} -o ${IMAGE} binary
 EOF
+# Set the timestamp
+find binary/.disk -newermt "$(date -d@${SOURCE_DATE_EPOCH} '+%Y-%m-%d %H:%M:%S')" -printf "%y %p\n" -exec touch '{}' -d@${SOURCE_DATE_EPOCH} ';' >> binary.modified_timestamps
 
 case "${LB_BUILD_WITH_CHROOT}" in
 	true)

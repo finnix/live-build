@@ -68,6 +68,9 @@ if [ "${LB_BUILD_WITH_CHROOT}" != "true" ]; then
 	lb chroot_prep install "${CHROOT_PREP_MOUNTS}" "${@}"
 fi
 
+# Apply SOURCE_DATE_EPOCH to all modified and created files
+find binary -newermt "$(date -d@${SOURCE_DATE_EPOCH} '+%Y-%m-%d %H:%M:%S')" -printf "%y %p\n" -exec touch '{}' -d@${SOURCE_DATE_EPOCH} --no-dereference ';' > binary.modified_timestamps
+
 # Building images
 lb binary_iso "${@}"
 lb binary_onie "${@}"
