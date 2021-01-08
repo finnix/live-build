@@ -262,7 +262,7 @@ Prepare_config ()
 	LB_BINARY_FILESYSTEM="${LB_BINARY_FILESYSTEM:-fat32}"
 
 	case "${LB_PARENT_DISTRIBUTION_BINARY}" in
-		sid)
+		sid|unstable)
 			LB_SECURITY="${LB_SECURITY:-false}"
 			;;
 
@@ -272,7 +272,7 @@ Prepare_config ()
 	esac
 
 	case "${LB_PARENT_DISTRIBUTION_BINARY}" in
-		sid)
+		sid|unstable)
 			LB_UPDATES="${LB_UPDATES:-false}"
 			;;
 
