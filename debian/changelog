@@ -18,6 +18,7 @@ live-build (1:20191222) UNRELEASED; urgency=medium
 
   [ Raphaël Hertzog ]
   * Update renamed lintian tag names in lintian overrides.
+  * Update renamed lintian tag names in lintian overrides.
 
  -- Raphaël Hertzog <hertzog@debian.org>  Thu, 05 Mar 2020 11:03:30 +0100
 
