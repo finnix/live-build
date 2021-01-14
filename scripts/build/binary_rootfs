@@ -265,16 +265,16 @@ case "${LB_CHROOT_FILESYSTEM}" in
 		# Remove stale squashfs image
 		rm -f chroot/filesystem.squashfs
 
-		MKSQUASHFS_OPTIONS="${MKSQUASHFS_OPTIONS} -no-progress"
+		MKSQUASHFS_OPTIONS="-no-progress ${MKSQUASHFS_OPTIONS}"
 
 		if [ "${_VERBOSE}" = "true" ]
 		then
-			MKSQUASHFS_OPTIONS="${MKSQUASHFS_OPTIONS} -info"
+			MKSQUASHFS_OPTIONS="-info ${MKSQUASHFS_OPTIONS}"
 		fi
 
 		if [ -f config/rootfs/squashfs.sort ]
 		then
-			MKSQUASHFS_OPTIONS="${MKSQUASHFS_OPTIONS} -sort squashfs.sort"
+			MKSQUASHFS_OPTIONS="-sort squashfs.sort ${MKSQUASHFS_OPTIONS}"
 
 			case "${LB_BUILD_WITH_CHROOT}" in
 				true)
@@ -290,14 +290,14 @@ case "${LB_CHROOT_FILESYSTEM}" in
 		# Set squashfs compression type or default to xz
 		if [ -n "${LB_CHROOT_SQUASHFS_COMPRESSION_TYPE}" ]
 		then 
-			MKSQUASHFS_OPTIONS="${MKSQUASHFS_OPTIONS} -comp ${LB_CHROOT_SQUASHFS_COMPRESSION_TYPE}"
+			MKSQUASHFS_OPTIONS="-comp ${LB_CHROOT_SQUASHFS_COMPRESSION_TYPE} ${MKSQUASHFS_OPTIONS}"
 		else 
-			MKSQUASHFS_OPTIONS="${MKSQUASHFS_OPTIONS} -comp xz"
+			MKSQUASHFS_OPTIONS="-comp xz ${MKSQUASHFS_OPTIONS}"
 		fi
 
 		if [ -n "${LB_CHROOT_SQUASHFS_COMPRESSION_LEVEL}" ]
 		then
-			MKSQUASHFS_OPTIONS="${MKSQUASHFS_OPTIONS} -Xcompression-level ${LB_CHROOT_SQUASHFS_COMPRESSION_LEVEL}"
+			MKSQUASHFS_OPTIONS="-Xcompression-level ${LB_CHROOT_SQUASHFS_COMPRESSION_LEVEL} ${MKSQUASHFS_OPTIONS}"
 		fi
 
 		case "${LB_BUILD_WITH_CHROOT}" in
@@ -306,7 +306,7 @@ case "${LB_CHROOT_FILESYSTEM}" in
 				then
 					cp -a config/rootfs/excludes chroot/excludes
 
-					MKSQUASHFS_OPTIONS="${MKSQUASHFS_OPTIONS} -wildcards -ef /excludes"
+					MKSQUASHFS_OPTIONS="-wildcards -ef /excludes ${MKSQUASHFS_OPTIONS}"
 				fi
 
 				# Create image
@@ -344,7 +344,7 @@ case "${LB_CHROOT_FILESYSTEM}" in
 			false)
 				if [ -e config/rootfs/excludes ]
 				then
-					MKSQUASHFS_OPTIONS="${MKSQUASHFS_OPTIONS} -wildcards -ef config/rootfs/excludes"
+					MKSQUASHFS_OPTIONS="-wildcards -ef config/rootfs/excludes ${MKSQUASHFS_OPTIONS}"
 				fi
 
 				nice -n 19 mksquashfs chroot binary/${INITFS}/filesystem.squashfs ${MKSQUASHFS_OPTIONS}
