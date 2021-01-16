@@ -265,7 +265,10 @@ case "${LB_CHROOT_FILESYSTEM}" in
 		# Remove stale squashfs image
 		rm -f chroot/filesystem.squashfs
 
-		MKSQUASHFS_OPTIONS="-no-progress ${MKSQUASHFS_OPTIONS}"
+		if [ "${_QUIET}" = "true" ]
+		then
+			MKSQUASHFS_OPTIONS="-no-progress ${MKSQUASHFS_OPTIONS}"
+		fi
 
 		if [ "${_VERBOSE}" = "true" ]
 		then
