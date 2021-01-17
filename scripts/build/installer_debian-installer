@@ -366,7 +366,7 @@ then
 	Echo_debug "DI_FIRMWARE_PACKAGES: %s" "${DI_FIRMWARE_PACKAGES}"
 
 	# Set apt command prefix
-	_LB_APT_COMMAND="apt-get ${APT_OPTIONS} -o Dir::Cache=/binary.deb -o Dir::State::status=/dev/null -o APT::Install-Recommends=false --download-only"
+	_LB_APT_COMMAND="apt-get ${APT_OPTIONS} -o Dir::Cache=/binary.deb -o Dir::State::status=/dev/null -o APT::Install-Recommends=false -o Debug::NoLocking=true --download-only"
 
 	if [ "${LB_DEBIAN_INSTALLER}" = "live" ]
 	then
