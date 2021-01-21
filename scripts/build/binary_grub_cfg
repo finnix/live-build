@@ -27,7 +27,7 @@ Init_config_data "${@}"
 # thus run unconditionally!
 # TODO: Add an option to allow disabling loopback.cfg creation? (and thus conditionally run the script)
 
-Echo_message "Begin installing config for grub-pc and/or grub-pc, and loopback support..."
+Echo_message "Begin installing config for grub-pc and/or grub-efi, and loopback support..."
 
 # Requiring stage file
 Require_stagefiles config bootstrap
