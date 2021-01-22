@@ -3,5 +3,5 @@ Depends: live-build,
 Restrictions: needs-root, allow-stderr, needs-internet
 
 Tests: build-kali-image
-Depends: live-build, git, ca-certificates, curl,
-Restrictions: needs-root, allow-stderr, needs-recommends, flaky, needs-internet
+Depends: live-build, git, ca-certificates, curl, apt-utils, bzip2, cpio, file, wget, xz-utils
+Restrictions: needs-root, allow-stderr, flaky, needs-internet
