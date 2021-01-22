@@ -1,4 +1,4 @@
-live-build (1:20191222) UNRELEASED; urgency=medium
+live-build (1:20210122) unstable; urgency=medium
 
   [ Raphaël Hertzog ]
   * Get rid of extraneous whitespace showing up in syslinux menu
@@ -18,6 +18,7 @@ live-build (1:20191222) UNRELEASED; urgency=medium
   * Document our autopkgtest tests as needing internet access
   * Update renamed lintian tag names in lintian overrides.
   * Don't fail if one of the package lists expands to an empty list
+  * Fix a small info message
 
   [ David Hewitt ]
   * binary_syslinux: Accommodate LB_INITRAMFS not live-boot
@@ -179,9 +180,25 @@ live-build (1:20191222) UNRELEASED; urgency=medium
   * Delay resolving the timestamp for the ISO volume to the moment the
     ISO-image is created
   * Preserve timestamps
+  * Add new manpage to the list of translatable files
+  * Ensure that SOURCE_DATE_EPOCH is always set in all sub scripts. When
+    SOURCE_DATE_EPOCH was already set before 'lb config', also enable UTC
+    timestamps.
+  * SOURCE_DATE_EPOCH is always set
+  * Use SOURCE_DATE_EPOCH for 'now' in the boot splash image
+  * Use SOURCE_DATE_EPOCH for 'now' in .disk/info
+  * Use SOURCE_DATE_EPOCH for the partition-id of /efi.img
+  * Use SOURCE_DATE_EPOCH for the partition-id of /boot/grub/efi.img
+  * Set timestamp embedded in EFI files
+  * Set timestamp in embedded files of the installer
+  * Apply SOURCE_DATE_EPOCH to newly generated files and create a log
+  * Bugfix: do not create /dev/lock and /dev/lock-frontend
 
   [ Marcel Partap ]
   * For 32bit UEFI secure boot, the package name is grub-efi-ia32-signed
+  * binary_rootfs stage: give custom MKSQUASHFS_OPTIONS precedence
+  * binary_rootfs stage: disable mksquashfs progress bar only in quiet mode
+  * binary_rootfs stage: slightly lower mksquashfs nice levels (19 -> 17)
 
   [ Thore Sommer ]
   * Add option to change compression algorithm and level for squashfs.
@@ -196,7 +213,16 @@ live-build (1:20191222) UNRELEASED; urgency=medium
   [ Unit 193 ]
   * Add 'unstable' as a valid distribution and link to sid.
 
- -- Raphaël Hertzog <raphael@offensive-security.com>  Tue, 12 Jan 2021 14:57:38 +0100
+  [ Jan Kot ]
+  * bootstrap_debootstrap: change debootstrap path to /usr/sbin/debootstrap
+  * packages.sh: check for /etc/debian_version existance rather than
+    dpkg-query aviability
+  * exit.sh: fix selinux mountpoint
+
+  [ Steev Klimaszewski ]
+  * Add arm64 udeb include files
+
+ -- Raphaël Hertzog <raphael@offensive-security.com>  Fri, 22 Jan 2021 15:13:32 +0100
 
 live-build (1:20191221) unstable; urgency=medium
 
