@@ -19,6 +19,7 @@ live-build (1:20210122) unstable; urgency=medium
   * Update renamed lintian tag names in lintian overrides.
   * Don't fail if one of the package lists expands to an empty list
   * Fix a small info message
+  * autopkgtest: get rid of deprecated needs-recommends feature
 
   [ David Hewitt ]
   * binary_syslinux: Accommodate LB_INITRAMFS not live-boot
