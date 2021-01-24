@@ -131,9 +131,9 @@ case "${LB_DEBIAN_INSTALLER}" in
 esac
 
 #FIXME review the netboot case
-for LOCATION in "${LIVE_BUILD}/data/debian-cd" /usr/share/live/build/data/debian-cd
+for LOCATION in /usr/share/live/build/data/debian-cd "${LIVE_BUILD}/data/debian-cd"
 do
-	if [ -e "${LOCATION}" ]
+	if [ -e "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}" ]
 	then
 		case "${LB_DEBIAN_INSTALLER}" in
 			cdrom)
