@@ -1,2 +1,2 @@
 # Ignore those errors, it's not nice but works currently
-wayward-symbolic-link-target-in-source share/bootloaders/*
+absolute-symbolic-link-target-in-source share/bootloaders/*

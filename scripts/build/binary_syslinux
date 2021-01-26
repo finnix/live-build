@@ -217,7 +217,7 @@ _VERSION="${_VERSION:-none}"
 
 _DISTRIBUTION="${LB_DISTRIBUTION_BINARY}"
 
-_DATE="$(date $DATE_UTC_OPTION -R)"
+_DATE="$(date $DATE_UTC_OPTION -R -d@${SOURCE_DATE_EPOCH})"
 _YEAR="$(date $DATE_UTC_OPTION -d "${_DATE}" +%Y)"
 _MONTH="$(date $DATE_UTC_OPTION -d "${_DATE}" +%m)"
 _DAY="$(date $DATE_UTC_OPTION -d "${_DATE}" +%d)"

@@ -79,7 +79,7 @@ Create_apt_sources_list ()
 		case "${LB_MODE}" in
 			debian)
 				case "${PARENT_DISTRIBUTION}" in
-					sid)
+					sid|unstable)
 						# do nothing
 						;;
 
@@ -112,7 +112,7 @@ Create_apt_sources_list ()
 	if [ "${LB_BACKPORTS}" = "true" ]; then
 		case "${LB_MODE}" in
 			debian)
-				if [ "${PARENT_DISTRIBUTION}" != "sid" ]; then
+				if [ "${PARENT_DISTRIBUTION}" != "sid" ] && [ "${PARENT_DISTRIBUTION}" != "unstable" ]; then
 					echo "deb ${PARENT_MIRROR} ${PARENT_DISTRIBUTION}-backports ${LB_PARENT_ARCHIVE_AREAS}" >> "${PARENT_LIST_FILE}"
 					echo "deb-src ${PARENT_MIRROR} ${PARENT_DISTRIBUTION}-backports ${LB_PARENT_ARCHIVE_AREAS}" >> "${PARENT_LIST_FILE}"
 				fi

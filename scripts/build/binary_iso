@@ -99,12 +99,12 @@ fi
 
 if [ -n "${LB_ISO_VOLUME}" ] && [ "${LB_ISO_VOLUME}" != "none" ]
 then
-	LB_ISO_VOLUME="$(echo "${LB_ISO_VOLUME}" | sed "s|@ISOVOLUME_TS@|$(date $DATE_UTC_OPTION +%Y%m%d-%H:%M --date @${SOURCE_DATE_EPOCH:-$(date +%s)})|")"
+	LB_ISO_VOLUME="$(echo "${LB_ISO_VOLUME}" | sed "s|@ISOVOLUME_TS@|$(date $DATE_UTC_OPTION -d@${SOURCE_DATE_EPOCH} +%Y%m%d-%H:%M)|")"
 	XORRISO_OPTIONS="${XORRISO_OPTIONS} -V \"${LB_ISO_VOLUME}\""
 fi
 
 # Set an explicit modification date
-XORRISO_OPTIONS="${XORRISO_OPTIONS} --modification-date=$(date --utc --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y%m%d%H%M%S00)"
+XORRISO_OPTIONS="${XORRISO_OPTIONS} --modification-date=$(date --utc -d@${SOURCE_DATE_EPOCH} +%Y%m%d%H%M%S00)"
 
 # Enable BIOS bootloader selection
 case "${LB_BOOTLOADER_BIOS}" in
@@ -176,6 +176,8 @@ mkdir -p binary/.disk
 cat <<-EOF >binary/.disk/mkisofs
 xorriso -as mkisofs ${XORRISO_OPTIONS} -o ${IMAGE} binary
 EOF
+# Set the timestamp
+find binary/.disk -newermt "$(date -d@${SOURCE_DATE_EPOCH} '+%Y-%m-%d %H:%M:%S')" -printf "%y %p\n" -exec touch '{}' -d@${SOURCE_DATE_EPOCH} ';' >> binary.modified_timestamps
 
 case "${LB_BUILD_WITH_CHROOT}" in
 	true)

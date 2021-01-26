@@ -126,7 +126,7 @@ Check_installed ()
 			INSTALL_STATUS=1
 		fi
 	else
-		if command -v dpkg-query >/dev/null
+		if [ -e /etc/debian_version ]
 		then
 			if dpkg-query -s "${PACKAGE}" 2> /dev/null | grep -qs "Status: install"
 			then

@@ -366,7 +366,7 @@ then
 	Echo_debug "DI_FIRMWARE_PACKAGES: %s" "${DI_FIRMWARE_PACKAGES}"
 
 	# Set apt command prefix
-	_LB_APT_COMMAND="apt-get ${APT_OPTIONS} -o Dir::Cache=/binary.deb -o Dir::State::status=/dev/null -o APT::Install-Recommends=false --download-only"
+	_LB_APT_COMMAND="apt-get ${APT_OPTIONS} -o Dir::Cache=/binary.deb -o Dir::State::status=/dev/null -o APT::Install-Recommends=false -o Debug::NoLocking=true --download-only"
 
 	if [ "${LB_DEBIAN_INSTALLER}" = "live" ]
 	then
@@ -467,6 +467,7 @@ EOF
 		rm -f chroot/binary.sh
 		mv chroot/root/binary ./
 
+		touch "binary/${INDICE_DIR}/Packages" -d@${SOURCE_DATE_EPOCH}
 		gzip -9 -c "binary/${INDICE_DIR}/Packages" > "binary/${INDICE_DIR}/Packages.gz"
 
 		# Fetching release
@@ -674,6 +675,7 @@ EOF
 	mv chroot/root/binary.udeb ./
 
 	cd binary.udeb
+	touch "${UDEB_INDICE_DIR}/Packages" -d@${SOURCE_DATE_EPOCH}
 	gzip -9 -c "${UDEB_INDICE_DIR}/Packages" > "${UDEB_INDICE_DIR}/Packages.gz"
 
 	rm -f Packages* exclude
@@ -714,10 +716,10 @@ cd /root/binary && apt-ftparchive \
 	-o APT::FTPArchive::Release::Suite="${_SUITE}" \
 	${_LB_APT_VERSION_OPT} \
 	-o APT::FTPArchive::Release::Codename="${LB_PARENT_DISTRIBUTION_BINARY}" \
-	-o APT::FTPArchive::Release::Date="$(date -R)" \
+	-o APT::FTPArchive::Release::Date="$(date -R ${DATE_UTC_OPTION} -d@${SOURCE_DATE_EPOCH})" \
 	-o APT::FTPArchive::Release::Architectures="${LB_ARCHITECTURE}" \
 	-o APT::FTPArchive::Release::Components="${LB_PARENT_ARCHIVE_AREAS}" \
-	-o APT::FTPArchive::Release::Description="Last updated: $(date -R)" \
+	-o APT::FTPArchive::Release::Description="Last updated: $(date -R ${DATE_UTC_OPTION} -d@${SOURCE_DATE_EPOCH})" \
 	release dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION} > dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/Release
 EOF
 

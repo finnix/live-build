@@ -61,8 +61,8 @@ esac
 mkdir -p "${DESTDIR}"
 
 # Installing linux-image
-cp chroot/boot/"${LINUX}"-* "${DESTDIR}"
-cp chroot/boot/initrd.img-* "${DESTDIR}" 2>&1 || Echo_message "Skip installing missing initrd."
+cp -a chroot/boot/"${LINUX}"-* "${DESTDIR}"
+cp -a chroot/boot/initrd.img-* "${DESTDIR}" 2>&1 || Echo_message "Skip installing missing initrd."
 
 case "${LB_INITRAMFS}" in
 	live-boot)

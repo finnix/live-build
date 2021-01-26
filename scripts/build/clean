@@ -180,6 +180,7 @@ if [ "${RM_BINARY}" = "true" ]; then
 	rm -f ${LB_IMAGE_NAME}*.iso-ONIE.bin
 	rm -f MD5SUMS SHA1SUMS SHA256SUMS SHA512SUMS
 	rm -f md5sum.txt sha1sum.txt sha256sum.txt sha512sum.txt
+	rm -f binary.modified_timestamps
 
 	rm -rf binary
 	rm -rf tftpboot

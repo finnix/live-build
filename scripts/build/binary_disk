@@ -109,7 +109,7 @@ case "${LB_DEBIAN_INSTALLER}" in
 		;;
 esac
 
-_DATE="$(date $DATE_UTC_OPTION +%Y%m%d-%H:%M)"
+_DATE="$(date $DATE_UTC_OPTION -d@${SOURCE_DATE_EPOCH} +%Y%m%d-%H:%M)"
 
 echo "${TITLE} ${VERSION} \"${DISTRIBUTION}\" - ${STRING} ${DISK_LABEL} Binary ${_DATE}" > binary/.disk/info
 
