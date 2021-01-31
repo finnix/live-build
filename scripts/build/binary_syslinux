@@ -313,8 +313,8 @@ then
 fi
 rm -f "${_TARGET}/splash.svg"
 
-# Tweak the grub theme to reuse the syslinux background image
-if [ -e binary/boot/grub/live-theme/theme.txt ]; then
+# Tweak the grub theme to reuse the syslinux background image if grub doesn't have its own
+if [ -e binary/boot/grub/live-theme/theme.txt ] && [ ! -e binary/boot/grub/splash.png ]; then
 	sed -i -e 's|^desktop-image:.*|desktop-image: "/isolinux/splash.png"|' \
 	-e 's|^title-text:.*|title-text: ""|' \
 	binary/boot/grub/live-theme/theme.txt
