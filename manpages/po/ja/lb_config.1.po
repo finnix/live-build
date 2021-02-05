@@ -826,10 +826,11 @@ msgstr "B<--apt-ftp-proxy> I<URL>"
 
 #. type: Plain text
 #: en/lb_config.1:246
+#, fuzzy
 msgid ""
-"sets the ftp proxy to be used by apt. By default, this is empty. Note that "
-"this variable is only for the proxy that gets used by apt internally within "
-"the chroot, it is not used for anything else."
+"sets the FTP proxy to be used by apt. By default, this is empty. Note that "
+"this variable is only for the proxy that gets used by initial debootstrap, "
+"and by apt internally within the chroot. It is not used for anything else."
 msgstr ""
 "apt により利用する ftp プロキシをセットします。デフォルトでは利用しません。こ"
 "の変数は chroot 内で利用する apt でのみ有効で、それ以外では利用されないことに"
@@ -843,10 +844,11 @@ msgstr "B<--apt-http-proxy> I<URL>"
 
 #. type: Plain text
 #: en/lb_config.1:248
+#, fuzzy
 msgid ""
-"sets the http proxy to be used by apt. By default, this is empty. Note that "
-"this variable is only for the proxy that gets used by apt internally within "
-"the chroot, it is not used for anything else."
+"sets the HTTP proxy to be used by apt. By default, this is empty. Note that "
+"this variable is only for the proxy that gets used by initial debootstrap, "
+"and by apt internally within the chroot. It is not used for anything else."
 msgstr ""
 "apt により利用する http プロキシをセットします。デフォルトでは利用しません。"
 "この変数は chroot 内で利用する apt でのみ有効で、それ以外では利用されないこと"
