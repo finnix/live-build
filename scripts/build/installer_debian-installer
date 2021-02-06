@@ -615,9 +615,9 @@ EOF
 	Echo_debug "Generating exclude list"
 
 	# Excluding udebs
-	for LOCATION in "${LIVE_BUILD}/data/debian-cd" /usr/share/live/build/data/debian-cd
+	for LOCATION in /usr/share/live/build/data/debian-cd "${LIVE_BUILD}/data/debian-cd"
 	do
-		if [ -e "${LOCATION}" ]
+		if [ -e "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}" ]
 		then
 			grep -v "^#" "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/udeb_exclude" > exclude || true
 			grep -v "^#" "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/exclude-udebs" >> exclude || true
