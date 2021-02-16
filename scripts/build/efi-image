@@ -75,9 +75,10 @@ grub-mkimage -O "$platform" \
 
 # Stuff it into a FAT filesystem, making it as small as possible.  24KiB
 # headroom seems to be enough; (x+31)/32*32 rounds up to multiple of 32.
+# The VOLID must be (truncated to) a 32bit hexadecimal number
 mkfs.msdos -C "$outdir/efi.img" \
 	$(( ($(stat -c %s "$workdir/boot$efi_name.efi") / 1024 + 55) \
-	    / 32 * 32 )) -i ${SOURCE_DATE_EPOCH}
+	    / 32 * 32 )) -i $(printf "%08x" $((${SOURCE_DATE_EPOCH}%4294967296)))
 mmd -i "$outdir/efi.img" ::efi
 mmd -i "$outdir/efi.img" ::efi/boot
 # Set the timestamp of the .efi file
