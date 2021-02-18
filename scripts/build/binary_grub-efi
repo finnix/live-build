@@ -258,7 +258,8 @@ size=\$((\$size + 4096 * 4))
 blocks=\$(((\$size / 1024 + 55) / 32 * 32 ))
 
 rm -f ${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img
-mkfs.msdos -C "${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img" \$blocks -i ${SOURCE_DATE_EPOCH} >/dev/null
+# The VOLID must be (truncated to) a 32bit hexadecimal number
+mkfs.msdos -C "${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img" \$blocks -i $(printf "%08x" $((${SOURCE_DATE_EPOCH}%4294967296))) >/dev/null
 mmd -i "${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img" ::EFI
 mmd -i "${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img" ::EFI/boot
 mcopy -m -o -i "${_CHROOT_DIR}/grub-efi-temp/boot/grub/efi.img" ${_CHROOT_DIR}/grub-efi-temp/EFI/boot/*.efi \
