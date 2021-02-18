@@ -785,9 +785,9 @@ msgstr ""
 #. type: Plain text
 #: en/lb_config.1:246
 msgid ""
-"sets the FTP proxy to be used by apt. By default, this is empty. Note that "
-"this variable is only for the proxy that gets used by initial debootstrap, "
-"and by apt internally within the chroot. It is not used for anything else."
+"sets the ftp proxy to be used by apt. By default, this is empty. Note that "
+"this variable is only for the proxy that gets used by apt internally within "
+"the chroot, it is not used for anything else."
 msgstr ""
 
 #. type: IP
@@ -799,9 +799,9 @@ msgstr ""
 #. type: Plain text
 #: en/lb_config.1:248
 msgid ""
-"sets the HTTP proxy to be used by apt. By default, this is empty. Note that "
-"this variable is only for the proxy that gets used by initial debootstrap, "
-"and by apt internally within the chroot. It is not used for anything else."
+"sets the http proxy to be used by apt. By default, this is empty. Note that "
+"this variable is only for the proxy that gets used by apt internally within "
+"the chroot, it is not used for anything else."
 msgstr ""
 
 #. type: IP
