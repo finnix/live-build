@@ -9,7 +9,7 @@ live-build (1:20210329) unstable; urgency=medium
 
   [ Roland Clobus ]
   * Support security for bullseye. See
-    https://wiki.debian.org/NewInBullseye. Closes #964914
+    https://wiki.debian.org/NewInBullseye. Closes: #964914
   * Fixed handling of checksums in combination with the d-i installer.
   * Removed filesystem.size for squashfs images.
 
