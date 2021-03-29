@@ -1,3 +1,20 @@
+live-build (1:20210329) unstable; urgency=medium
+
+  [ Ryan Finnie ]
+  * Use --apt-http-proxy/--apt-ftp-proxy for debootstrap
+  * No mksquashfs progress bar if stdin is not a terminal
+
+  [ Unit 193 ]
+  * firmwarelists.sh: Search Contents-all for firmware too.
+
+  [ Roland Clobus ]
+  * Support security for bullseye. See
+    https://wiki.debian.org/NewInBullseye. Closes #964914
+  * Fixed handling of checksums in combination with the d-i installer.
+  * Removed filesystem.size for squashfs images.
+
+ -- Luca Boccassi <bluca@debian.org>  Mon, 29 Mar 2021 10:49:43 +0100
+
 live-build (1:20210216) unstable; urgency=medium
 
   [ Raphaël Hertzog ]
