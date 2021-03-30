@@ -1,3 +1,10 @@
+live-build (1:20210330) unstable; urgency=medium
+
+  * security: do not append /updates for Bullseye and newer.
+    (Closes: #986148)
+
+ -- Luca Boccassi <bluca@debian.org>  Tue, 30 Mar 2021 16:17:38 +0100
+
 live-build (1:20210329) unstable; urgency=medium
 
   [ Ryan Finnie ]
