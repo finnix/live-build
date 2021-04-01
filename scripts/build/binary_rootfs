@@ -320,8 +320,6 @@ case "${LB_CHROOT_FILESYSTEM}" in
 
 				rm -f chroot/excludes
 
-				du -B 1 -s chroot/chroot | cut -f1 > binary/${INITFS}/filesystem.size
-
 				# Move image
 				mv chroot/filesystem.squashfs binary/${INITFS}
 				rm -f chroot/squashfs.sort
@@ -354,8 +352,6 @@ case "${LB_CHROOT_FILESYSTEM}" in
 				fi
 
 				nice -n 19 mksquashfs chroot binary/${INITFS}/filesystem.squashfs ${MKSQUASHFS_OPTIONS}
-
-				du -B 1 -s chroot | cut -f1 > binary/${INITFS}/filesystem.size
 				;;
 		esac
 
