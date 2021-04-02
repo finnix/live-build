@@ -3,6 +3,11 @@ Depends: live-build,
 Restrictions: needs-root, allow-stderr, needs-internet
 Architecture: amd64 i386
 
+Tests: build-stable-image
+Depends: live-build,
+Restrictions: needs-root, allow-stderr, needs-internet
+Architecture: amd64 i386
+
 Tests: build-kali-image
 Depends: live-build, git, ca-certificates, curl, apt-utils, bzip2, cpio, file, wget, xz-utils
 Restrictions: needs-root, allow-stderr, flaky, needs-internet
