@@ -787,4 +787,95 @@ Validate_config_dependencies ()
 			exit 1
 		fi
 	fi
+
+	Validate_http_proxy
+}
+
+# Retrieve the proxy settings from the host. Check whether conflicts are present with the command line arguments
+Validate_http_proxy ()
+{
+	local HOST_AUTO_APT_PROXY=""
+	local HOST_AUTO_APT_PROXY_LEGACY=""
+	local HOST_FIXED_APT_PROXY=""
+
+	# Fetch the proxy, using the various ways the http proxy can be set in apt
+	if command -v apt-config >/dev/null; then
+		local APT_CONFIG_OPTIONS
+		# apt-config only understands --option (-o) and --config-file (-c) of ${APT_OPTIONS}
+		# Don't report errors when additional options are provided and don't add additional quotes
+		APT_CONFIG_OPTIONS=$(getopt --quiet --unquoted --options 'c:o:' --long 'config-file:,option:' -- ${APT_OPTIONS} || true)
+
+		# The apt configuration `Acquire::http::Proxy-Auto-Detect` (and the legacy `Acquire::http::ProxyAutoDetect`)
+		# If the script fails, or the result of the script is `DIRECT` or an empty line, it is considered to be not set (https://sources.debian.org/src/apt/2.3.9/apt-pkg/contrib/proxy.cc/)
+		local AUTOPROXY
+		eval "$(apt-config ${APT_CONFIG_OPTIONS} shell AUTOPROXY Acquire::http::Proxy-Auto-Detect)"
+		if [ -x "${AUTOPROXY}" ]; then
+			HOST_AUTO_APT_PROXY="$(${AUTOPROXY} || echo '')"
+			if [ "${HOST_AUTO_APT_PROXY}" = "DIRECT" ]; then
+				HOST_AUTO_APT_PROXY=""
+			fi
+		fi
+		# Also check the legacy ProxyAutoDetect
+		eval "$(apt-config ${APT_CONFIG_OPTIONS} shell AUTOPROXY Acquire::http::ProxyAutoDetect)"
+		if [ -x "$AUTOPROXY" ]; then
+			HOST_AUTO_APT_PROXY_LEGACY="$(${AUTOPROXY} || echo '')"
+			if [ "${HOST_AUTO_APT_PROXY_LEGACY}" = "DIRECT" ]; then
+				HOST_AUTO_APT_PROXY_LEGACY=""
+			fi
+		fi
+
+		# The apt configuration `Acquire::http::proxy::URL-host` (https://sources.debian.org/src/apt/2.3.9/methods/http.cc/)
+		# If set to `DIRECT`, it is considered to be not set
+		#  This configuration allows you to specify different proxies for specific URLs
+		#  This setup is too complex for the purpose of live-build and will silently be ignored
+
+		# The apt configuration `Acquire::http::Proxy`
+		eval "$(apt-config ${APT_CONFIG_OPTIONS} shell HOST_FIXED_APT_PROXY Acquire::http::Proxy)"
+	fi
+
+
+	# Report all detected settings in debug mode
+	Echo_debug "Detected proxy settings:"
+	Echo_debug "--apt-http-proxy: ${LB_APT_HTTP_PROXY}"
+	Echo_debug "HOST Auto APT PROXY: ${HOST_AUTO_APT_PROXY}"
+	Echo_debug "HOST Auto APT PROXY (legacy): ${HOST_AUTO_APT_PROXY_LEGACY}"
+	Echo_debug "HOST Fixed APT PROXY: ${HOST_FIXED_APT_PROXY}"
+	# The environment variable 'http_proxy' is used when no apt option is set
+	Echo_debug "HOST http_proxy: ${http_proxy}"
+	# The environment variable 'no_proxy' contains a list of domains that must not be handled by a proxy,
+	# it overrides all previous settings by apt and 'http_proxy'
+	Echo_debug "HOST no_proxy: ${no_proxy}"
+
+	# Check whether any of the provided proxy values conflicts with another
+	local LAST_SEEN_PROXY_NAME=""
+	local LAST_SEEN_PROXY_VALUE=""
+	Validate_http_proxy_source "apt configuration option Acquire::http::Proxy-Auto-Detect" "${HOST_AUTO_APT_PROXY}"
+	Validate_http_proxy_source "apt configuration option Acquire::http::ProxyAutoDetect" "${HOST_AUTO_APT_PROXY_LEGACY}"
+	Validate_http_proxy_source "apt configuration option Acquire::http::Proxy" "${HOST_FIXED_APT_PROXY}"
+	Validate_http_proxy_source "environment variable http_proxy" "${http_proxy}"
+	Validate_http_proxy_source "command line option --apt-http-proxy" "${LB_APT_HTTP_PROXY}"
+
+	# This is the value to use for the the other scripts in live-build
+	export http_proxy=${LAST_SEEN_PROXY_VALUE}
+	if [ ! -z "${http_proxy}" ]; then
+		Echo_message "Using http proxy: ${http_proxy}"
+	fi
+}
+
+# Check whether a proxy setting conflicts with a previously set proxy setting
+Validate_http_proxy_source ()
+{
+	local NAME=${1}
+	local VALUE=${2}
+
+	if [ ! -z "${VALUE}" ]; then
+		if [ ! -z "${LAST_SEEN_PROXY_VALUE}" ]; then
+			if [ "${VALUE}" != "${LAST_SEEN_PROXY_VALUE}" ]; then
+				Echo_error "Inconsistent proxy configuration: the value for ${NAME} (${VALUE}) differs from the value for ${LAST_SEEN_PROXY_NAME} (${LAST_SEEN_PROXY_VALUE})"
+				exit 1
+			fi
+		fi
+		LAST_SEEN_PROXY_NAME=${NAME}
+		LAST_SEEN_PROXY_VALUE=${VALUE}
+	fi
 }
