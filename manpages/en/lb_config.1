@@ -106,6 +106,12 @@
 .br
 	[\fB\-\-distribution\-binary\fR \fICODENAME\fR]
 .br
+	[\fB\-\-dm\-verity\fR]
+.br
+	[\fB\-\-dm\-verity\-fec\fR \fINB_ROOTS\fR]
+.br
+	[\fB\-\-dm\-verity\-sign\fR \fISIGN_SCRIPT\fR]
+.br
 	[\fB\-\-dump\fR]
 .br
 	[\fB\-\-firmware\-binary\fR true|false]
@@ -334,6 +340,12 @@ defines the distribution of the resulting live system. This currently defaults t
 defines the distribution enabled in the resulting live system (defaults to the value set in \fB\-\-distribution\fR)
 .IP "\fB\-\-distribution\-chroot\fR \fICODENAME\fR" 4
 defines the distribution used to build the live system (defaults to the value set in \fB\-\-distribution\fR)
+.IP "\fB\-\-dm\-verity\fR" 4
+Enables dm-verity support for root file system. Currently only squashfs is supported. For more information see \fIlive\-boot\fR(7).
+.IP "\fB\-\-dm\-verity\-fec\fR \fINB_ROOTS\fR" 4
+Enables forward error correction for dm-verity. \fINB_ROOTS\fR is the number of error correction roots thas should be used. The value can between 2 and 24. Android uses 2 by default.
+.IP "\fB\-\-dm\-verity\-sign\fR \fISIGN_SCRIPT\fR" 4
+Sign root hash of dm-verity device. Script takes two arguments: the root hash and a file to output the signature to.
 .IP "\fB\-\-dump\fR" 4
 prepares a report of the currently present live system configuration and the version of live\-build used. This is useful to provide if you submit bug reports, helping to provide basic useful information required for us to locate and replicate an error.
 .IP "\fB\-\-firmware\-binary\fR true|false" 4
