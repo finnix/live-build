@@ -65,6 +65,9 @@ USAGE="${PROGRAM} [--apt apt|apt-get|aptitude]\n\
 \t    [-d|--distribution CODENAME]\n\
 \t    [--distribution-binary CODENAME]\n\
 \t    [--distribution-chroot CODENAME]\n\
+\t    [--dm-verity]\n\
+\t    [--dm-verity-fec NB_ROOTS]\n\
+\t    [--dm-verity-sign SIGN_SCRIPT]\n\
 \t    [--dump]\n\
 \t    [--firmware-binary true|false]\n\
 \t    [--firmware-chroot true|false]\n\
@@ -145,7 +148,8 @@ Local_arguments ()
 		config:,debconf-frontend:,debconf-priority:,debian-installer:,
 		debian-installer-distribution:,debian-installer-gui:,
 		debian-installer-preseedfile:,debootstrap-options:,debootstrap-script:,
-		debug,distribution:,distribution-binary:,distribution-chroot:,dump,
+		debug,dm-verity,dm-verity-fec:,dm-verity-sign:,
+		distribution:,distribution-binary:,distribution-chroot:,dump,
 		fdisk:,firmware-binary:,firmware-chroot:,force,
 		grub-splash:,gzip-options:,
 		hdd-label:,hdd-partition-start:,hdd-size:,help,
@@ -489,6 +493,21 @@ Local_arguments ()
 
 			--distribution-chroot)
 				LB_DISTRIBUTION_CHROOT="${2}"
+				shift 2
+				;;
+
+			--dm-verity)
+				LB_DM_VERITY="true"
+				shift
+				;;
+
+			--dm-verity-fec)
+				LB_DM_VERITY_FEC_ROOTS="${2}"
+				shift 2
+				;;
+
+			--dm-verity-sign)
+				LB_DM_VERITY_SIGN="${2}"
 				shift 2
 				;;
 
@@ -1213,6 +1232,15 @@ LB_CHECKSUMS="${LB_CHECKSUMS}"
 
 # Set compression
 LB_COMPRESSION="${LB_COMPRESSION}"
+
+# Support dm-verity on rootfs
+LB_DM_VERITY="${LB_DM_VERITY}"
+
+# Support FEC on dm-verity rootfs
+LB_DM_VERITY_FEC_ROOTS="${LB_DM_VERITY_FEC_ROOTS}"
+
+# Set sign script for roothash for dm-verity rootfs
+LB_DM_VERITY_SIGN="${LB_DM_VERITY_SIGN}"
 
 # Set zsync
 LB_ZSYNC="${LB_ZSYNC}"

@@ -46,6 +46,7 @@ fi
 
 # Building root filesystem
 lb binary_rootfs "${@}"
+lb binary_dm-verity "${@}"
 lb binary_manifest "${@}"
 
 # Prepare images
