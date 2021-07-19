@@ -28,11 +28,14 @@ fi
 
 Echo_message "Begin creating dm-verity hash for rootfs"
 
-if [ "${LB_CHROOT_FILESYSTEM}" != "squashfs" ]
-then
-    Echo_error "dm-verity support is only implemented for squashfs"
-    exit 1
-fi
+case ${LB_CHROOT_FILESYSTEM} in
+    squashfs|ext2|ext3|ext4)
+        ;;
+    *)
+        Echo_error "dm-verity support is not implemented for ${LB_CHROOT_FILESYSTEM}!"
+        exit 1
+        ;;
+esac
 
 
 case "${LB_INITRAMFS}" in
