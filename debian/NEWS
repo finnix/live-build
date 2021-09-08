@@ -1,3 +1,11 @@
+live-build (UNRELEASED) unstable; urgency=medium
+
+  The support for FTP proxies has ended. You are advised to use http or https
+  while configuring the debian package mirror, instead of ftp.
+  See https://salsa.debian.org/live-team/live-build/-/merge_requests/252#note_243114
+
+ -- Roland Clobus <rclobus@rclobus.nl> Wed, 8 Sep 2021 11:55:00 +0200
+
 live-build (1:20210329) unstable; urgency=medium
 
   The 'filesystem.size' file is no longer created and included in the image,
