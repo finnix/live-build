@@ -23,6 +23,7 @@ Recommends:
  apt-utils,
  bzip2,
  cpio,
+ cryptsetup,
  file,
  live-boot-doc,
  live-config-doc,

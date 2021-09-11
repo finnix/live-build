@@ -34,8 +34,8 @@ Prepare_config ()
 	_QUIET="${_QUIET:-false}"
 	_VERBOSE="${_VERBOSE:-false}"
 
-	LB_CONFIGURATION_VERSION="${LB_CONFIGURATION_VERSION:-${LIVE_BUILD_VERSION}}"
-	LIVE_CONFIGURATION_VERSION="${LB_CONFIGURATION_VERSION}" #for backwards compatibility with hooks
+	export LB_CONFIGURATION_VERSION="${LB_CONFIGURATION_VERSION:-${LIVE_BUILD_VERSION}}"
+	export LIVE_CONFIGURATION_VERSION="${LB_CONFIGURATION_VERSION}" #for backwards compatibility with hooks
 
 	LB_SYSTEM="${LB_SYSTEM:-live}"
 
@@ -64,11 +64,11 @@ Prepare_config ()
 		DATE_UTC_OPTION=""
 	fi
 
-	LB_IMAGE_NAME="${LB_IMAGE_NAME:-live-image}"
-	LB_IMAGE_TYPE="${LB_IMAGE_TYPE:-iso-hybrid}"
+	export LB_IMAGE_NAME="${LB_IMAGE_NAME:-live-image}"
+	export LB_IMAGE_TYPE="${LB_IMAGE_TYPE:-iso-hybrid}"
 	#for backwards compatibility with hooks
-	LIVE_IMAGE_NAME="${LB_IMAGE_NAME}"
-	LIVE_IMAGE_TYPE="${LB_IMAGE_TYPE}"
+	export LIVE_IMAGE_NAME="${LB_IMAGE_NAME}"
+	export LIVE_IMAGE_TYPE="${LB_IMAGE_TYPE}"
 
 	if [ -z "${LB_ARCHITECTURE}" ]; then
 		if command -v dpkg >/dev/null; then
@@ -90,13 +90,14 @@ Prepare_config ()
 			esac
 		fi
 	fi
+	export LB_ARCHITECTURE
 	# For backwards compat with custom hooks and conditional includes
-	LB_ARCHITECTURES="${LB_ARCHITECTURE}"
+	export LB_ARCHITECTURES="${LB_ARCHITECTURE}"
 
 	LB_ARCHIVE_AREAS="${LB_ARCHIVE_AREAS:-main}"
 	LB_PARENT_ARCHIVE_AREAS="${LB_PARENT_ARCHIVE_AREAS:-${LB_ARCHIVE_AREAS}}"
-	LB_ARCHIVE_AREAS="$(echo "${LB_ARCHIVE_AREAS}" | tr "," " ")"
-	LB_PARENT_ARCHIVE_AREAS="$(echo "${LB_PARENT_ARCHIVE_AREAS}" | tr "," " ")"
+	export LB_ARCHIVE_AREAS="$(echo "${LB_ARCHIVE_AREAS}" | tr "," " ")"
+	export LB_PARENT_ARCHIVE_AREAS="$(echo "${LB_PARENT_ARCHIVE_AREAS}" | tr "," " ")"
 
 	LB_BACKPORTS="${LB_BACKPORTS:-false}"
 	if [ -n "$LB_PARENT_DISTRIBUTION" ]; then
@@ -109,7 +110,6 @@ Prepare_config ()
 	LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION:-${LB_PARENT_DISTRIBUTION_CHROOT}}"
 
 	LB_APT="${LB_APT:-apt}"
-	LB_APT_FTP_PROXY="${LB_APT_FTP_PROXY}"
 	LB_APT_HTTP_PROXY="${LB_APT_HTTP_PROXY}"
 	LB_APT_RECOMMENDS="${LB_APT_RECOMMENDS:-true}"
 	LB_APT_SECURE="${LB_APT_SECURE:-true}"

@@ -40,6 +40,10 @@ Firmware_List_From_Contents () {
 			# If not cached, download
 			if [ ! -e "${CONTENTS_FILE}" ]
 			then
+				# Contents-all.gz does not exist in Buster and other older versions
+				if ! wget --quiet --spider ${WGET_OPTIONS} "${CONTENTS_URL}"; then
+					continue
+				fi
 				wget ${WGET_OPTIONS} "${CONTENTS_URL}" -O "${CONTENTS_FILE}"
 			fi
 

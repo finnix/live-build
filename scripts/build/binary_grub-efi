@@ -280,8 +280,12 @@ case "${LB_BUILD_WITH_CHROOT}" in
 		# Saving cache
 		Save_package_cache binary
 
-		# Removing depends
+		# Removing depends. Some bootloader packages are marked as Protected/Important
+		# in Ubuntu, so temporarily add an apt flag to allow them to be removed
+		PRE_APT_OPTIONS="${APT_OPTIONS}"
+		APT_OPTIONS="${APT_OPTIONS} --allow-remove-essential"
 		Remove_packages
+		APT_OPTIONS="${PRE_APT_OPTIONS}"
 		;;
 
 	false)

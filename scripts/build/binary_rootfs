@@ -111,8 +111,13 @@ case "${LB_CHROOT_FILESYSTEM}" in
 					Chroot chroot "ln -s /proc/mounts/mtab /etc/mtab"
 					FAKE_MTAB=true
 				fi
-
-				Chroot chroot "mkfs.${LB_CHROOT_FILESYSTEM} -F -b 1024 -N ${REAL_INODES} -m 0 filesystem.${LB_CHROOT_FILESYSTEM}"
+				BLOCK_SIZE=1024
+				if [ "${LB_DM_VERITY}" = "true" ]
+				then
+					# dm-verity needs a block size of at least 4k
+					BLOCK_SIZE=4096
+				fi
+				Chroot chroot "mkfs.${LB_CHROOT_FILESYSTEM} -F -b ${BLOCK_SIZE} -N ${REAL_INODES} -m 0 filesystem.${LB_CHROOT_FILESYSTEM}"
 
 				mkdir -p filesystem.tmp
 				mount -o loop chroot/filesystem.${LB_CHROOT_FILESYSTEM} filesystem.tmp
