@@ -1,3 +1,22 @@
+live-build (1:20210902) unstable; urgency=medium
+
+  [ Thore Sommer ]
+  * Adding dm-verity support for rootfs
+  * docs: documentation for dm-verity feature
+  * Enable dm-verity support also for ext filesystems
+
+  [ David Hewitt ]
+  * binary_grub-efi: Allow removal of protected packages
+
+  [ Nick Brown ]
+  * Export variables for hooks (Closes: #992572)
+
+  [ Luca Boccassi ]
+  * Bump debhelper-compat to 13, no changes
+  * Bump Standards-Version to 4.6.0, no changes
+
+ -- Luca Boccassi <bluca@debian.org>  Thu, 02 Sep 2021 13:55:32 +0100
+
 live-build (1:20210407) unstable; urgency=medium
 
   * Upload to unstable.
