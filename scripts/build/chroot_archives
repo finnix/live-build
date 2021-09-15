@@ -92,6 +92,26 @@ case "${_ACTION}" in
 			fi
 		done
 
+		# Adding local apt auth (chroot)
+		# Note: .conf is assumed to be apt.conf, so use new suffix .auth
+		for FILE in config/archives/*.auth
+		do
+			if [ -e "${FILE}" ]
+			then
+				cp ${FILE} chroot/etc/apt/auth.conf.d/$(basename ${FILE} .auth).conf
+			fi
+		done
+
+		# Adding local apt auth (chroot)
+		# Note: .conf is assumed to be apt.conf, so use new suffix .auth
+		for FILE in config/archives/*.auth.chroot
+		do
+			if [ -e "${FILE}" ]
+			then
+				cp ${FILE} chroot/etc/apt/auth.conf.d/$(basename ${FILE} .auth.chroot).conf
+			fi
+		done
+
 		# Check local archive keys (chroot)
 		if Find_files config/archives/*.key || \
 		   Find_files config/archives/*.key.chroot
@@ -364,6 +384,16 @@ case "${_ACTION}" in
 			fi
 		done
 
+		# Remve chroot-only apt auth
+		# Note: .conf is assumed to be apt.conf, so use new suffix .auth
+		for FILE in config/archives/*.auth.chroot
+		do
+			if [ -e "${FILE}" ]
+			then
+				rm "chroot/etc/apt/auth.conf.d/$(basename ${FILE} .auth.chroot).conf"
+			fi
+		done
+
 		# Adding local apt sources (binary)
 		for FILE in config/archives/*.list config/archives/*.list.binary
 		do
@@ -398,6 +428,16 @@ case "${_ACTION}" in
 			if [ -e "${FILE}" ]
 			then
 				cp ${FILE} chroot/etc/apt/preferences.d/$(basename ${FILE} .binary)
+			fi
+		done
+
+		# Adding local apt auth (chroot)
+		# Note: .conf is assumed to be apt.conf, so use new suffix .auth
+		for FILE in config/archives/*.auth.binary
+		do
+			if [ -e "${FILE}" ]
+			then
+				cp ${FILE} chroot/etc/apt/auth.conf.d/$(basename ${FILE} .auth.binary).conf
 			fi
 		done
 
