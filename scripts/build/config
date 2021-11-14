@@ -976,7 +976,7 @@ LB_CONFIGURATION_VERSION="${LB_CONFIGURATION_VERSION}"
 # Set package manager
 LB_APT="${LB_APT}"
 
-# Set apt/aptitude/debootstrap http proxy
+# Set proxy for HTTP connections
 LB_APT_HTTP_PROXY="${LB_APT_HTTP_PROXY}"
 
 # Set apt/aptitude pipeline depth

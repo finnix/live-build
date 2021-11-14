@@ -29,7 +29,7 @@ Chroot ()
 		fi
 	done
 
-	${_LINUX32} chroot "${CHROOT}" /usr/bin/env -i HOME="/root" PATH="/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin" TERM="${TERM}" DEBIAN_FRONTEND="${LB_DEBCONF_FRONTEND}" DEBIAN_PRIORITY="${LB_DEBCONF_PRIORITY}" DEBCONF_NONINTERACTIVE_SEEN="true" DEBCONF_NOWARNINGS="true" SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH} ${ENV} ${COMMANDS}
+	${_LINUX32} chroot "${CHROOT}" /usr/bin/env -i HOME="/root" PATH="/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin" TERM="${TERM}" DEBIAN_FRONTEND="${LB_DEBCONF_FRONTEND}" DEBIAN_PRIORITY="${LB_DEBCONF_PRIORITY}" DEBCONF_NONINTERACTIVE_SEEN="true" DEBCONF_NOWARNINGS="true" SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH} http_proxy=${http_proxy} no_proxy=${no_proxy} ${ENV} ${COMMANDS}
 
 	return ${?}
 }
