@@ -48,7 +48,7 @@ case "${LB_INITRAMFS}" in
 esac
 
 case "${LB_ARCHITECTURE}" in
-	powerpc|ppc64el)
+	powerpc|ppc64el|riscv64)
 		LINUX="vmlinux"
 		;;
 
