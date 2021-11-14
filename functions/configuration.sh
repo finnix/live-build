@@ -860,7 +860,7 @@ Validate_http_proxy ()
 	Validate_http_proxy_source "command line option --apt-http-proxy" "${LB_APT_HTTP_PROXY}"
 
 	# This is the value to use for the the other scripts in live-build
-	export http_proxy=${LAST_SEEN_PROXY_VALUE}
+	export http_proxy="${LAST_SEEN_PROXY_VALUE}"
 	if [ ! -z "${http_proxy}" ]; then
 		Echo_message "Using http proxy: ${http_proxy}"
 	fi
@@ -869,8 +869,8 @@ Validate_http_proxy ()
 # Check whether a proxy setting conflicts with a previously set proxy setting
 Validate_http_proxy_source ()
 {
-	local NAME=${1}
-	local VALUE=${2}
+	local NAME="${1}"
+	local VALUE="${2}"
 
 	if [ ! -z "${VALUE}" ]; then
 		if [ ! -z "${LAST_SEEN_PROXY_VALUE}" ]; then
@@ -879,7 +879,7 @@ Validate_http_proxy_source ()
 				exit 1
 			fi
 		fi
-		LAST_SEEN_PROXY_NAME=${NAME}
-		LAST_SEEN_PROXY_VALUE=${VALUE}
+		LAST_SEEN_PROXY_NAME="${NAME}"
+		LAST_SEEN_PROXY_VALUE="${VALUE}"
 	fi
 }
