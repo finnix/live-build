@@ -187,7 +187,7 @@ case "${LB_BUILD_WITH_CHROOT}" in
 		Chroot chroot "parted -s ${FREELO} set 1 lba off" || true
 
 		if [ "${LB_BOOTLOADER_BIOS}" = "syslinux" ]; then
-			dd if=chroot/usr/lib/$(echo ${_BOOTLOADER} | tr [a-z] [A-Z])/mbr.bin of=${FREELO} bs=440 count=1
+			dd if=chroot/usr/lib/$(echo ${_BOOTLOADER} | tr '[a-z]' '[A-Z]')/mbr.bin of=${FREELO} bs=440 count=1
 		fi
 		;;
 
@@ -206,7 +206,7 @@ case "${LB_BUILD_WITH_CHROOT}" in
 		parted -s "${FREELO}" set 1 lba off || true
 
 		if [ "${LB_BOOTLOADER_BIOS}" = "syslinux" ]; then
-			dd if=/usr/lib/$(echo ${_BOOTLOADER} | tr [a-z] [A-Z])/mbr.bin of=${FREELO} bs=440 count=1
+			dd if=/usr/lib/$(echo ${_BOOTLOADER} | tr '[a-z]' '[A-Z]')/mbr.bin of=${FREELO} bs=440 count=1
 		fi
 		;;
 esac
