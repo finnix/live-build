@@ -1368,7 +1368,7 @@ if [ ! -e "${LIVE_PKG_LIST}" ]; then
 		NEEDED_PACKAGES="live-boot live-config"
 		case "${LB_INITSYSTEM}" in
 			systemd)
-				NEEDED_PACKAGES="${NEEDED_PACKAGES} live-config-systemd"
+				NEEDED_PACKAGES="${NEEDED_PACKAGES} live-config-systemd systemd-sysv"
 				;;
 
 			sysvinit)
