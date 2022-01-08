@@ -143,7 +143,8 @@ then
 	MAKEDEV=true
 
 	mv chroot/dev chroot/dev.tmp
-	find /dev | cpio -dmpu chroot
+	# Don't copy mount points (e.g. /dev/shm)
+	find /dev -xdev | cpio -dmpu chroot
 fi
 
 echo "!!! The following error/warning messages can be ignored !!!"
