@@ -660,7 +660,7 @@ Validate_config_permitted_values ()
 
 	local CACHE_STAGE
 	for CACHE_STAGE in ${LB_CACHE_STAGES}; do
-		if ! In_list "${CACHE_STAGE}" bootstrap chroot installer binary source; then
+		if ! In_list "${CACHE_STAGE}" bootstrap chroot rootfs; then
 			Echo_warning "The following is not a valid stage: '%s'" "${CACHE_STAGE}"
 		fi
 	done

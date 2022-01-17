@@ -60,7 +60,7 @@
 .br
 	[\fB\-\-cache\-packages\fR true|false]
 .br
-	[\fB\-\-cache\-stages\fR \fISTAGE\fR|"\fISTAGES\fR"]
+	[\fB\-\-cache\-stages\fR bootstrap|chroot|rootfs|"\fISTAGES\fR"]
 .br
 	[\fB\-\-checksums\fR md5|sha1|sha224|sha256|sha384|sha512|none]
 .br
@@ -292,7 +292,7 @@ defines globally if any cache should be used at all. Different caches can be con
 defines if downloaded package indices and lists should be cached. This is false by default. Enabling it lets you rebuild an image completely offline, however, you would not get updates anymore then.
 .IP "\fB\-\-cache\-packages\fR true|false" 4
 defines if downloaded packages files should be cached. This is true by default. Disabling it does save space consumption in your build directory, but remember that you will cause much unnecessary traffic if you do a couple of rebuilds. In general you should always leave it true, however, in some particular rare build setups, it can be faster to refetch packages from the network mirror, if using a local one, rather than to utilize the local disk.
-.IP "\fB\-\-cache\-stages\fR \fISTAGE\fR|""\fISTAGES\fR""" 4
+.IP "\fB\-\-cache\-stages\fR bootstrap|chroot|rootfs|""\fISTAGES\fR""" 4
 sets which stages should be cached (a comma or space separated list). By default this is set to 'bootstrap'. As an exception to the normal stage names, 'rootfs' can also be used here which means only cache the generated root filesystem in filesystem.{dir,ext*,squashfs}. This is useful during development if you want to rebuild the binary stage but not regenerate the root filesystem all the time.
 .IP "\fB\-\-checksums\fR md5|sha1|sha224|sha256|sha384|sha512|none" 4
 defines if the binary image should contain a file called XXXsums.txt, where XXX is one of the mentioned checksum types. This file lists all files on the image together with their checksums. This in turn can be used by \fIlive\-boot\fR(7)'s built\-in integrity\-check to verify the medium if specified at boot prompt. In general, this should not be 'none' and is an important feature of live system released to the public. However, during development of very big images it can save some time by not calculating the checksums.
