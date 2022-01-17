@@ -675,7 +675,7 @@ Validate_config_permitted_values ()
 		done
 	fi
 
-	if ! In_list "${LB_CHROOT_FILESYSTEM}" ext2 ext3 ext4 squashfs jffs2 none; then
+	if ! In_list "${LB_CHROOT_FILESYSTEM}" ext2 ext3 ext4 squashfs jffs2 none plain; then
 		Echo_error "You have specified an invalid value for LB_CHROOT_FILESYSTEM (--chroot-filesystem)."
 		exit 1
 	fi

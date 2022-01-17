@@ -239,7 +239,19 @@ case "${LB_CHROOT_FILESYSTEM}" in
 
 		case "${LB_BUILD_WITH_CHROOT}" in
 			true)
-				mv chroot/chroot binary/${INITFS}/filesystem.dir
+				if [ -e chroot/chroot.cache ]
+				then
+					# Different from the other LB_CHROOT_FILESYSTEM values:
+					# continue working in the bootstrap chroot, not the generated chroot.
+					# This saves the time to create a full copy of the generated chroot.
+					cp -a chroot/chroot/boot chroot
+					mv chroot/chroot binary/${INITFS}/filesystem.dir
+				else
+					rm -fr chroot/chroot
+
+					# Removing depends
+					Remove_packages
+				fi
 				;;
 
 			false)

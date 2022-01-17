@@ -60,7 +60,7 @@ rm -rf chroot/chroot
 rm -rf chroot.tmp
 
 # Copying new chroot
-if [ -d cache/bootstrap ] && [ "${LB_CHROOT_FILESYSTEM}" != "none" ] && [ "${LB_CHROOT_FILESYSTEM}" != "plain" ]
+if [ -d cache/bootstrap ] && [ "${LB_CHROOT_FILESYSTEM}" != "none" ]
 then
 	mv chroot chroot.tmp
 	cp -a cache/bootstrap chroot
