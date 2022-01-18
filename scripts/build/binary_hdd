@@ -64,6 +64,7 @@ case "${LB_BOOTLOADER_BIOS}" in
 				;;
 			ext[234]|btrfs)
 				_BOOTLOADER=extlinux
+				Check_package host /usr/bin/lsattr e2fsprogs
 				;;
 			*)
 				Echo_error "syslinux/extlinux doesn't support ${LB_BINARY_FILESYSTEM}"
@@ -324,6 +325,23 @@ then
 	esac
 fi
 
+case "${_BOOTLOADER}" in
+	extlinux)
+		if lsattr chroot/binary.tmp/boot/extlinux/ldlinux.sys | cut -f 1 -d " " | grep -q "i"; then
+			# The file ldlinux.sys is marked immutable by extlinux
+			# Set the timestamp
+			chattr -i chroot/binary.tmp/boot/extlinux/ldlinux.sys
+			touch -d@${SOURCE_DATE_EPOCH} chroot/binary.tmp/boot/extlinux/ldlinux.sys
+			chattr +i chroot/binary.tmp/boot/extlinux/ldlinux.sys
+			echo "f chroot/binary.tmp/boot/extlinux/ldlinux.sys" >> binary.modified_timestamps
+		fi
+		;;
+	*)
+		;;
+esac
+
+# Set the timestamp inside the image
+find chroot/binary.tmp -newermt "$(date -d@${SOURCE_DATE_EPOCH} '+%Y-%m-%d %H:%M:%S')" -printf "%y %p\n" -exec touch '{}' -d@${SOURCE_DATE_EPOCH} ';' >> binary.modified_timestamps
 umount chroot/binary.tmp
 rmdir chroot/binary.tmp
 
@@ -336,6 +354,9 @@ if $MAKEDEV; then
 	mv chroot/dev.tmp chroot/dev
 fi
 
+# Set the timestamp of the image
+touch -d@${SOURCE_DATE_EPOCH} chroot/binary.img
+echo "f ${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.img" >> binary.modified_timestamps
 mv chroot/binary.img ${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.img
 
 # Saving cache
