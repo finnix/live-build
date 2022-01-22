@@ -198,6 +198,10 @@ case "${LB_BUILD_WITH_CHROOT}" in
 		;;
 esac
 
+# Set the timestamp of the image
+touch -d@${SOURCE_DATE_EPOCH} ${IMAGE}
+echo "f ${IMAGE}" >> binary.modified_timestamps
+
 # Saving cache
 Save_package_cache binary
 
