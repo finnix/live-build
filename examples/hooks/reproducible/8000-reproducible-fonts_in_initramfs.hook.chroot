@@ -13,16 +13,22 @@ then
   exit 0
 fi
 
-# Don't run if the LD_PRELOAD module is not compiled
-if [ ! -e /usr/lib/unrandomize_uuid_generate_random.so ];
+# Don't run if fontconfig is sufficiently new
+if dpkg --compare-versions $(dpkg-query --show --showformat '${Version}\n' fontconfig | head -1) ge 2.13.1-4.4~;
 then
-  echo "P: $(basename $0) Reproducible hook inactive: The UUID module was not found"
   exit 0
 fi
 
 # Don't run if there is no font in the initrd.img file
 if ! zless /initrd.img | cpio --list --quiet | grep "^var/cache/fontconfig" | grep ".cache-7$" > /dev/null;
 then
+  exit 0
+fi
+
+# Don't run if the LD_PRELOAD module is not compiled
+if [ ! -e /usr/lib/unrandomize_uuid_generate_random.so ];
+then
+  echo "P: $(basename $0) Reproducible hook inactive: The UUID module was not found"
   exit 0
 fi
 

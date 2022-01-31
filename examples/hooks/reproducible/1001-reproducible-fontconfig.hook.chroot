@@ -13,6 +13,12 @@ then
   exit 0
 fi
 
+# Don't run if fontconfig is sufficiently new
+if dpkg --compare-versions $(dpkg-query --show --showformat '${Version}\n' fontconfig | head -1) ge 2.13.1-4.4~;
+then
+  exit 0
+fi
+
 # Don't run if the LD_PRELOAD module is not compiled
 if [ ! -e /usr/lib/unrandomize_uuid_generate_random.so ];
 then
