@@ -12,7 +12,26 @@
 PROGRAM_NAME="live-build"
 FRONTEND="lb"
 PROGRAM="${FRONTEND} $(basename "${0}")"
-VERSION="$(if [ -e ${LIVE_BUILD}/debian/changelog ]; then sed -e 's/.*(\(.*\)).*/\1/; s/^[0-9]://; q' ${LIVE_BUILD}/debian/changelog; else cat /usr/share/live/build/VERSION; fi)"
+VERSION=""
+# Find the version:
+#  1) For development versions, the git hash with date
+#  2) For distributed source code, the version from the changelog
+#  3) For installed versions, the version from the file VERSION
+if [ ! -z "${LIVE_BUILD}" -a "$(command -v git)" -a -e ${LIVE_BUILD}/.git ]; then
+	VERSION="$(cd ${LIVE_BUILD}; git log -n 1 --pretty=format:%H_%aI)"
+	# If a local modification is made or there are staged commits, add 'with_local_changes'
+	# See https://stackoverflow.com/questions/2657935/checking-for-a-dirty-index-or-untracked-files-with-git
+	if ! $(cd ${LIVE_BUILD}; git diff-index --quiet HEAD --ignore-submodules --); then
+		VERSION="${VERSION}_with_local_changes"
+	fi
+fi
+if [ -z "${VERSION}" -a ! -z "${LIVE_BUILD}" -a -e ${LIVE_BUILD}/debian/changelog ]; then
+	# Remove the epoch
+	VERSION="$(dpkg-parsechangelog -S Version | sed -e 's/^[0-9]://')"
+fi
+if [ -z "${VERSION}" ]; then
+	VERSION="$(cat /usr/share/live/build/VERSION)"
+fi
 
 LIVE_BUILD_VERSION="${VERSION}"
 
