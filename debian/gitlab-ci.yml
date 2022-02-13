@@ -3,26 +3,10 @@ include:
   - https://salsa.debian.org/salsa-ci-team/pipeline/raw/master/salsa-ci.yml
   - https://salsa.debian.org/salsa-ci-team/pipeline/raw/master/pipeline-jobs.yml
 
-stages:
-  - provisioning
-  - build
-  - publish
-  - test
-  - deploy
-
 pages:
-  image: registry.salsa.debian.org/salsa-ci-team/ci-image-git-buildpackage:latest
-  stage: deploy
-  allow_failure: true
-  artifacts:
-    paths:
-      - public
-  only:
-    - master
-  script:
-    - mkdir ${CI_PROJECT_DIR}/debian/output/aptly; cd ${CI_PROJECT_DIR}/debian/output/aptly
-    - gitlab-ci-aptly
-    - cd ${CI_PROJECT_DIR}
-    - mv ${CI_PROJECT_DIR}/debian/output/aptly/public .
-  dependencies:
-    - build
+  extends: .publish-aptly
+  variables:
+    REPO_PATH: 'public'
+  except:
+    variables:
+      - $CI_COMMIT_TAG != null && $SALSA_CI_ENABLE_PIPELINE_ON_TAGS !~ /^(1|yes|true)$/

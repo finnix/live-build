@@ -57,3 +57,5 @@ distclean: clean
 	rm -rf $(LANGUAGES)
 
 rebuild: distclean update build
+
+.PHONY: all update check build clean distclean rebuild

@@ -135,6 +135,9 @@ case "${LB_CHROOT_FILESYSTEM}" in
 
 				du -B 1 -s chroot/chroot | cut -f1 > binary/${INITFS}/filesystem.size
 
+				# Removing depends
+				Remove_packages
+				
 				if [ -e chroot/chroot.cache ]
 				then
 					Remove_lockfile
@@ -150,9 +153,6 @@ case "${LB_CHROOT_FILESYSTEM}" in
 					touch .lock
 				else
 					rm -rf chroot/chroot
-
-					# Removing depends
-					Remove_packages
 				fi
 				;;
 
@@ -201,6 +201,9 @@ case "${LB_CHROOT_FILESYSTEM}" in
 				# Move image
 				mv chroot/filesystem.jffs2 binary/${INITFS}
 
+				# Removing depends
+				Remove_packages
+
 				if [ -e chroot/chroot.cache ]
 				then
 					Remove_lockfile
@@ -216,9 +219,6 @@ case "${LB_CHROOT_FILESYSTEM}" in
 					touch .lock
 				else
 					rm -rf chroot/chroot
-
-					# Removing depends
-					Remove_packages
 				fi
 				;;
 
@@ -239,7 +239,19 @@ case "${LB_CHROOT_FILESYSTEM}" in
 
 		case "${LB_BUILD_WITH_CHROOT}" in
 			true)
-				mv chroot/chroot binary/${INITFS}/filesystem.dir
+				if [ -e chroot/chroot.cache ]
+				then
+					# Different from the other LB_CHROOT_FILESYSTEM values:
+					# continue working in the bootstrap chroot, not the generated chroot.
+					# This saves the time to create a full copy of the generated chroot.
+					cp -a chroot/chroot/boot chroot
+					mv chroot/chroot binary/${INITFS}/filesystem.dir
+				else
+					rm -fr chroot/chroot
+
+					# Removing depends
+					Remove_packages
+				fi
 				;;
 
 			false)
@@ -329,6 +341,9 @@ case "${LB_CHROOT_FILESYSTEM}" in
 				mv chroot/filesystem.squashfs binary/${INITFS}
 				rm -f chroot/squashfs.sort
 
+				# Removing depends
+				Remove_packages
+
 				if [ -e chroot/chroot.cache ]
 				then
 					Remove_lockfile
@@ -344,9 +359,6 @@ case "${LB_CHROOT_FILESYSTEM}" in
 					touch .lock
 				else
 					rm -rf chroot/chroot
-
-					# Removing depends
-					Remove_packages
 				fi
 				;;
 

@@ -64,6 +64,7 @@ case "${LB_BOOTLOADER_BIOS}" in
 				;;
 			ext[234]|btrfs)
 				_BOOTLOADER=extlinux
+				Check_package host /usr/bin/lsattr e2fsprogs
 				;;
 			*)
 				Echo_error "syslinux/extlinux doesn't support ${LB_BINARY_FILESYSTEM}"
@@ -143,7 +144,8 @@ then
 	MAKEDEV=true
 
 	mv chroot/dev chroot/dev.tmp
-	find /dev | cpio -dmpu chroot
+	# Don't copy mount points (e.g. /dev/shm)
+	find /dev -xdev | cpio -dmpu chroot
 fi
 
 echo "!!! The following error/warning messages can be ignored !!!"
@@ -186,7 +188,7 @@ case "${LB_BUILD_WITH_CHROOT}" in
 		Chroot chroot "parted -s ${FREELO} set 1 lba off" || true
 
 		if [ "${LB_BOOTLOADER_BIOS}" = "syslinux" ]; then
-			dd if=chroot/usr/lib/$(echo ${_BOOTLOADER} | tr [a-z] [A-Z])/mbr.bin of=${FREELO} bs=440 count=1
+			dd if=chroot/usr/lib/$(echo ${_BOOTLOADER} | tr '[a-z]' '[A-Z]')/mbr.bin of=${FREELO} bs=440 count=1
 		fi
 		;;
 
@@ -205,7 +207,7 @@ case "${LB_BUILD_WITH_CHROOT}" in
 		parted -s "${FREELO}" set 1 lba off || true
 
 		if [ "${LB_BOOTLOADER_BIOS}" = "syslinux" ]; then
-			dd if=/usr/lib/$(echo ${_BOOTLOADER} | tr [a-z] [A-Z])/mbr.bin of=${FREELO} bs=440 count=1
+			dd if=/usr/lib/$(echo ${_BOOTLOADER} | tr '[a-z]' '[A-Z]')/mbr.bin of=${FREELO} bs=440 count=1
 		fi
 		;;
 esac
@@ -323,6 +325,23 @@ then
 	esac
 fi
 
+case "${_BOOTLOADER}" in
+	extlinux)
+		if lsattr chroot/binary.tmp/boot/extlinux/ldlinux.sys | cut -f 1 -d " " | grep -q "i"; then
+			# The file ldlinux.sys is marked immutable by extlinux
+			# Set the timestamp
+			chattr -i chroot/binary.tmp/boot/extlinux/ldlinux.sys
+			touch -d@${SOURCE_DATE_EPOCH} chroot/binary.tmp/boot/extlinux/ldlinux.sys
+			chattr +i chroot/binary.tmp/boot/extlinux/ldlinux.sys
+			echo "f chroot/binary.tmp/boot/extlinux/ldlinux.sys" >> binary.modified_timestamps
+		fi
+		;;
+	*)
+		;;
+esac
+
+# Set the timestamp inside the image
+find chroot/binary.tmp -newermt "$(date -d@${SOURCE_DATE_EPOCH} '+%Y-%m-%d %H:%M:%S')" -printf "%y %p\n" -exec touch '{}' -d@${SOURCE_DATE_EPOCH} ';' >> binary.modified_timestamps
 umount chroot/binary.tmp
 rmdir chroot/binary.tmp
 
@@ -335,6 +354,9 @@ if $MAKEDEV; then
 	mv chroot/dev.tmp chroot/dev
 fi
 
+# Set the timestamp of the image
+touch -d@${SOURCE_DATE_EPOCH} chroot/binary.img
+echo "f ${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.img" >> binary.modified_timestamps
 mv chroot/binary.img ${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.img
 
 # Saving cache

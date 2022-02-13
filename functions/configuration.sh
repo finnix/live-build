@@ -660,7 +660,7 @@ Validate_config_permitted_values ()
 
 	local CACHE_STAGE
 	for CACHE_STAGE in ${LB_CACHE_STAGES}; do
-		if ! In_list "${CACHE_STAGE}" bootstrap chroot installer binary source; then
+		if ! In_list "${CACHE_STAGE}" bootstrap chroot rootfs; then
 			Echo_warning "The following is not a valid stage: '%s'" "${CACHE_STAGE}"
 		fi
 	done
@@ -675,7 +675,7 @@ Validate_config_permitted_values ()
 		done
 	fi
 
-	if ! In_list "${LB_CHROOT_FILESYSTEM}" ext2 ext3 ext4 squashfs jffs2 none; then
+	if ! In_list "${LB_CHROOT_FILESYSTEM}" ext2 ext3 ext4 squashfs jffs2 none plain; then
 		Echo_error "You have specified an invalid value for LB_CHROOT_FILESYSTEM (--chroot-filesystem)."
 		exit 1
 	fi

@@ -93,7 +93,7 @@ else
 fi
 
 # Checking depends
-Check_package chroot /usr/lib/$(echo ${_BOOTLOADER} | tr [a-z] [A-Z]) ${_BOOTLOADER}
+Check_package chroot /usr/lib/$(echo ${_BOOTLOADER} | tr '[a-z]' '[A-Z]') ${_BOOTLOADER}
 Check_package chroot /usr/lib/syslinux syslinux-common
 Check_package chroot /usr/bin/rsvg-convert librsvg2-bin
 

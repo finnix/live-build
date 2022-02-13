@@ -57,5 +57,10 @@ Firmware_List_From_Contents () {
 				rm -f "${CONTENTS_FILE}"
 			fi
 		done
+
+		# Clean up the cache directory, if no files are present
+		rmdir --ignore-fail-on-non-empty "cache/contents.chroot/${DISTRO_CHROOT}/${_ARCHIVE_AREA}"
+		rmdir --ignore-fail-on-non-empty "cache/contents.chroot/${DISTRO_CHROOT}"
+		rmdir --ignore-fail-on-non-empty "cache/contents.chroot"
 	done
 }

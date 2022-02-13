@@ -103,3 +103,5 @@ clean:
 distclean:
 
 reinstall: uninstall install
+
+.PHONY: all test build install uninstall clean distclean reinstall
