@@ -725,19 +725,19 @@ Validate_config_permitted_values ()
 		exit 1
 	fi
 
-	if [ "$(echo \"${LB_ISO_APPLICATION}\" | wc -c)" -gt 128 ]; then
+	if [ "$(echo -n "${LB_ISO_APPLICATION}" | wc -c)" -gt 128 ]; then
 		Echo_warning "You have specified a value of LB_ISO_APPLICATION (--iso-application) that is too long; the maximum length is 128 characters."
 	fi
 
-	if [ "$(echo \"${LB_ISO_PREPARER}\" | wc -c)" -gt  128 ]; then
+	if [ "$(echo -n "${LB_ISO_PREPARER}" | sed -e "s/@LB_VERSION@/${VERSION}/" | wc -c)" -gt  128 ]; then
 		Echo_warning "You have specified a value of LB_ISO_PREPARER (--iso-preparer) that is too long; the maximum length is 128 characters."
 	fi
 
-	if [ "$(echo \"${LB_ISO_PUBLISHER}\" | wc -c)" -gt 128 ]; then
+	if [ "$(echo -n "${LB_ISO_PUBLISHER}" | wc -c)" -gt 128 ]; then
 		Echo_warning "You have specified a value of LB_ISO_PUBLISHER (--iso-publisher) that is too long; the maximum length is 128 characters."
 	fi
 
-	if [ "$(eval "echo \"${LB_ISO_VOLUME}\"" | wc -c)" -gt 32 ]; then
+	if [ "$(echo -n "${LB_ISO_VOLUME}" | sed -e "s/@ISOVOLUME_TS@/$(date $DATE_UTC_OPTION -d@${SOURCE_DATE_EPOCH} +%Y%m%d-%H:%M)/" | wc -c)" -gt 32 ]; then
 		Echo_warning "You have specified a value of LB_ISO_VOLUME (--iso-volume) that is too long; the maximum length is 32 characters."
 	fi
 
