@@ -164,10 +164,18 @@ else
 		"${APPEND_LIVE}" \
 		"l"
 	if [ "${LB_BOOTAPPEND_LIVE_FAILSAFE}" != "none" ]; then
+		echo "if [ \"\${grub_platform}\" = \"efi\" ]; then" >> "${LIVE_ENTRIES_TMP}"
+		# For EFI: remove 'nomodeset' from the kernel options
+		Grub_live_menu_entry "Live system (${_FLAVOUR} fail-safe mode)" \
+			"/${INITFS}/${DEFAULT_KERNEL}" \
+			"/${INITFS}/${DEFAULT_INITRD}" \
+			"$(echo "${LB_BOOTAPPEND_LIVE_FAILSAFE}" | sed -e 's/nomodeset //')"
+		echo "else" >> "${LIVE_ENTRIES_TMP}"
 		Grub_live_menu_entry "Live system (${_FLAVOUR} fail-safe mode)" \
 			"/${INITFS}/${DEFAULT_KERNEL}" \
 			"/${INITFS}/${DEFAULT_INITRD}" \
 			"${LB_BOOTAPPEND_LIVE_FAILSAFE}"
+		echo "fi" >> "${LIVE_ENTRIES_TMP}"
 	fi
 fi
 
