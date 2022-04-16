@@ -2,13 +2,20 @@
 
 set -e
 
-# Update the mlocate database.
+# Update the [mp]locate database.
 #
 # It is convenient for this to be already up to date on the live system, and it
 # means that if the live system is later installed to a hard disk then less
 # work will be required after installation.
 
+# Up to Bullseye: mlocate
 if command -v updatedb.mlocate >/dev/null
 then
 	updatedb.mlocate
+fi
+
+# Bookworm and later: plocate
+if command -v updatedb.plocate >/dev/null
+then
+	updatedb.plocate
 fi
