@@ -473,6 +473,7 @@ case "${_ACTION}" in
 		# Remove local package repository
 		rm -f chroot/etc/apt/sources.list.d/packages.list
 		rm -rf chroot/root/packages
+		rm -f chroot/var/lib/apt/lists/_root_packages_._*
 
 		# Ensure package list is removed
 		rm -f chroot/root/packages.chroot
