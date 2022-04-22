@@ -70,10 +70,16 @@ EOF
 		# Acquire lock file
 		Acquire_lockfile
 
-		if [ -e config/includes.chroot/etc/hosts ]
+		# Copying hosts from includes, if existing
+		INCLUDE_DIR=$(select_includes_chroot)
+		# includes.chroot_before_packages takes the highest precedence
+		if [ -e config/includes.chroot_before_packages/etc/hosts ]
 		then
-			# Copying local hosts
-			cp -a config/includes.chroot/etc/hosts chroot/etc/hosts
+			INCLUDE_DIR="includes.chroot_before_packages"
+		fi
+		if [ -n "${INCLUDE_DIR}" ] && [ -e config/"${INCLUDE_DIR}"/etc/hosts ]
+		then
+			cp -a config/"${INCLUDE_DIR}"/etc/hosts chroot/etc/hosts
 			rm -f chroot/etc/hosts.orig
 		elif [ -f chroot/etc/hosts.orig ]
 		then
