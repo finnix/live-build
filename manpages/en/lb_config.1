@@ -86,7 +86,7 @@
 .br
 	[\fB\-\-debian\-installer\fR cdrom|netinst|netboot|businesscard|live|none]
 .br
-	[\fB\-\-debian\-installer\-distribution\fR daily|\fICODENAME\fR]
+	[\fB\-\-debian\-installer\-distribution\fR daily|git|\fICODENAME\fR]
 .br
 	[\fB\-\-debian\-installer\-gui\fR true|false]
 .br
@@ -182,7 +182,7 @@
 .br
 	[\fB\-\-parent\-archive\-areas\fR \fIARCHIVE_AREA\fR|"\fIARCHIVE_AREAS\fR"]
 .br
-	[\fB\-\-parent\-debian\-installer\-distribution\fR daily|\fICODENAME\fR]
+	[\fB\-\-parent\-debian\-installer\-distribution\fR daily|git|\fICODENAME\fR]
 .br
 	[\fB\-\-parent\-distribution\fR \fICODENAME\fR]
 .br
@@ -318,8 +318,8 @@ defines what value the debconf frontend should be set to inside the chroot. Note
 defines what value the debconf priority should be set to inside the chroot. By default, it is set to critical, which means that almost no questions are displayed. Note that this only has an effect if you use any debconf frontend different from noninteractive.
 .IP "\fB\-\-debian\-installer\fR cdrom|netinst|netboot|businesscard|live|none" 4
 defines which type, if any, of the debian\-installer should be included in the resulting binary image. By default, no installer is included. All available flavours except live are the identical configurations used on the installer media produced by regular debian\-cd. When live is chosen, the live\-installer udeb is included so that debian\-installer will behave different than usual \- instead of installing the debian system from packages from the medium or the network, it installs the live system to the disk.
-.IP "\fB\-\-debian\-installer\-distribution\fR daily|\fICODENAME\fR" 4
-defines the distribution where the debian\-installer files should be taken out from. Normally, this should be set to the same distribution as the live system. However, sometimes, one wants to use a newer or even daily built installer.
+.IP "\fB\-\-debian\-installer\-distribution\fR daily|git|\fICODENAME\fR" 4
+defines the distribution where the debian\-installer files should be taken out from. Normally, this should be set to the same distribution as the live system. However, sometimes, one wants to use a newer or even either the \fIdaily\fR built installer or the installer rebuilt from its \fIgit\fR repository.
 .IP "\fB\-\-debian\-installer\-gui\fR true|false" 4
 defines whether the graphical version of the debian\-installer should be provided alongside the text based one. This defaults to true.
 .IP "\fB\-\-debian\-installer\-preseedfile\fR \fIFILE\fR|\fIURL\fR" 4
@@ -414,7 +414,7 @@ defines if an ONIE.bin image is generated. ONIE binaries can be loaded by suppor
 defines additional kernel command line options that the ONIE system will use when booting the image. Default is empty string.
 .IP "\fB\-\-parent\-archive\-areas\fR \fIARCHIVE_AREA\fR|""\fIARCHIVE_AREAS\fR""" 4
 defines the archive areas for derivatives of the resulting live system (a comma or space separated list).
-.IP "\fB\-\-parent\-debian\-installer\-distribution\fR daily|\fICODENAME\fR" 4
+.IP "\fB\-\-parent\-debian\-installer\-distribution\fR daily|git|\fICODENAME\fR" 4
 defines the parent debian\-installer distribution for derivatives of the resulting live system.
 .IP "\fB\-\-parent\-distribution\fR \fICODENAME\fR" 4
 defines the parent distribution for derivatives of the resulting live system.
