@@ -56,14 +56,6 @@ Checksum: ${SHA256SUM}
 EOF
 }
 
-prepare_installer_cache() {
-	local SRC_FILENAME=$1
-	local DEST_FILENAME="$(pwd)/cache/installer_debian-installer/$(echo "${MIRROR}/dists/${DEBIAN_VERSION}/main/installer-amd64/current/images/${SRC_FILENAME}" | sed 's|/|_|g')"
-
-	mkdir -p $(dirname ${DEST_FILENAME})
-	cp -a ${DEBIAN_INSTALLER}/build/dest/${SRC_FILENAME} ${DEST_FILENAME}
-}
-
 parse_commandline_arguments() {
 	# Argument 1 = image type
 	case $1 in
@@ -152,14 +144,10 @@ else
 	export LIVE_BUILD_OVERRIDE=0
 	export LIVE_BUILD=${PWD}/live-build
 fi
-export DEBIAN_INSTALLER=${PWD}/debian-installer
 
 # Use a fresh git clone
 if [ ! -d ${LIVE_BUILD} -a ${LIVE_BUILD_OVERRIDE} -eq 0 ]; then
 	git clone https://salsa.debian.org/live-team/live-build.git ${LIVE_BUILD} --single-branch --no-tags
-fi
-if [ ! -d ${DEBIAN_INSTALLER} -a "${INSTALLER}" == "live" ]; then
-	git clone https://salsa.debian.org/installer-team/debian-installer.git ${DEBIAN_INSTALLER} --single-branch --no-tags
 fi
 
 export LB_OUTPUT=lb_output.txt
@@ -200,16 +188,6 @@ if [ ${LIVE_BUILD_OVERRIDE} -eq 0 ]; then
 else
 	output_echo "Info: using local live-build: $(lb --version)"
 fi
-if [ "${INSTALLER}" == "live" ]; then
-	pushd ${DEBIAN_INSTALLER} >/dev/null
-	git pull ${GIT_OPTIONS}
-	git checkout $(git rev-list -n 1 --min-age=${SOURCE_DATE_EPOCH} HEAD) ${GIT_OPTIONS}
-	git clean -Xdf ${GIT_OPTIONS}
-	# Specific patch to prevent /etc/apt/apt.conf.d of the host from influencing the dependency generator
-	sed -i -e 's|LANG=C apt-cache|LANG=C APT_CONFIG=./apt.udeb/apt.conf apt-cache|' build/util/pkg-list
-	output_echo "Info: using debian-installer from git version $(git log -n 1 --pretty=format:%H_%aI)"
-	popd >/dev/null
-fi
 
 # If the configuration folder already exists, re-create from scratch
 if [ -d config ]; then
@@ -218,34 +196,20 @@ if [ -d config ]; then
 	rm -fr .build
 fi
 
-if [ "${INSTALLER}" == "live" ]; then
-	# Create a snapshot for the debian-installer
-	pushd ${DEBIAN_INSTALLER} >/dev/null
-	cd build
-	# MIRROR -> our snapshot URL, with disabled expiration
-	# TARGETS -> only these targets are required
-	MIRROR="[check-valid-until=no] ${MIRROR}" TARGETS="build_cdrom_gtk build_cdrom_isolinux" bash ./daily-build build-only
-	popd >/dev/null
-
-	# Copy the fresh installer to the cache. This will be used instead of the content of the online archive
-	prepare_installer_cache cdrom/vmlinuz
-	prepare_installer_cache cdrom/initrd.gz
-	prepare_installer_cache cdrom/gtk/vmlinuz
-	prepare_installer_cache cdrom/gtk/initrd.gz
-fi
-
 # Configuration for the live image:
 # - For /etc/apt/sources.list: Use the mirror from ${MIRROR}, no security, no updates
+# - The debian-installer is built from its git repository
 # - Don't cache the downloaded content
 # - To reduce some network traffic a proxy is implicitly used
 output_echo "Running lb config."
 lb config \
-	--parent-mirror-bootstrap ${MIRROR} \
-	--parent-mirror-binary ${MIRROR} \
+	--mirror-bootstrap ${MIRROR} \
+	--mirror-binary ${MIRROR} \
 	--security false \
 	--updates false \
 	--distribution ${DEBIAN_VERSION} \
 	--debian-installer ${INSTALLER} \
+	--debian-installer-distribution git \
 	--cache-packages false \
 	2>&1 | tee $LB_OUTPUT
 
