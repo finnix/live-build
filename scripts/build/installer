@@ -28,6 +28,9 @@ Init_config_data "${@}"
 Setup_clean_exit
 
 if [ "${LB_BUILD_WITH_CHROOT}" = "true" ]; then
+	# Use a fresh chroot environment, to not pollute the 'normal' chroot
+	lb installer_chroot "${@}"
+
 	# Configuring chroot
 	lb chroot_prep install all mode-archives-chroot "${@}"
 fi
@@ -39,6 +42,12 @@ lb installer_preseed "${@}"
 if [ "${LB_BUILD_WITH_CHROOT}" = "true" ]; then
 	# Deconfiguring chroot
 	lb chroot_prep remove all mode-archives-chroot "${@}"
+
+	# Revert lb installer_chroot
+	mv chroot/chroot chroot.tmp
+	rm -rf chroot
+	mv chroot.tmp chroot
+	Remove_stagefile installer_chroot
 fi
 
 Echo_message "Installer stage completed"
