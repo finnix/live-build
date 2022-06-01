@@ -21,7 +21,7 @@ then
 fi
 
 # Don't run if the version of libxmlb2 is sufficiently new
-if [ $(dpkg --compare-versions $(dpkg-query --show --showformat '${Version}\n' libxmlb2 | head -1) ge 0.3.7~) ];
+if dpkg --compare-versions $(dpkg-query --show --showformat '${Version}\n' libxmlb2 | head -1) ge 0.3.7~;
 then
   exit 0
 fi
