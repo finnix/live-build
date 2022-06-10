@@ -79,7 +79,9 @@ EOF
 		fi
 		if [ -n "${INCLUDE_DIR}" ] && [ -e config/"${INCLUDE_DIR}"/etc/hosts ]
 		then
-			cp -a config/"${INCLUDE_DIR}"/etc/hosts chroot/etc/hosts
+			cp config/"${INCLUDE_DIR}"/etc/hosts chroot/etc/hosts
+			chmod 644 chroot/etc/hosts
+			Chroot chroot "chown root:root /etc/hosts"
 			rm -f chroot/etc/hosts.orig
 		elif [ -f chroot/etc/hosts.orig ]
 		then
