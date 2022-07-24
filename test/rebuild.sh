@@ -9,7 +9,10 @@
 # Command line arguments:
 # 1) Image type
 # 2) Debian version
-# 3) [optional] Timestamp (format: YYYYMMDD'T'HHMMSS'Z')
+# 3) [optional] argument for the timestamp:
+#    - 'archive' (default): fetches the timestamp from the Debian archive
+#    - 'snapshot': fetches the latest timestamp from the snapshot server
+#    - A timestamp (format: YYYYMMDD'T'HHMMSS'Z'): a specific timestamp on the snapshot server
 
 # Environment variables:
 # http_proxy: The proxy that is used by live-build and wget
@@ -45,7 +48,7 @@ cleanup() {
 	cat <<EOF >summary.txt
 Configuration: ${CONFIGURATION}
 Debian version: ${DEBIAN_VERSION}
-Use latest snapshot: ${BUILD_LATEST}
+Use latest snapshot: ${BUILD_LATEST_DESC}
 Snapshot timestamp: ${SNAPSHOT_TIMESTAMP}
 Snapshot epoch: ${SOURCE_DATE_EPOCH}
 Live-build override: ${LIVE_BUILD_OVERRIDE}
@@ -54,6 +57,7 @@ Build result: ${BUILD_RESULT}
 Alternative timestamp: ${PROPOSED_SNAPSHOT_TIMESTAMP}
 Checksum: ${SHA256SUM}
 EOF
+	touch summary.txt -d@${SOURCE_DATE_EPOCH}
 }
 
 parse_commandline_arguments() {
@@ -111,11 +115,41 @@ parse_commandline_arguments() {
 	export DEBIAN_VERSION="$2"
 
 	# Argument 3 = optional timestamp
-	export BUILD_LATEST=1
+	export BUILD_LATEST="archive"
+	export BUILD_LATEST_DESC="yes, from the main Debian archive"
 	if [ ! -z "$3" ]; then
-		export SNAPSHOT_TIMESTAMP=$3
-		BUILD_LATEST=0
+		case $3 in
+		"archive")
+			export BUILD_LATEST="archive"
+			export BUILD_LATEST_DESC="yes, from the main Debian archive"
+			;;
+		"snapshot")
+			export BUILD_LATEST="snapshot"
+			export BUILD_LATEST_DESC="yes, from the snapshot server"
+			;;
+		*)
+			export SNAPSHOT_TIMESTAMP=$3
+			BUILD_LATEST="no"
+			BUILD_LATEST_DESC="no"
+			;;
+		esac
 	fi
+}
+
+get_snapshot_from_archive() {
+	wget ${WGET_OPTIONS} http://deb.debian.org/debian/dists/${DEBIAN_VERSION}/InRelease --output-document latest
+	#
+	# Extract the timestamp from the InRelease file
+	#
+	# Input:
+	# ...
+	# Date: Sat, 23 Jul 2022 14:33:45 UTC
+	# ...
+	# Output:
+	# 20220723T143345Z
+	#
+	export SNAPSHOT_TIMESTAMP=$(cat latest | awk '/^Date:/ { print substr($0, 7) }' | xargs -I this_date date --utc --date "this_date" +%Y%m%dT%H%M%SZ)
+	rm latest
 }
 
 #
@@ -153,7 +187,13 @@ fi
 export LB_OUTPUT=lb_output.txt
 rm -f ${LB_OUTPUT}
 
-if [ ${BUILD_LATEST} -eq 1 ]; then
+case ${BUILD_LATEST} in
+"archive")
+	# Use the timestamp of the current Debian archive
+	get_snapshot_from_archive
+	export MIRROR=http://deb.debian.org/debian/
+	;;
+"snapshot")
 	# Use the timestamp of the latest mirror snapshot
 	wget ${WGET_OPTIONS} http://snapshot.notset.fr/mr/timestamp/debian/latest --output-document latest
 	#
@@ -170,10 +210,19 @@ if [ ${BUILD_LATEST} -eq 1 ]; then
 	#
 	export SNAPSHOT_TIMESTAMP=$(cat latest | awk '/"result":/ { split($0, a, "\""); print a[4] }')
 	rm latest
-fi
+	export MIRROR=http://snapshot.notset.fr/archive/debian/${SNAPSHOT_TIMESTAMP}
+	;;
+"no")
+	# The value of SNAPSHOT_TIMESTAMP was provided on the command line
+	export MIRROR=http://snapshot.notset.fr/archive/debian/${SNAPSHOT_TIMESTAMP}
+	;;
+*)
+	echo "E: A new option to BUILD_LATEST has been added"
+	exit 1
+	;;
+esac
 # Convert SNAPSHOT_TIMESTAMP to Unix time (insert suitable formatting first)
 export SOURCE_DATE_EPOCH=$(date -d $(echo ${SNAPSHOT_TIMESTAMP} | awk '{ printf "%s-%s-%sT%s:%s:%sZ", substr($0,1,4), substr($0,5,2), substr($0,7,2), substr($0,10,2), substr($0,12,2), substr($0,14,2) }') +%s)
-export MIRROR=http://snapshot.notset.fr/archive/debian/${SNAPSHOT_TIMESTAMP}
 output_echo "Info: using the snapshot from ${SOURCE_DATE_EPOCH} (${SNAPSHOT_TIMESTAMP})"
 
 # Use the code from the actual timestamp
@@ -244,6 +293,16 @@ fi
 
 # Calculate the checksum
 export SHA256SUM=$(sha256sum live-image-amd64.hybrid.iso | cut -f 1 -d " ")
+
+if [ ${BUILD_LATEST} == "archive" ]; then
+	export SNAPSHOT_TIMESTAMP_OLD=${SNAPSHOT_TIMESTAMP}
+	get_snapshot_from_archive
+	if [ ${SNAPSHOT_TIMESTAMP} != ${SNAPSHOT_TIMESTAMP_OLD} ]; then
+		output_echo "Warning: meanwhile the archive was updated. Try re-running the script."
+		export PROPOSED_SNAPSHOT_TIMESTAMP="${BUILD_LATEST}"
+		exit 99
+	fi
+fi
 
 cleanup success
 # Turn off the trap
