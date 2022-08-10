@@ -463,19 +463,7 @@ Prepare_config ()
 			;;
 	esac
 
-	case "${LB_ARCHITECTURE}" in
-		amd64|i386)
-			if [ "${LB_DEBIAN_INSTALLER}" != "none" ]; then
-				LB_WIN32_LOADER="${LB_WIN32_LOADER:-true}"
-			else
-				LB_WIN32_LOADER="${LB_WIN32_LOADER:-false}"
-			fi
-			;;
-
-		*)
-			LB_WIN32_LOADER="${LB_WIN32_LOADER:-false}"
-			;;
-	esac
+	LB_WIN32_LOADER="${LB_WIN32_LOADER:-false}"
 
 	LB_NET_TARBALL="${LB_NET_TARBALL:-true}"
 
