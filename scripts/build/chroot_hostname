@@ -77,7 +77,7 @@ EOF
 		then
 			cp config/"${INCLUDE_DIR}"/etc/hostname chroot/etc/hostname
 			chmod 644 chroot/etc/hostname
-			Chroot chroot "chown root:root chroot/etc/hostname"
+			Chroot chroot "chown root:root /etc/hostname"
 		fi
 
 		Echo_message "Deconfiguring file /bin/hostname"
