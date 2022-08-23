@@ -75,7 +75,9 @@ EOF
 		fi
 		if [ -n "${INCLUDE_DIR}" ] && [ -e config/"${INCLUDE_DIR}"/etc/hostname ]
 		then
-			cp -a config/"${INCLUDE_DIR}"/etc/hostname chroot/etc/hostname
+			cp config/"${INCLUDE_DIR}"/etc/hostname chroot/etc/hostname
+			chmod 644 chroot/etc/hostname
+			Chroot chroot "chown root:root chroot/etc/hostname"
 		fi
 
 		Echo_message "Deconfiguring file /bin/hostname"

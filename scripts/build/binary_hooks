@@ -66,6 +66,7 @@ do
 	fi
 
 	# Executing hook
+	Echo_message "Executing hook ${HOOK}..."
 	cd binary
 	../"${HOOK}" || { Echo_error "${HOOK} failed (exit non-zero). You should check for errors."; exit 1 ;}
 	cd "${OLDPWD}"

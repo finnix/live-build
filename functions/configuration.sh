@@ -103,11 +103,12 @@ Prepare_config ()
 	if [ -n "$LB_PARENT_DISTRIBUTION" ]; then
 		LB_PARENT_DISTRIBUTION_CHROOT="${LB_PARENT_DISTRIBUTION_CHROOT:-${LB_PARENT_DISTRIBUTION}}"
 		LB_PARENT_DISTRIBUTION_BINARY="${LB_PARENT_DISTRIBUTION_BINARY:-${LB_PARENT_DISTRIBUTION}}"
+		LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION:-${LB_PARENT_DISTRIBUTION}}"
 	else
 		LB_PARENT_DISTRIBUTION_CHROOT="${LB_PARENT_DISTRIBUTION_CHROOT:-${LB_DISTRIBUTION_CHROOT}}"
 		LB_PARENT_DISTRIBUTION_BINARY="${LB_PARENT_DISTRIBUTION_BINARY:-${LB_DISTRIBUTION_BINARY}}"
+		LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION:-${LB_DEBIAN_INSTALLER_DISTRIBUTION}}"
 	fi
-	LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION:-${LB_PARENT_DISTRIBUTION_CHROOT}}"
 
 	LB_APT="${LB_APT:-apt}"
 	LB_APT_HTTP_PROXY="${LB_APT_HTTP_PROXY}"
@@ -388,12 +389,12 @@ Prepare_config ()
 	case "${LB_INITRAMFS}" in
 		live-boot)
 			LB_BOOTAPPEND_LIVE="${LB_BOOTAPPEND_LIVE:-boot=live components quiet splash}"
-			LB_BOOTAPPEND_LIVE_FAILSAFE="${LB_BOOTAPPEND_LIVE_FAILSAFE:-boot=live components memtest noapic noapm nodma nomce nolapic nomodeset nosmp nosplash vga=788}"
+			LB_BOOTAPPEND_LIVE_FAILSAFE="${LB_BOOTAPPEND_LIVE_FAILSAFE:-boot=live components memtest noapic noapm nodma nomce nolapic nosmp nosplash vga=788}"
 			;;
 
 		none)
 			LB_BOOTAPPEND_LIVE="${LB_BOOTAPPEND_LIVE:-quiet splash}"
-			LB_BOOTAPPEND_LIVE_FAILSAFE="${LB_BOOTAPPEND_LIVE_FAILSAFE:-memtest noapic noapm nodma nomce nolapic nomodeset nosmp nosplash vga=788}"
+			LB_BOOTAPPEND_LIVE_FAILSAFE="${LB_BOOTAPPEND_LIVE_FAILSAFE:-memtest noapic noapm nodma nomce nolapic nosmp nosplash vga=788}"
 			;;
 	esac
 
@@ -462,19 +463,7 @@ Prepare_config ()
 			;;
 	esac
 
-	case "${LB_ARCHITECTURE}" in
-		amd64|i386)
-			if [ "${LB_DEBIAN_INSTALLER}" != "none" ]; then
-				LB_WIN32_LOADER="${LB_WIN32_LOADER:-true}"
-			else
-				LB_WIN32_LOADER="${LB_WIN32_LOADER:-false}"
-			fi
-			;;
-
-		*)
-			LB_WIN32_LOADER="${LB_WIN32_LOADER:-false}"
-			;;
-	esac
+	LB_WIN32_LOADER="${LB_WIN32_LOADER:-false}"
 
 	LB_NET_TARBALL="${LB_NET_TARBALL:-true}"
 
@@ -725,19 +714,19 @@ Validate_config_permitted_values ()
 		exit 1
 	fi
 
-	if [ "$(echo \"${LB_ISO_APPLICATION}\" | wc -c)" -gt 128 ]; then
+	if [ "$(echo -n "${LB_ISO_APPLICATION}" | wc -c)" -gt 128 ]; then
 		Echo_warning "You have specified a value of LB_ISO_APPLICATION (--iso-application) that is too long; the maximum length is 128 characters."
 	fi
 
-	if [ "$(echo \"${LB_ISO_PREPARER}\" | wc -c)" -gt  128 ]; then
+	if [ "$(echo -n "${LB_ISO_PREPARER}" | sed -e "s/@LB_VERSION@/${VERSION}/" | wc -c)" -gt  128 ]; then
 		Echo_warning "You have specified a value of LB_ISO_PREPARER (--iso-preparer) that is too long; the maximum length is 128 characters."
 	fi
 
-	if [ "$(echo \"${LB_ISO_PUBLISHER}\" | wc -c)" -gt 128 ]; then
+	if [ "$(echo -n "${LB_ISO_PUBLISHER}" | wc -c)" -gt 128 ]; then
 		Echo_warning "You have specified a value of LB_ISO_PUBLISHER (--iso-publisher) that is too long; the maximum length is 128 characters."
 	fi
 
-	if [ "$(eval "echo \"${LB_ISO_VOLUME}\"" | wc -c)" -gt 32 ]; then
+	if [ "$(echo -n "${LB_ISO_VOLUME}" | sed -e "s/@ISOVOLUME_TS@/$(date $DATE_UTC_OPTION -d@${SOURCE_DATE_EPOCH} +%Y%m%d-%H:%M)/" | wc -c)" -gt 32 ]; then
 		Echo_warning "You have specified a value of LB_ISO_VOLUME (--iso-volume) that is too long; the maximum length is 32 characters."
 	fi
 

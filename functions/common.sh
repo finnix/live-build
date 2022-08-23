@@ -19,10 +19,10 @@ VERSION=""
 #  3) For installed versions, the version from the file VERSION
 if [ ! -z "${LIVE_BUILD}" -a "$(command -v git)" -a -e ${LIVE_BUILD}/.git ]; then
 	VERSION="$(cd ${LIVE_BUILD}; git log -n 1 --pretty=format:%H_%aI)"
-	# If a local modification is made or there are staged commits, add 'with_local_changes'
+	# If a local modification is made or there are staged commits, add 'mod'
 	# See https://stackoverflow.com/questions/2657935/checking-for-a-dirty-index-or-untracked-files-with-git
 	if ! $(cd ${LIVE_BUILD}; git diff-index --quiet HEAD --ignore-submodules --); then
-		VERSION="${VERSION}_with_local_changes"
+		VERSION="${VERSION}_mod"
 	fi
 fi
 if [ -z "${VERSION}" -a ! -z "${LIVE_BUILD}" -a -e ${LIVE_BUILD}/debian/changelog ]; then

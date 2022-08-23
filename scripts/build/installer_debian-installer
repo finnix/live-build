@@ -39,9 +39,36 @@ Check_stagefile
 # Acquire lock file
 Acquire_lockfile
 
+# Set d-i image type
+case "${LB_DEBIAN_INSTALLER}" in
+	businesscard|netboot|netinst)
+		DI_IMAGE_TYPE="netboot"
+		;;
+	*)
+		case "${LB_IMAGE_TYPE}" in
+			netboot)
+				DI_IMAGE_TYPE="netboot"
+				;;
+
+			*)
+				DI_IMAGE_TYPE="cdrom"
+				;;
+		esac
+		;;
+esac
+
 # Checking depends
 Check_package host /usr/bin/wget wget
 Check_package chroot /usr/bin/apt-ftparchive apt-utils
+if [ "${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}" = "git" -a "${DI_IMAGE_TYPE}" = "cdrom" ]
+then
+	# Packages that are needed for rebuilding the debian installer
+	Check_package chroot /lib/module linux-image-generic
+	Check_package chroot /usr/bin/git git
+	Check_package chroot /usr/bin/mk-build-deps devscripts
+	Check_package chroot /usr/bin/equivs-build equivs
+	Check_package chroot /usr/bin/gcc gcc
+fi
 
 # Restoring cache
 Restore_package_cache binary
@@ -67,24 +94,6 @@ case "${LB_IMAGE_TYPE}" in
 
 	*)
 		DESTDIR="binary/install"
-		;;
-esac
-
-# Set d-i image type
-case "${LB_DEBIAN_INSTALLER}" in
-	businesscard|netboot|netinst)
-		DI_IMAGE_TYPE="netboot"
-		;;
-	*)
-		case "${LB_IMAGE_TYPE}" in
-			netboot)
-				DI_IMAGE_TYPE="netboot"
-				;;
-
-			*)
-				DI_IMAGE_TYPE="cdrom"
-				;;
-		esac
 		;;
 esac
 
@@ -185,6 +194,14 @@ Install_file() {
 # from a non-standard cwd.
 _LB_CACHE_DIR="$(pwd)/cache/installer_debian-installer"
 
+Prepare_installer_cache() {
+	local SRC_FILENAME="${1}"
+	local DEST_FILENAME="${_LB_CACHE_DIR}/$(echo "${URL}/${SRC_FILENAME}" | sed 's|/|_|g')"
+
+	mkdir -p $(dirname ${DEST_FILENAME})
+	cp -a chroot/debian-installer/build/dest/${SRC_FILENAME} ${DEST_FILENAME}
+}
+
 Download_file () {
 	local _LB_TARGET="${1}"
 	local _LB_URL="${2}"
@@ -243,7 +260,57 @@ case "${LB_DERIVATIVE}" in
 		;;
 
 	false)
-		if [ "${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}" = "daily" ]
+		if [ "${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}" = "git" -a "${DI_IMAGE_TYPE}" = "cdrom" ]
+		then
+			LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="${LB_PARENT_DISTRIBUTION_CHROOT}"
+			URL="${LB_PARENT_MIRROR_CHROOT}/snapshot-build_${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}_${LB_ARCHITECTURE}"
+			# These variables do not need to be passed inside the chroot, they can be resolved earlier:
+			#   SOURCE_DATE_EPOCH, _QUIET, LB_PARENT_MIRROR_CHROOT, LB_PARENT_DISTRIBUTION_CHROOT
+			cat << EOF > chroot/buildit.sh
+#!/bin/sh
+# Get the version of the git repo that matches SOURCE_DATE_EPOCH
+DEBIAN_INSTALLER=/debian-installer
+mkdir -p \${DEBIAN_INSTALLER}
+git clone https://salsa.debian.org/installer-team/debian-installer.git \${DEBIAN_INSTALLER} --single-branch --no-tags --quiet
+cd \${DEBIAN_INSTALLER}
+git checkout \$(git rev-list -n 1 --min-age=${SOURCE_DATE_EPOCH} HEAD) --quiet
+if [ "${_QUIET}" != "true" ]
+then
+	echo "P: using debian-installer from git version \$(git log -n 1 --pretty=format:%H_%aI)"
+fi
+
+# Install the build-dependencies
+mk-build-deps
+find -maxdepth 1 -name *.deb | xargs apt-get --yes install
+
+# Build the installer
+cd build
+if [ "${_QUIET}" != "true" ]
+then
+	echo "P: building the debian-installer"
+fi
+# LINUX_KERNEL_ABI -> use the version of the kernel that matches the current kernel, independent of the version in the git repo (config/common)
+#   Output of dpkg-query:
+#    ii  linux-image-5.17.0-1-amd64
+#    un  linux-image-5.17.0-1-amd64-unsigned
+#    ii  linux-image-amd64
+#    un  linux-image-generic
+#   -> extract the 5.17.0-1 for LINUX_KERNEL_ABI
+# MIRROR -> our snapshot URL, with disabled expiration
+# TARGETS -> only these targets are required
+# USE_UDEBS_FROM -> use the same distribution as the chroot
+export LINUX_KERNEL_ABI=\$(dpkg-query --showformat "\\\${db:Status-Abbrev} \\\${Package}\n" --show linux-image-* | awk '\$1=="ii" { c = split(\$2, a, "-"); if (c>4) { print a[3] "-" a[4] } }')
+MIRROR="[check-valid-until=no] ${LB_PARENT_MIRROR_CHROOT}" TARGETS="build_cdrom_gtk build_cdrom_isolinux" USE_UDEBS_FROM=${LB_PARENT_DISTRIBUTION_CHROOT} bash ./daily-build build-only
+EOF
+			Chroot chroot "sh buildit.sh"
+			# Place the files in the cache. Download_file will use the cache instead of downloading
+			Prepare_installer_cache cdrom/"${VMLINUZ_DI}"
+			Prepare_installer_cache cdrom/"${INITRD_DI}"
+			Prepare_installer_cache cdrom/"${VMLINUZ_GI}"
+			Prepare_installer_cache cdrom/"${INITRD_GI}"
+			rm -rf chroot/debian-installer
+			rm -f chroot/buildit.sh
+		elif [ "${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}" = "daily" ]
 		then
 			LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="sid"
 

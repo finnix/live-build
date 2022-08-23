@@ -1,3 +1,76 @@
+live-build (1:20220505) unstable; urgency=medium
+
+  [ Roland Clobus ]
+  * The support for FTP proxies has ended
+  * Simpler handling of http proxies
+  * Code coverage test (for the proxy)
+
+  [ Ryan Finnie ]
+  * Add initial riscv64 support
+  * Fix missing variable quoting in proxy handling
+
+  [ Roland Clobus ]
+  * Adding symlink for udeb data for bookworm
+  * Fix Lintian warning about malformed NEWS file
+  * Mark the phony targets in the Makefile
+  * Add file with translatable text (lb_installer.1.pot)
+  * Remove generated translation files
+  * Use the release date from the changelog as the date for the last
+    modification of each manpage
+  * Bugfix: Add missing package when systemd is active
+  * Bugfix: Do not copy the content of e.g. /dev/shm when creating hdd
+    images
+  * Bugfix: The arguments to the 'tr' command must be quoted.
+  * Reactivate '--chroot-filesystem plain'.
+  * Bugfix: The values for '--cache-stages' were not matching the
+    implementation.
+  * Clean up the cache directory, if no files are present.
+  * When update-initramfs is called, clean up the backup files.
+  * Set the timestamp of the generated iso image.
+  * Set the timestamp inside hdd images.
+  * Add hooks for building reproducible images
+  * Add hook for libxmlb2 (used by appstream)
+  * Reproducible hooks: Regenerate initrd.img in chroot_hacks only when
+    chroot_hooks did not regenerate it already.
+
+  [ Sophie Brun ]
+  * Harmonize menu entries (uefi / bios) and add a variable for the
+    templates
+
+  [ Michał Prochera ]
+  * Unconditional Remove_packages calls in binary_rootfs (Closes: #994982)
+
+  [ Roland Clobus ]
+  * Reproducible hooks: fontconfig got fixed in 2.13.1-4.4.
+
+  [ Philip Hands ]
+  * get the aptly/pages stage to work
+
+  [ Roland Clobus ]
+  * Show git hash as version number, when a local git repo is used.
+
+  [ Nick Brown ]
+  * Echo executing source/binary hooks
+  * Add auth.conf.d support to archives (Closes: #991065)
+
+  [ Rob Shearman ]
+  * config: respect --bootloaders option again on amd64/i386
+
+  [ Roland Clobus ]
+  * Reproducible hooks: appstream and libxmlb2
+  * UEFI doesn't like nomodeset in safe mode
+  * Rebuild a reproducible ISO image.
+  * Check the actual length of the ISO fields.
+  * Use a shorter suffix for modified development versions.
+  * Remove a left-over file when using a package in
+    config/packages.chroot.
+  * Reproducible hooks: texlive-base and texlive-binaries
+
+  [ Olivier BLIN ]
+  * Add support for the new includes.chroot system to /etc/hosts file
+
+ -- Luca Boccassi <bluca@debian.org>  Thu, 05 May 2022 11:13:27 +0100
+
 live-build (1:20210902) unstable; urgency=medium
 
   [ Thore Sommer ]
