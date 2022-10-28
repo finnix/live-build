@@ -34,14 +34,9 @@ Acquire_lockfile
 
 ## Processing distribution hooks
 
-# Make build config available to chroot hooks. First, make the bind
-# mount and then make it read-only. This can't happen in one mount
-# command, then the resulting mount will be rw (see mount(8)). Making it
-# ro prevents modifications and prevents accidentally removing the
-# contents of the config directory when removing the chroot.
-mkdir -p chroot/live-build/config
-mount -o bind config chroot/live-build/config
-mount -o remount,ro,bind config chroot/live-build/config
+# Make build config available to chroot hooks.
+mkdir -p chroot/live-build
+cp -a config chroot/live-build/config
 
 # Copying hooks
 mkdir -p chroot/root/lb_chroot_hooks
@@ -105,9 +100,10 @@ then
 		Echo_message "Executing hook ${HOOK}..."
 		case "${HOOK}" in
 			*.container)
-				umount chroot/proc
+				[ -e chroot/proc/version ] && proc_mounted=1 || proc_mounted=0
+				[ "${proc_mounted}" = 1 ] && umount chroot/proc
 				systemd-nspawn --capability=all -D chroot "/root/$(basename ${HOOK})" || { Echo_error "${HOOK} failed (exit non-zero). You should check for errors."; exit 1 ;}
-				mount proc-live -t proc chroot/proc
+				[ "${proc_mounted}" = 1 ] && mount proc-live -t proc chroot/proc
 				;;
 			*)
 				Chroot chroot "/root/$(basename ${HOOK})" || { Echo_error "${HOOK} failed (exit non-zero). You should check for errors."; exit 1 ;}
@@ -122,9 +118,8 @@ then
 	Save_package_cache chroot
 fi
 
-# Remove bind mount of build config inside chroot.
-umount chroot/live-build/config
-rmdir chroot/live-build/config
+# Remove build config inside chroot.
+rm -rf chroot/live-build/config
 rmdir chroot/live-build
 
 # Creating stage file

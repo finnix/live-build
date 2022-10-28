@@ -41,7 +41,10 @@ case "${_ACTION}" in
 		mkdir -p chroot/sys
 
 		# Mounting /sys
-		mount -t sysfs -o x-gvfs-hide sysfs-live chroot/sys
+		if ! mount -t sysfs -o x-gvfs-hide sysfs-live chroot/sys
+		then
+			Echo_warning "Cannot mount /sys (running in container?)"
+		fi
 
 		# Creating stage file
 		Create_stagefile
