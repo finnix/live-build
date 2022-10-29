@@ -41,7 +41,10 @@ case "${_ACTION}" in
 		mkdir -p chroot/proc
 
 		# Mounting /proc
-		mount -t proc -o x-gvfs-hide proc-live chroot/proc
+		if ! mount -t proc -o x-gvfs-hide proc-live chroot/proc
+		then
+			Echo_warning "Cannot mount /proc (running in container?)"
+		fi
 
 		# Creating stage file
 		Create_stagefile
