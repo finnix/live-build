@@ -56,13 +56,14 @@ then
 fi
 
 # Checking depends
+_MEMTEST_BIN="${LB_MEMTEST}"
 case "${LB_MEMTEST}" in
 	memtest86)
 		Check_package chroot /boot/memtest86.bin memtest86
 		;;
 
 	memtest86+)
-		Check_package chroot /boot/memtest86+.bin memtest86+
+		Check_package chroot /usr/share/doc/memtest86+/copyright memtest86+
 		;;
 esac
 
@@ -71,6 +72,19 @@ Restore_package_cache binary
 
 # Installing depends
 Install_packages
+
+case "${LB_MEMTEST}" in
+	memtest86+)
+		case "${LB_BUILD_WITH_CHROOT}" in
+			true)
+				[ -e "chroot/boot/${LB_MEMTEST}x32.bin" ] && _MEMTEST_BIN="${LB_MEMTEST}x32"
+				;;
+			false)
+				[ -e "/boot/${LB_MEMTEST}x32.bin" ] && _MEMTEST_BIN="${LB_MEMTEST}x32"
+				;;
+		esac
+		;;
+esac
 
 # Setting destination directory
 case "${LB_INITRAMFS}" in
@@ -89,11 +103,11 @@ mkdir -p "${DESTDIR}"
 # Installing memtest
 case "${LB_BUILD_WITH_CHROOT}" in
 	true)
-		cp -a chroot/boot/${LB_MEMTEST}.bin "${DESTDIR}"/memtest
+		cp -a "chroot/boot/${_MEMTEST_BIN}.bin" "${DESTDIR}"/memtest
 		;;
 
 	false)
-		cp -a /boot/${LB_MEMTEST}.bin "${DESTDIR}"/memtest
+		cp -a "/boot/${_MEMTEST_BIN}.bin" "${DESTDIR}"/memtest
 		;;
 esac
 
