@@ -75,12 +75,20 @@ Install_packages
 
 case "${LB_MEMTEST}" in
 	memtest86+)
+		case "${LB_ARCHITECTURE}" in
+			amd64)
+				_MEMTEST_ARCH=x64
+				;;
+			i386)
+				_MEMTEST_ARCH=x32
+				;;
+		esac
 		case "${LB_BUILD_WITH_CHROOT}" in
 			true)
-				[ -e "chroot/boot/${LB_MEMTEST}x32.bin" ] && _MEMTEST_BIN="${LB_MEMTEST}x32"
+				[ -e "chroot/boot/${LB_MEMTEST}${_MEMTEST_ARCH}.bin" ] && _MEMTEST_BIN="${LB_MEMTEST}${_MEMTEST_ARCH}"
 				;;
 			false)
-				[ -e "/boot/${LB_MEMTEST}x32.bin" ] && _MEMTEST_BIN="${LB_MEMTEST}x32"
+				[ -e "/boot/${LB_MEMTEST}${_MEMTEST_ARCH}.bin" ] && _MEMTEST_BIN="${LB_MEMTEST}${_MEMTEST_ARCH}"
 				;;
 		esac
 		;;
@@ -104,10 +112,12 @@ mkdir -p "${DESTDIR}"
 case "${LB_BUILD_WITH_CHROOT}" in
 	true)
 		cp -a "chroot/boot/${_MEMTEST_BIN}.bin" "${DESTDIR}"/memtest
+		[ -e "chroot/boot/${_MEMTEST_BIN}.efi" ] && cp -a "chroot/boot/${_MEMTEST_BIN}.efi" "${DESTDIR}"/memtest.efi
 		;;
 
 	false)
 		cp -a "/boot/${_MEMTEST_BIN}.bin" "${DESTDIR}"/memtest
+		[ -e "/boot/${_MEMTEST_BIN}.efi" ] && cp -a "/boot/${_MEMTEST_BIN}.efi" "${DESTDIR}"/memtest.efi
 		;;
 esac
 
