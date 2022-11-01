@@ -231,7 +231,8 @@ else
 fi
 
 # Assembling memtest configuration
-MEMTEST_BIN="/${INITFS}/memtest"
+MEMTEST_DIR="/${INITFS}"
+MEMTEST_BIN="${MEMTEST_DIR}/memtest"
 if [ -f "binary/${MEMTEST_BIN}" ]; then
 	ENABLE_MEMTEST="true"
 	MEMTEST="source /boot/grub/memtest.cfg" #for backwards compatibility
@@ -261,6 +262,7 @@ sed -i \
     -e "s|@APPEND_INSTALL@|${LB_BOOTAPPEND_INSTALL}|" \
     -e "s|@ENABLE_INSTALL_MENU@|${ENABLE_INSTALL_MENU}|" \
     -e "s|@ENABLE_MEMTEST@|${ENABLE_MEMTEST}|" \
+    -e "s|@MEMTEST_DIR@|${MEMTEST_DIR}|" \
     -e "s|@MEMTEST_BIN@|${MEMTEST_BIN}|" \
     -e "s|@MEMTEST_VERSION@|${LB_MEMTEST}|" \
     -e "s|@FLAVOUR_LIVE@|${FLAVOUR_LIVE}|" \
