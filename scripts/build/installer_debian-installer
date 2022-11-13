@@ -269,6 +269,9 @@ case "${LB_DERIVATIVE}" in
 			cat << EOF > chroot/buildit.sh
 #!/bin/sh
 # Get the version of the git repo that matches SOURCE_DATE_EPOCH
+
+set -e
+
 DEBIAN_INSTALLER=/debian-installer
 mkdir -p \${DEBIAN_INSTALLER}
 git clone https://salsa.debian.org/installer-team/debian-installer.git \${DEBIAN_INSTALLER} --single-branch --no-tags --quiet
