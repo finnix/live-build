@@ -280,7 +280,12 @@ sed -i \
     -e "s|@INITRD_DI@|${INITRD_DI}|" \
     "${_TARGET}"/install.cfg
 
-MEMTEST_PATH="${_INITRAMFS}/memtest"
+if [ -e "binary/${_INITRAMFS}/memtest.bin" ]
+then
+	MEMTEST_PATH="${_INITRAMFS}/memtest.bin"
+else
+	MEMTEST_PATH="${_INITRAMFS}/memtest"
+fi
 sed -i -e "s#@MEMTEST_VERSION@#${LB_MEMTEST}#g" -e "s#@MEMTEST@#/${MEMTEST_PATH}#g" "${_TARGET}"/memtest.cfg
 
 # Replace placeholder for optional install menu entries include

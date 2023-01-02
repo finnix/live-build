@@ -232,8 +232,13 @@ fi
 
 # Assembling memtest configuration
 MEMTEST_DIR="/${INITFS}"
-MEMTEST_BIN="${MEMTEST_DIR}/memtest"
-if [ -f "binary/${MEMTEST_BIN}" ]; then
+if [ -f "binary/${MEMTEST_DIR}/memtest.bin" ]
+then
+	MEMTEST_BIN="${MEMTEST_DIR}/memtest.bin"
+else
+	MEMTEST_BIN="${MEMTEST_DIR}/memtest"
+fi
+if [ -f "binary/${MEMTEST_DIR}/memtest" ] || [ -f "binary/${MEMTEST_DIR}/memtest.bin" ] || [ -f "binary/${MEMTEST_DIR}/memtest.efi" ]; then
 	ENABLE_MEMTEST="true"
 	MEMTEST="source /boot/grub/memtest.cfg" #for backwards compatibility
 else

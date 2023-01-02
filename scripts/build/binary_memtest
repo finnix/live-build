@@ -43,9 +43,11 @@ then
 	exit 0
 fi
 
+_PREFIX=""
 if [ "${LB_BUILD_WITH_CHROOT}" = "true" ]
 then
 
+	_PREFIX="chroot"
 	if [ -f chroot/usr/sbin/grub ] && [ ! -f chroot/boot/grub/menu.lst ]
 	then
 		GRUB="yes"
@@ -57,6 +59,7 @@ fi
 
 # Checking depends
 _MEMTEST_BIN="${LB_MEMTEST}"
+_MEMTEST_BIOS_FN="memtest"
 case "${LB_MEMTEST}" in
 	memtest86)
 		Check_package chroot /boot/memtest86.bin memtest86
@@ -83,15 +86,11 @@ case "${LB_MEMTEST}" in
 				_MEMTEST_ARCH=x32
 				;;
 		esac
-		case "${LB_BUILD_WITH_CHROOT}" in
-			true)
-				[ -e "chroot/boot/${LB_MEMTEST}${_MEMTEST_ARCH}.bin" ] && _MEMTEST_BIN="${LB_MEMTEST}${_MEMTEST_ARCH}"
-				;;
-			false)
-				[ -e "/boot/${LB_MEMTEST}${_MEMTEST_ARCH}.bin" ] && _MEMTEST_BIN="${LB_MEMTEST}${_MEMTEST_ARCH}"
-				;;
-		esac
-		;;
+		if [ -e "${_PREFIX}/boot/${LB_MEMTEST}${_MEMTEST_ARCH}.bin" ]
+		then
+			_MEMTEST_BIN="${LB_MEMTEST}${_MEMTEST_ARCH}"
+			_MEMTEST_BIOS_FN="memtest.bin"
+		fi
 esac
 
 # Setting destination directory
@@ -109,17 +108,8 @@ esac
 mkdir -p "${DESTDIR}"
 
 # Installing memtest
-case "${LB_BUILD_WITH_CHROOT}" in
-	true)
-		cp -a "chroot/boot/${_MEMTEST_BIN}.bin" "${DESTDIR}"/memtest
-		[ -e "chroot/boot/${_MEMTEST_BIN}.efi" ] && cp -a "chroot/boot/${_MEMTEST_BIN}.efi" "${DESTDIR}"/memtest.efi
-		;;
-
-	false)
-		cp -a "/boot/${_MEMTEST_BIN}.bin" "${DESTDIR}"/memtest
-		[ -e "/boot/${_MEMTEST_BIN}.efi" ] && cp -a "/boot/${_MEMTEST_BIN}.efi" "${DESTDIR}"/memtest.efi
-		;;
-esac
+cp -a "${_PREFIX}/boot/${_MEMTEST_BIN}.bin" "${DESTDIR}/${_MEMTEST_BIOS_FN}"
+[ -e "${_PREFIX}/boot/${_MEMTEST_BIN}.efi" ] && cp -a "${_PREFIX}/boot/${_MEMTEST_BIN}.efi" "${DESTDIR}/memtest.efi"
 
 # Saving cache
 Save_package_cache binary
