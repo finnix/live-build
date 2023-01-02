@@ -13,6 +13,9 @@
 #    - 'archive' (default): fetches the timestamp from the Debian archive
 #    - 'snapshot': fetches the latest timestamp from the snapshot server
 #    - A timestamp (format: YYYYMMDD'T'HHMMSS'Z'): a specific timestamp on the snapshot server
+# 4) [optional] argument for the origin of the d-i:
+#    - 'git' (default): rebuild the installer from git
+#    - 'archive': take the installer from the Debian archive
 
 # Environment variables:
 # http_proxy: The proxy that is used by live-build and wget
@@ -49,6 +52,7 @@ cleanup() {
 Configuration: ${CONFIGURATION}
 Debian version: ${DEBIAN_VERSION}
 Use latest snapshot: ${BUILD_LATEST_DESC}
+Installer origin: ${INSTALLER_ORIGIN}
 Snapshot timestamp: ${SNAPSHOT_TIMESTAMP}
 Snapshot epoch: ${SOURCE_DATE_EPOCH}
 Live-build override: ${LIVE_BUILD_OVERRIDE}
@@ -131,6 +135,22 @@ parse_commandline_arguments() {
 			export SNAPSHOT_TIMESTAMP=$3
 			BUILD_LATEST="no"
 			BUILD_LATEST_DESC="no"
+			;;
+		esac
+	fi
+
+	export INSTALLER_ORIGIN="git"
+	if [ ! -z "$4" ]; then
+		case $4 in
+		"git")
+			export INSTALLER_ORIGIN="git"
+			;;
+		"archive")
+			export INSTALLER_ORIGIN="${DEBIAN_VERSION}"
+			;;
+		*)
+			output_echo "Error: Bad argument 4, unknown value '$4' provided"
+			exit 4
 			;;
 		esac
 	fi
@@ -258,7 +278,7 @@ lb config \
 	--updates false \
 	--distribution ${DEBIAN_VERSION} \
 	--debian-installer ${INSTALLER} \
-	--debian-installer-distribution git \
+	--debian-installer-distribution ${INSTALLER_ORIGIN} \
 	--cache-packages false \
 	2>&1 | tee $LB_OUTPUT
 
