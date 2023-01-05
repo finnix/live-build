@@ -446,7 +446,12 @@ case "${_ACTION}" in
 		do
 			if [ -e "${FILE}" ]
 			then
-				cp ${FILE} chroot/etc/apt/trusted.gpg.d/$(basename ${FILE}).asc
+				if grep -q "PGP PUBLIC KEY BLOCK" "${FILE}"
+				then
+					cp ${FILE} chroot/etc/apt/trusted.gpg.d/$(basename ${FILE}).asc
+				else
+					cp ${FILE} chroot/etc/apt/trusted.gpg.d/$(basename ${FILE}).gpg
+				fi
 			fi
 		done
 
