@@ -685,15 +685,19 @@ EOF
 	Echo_debug "Generating exclude list"
 
 	# Excluding udebs
-	for LOCATION in /usr/share/live/build/data/debian-cd "${LIVE_BUILD}/data/debian-cd"
+	# If the same file exists in multiple locations, take the version from the first
+	LOCATIONS="/usr/share/live/build/data/debian-cd"
+	if [ -n "${LIVE_BUILD}" ]
+	then
+		LOCATIONS="${LIVE_BUILD}/data/debian-cd ${LOCATIONS}"
+	fi
+	for LOCATION in ${LOCATIONS}
 	do
-		if [ -e "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}" ]
+		if [ -e "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}" ] && [ ! -e exclude ]
 		then
 			grep -v "^#" "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/udeb_exclude" > exclude || true
 			grep -v "^#" "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/exclude-udebs" >> exclude || true
 			grep -v "^#" "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/exclude-udebs-${LB_ARCHITECTURE}" >> exclude || true
-
-			continue
 		fi
 	done
 
