@@ -60,15 +60,6 @@ esac
 # Checking depends
 Check_package host /usr/bin/wget wget
 Check_package chroot /usr/bin/apt-ftparchive apt-utils
-if [ "${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}" = "git" -a "${DI_IMAGE_TYPE}" = "cdrom" ]
-then
-	# Packages that are needed for rebuilding the debian installer
-	Check_package chroot /lib/module linux-image-generic
-	Check_package chroot /usr/bin/git git
-	Check_package chroot /usr/bin/mk-build-deps devscripts
-	Check_package chroot /usr/bin/equivs-build equivs
-	Check_package chroot /usr/bin/gcc gcc
-fi
 
 # Restoring cache
 Restore_package_cache binary
@@ -264,9 +255,19 @@ case "${LB_DERIVATIVE}" in
 		then
 			LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="${LB_PARENT_DISTRIBUTION_CHROOT}"
 			URL="${LB_PARENT_MIRROR_CHROOT}/snapshot-build_${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}_${LB_ARCHITECTURE}"
-			# These variables do not need to be passed inside the chroot, they can be resolved earlier:
-			#   SOURCE_DATE_EPOCH, _QUIET, LB_PARENT_MIRROR_CHROOT, LB_PARENT_DISTRIBUTION_CHROOT
-			cat << EOF > chroot/buildit.sh
+			if [ ! -f "${_LB_CACHE_DIR}/$(echo "${URL}/${DI_REMOTE_BASE}/${INITRD_DI}" | sed 's|/|_|g')" ]
+			then
+				# Packages that are needed for rebuilding the debian installer
+				Check_package chroot /lib/module linux-image-generic
+				Check_package chroot /usr/bin/git git
+				Check_package chroot /usr/bin/mk-build-deps devscripts
+				Check_package chroot /usr/bin/equivs-build equivs
+				Check_package chroot /usr/bin/gcc gcc
+				Install_packages
+
+				# These variables do not need to be passed inside the chroot, they can be resolved earlier:
+				#   SOURCE_DATE_EPOCH, _QUIET, LB_PARENT_MIRROR_CHROOT, LB_PARENT_DISTRIBUTION_CHROOT
+				cat << EOF > chroot/buildit.sh
 #!/bin/sh
 # Get the version of the git repo that matches SOURCE_DATE_EPOCH
 
@@ -305,14 +306,17 @@ fi
 export LINUX_KERNEL_ABI=\$(dpkg-query --showformat "\\\${db:Status-Abbrev} \\\${Package}\n" --show linux-image-* | awk '\$1=="ii" { c = split(\$2, a, "-"); if (c>4) { print a[3] "-" a[4] } }')
 MIRROR="[check-valid-until=no] ${LB_PARENT_MIRROR_CHROOT}" TARGETS="build_cdrom_gtk build_cdrom_isolinux" USE_UDEBS_FROM=${LB_PARENT_DISTRIBUTION_CHROOT} bash ./daily-build build-only
 EOF
-			Chroot chroot "sh buildit.sh"
-			# Place the files in the cache. Download_file will use the cache instead of downloading
-			Prepare_installer_cache cdrom/"${VMLINUZ_DI}"
-			Prepare_installer_cache cdrom/"${INITRD_DI}"
-			Prepare_installer_cache cdrom/"${VMLINUZ_GI}"
-			Prepare_installer_cache cdrom/"${INITRD_GI}"
-			rm -rf chroot/debian-installer
-			rm -f chroot/buildit.sh
+				Chroot chroot "sh buildit.sh"
+				# Place the files in the cache. Download_file will use the cache instead of downloading
+				Prepare_installer_cache cdrom/"${VMLINUZ_DI}"
+				Prepare_installer_cache cdrom/"${INITRD_DI}"
+				Prepare_installer_cache cdrom/"${VMLINUZ_GI}"
+				Prepare_installer_cache cdrom/"${INITRD_GI}"
+				rm -rf chroot/debian-installer
+				rm -f chroot/buildit.sh
+			else
+				Echo_debug "Not rebuilding the installer, using copy from cache..."
+			fi
 		elif [ "${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}" = "daily" ]
 		then
 			LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="sid"
