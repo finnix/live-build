@@ -814,6 +814,9 @@ EOF
 	rm -f chroot/binary.sh
 	mv chroot/root/binary ./
 
+	# Add to sources.list with the path that is used inside the live environment
+	echo "deb [trusted=yes] file:/run/live/medium ${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION} ${LB_PARENT_ARCHIVE_AREAS}" >> chroot/chroot/etc/apt/sources.list
+
 	Echo_debug "Creating distribution directories/symlinks"
 
 	DISTRIBUTIONS="stable testing unstable"
