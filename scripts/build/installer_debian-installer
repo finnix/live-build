@@ -720,8 +720,8 @@ EOF
 	# Remove all udebs to be excluded from inclusion
 	Echo_debug "Removing excluded udebs"
 	while read EXCLUDE; do
-		rm -f "${EXCLUDE}_*.udeb"
 	done < exclude
+		rm -f ${EXCLUDE}_*.udeb
 
 	# Sort udebs into alphabetised pool structure
 	Echo_debug "Organising into pool structure"
