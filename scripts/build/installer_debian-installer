@@ -365,7 +365,9 @@ then
 
 	case "${LB_ARCHITECTURE}" in
 		amd64)
-			DI_REQ_PACKAGES="grub-pc"
+			DI_REQ_PACKAGES="grub-pc" # BIOS
+			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi-amd64 efibootmgr grub-efi-amd64-signed shim-signed" # UEFI (required for d-i, includes suggested packages)
+			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} efibootmgr grub-efi-amd64 grub-efi-amd64-bin grub-efi-amd64-signed grub2-common mokutil shim-helpers-amd64-signed shim-signed shim-signed-common shim-unsigned cryptsetup keyutils" # UEFI (required by Calamares)
 			DI_PACKAGES="linux-image-amd64"
 			;;
 
@@ -442,6 +444,14 @@ then
 	# Set apt command prefix
 	_LB_APT_COMMAND="apt-get ${APT_OPTIONS} -o Dir::Cache=/binary.deb -o Dir::State::status=/dev/null -o APT::Install-Recommends=false -o Debug::NoLocking=true --download-only"
 
+	# Download .debs of the required packages
+	Chroot chroot ${_LB_APT_COMMAND} install ${DI_PACKAGES}
+	# The required packages or firmware packages might conflict, so download each individually
+	for _PACKAGE in ${DI_FIRMWARE_PACKAGES} ${DI_REQ_PACKAGES}
+	do
+		Chroot chroot ${_LB_APT_COMMAND} install ${_PACKAGE}
+	done
+
 	if [ "${LB_DEBIAN_INSTALLER}" = "live" ]
 	then
 		# We don't want to duplicate .debs of packages in binary/pool that are already
@@ -450,9 +460,6 @@ then
 		# However, we need to force various packages' inclusion in binary/pool as
 		# d-i does not support (for example) re-installing grub from target/ - the grub
 		# .debs must actually exist.
-
-		# Download .debs of the required packages
-		Chroot chroot ${_LB_APT_COMMAND} install ${DI_PACKAGES} ${DI_FIRMWARE_PACKAGES} ${DI_REQ_PACKAGES}
 
 		# Drop the packages already installed that d-i doesn't explicitly need
 		_REMAINING_PACKAGES="$(echo ${DI_FIRMWARE_PACKAGES} ${DI_REQ_PACKAGES} | sed -e 's# #|#g')"
@@ -463,9 +470,6 @@ then
 		do
 			rm -f chroot/binary.deb/archives/${_PACKAGE}_*.deb
 		done
-	else
-		# Download .debs of the required packages
-		Chroot chroot ${_LB_APT_COMMAND} install ${DI_PACKAGES} ${DI_FIRMWARE_PACKAGES} ${DI_REQ_PACKAGES}
 	fi
 
 	mv chroot/binary.deb ./
