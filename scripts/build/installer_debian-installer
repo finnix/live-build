@@ -711,17 +711,22 @@ EOF
 		cat ../config/debian-installer/udeb_exclude >> exclude
 	fi
 
-	# Excluding udebs from excludes because we want them to be in the image on purpose
-	sed -i -e 's|di-utils-exit-installer||' exclude # used for live-installer-launcher
-	if [ "${LB_DEBIAN_INSTALLER}" = "live" ]; then
-		sed -i -e 's|live-installer||' exclude
-	fi
+	if [ -e exclude ]
+	then
+		# Excluding udebs from excludes because we want them to be in the image on purpose
+		sed -i -e 's|di-utils-exit-installer||' exclude # used for live-installer-launcher
+		if [ "${LB_DEBIAN_INSTALLER}" = "live" ]; then
+			sed -i -e 's|live-installer||' exclude
+		fi
 
-	# Remove all udebs to be excluded from inclusion
-	Echo_debug "Removing excluded udebs"
-	while read EXCLUDE; do
-	done < exclude
-		rm -f ${EXCLUDE}_*.udeb
+		# Remove all udebs to be excluded from inclusion
+		Echo_debug "Removing excluded udebs"
+		while read EXCLUDE; do
+			rm -f ${EXCLUDE}_*.udeb
+		done < exclude
+	else
+		Echo_message "No udeb-exclusion list used"
+	fi
 
 	# Sort udebs into alphabetised pool structure
 	Echo_debug "Organising into pool structure"
