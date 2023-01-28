@@ -3,7 +3,7 @@
 # Rebuild an ISO image for a given timestamp
 #
 # Copyright 2021-2022 Holger Levsen <holger@layer-acht.org>
-# Copyright 2021-2022 Roland Clobus <rclobus@rclobus.nl>
+# Copyright 2021-2023 Roland Clobus <rclobus@rclobus.nl>
 # released under the GPLv2
 
 # Command line arguments:
@@ -22,6 +22,8 @@
 # https_proxy: The proxy that is used by git
 # SNAPSHOT_TIMESTAMP: The timestamp to rebuild (format: YYYYMMDD'T'HHMMSS'Z')
 
+# This script can be run as root, but root rights are only required for a few commands.
+# You are advised to configure the user with 'visudo' instead.
 # Required entries in the sudoers file:
 #   Defaults env_keep += "SOURCE_DATE_EPOCH"
 #   Defaults env_keep += "LIVE_BUILD"
@@ -199,6 +201,11 @@ else
 	export LIVE_BUILD=${PWD}/live-build
 fi
 
+# Prepend sudo for the commands that require it (when not running as root)
+if [ "${EUID:-$(id -u)}" -ne 0 ]; then
+	SUDO=sudo
+fi
+
 # Use a fresh git clone
 if [ ! -d ${LIVE_BUILD} -a ${LIVE_BUILD_OVERRIDE} -eq 0 ]; then
 	git clone https://salsa.debian.org/live-team/live-build.git ${LIVE_BUILD} --single-branch --no-tags
@@ -260,7 +267,7 @@ fi
 
 # If the configuration folder already exists, re-create from scratch
 if [ -d config ]; then
-	sudo lb clean --purge
+	${SUDO} lb clean --purge
 	rm -fr config
 	rm -fr .build
 fi
@@ -297,7 +304,7 @@ cp -a ${LIVE_BUILD}/examples/hooks/reproducible/* config/hooks/normal
 output_echo "Running lb build."
 
 set +e # We are interested in the result of 'lb build', so do not fail on errors
-sudo lb build | tee -a $LB_OUTPUT
+${SUDO} lb build | tee -a $LB_OUTPUT
 export BUILD_RESULT=$?
 set -e
 if [ ${BUILD_RESULT} -ne 0 ]; then
