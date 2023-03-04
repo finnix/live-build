@@ -1347,8 +1347,14 @@ mkdir -p config/rootfs
 mkdir -p local/bin
 
 Echo_message "Symlinking hooks..."
+if [ -n "${LIVE_BUILD}" ] && [ -d "${LIVE_BUILD}/share/hooks" ]
+then
+	LOCATION="${LIVE_BUILD}/share/hooks"
+else
+	LOCATION=/usr/share/live/build/hooks
+fi
 
-for _HOOK in "${LIVE_BUILD}"/share/hooks/normal/*.hook* /usr/share/live/build/hooks/normal/*.hook*
+for _HOOK in "${LOCATION}"/normal/*.hook*
 do
 	if [ -e "${_HOOK}" ] && [ ! -e "config/hooks/normal/$(basename ${_HOOK})" ]
 	then
@@ -1356,7 +1362,7 @@ do
 	fi
 done
 
-for _HOOK in "${LIVE_BUILD}"/share/hooks/live/*.hook* /usr/share/live/build/hooks/live/*.hook*
+for _HOOK in "${LOCATION}"/live/*.hook*
 do
 	if [ -e "${_HOOK}" ] && [ ! -e "config/hooks/live/$(basename ${_HOOK})" ]
 	then

@@ -32,26 +32,7 @@ Check_stagefile
 # Acquire lock file
 Acquire_lockfile
 
-## Processing distribution hooks
-
-# Running hooks
-for _HOOK in ${LB_BINARY_HOOKS}
-do
-	for LOCATION in "${LIVE_BUILD}/hooks" /usr/share/live/build/hooks
-	do
-		for FILE in "${LOCATION}"/????-"${_HOOK}".binary
-		do
-			if [ -e "${FILE}" ]
-			then
-				cd binary
-				"${FILE}" || { Echo_error "${_HOOK} failed (exit non-zero). You should check for errors."; exit 1 ;}
-				cd "${OLDPWD}"
-			fi
-		done
-	done
-done
-
-## Processing local hooks
+## Processing hooks
 for HOOK in config/hooks/normal/*.binary config/hooks/live/*.binary
 do
 	if [ ! -e "${HOOK}" ]
