@@ -119,6 +119,14 @@ parse_commandline_arguments() {
 		exit 2
 	fi
 	DEBIAN_VERSION="$2"
+	case "$DEBIAN_VERSION" in
+	"bullseye")
+		FIRMWARE_ARCHIVE_AREA="non-free"
+		;;
+	*)
+		FIRMWARE_ARCHIVE_AREA="non-free-firmware"
+		;;
+	esac
 
 	# Argument 3 = optional timestamp
 	BUILD_LATEST="archive"
@@ -287,6 +295,7 @@ lb config \
 	--debian-installer ${INSTALLER} \
 	--debian-installer-distribution ${INSTALLER_ORIGIN} \
 	--cache-packages false \
+	--archive-areas "main ${FIRMWARE_ARCHIVE_AREA}" \
 	2>&1 | tee $LB_OUTPUT
 
 # Insider knowledge of live-build:
