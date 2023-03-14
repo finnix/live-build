@@ -121,7 +121,7 @@ parse_commandline_arguments() {
 	DEBIAN_VERSION="$2"
 	case "$DEBIAN_VERSION" in
 	"bullseye")
-		FIRMWARE_ARCHIVE_AREA="non-free"
+		FIRMWARE_ARCHIVE_AREA="non-free contrib"
 		;;
 	*)
 		FIRMWARE_ARCHIVE_AREA="non-free-firmware"
