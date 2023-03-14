@@ -53,11 +53,9 @@ Check_package host /usr/bin/wget wget
 
 FIRMWARE_PACKAGES=""
 
-# Manually add firmware-linux/non-free-firmware meta package
-if [ "${LB_DERIVATIVE}" = "false" ] && In_list "non-free-firmware" ${LB_PARENT_ARCHIVE_AREAS}; then
-	FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} firmware-linux"
-elif [ "${LB_DERIVATIVE}" = "false" ] && In_list "non-free" ${LB_PARENT_ARCHIVE_AREAS}; then
-	# Buster and older
+# Manually add firmware-linux meta package if available
+if [ $(apt-cache show "^firmware-linux$" 2> /dev/null | grep "^Package:" | wc -l) -eq 1 ]
+then
 	FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} firmware-linux"
 fi
 
