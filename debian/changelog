@@ -1,3 +1,46 @@
+live-build (1:20230131) unstable; urgency=medium
+
+  [ Roland Clobus ]
+  * Synchronise all --parent-distribution options.
+  * Create a clean chroot for the installer.
+  * Introduce '--debian-installer-distribution git'.
+  * Rebuild: Use the new settings '--debian-installer-distribution git'.
+  * Removes 'nomodeset' from fail-safe boot.
+  * Reproducible hooks: fix version check for libxmlb2
+  * Build from deb.debian.org
+  * Drop win32-loader for the images with an installer.
+  * Add more variables for the splash.svg image (Closes: #1015782)
+  * rebuild: New option to specify the origin of the d-i binaries
+  * installer: fail early
+  * Rebuild: allow execution by sudo-users and root
+  * Rebuild: Pass only a few environment variables to sub shells
+  * If the same file exists in multiple locations, take the version from
+    the first.
+  * installer: Skip rebuilding the debian installer if it is found in the
+    cache
+  * installer: Remove the udeb files
+  * installer: No error if the udeb-exclusion list is empty
+  * installer: add grub packages for d-i and Calamares
+  * installer: Mark the local repository as trusted
+
+  [ Nick Brown ]
+  * Allow APT_AUTH.CONF(5) config files to be used with archives during
+    bootstrap.
+
+  [ Ryan Finnie ]
+  * chroot_hostname: Fix reference to chroot inside chroot
+  * Fix build with memtest86+ 6.00
+  * memtest: Support arch-specific and EFI memtest86+ 6.00
+  * Memtest GRUB fixes
+
+  [ Luca Boccassi ]
+  * salsa-ci: drop aptly pages publishing, errors out
+
+  [ snip ]
+  * Use same naming scheme for archive keys in chroot and binary stages
+
+ -- Luca Boccassi <bluca@debian.org>  Tue, 31 Jan 2023 16:27:27 +0000
+
 live-build (1:20220505) unstable; urgency=medium
 
   [ Roland Clobus ]

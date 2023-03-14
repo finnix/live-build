@@ -130,10 +130,15 @@ case "${LB_DEBIAN_INSTALLER}" in
 		;;
 esac
 
-#FIXME review the netboot case
-for LOCATION in /usr/share/live/build/data/debian-cd "${LIVE_BUILD}/data/debian-cd"
+# If the same file exists in multiple locations, take the version from the first
+LOCATIONS="/usr/share/live/build/data/debian-cd"
+if [ -n "${LIVE_BUILD}" ]
+then
+	LOCATIONS="${LIVE_BUILD}/data/debian-cd ${LOCATIONS}"
+fi
+for LOCATION in ${LOCATIONS}
 do
-	if [ -e "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}" ]
+	if [ -e "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}" ] && [ ! -e binary/.disk/udeb_include ]
 	then
 		case "${LB_DEBIAN_INSTALLER}" in
 			cdrom)
@@ -146,6 +151,7 @@ do
 				cp -a "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE}_businesscard_udeb_include" binary/.disk/udeb_include
 				;;
 			none|netboot)
+				#FIXME review the netboot case
 				;;
 		esac
 	fi

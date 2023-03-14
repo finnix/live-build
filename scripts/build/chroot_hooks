@@ -32,41 +32,11 @@ Check_stagefile
 # Acquire lock file
 Acquire_lockfile
 
-## Processing distribution hooks
-
 # Make build config available to chroot hooks.
 mkdir -p chroot/live-build
 cp -a config chroot/live-build/config
 
-# Copying hooks
-mkdir -p chroot/root/lb_chroot_hooks
-for _HOOK in ${LB_CHROOT_HOOKS}
-do
-	for LOCATION in "${LIVE_BUILD}/hooks" /usr/share/live/build/hooks
-	do
-		for FILE in "${LOCATION}"/????-"${_HOOK}".chroot
-		do
-			if [ -e "${FILE}" ]
-			then
-				cp "${FILE}" chroot/root/lb_chroot_hooks
-			fi
-		done
-	done
-done
-
-# Running hooks
-if ls chroot/root/lb_chroot_hooks/* > /dev/null 2>&1
-then
-	for _HOOK in chroot/root/lb_chroot_hooks/*
-	do
-		Chroot chroot "/root/lb_chroot_hooks/$(basename ${_HOOK})" || { Echo_error "${_HOOK} failed (exit non-zero). You should check for errors."; exit 1 ;}
-		rm -f chroot/root/lb_chroot_hooks/"$(basename ${_HOOK})"
-	done
-fi
-rmdir chroot/root/lb_chroot_hooks
-rmdir --ignore-fail-on-non-empty chroot/root
-
-## Processing local hooks
+## Processing hooks
 if ls config/hooks/normal/*.chroot > /dev/null 2>&1 && (
    ls config/hooks/live/*.chroot > /dev/null 2>&1 ||
    ls config/hooks/live/*.container > /dev/null 2>&1 )

@@ -83,7 +83,7 @@ case "${LB_MEMTEST}" in
 				_MEMTEST_ARCH=x64
 				;;
 			i386)
-				_MEMTEST_ARCH=x32
+				_MEMTEST_ARCH=ia32
 				;;
 		esac
 		if [ -e "${_PREFIX}/boot/${LB_MEMTEST}${_MEMTEST_ARCH}.bin" ]

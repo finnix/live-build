@@ -60,15 +60,6 @@ esac
 # Checking depends
 Check_package host /usr/bin/wget wget
 Check_package chroot /usr/bin/apt-ftparchive apt-utils
-if [ "${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}" = "git" -a "${DI_IMAGE_TYPE}" = "cdrom" ]
-then
-	# Packages that are needed for rebuilding the debian installer
-	Check_package chroot /lib/module linux-image-generic
-	Check_package chroot /usr/bin/git git
-	Check_package chroot /usr/bin/mk-build-deps devscripts
-	Check_package chroot /usr/bin/equivs-build equivs
-	Check_package chroot /usr/bin/gcc gcc
-fi
 
 # Restoring cache
 Restore_package_cache binary
@@ -264,9 +255,19 @@ case "${LB_DERIVATIVE}" in
 		then
 			LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="${LB_PARENT_DISTRIBUTION_CHROOT}"
 			URL="${LB_PARENT_MIRROR_CHROOT}/snapshot-build_${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}_${LB_ARCHITECTURE}"
-			# These variables do not need to be passed inside the chroot, they can be resolved earlier:
-			#   SOURCE_DATE_EPOCH, _QUIET, LB_PARENT_MIRROR_CHROOT, LB_PARENT_DISTRIBUTION_CHROOT
-			cat << EOF > chroot/buildit.sh
+			if [ ! -f "${_LB_CACHE_DIR}/$(echo "${URL}/${DI_REMOTE_BASE}/${INITRD_DI}" | sed 's|/|_|g')" ]
+			then
+				# Packages that are needed for rebuilding the debian installer
+				Check_package chroot /lib/module linux-image-generic
+				Check_package chroot /usr/bin/git git
+				Check_package chroot /usr/bin/mk-build-deps devscripts
+				Check_package chroot /usr/bin/equivs-build equivs
+				Check_package chroot /usr/bin/gcc gcc
+				Install_packages
+
+				# These variables do not need to be passed inside the chroot, they can be resolved earlier:
+				#   SOURCE_DATE_EPOCH, _QUIET, LB_PARENT_MIRROR_CHROOT, LB_PARENT_DISTRIBUTION_CHROOT
+				cat << EOF > chroot/buildit.sh
 #!/bin/sh
 # Get the version of the git repo that matches SOURCE_DATE_EPOCH
 
@@ -305,14 +306,17 @@ fi
 export LINUX_KERNEL_ABI=\$(dpkg-query --showformat "\\\${db:Status-Abbrev} \\\${Package}\n" --show linux-image-* | awk '\$1=="ii" { c = split(\$2, a, "-"); if (c>4) { print a[3] "-" a[4] } }')
 MIRROR="[check-valid-until=no] ${LB_PARENT_MIRROR_CHROOT}" TARGETS="build_cdrom_gtk build_cdrom_isolinux" USE_UDEBS_FROM=${LB_PARENT_DISTRIBUTION_CHROOT} bash ./daily-build build-only
 EOF
-			Chroot chroot "sh buildit.sh"
-			# Place the files in the cache. Download_file will use the cache instead of downloading
-			Prepare_installer_cache cdrom/"${VMLINUZ_DI}"
-			Prepare_installer_cache cdrom/"${INITRD_DI}"
-			Prepare_installer_cache cdrom/"${VMLINUZ_GI}"
-			Prepare_installer_cache cdrom/"${INITRD_GI}"
-			rm -rf chroot/debian-installer
-			rm -f chroot/buildit.sh
+				Chroot chroot "sh buildit.sh"
+				# Place the files in the cache. Download_file will use the cache instead of downloading
+				Prepare_installer_cache cdrom/"${VMLINUZ_DI}"
+				Prepare_installer_cache cdrom/"${INITRD_DI}"
+				Prepare_installer_cache cdrom/"${VMLINUZ_GI}"
+				Prepare_installer_cache cdrom/"${INITRD_GI}"
+				rm -rf chroot/debian-installer
+				rm -f chroot/buildit.sh
+			else
+				Echo_debug "Not rebuilding the installer, using copy from cache..."
+			fi
 		elif [ "${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}" = "daily" ]
 		then
 			LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="sid"
@@ -361,7 +365,9 @@ then
 
 	case "${LB_ARCHITECTURE}" in
 		amd64)
-			DI_REQ_PACKAGES="grub-pc"
+			DI_REQ_PACKAGES="grub-pc" # BIOS
+			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi-amd64 efibootmgr grub-efi-amd64-signed shim-signed" # UEFI (required for d-i, includes suggested packages)
+			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} efibootmgr grub-efi-amd64 grub-efi-amd64-bin grub-efi-amd64-signed grub2-common mokutil shim-helpers-amd64-signed shim-signed shim-signed-common shim-unsigned cryptsetup keyutils" # UEFI (required by Calamares)
 			DI_PACKAGES="linux-image-amd64"
 			;;
 
@@ -438,6 +444,14 @@ then
 	# Set apt command prefix
 	_LB_APT_COMMAND="apt-get ${APT_OPTIONS} -o Dir::Cache=/binary.deb -o Dir::State::status=/dev/null -o APT::Install-Recommends=false -o Debug::NoLocking=true --download-only"
 
+	# Download .debs of the required packages
+	Chroot chroot ${_LB_APT_COMMAND} install ${DI_PACKAGES}
+	# The required packages or firmware packages might conflict, so download each individually
+	for _PACKAGE in ${DI_FIRMWARE_PACKAGES} ${DI_REQ_PACKAGES}
+	do
+		Chroot chroot ${_LB_APT_COMMAND} install ${_PACKAGE}
+	done
+
 	if [ "${LB_DEBIAN_INSTALLER}" = "live" ]
 	then
 		# We don't want to duplicate .debs of packages in binary/pool that are already
@@ -446,9 +460,6 @@ then
 		# However, we need to force various packages' inclusion in binary/pool as
 		# d-i does not support (for example) re-installing grub from target/ - the grub
 		# .debs must actually exist.
-
-		# Download .debs of the required packages
-		Chroot chroot ${_LB_APT_COMMAND} install ${DI_PACKAGES} ${DI_FIRMWARE_PACKAGES} ${DI_REQ_PACKAGES}
 
 		# Drop the packages already installed that d-i doesn't explicitly need
 		_REMAINING_PACKAGES="$(echo ${DI_FIRMWARE_PACKAGES} ${DI_REQ_PACKAGES} | sed -e 's# #|#g')"
@@ -459,9 +470,6 @@ then
 		do
 			rm -f chroot/binary.deb/archives/${_PACKAGE}_*.deb
 		done
-	else
-		# Download .debs of the required packages
-		Chroot chroot ${_LB_APT_COMMAND} install ${DI_PACKAGES} ${DI_FIRMWARE_PACKAGES} ${DI_REQ_PACKAGES}
 	fi
 
 	mv chroot/binary.deb ./
@@ -685,15 +693,19 @@ EOF
 	Echo_debug "Generating exclude list"
 
 	# Excluding udebs
-	for LOCATION in /usr/share/live/build/data/debian-cd "${LIVE_BUILD}/data/debian-cd"
+	# If the same file exists in multiple locations, take the version from the first
+	LOCATIONS="/usr/share/live/build/data/debian-cd"
+	if [ -n "${LIVE_BUILD}" ]
+	then
+		LOCATIONS="${LIVE_BUILD}/data/debian-cd ${LOCATIONS}"
+	fi
+	for LOCATION in ${LOCATIONS}
 	do
-		if [ -e "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}" ]
+		if [ -e "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}" ] && [ ! -e exclude ]
 		then
 			grep -v "^#" "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/udeb_exclude" > exclude || true
 			grep -v "^#" "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/exclude-udebs" >> exclude || true
 			grep -v "^#" "${LOCATION}/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/exclude-udebs-${LB_ARCHITECTURE}" >> exclude || true
-
-			continue
 		fi
 	done
 
@@ -703,17 +715,22 @@ EOF
 		cat ../config/debian-installer/udeb_exclude >> exclude
 	fi
 
-	# Excluding udebs from excludes because we want them to be in the image on purpose
-	sed -i -e 's|di-utils-exit-installer||' exclude # used for live-installer-launcher
-	if [ "${LB_DEBIAN_INSTALLER}" = "live" ]; then
-		sed -i -e 's|live-installer||' exclude
-	fi
+	if [ -e exclude ]
+	then
+		# Excluding udebs from excludes because we want them to be in the image on purpose
+		sed -i -e 's|di-utils-exit-installer||' exclude # used for live-installer-launcher
+		if [ "${LB_DEBIAN_INSTALLER}" = "live" ]; then
+			sed -i -e 's|live-installer||' exclude
+		fi
 
-	# Remove all udebs to be excluded from inclusion
-	Echo_debug "Removing excluded udebs"
-	while read EXCLUDE; do
-		rm -f "${EXCLUDE}_*.udeb"
-	done < exclude
+		# Remove all udebs to be excluded from inclusion
+		Echo_debug "Removing excluded udebs"
+		while read EXCLUDE; do
+			rm -f ${EXCLUDE}_*.udeb
+		done < exclude
+	else
+		Echo_message "No udeb-exclusion list used"
+	fi
 
 	# Sort udebs into alphabetised pool structure
 	Echo_debug "Organising into pool structure"
@@ -796,6 +813,9 @@ EOF
 	Chroot chroot "sh binary.sh"
 	rm -f chroot/binary.sh
 	mv chroot/root/binary ./
+
+	# Add to sources.list with the path that is used inside the live environment
+	echo "deb [trusted=yes] file:/run/live/medium ${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION} ${LB_PARENT_ARCHIVE_AREAS}" >> chroot/chroot/etc/apt/sources.list
 
 	Echo_debug "Creating distribution directories/symlinks"
 

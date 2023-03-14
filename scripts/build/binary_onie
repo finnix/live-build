@@ -262,7 +262,7 @@ cd \$(dirname \$0)
 
 # remove old partitions
 for p in \$(seq 3 9) ; do
-	sgdisk -d \$p /dev/vda > /dev/null 2&>1
+	sgdisk -d \$p /dev/vda > /dev/null 2>&1
 done
 
 # bonk out on errors

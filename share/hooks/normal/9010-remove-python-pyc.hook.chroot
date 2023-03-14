@@ -2,7 +2,7 @@
 
 set -e
 
-# Remove Python *.py files.
+# Remove Python *.pyc files.
 #
 # This removes byte-compiled Python modules to save some space.
 

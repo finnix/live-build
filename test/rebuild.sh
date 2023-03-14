@@ -3,7 +3,7 @@
 # Rebuild an ISO image for a given timestamp
 #
 # Copyright 2021-2022 Holger Levsen <holger@layer-acht.org>
-# Copyright 2021-2022 Roland Clobus <rclobus@rclobus.nl>
+# Copyright 2021-2023 Roland Clobus <rclobus@rclobus.nl>
 # released under the GPLv2
 
 # Command line arguments:
@@ -22,6 +22,8 @@
 # https_proxy: The proxy that is used by git
 # SNAPSHOT_TIMESTAMP: The timestamp to rebuild (format: YYYYMMDD'T'HHMMSS'Z')
 
+# This script can be run as root, but root rights are only required for a few commands.
+# You are advised to configure the user with 'visudo' instead.
 # Required entries in the sudoers file:
 #   Defaults env_keep += "SOURCE_DATE_EPOCH"
 #   Defaults env_keep += "LIVE_BUILD"
@@ -68,47 +70,47 @@ parse_commandline_arguments() {
 	# Argument 1 = image type
 	case $1 in
 	"smallest-build")
-		export INSTALLER="none"
-		export PACKAGES=""
+		INSTALLER="none"
+		PACKAGES=""
 		;;
 	"cinnamon")
-		export INSTALLER="live"
-		export PACKAGES="live-task-cinnamon"
+		INSTALLER="live"
+		PACKAGES="live-task-cinnamon"
 		;;
 	"gnome")
-		export INSTALLER="live"
-		export PACKAGES="live-task-gnome"
+		INSTALLER="live"
+		PACKAGES="live-task-gnome"
 		;;
 	"kde")
-		export INSTALLER="live"
-		export PACKAGES="live-task-kde"
+		INSTALLER="live"
+		PACKAGES="live-task-kde"
 		;;
 	"lxde")
-		export INSTALLER="live"
-		export PACKAGES="live-task-lxde"
+		INSTALLER="live"
+		PACKAGES="live-task-lxde"
 		;;
 	"lxqt")
-		export INSTALLER="live"
-		export PACKAGES="live-task-lxqt"
+		INSTALLER="live"
+		PACKAGES="live-task-lxqt"
 		;;
 	"mate")
-		export INSTALLER="live"
-		export PACKAGES="live-task-mate"
+		INSTALLER="live"
+		PACKAGES="live-task-mate"
 		;;
 	"standard")
-		export INSTALLER="live"
-		export PACKAGES="live-task-standard"
+		INSTALLER="live"
+		PACKAGES="live-task-standard"
 		;;
 	"xfce")
-		export INSTALLER="live"
-		export PACKAGES="live-task-xfce"
+		INSTALLER="live"
+		PACKAGES="live-task-xfce"
 		;;
 	*)
 		output_echo "Error: Bad argument 1, image type: $1"
 		exit 1
 		;;
 	esac
-	export CONFIGURATION="$1"
+	CONFIGURATION="$1"
 
 	# Argument 2 = Debian version
 	# Use 'stable', 'testing' or 'unstable' or code names like 'sid'
@@ -116,37 +118,37 @@ parse_commandline_arguments() {
 		output_echo "Error: Bad argument 2, Debian version: it is empty"
 		exit 2
 	fi
-	export DEBIAN_VERSION="$2"
+	DEBIAN_VERSION="$2"
 
 	# Argument 3 = optional timestamp
-	export BUILD_LATEST="archive"
-	export BUILD_LATEST_DESC="yes, from the main Debian archive"
+	BUILD_LATEST="archive"
+	BUILD_LATEST_DESC="yes, from the main Debian archive"
 	if [ ! -z "$3" ]; then
 		case $3 in
 		"archive")
-			export BUILD_LATEST="archive"
-			export BUILD_LATEST_DESC="yes, from the main Debian archive"
+			BUILD_LATEST="archive"
+			BUILD_LATEST_DESC="yes, from the main Debian archive"
 			;;
 		"snapshot")
-			export BUILD_LATEST="snapshot"
-			export BUILD_LATEST_DESC="yes, from the snapshot server"
+			BUILD_LATEST="snapshot"
+			BUILD_LATEST_DESC="yes, from the snapshot server"
 			;;
 		*)
-			export SNAPSHOT_TIMESTAMP=$3
+			SNAPSHOT_TIMESTAMP=$3
 			BUILD_LATEST="no"
 			BUILD_LATEST_DESC="no"
 			;;
 		esac
 	fi
 
-	export INSTALLER_ORIGIN="git"
+	INSTALLER_ORIGIN="git"
 	if [ ! -z "$4" ]; then
 		case $4 in
 		"git")
-			export INSTALLER_ORIGIN="git"
+			INSTALLER_ORIGIN="git"
 			;;
 		"archive")
-			export INSTALLER_ORIGIN="${DEBIAN_VERSION}"
+			INSTALLER_ORIGIN="${DEBIAN_VERSION}"
 			;;
 		*)
 			output_echo "Error: Bad argument 4, unknown value '$4' provided"
@@ -168,7 +170,7 @@ get_snapshot_from_archive() {
 	# Output:
 	# 20220723T143345Z
 	#
-	export SNAPSHOT_TIMESTAMP=$(cat latest | awk '/^Date:/ { print substr($0, 7) }' | xargs -I this_date date --utc --date "this_date" +%Y%m%dT%H%M%SZ)
+	SNAPSHOT_TIMESTAMP=$(cat latest | awk '/^Date:/ { print substr($0, 7) }' | xargs -I this_date date --utc --date "this_date" +%Y%m%dT%H%M%SZ)
 	rm latest
 }
 
@@ -182,21 +184,26 @@ trap cleanup INT TERM EXIT
 parse_commandline_arguments "$@"
 
 if $DEBUG; then
-	export WGET_OPTIONS=
-	export GIT_OPTIONS=
+	WGET_OPTIONS=
+	GIT_OPTIONS=
 else
-	export WGET_OPTIONS=--quiet
-	export GIT_OPTIONS=--quiet
+	WGET_OPTIONS=--quiet
+	GIT_OPTIONS=--quiet
 fi
 
 # No log required
 WGET_OPTIONS="${WGET_OPTIONS} --output-file /dev/null --timestamping"
 
 if [ ! -z "${LIVE_BUILD}" ]; then
-	export LIVE_BUILD_OVERRIDE=1
+	LIVE_BUILD_OVERRIDE=1
 else
-	export LIVE_BUILD_OVERRIDE=0
+	LIVE_BUILD_OVERRIDE=0
 	export LIVE_BUILD=${PWD}/live-build
+fi
+
+# Prepend sudo for the commands that require it (when not running as root)
+if [ "${EUID:-$(id -u)}" -ne 0 ]; then
+	SUDO=sudo
 fi
 
 # Use a fresh git clone
@@ -204,14 +211,14 @@ if [ ! -d ${LIVE_BUILD} -a ${LIVE_BUILD_OVERRIDE} -eq 0 ]; then
 	git clone https://salsa.debian.org/live-team/live-build.git ${LIVE_BUILD} --single-branch --no-tags
 fi
 
-export LB_OUTPUT=lb_output.txt
+LB_OUTPUT=lb_output.txt
 rm -f ${LB_OUTPUT}
 
 case ${BUILD_LATEST} in
 "archive")
 	# Use the timestamp of the current Debian archive
 	get_snapshot_from_archive
-	export MIRROR=http://deb.debian.org/debian/
+	MIRROR=http://deb.debian.org/debian/
 	;;
 "snapshot")
 	# Use the timestamp of the latest mirror snapshot
@@ -228,13 +235,13 @@ case ${BUILD_LATEST} in
 	# Output:
 	# 20210828T083909Z
 	#
-	export SNAPSHOT_TIMESTAMP=$(cat latest | awk '/"result":/ { split($0, a, "\""); print a[4] }')
+	SNAPSHOT_TIMESTAMP=$(cat latest | awk '/"result":/ { split($0, a, "\""); print a[4] }')
 	rm latest
-	export MIRROR=http://snapshot.notset.fr/archive/debian/${SNAPSHOT_TIMESTAMP}
+	MIRROR=http://snapshot.notset.fr/archive/debian/${SNAPSHOT_TIMESTAMP}
 	;;
 "no")
 	# The value of SNAPSHOT_TIMESTAMP was provided on the command line
-	export MIRROR=http://snapshot.notset.fr/archive/debian/${SNAPSHOT_TIMESTAMP}
+	MIRROR=http://snapshot.notset.fr/archive/debian/${SNAPSHOT_TIMESTAMP}
 	;;
 *)
 	echo "E: A new option to BUILD_LATEST has been added"
@@ -260,7 +267,7 @@ fi
 
 # If the configuration folder already exists, re-create from scratch
 if [ -d config ]; then
-	sudo lb clean --purge
+	${SUDO} lb clean --purge
 	rm -fr config
 	rm -fr .build
 fi
@@ -297,13 +304,13 @@ cp -a ${LIVE_BUILD}/examples/hooks/reproducible/* config/hooks/normal
 output_echo "Running lb build."
 
 set +e # We are interested in the result of 'lb build', so do not fail on errors
-sudo lb build | tee -a $LB_OUTPUT
-export BUILD_RESULT=$?
+${SUDO} lb build | tee -a $LB_OUTPUT
+BUILD_RESULT=$?
 set -e
 if [ ${BUILD_RESULT} -ne 0 ]; then
 	# Find the snapshot that matches 1 second before the current snapshot
 	wget ${WGET_OPTIONS} http://snapshot.notset.fr/mr/timestamp/debian/$(date --utc -d @$((${SOURCE_DATE_EPOCH} - 1)) +%Y%m%dT%H%M%SZ) --output-document but_latest
-	export PROPOSED_SNAPSHOT_TIMESTAMP=$(cat but_latest | awk '/"result":/ { split($0, a, "\""); print a[4] }')
+	PROPOSED_SNAPSHOT_TIMESTAMP=$(cat but_latest | awk '/"result":/ { split($0, a, "\""); print a[4] }')
 	rm but_latest
 
 	output_echo "Warning: lb build failed with ${BUILD_RESULT}. The latest snapshot might not be complete (yet). Try re-running the script with SNAPSHOT_TIMESTAMP=${PROPOSED_SNAPSHOT_TIMESTAMP}."
@@ -312,14 +319,14 @@ if [ ${BUILD_RESULT} -ne 0 ]; then
 fi
 
 # Calculate the checksum
-export SHA256SUM=$(sha256sum live-image-amd64.hybrid.iso | cut -f 1 -d " ")
+SHA256SUM=$(sha256sum live-image-amd64.hybrid.iso | cut -f 1 -d " ")
 
 if [ ${BUILD_LATEST} == "archive" ]; then
-	export SNAPSHOT_TIMESTAMP_OLD=${SNAPSHOT_TIMESTAMP}
+	SNAPSHOT_TIMESTAMP_OLD=${SNAPSHOT_TIMESTAMP}
 	get_snapshot_from_archive
 	if [ ${SNAPSHOT_TIMESTAMP} != ${SNAPSHOT_TIMESTAMP_OLD} ]; then
 		output_echo "Warning: meanwhile the archive was updated. Try re-running the script."
-		export PROPOSED_SNAPSHOT_TIMESTAMP="${BUILD_LATEST}"
+		PROPOSED_SNAPSHOT_TIMESTAMP="${BUILD_LATEST}"
 		exit 99
 	fi
 fi
