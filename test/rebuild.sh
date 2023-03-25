@@ -309,6 +309,25 @@ fi
 # Add additional hooks, that work around known issues regarding reproducibility
 cp -a ${LIVE_BUILD}/examples/hooks/reproducible/* config/hooks/normal
 
+# For stable and soon-to-be-stable use the same boot splash screen as the Debian installer
+case "$DEBIAN_VERSION" in
+"bullseye")
+	mkdir -p config/bootloaders/syslinux_common
+	wget --quiet https://salsa.debian.org/installer-team/debian-installer/-/raw/master/build/boot/artwork/11-homeworld/homeworld.svg -O config/bootloaders/syslinux_common/splash.svg
+	mkdir -p config/bootloaders/grub-pc
+	ln -s ../../isolinux/splash.png config/bootloaders/grub-pc/splash.png
+	;;
+"bookworm")
+	mkdir -p config/bootloaders/syslinux_common
+	wget --quiet https://salsa.debian.org/installer-team/debian-installer/-/raw/master/build/boot/artwork/12-emerald/emerald.svg -O config/bootloaders/syslinux_common/splash.svg
+	mkdir -p config/bootloaders/grub-pc
+	ln -s ../../isolinux/splash.png config/bootloaders/grub-pc/splash.png
+	;;
+*)
+	# Use the default 'under construction' image
+	;;
+esac
+
 # Build the image
 output_echo "Running lb build."
 
