@@ -311,11 +311,14 @@ then
 			cp "${_TARGET}/splash.svg" chroot
 			Chroot chroot "rsvg-convert --format png --height 480 --width 640 splash.svg -o splash.png"
 			mv chroot/splash.png "${_TARGET}"
+			Chroot chroot "rsvg-convert --format png --height 600 --width 800 splash.svg -o splash800x600.png"
+			mv chroot/splash800x600.png "${_TARGET}"
 			rm -f chroot/splash.svg
 			;;
 
 		false)
 			rsvg-convert --format png --height 480 --width 640 "${_TARGET}/splash.svg" -o "${_TARGET}/splash.png"
+			rsvg-convert --format png --height 600 --width 800 "${_TARGET}/splash.svg" -o "${_TARGET}/splash800x600.png"
 			;;
 	esac
 fi
@@ -323,7 +326,7 @@ rm -f "${_TARGET}/splash.svg"
 
 # Tweak the grub theme to reuse the syslinux background image if grub doesn't have its own
 if [ -e binary/boot/grub/live-theme/theme.txt ] && [ ! -e binary/boot/grub/splash.png ]; then
-	sed -i -e 's|^desktop-image:.*|desktop-image: "/isolinux/splash.png"|' \
+	sed -i -e 's|^desktop-image:.*|desktop-image: "/isolinux/splash800x600.png"|' \
 	-e 's|^title-text:.*|title-text: ""|' \
 	binary/boot/grub/live-theme/theme.txt
 fi
