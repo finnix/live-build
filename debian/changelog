@@ -1,3 +1,10 @@
+live-build (1:20230502) unstable; urgency=medium
+
+  * Team upload
+  * Add cryptsetup-initramfs to package pool (Closes: #1035360)
+
+ -- Jonathan Carter <jcc@debian.org>  Tue, 02 May 2023 14:30:24 +0200
+
 live-build (1:20230131) unstable; urgency=medium
 
   [ Roland Clobus ]
