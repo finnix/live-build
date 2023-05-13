@@ -91,7 +91,7 @@ parse_commandline_arguments() {
 		;;
 	"lxqt")
 		INSTALLER="live"
-		PACKAGES="live-task-lxqt"
+		PACKAGES="lxqt live-task-lxqt" # Install lxqt before lve-task-lxqt to avoid #1023472
 		;;
 	"mate")
 		INSTALLER="live"
