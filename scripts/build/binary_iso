@@ -49,6 +49,10 @@ Acquire_lockfile
 # Checking depends
 Check_package chroot /usr/bin/xorriso xorriso
 Check_package chroot /usr/lib/ISOLINUX/isohdpfx.bin isolinux
+if [ "${LB_BOOTLOADER_BIOS}" = "grub-pc" ]
+then
+	Check_package chroot /usr/lib/grub/i386-pc/boot_hybrid.img grub-pc-bin
+fi 
 
 # Restoring cache
 Restore_package_cache binary
@@ -66,9 +70,19 @@ fi
 XORRISO_OPTIONS="-R -r -J -joliet-long -l -cache-inodes -iso-level 3"
 
 # Handle xorriso live-build specific options
-if [ "${LB_IMAGE_TYPE}" = "iso-hybrid" ] && [ "${LB_BOOTLOADER_BIOS}" = "syslinux" ]
+if [ "${LB_IMAGE_TYPE}" = "iso-hybrid" ]
 then
+	if [ "${LB_BOOTLOADER_BIOS}" = "syslinux" ]
+	then
 	XORRISO_OPTIONS="${XORRISO_OPTIONS} -isohybrid-mbr /usr/lib/ISOLINUX/isohdpfx.bin -partition_offset 16"
+	elif [ "${LB_BOOTLOADER_BIOS}" = "grub-pc" ]
+	then
+		XORRISO_OPTIONS="${XORRISO_OPTIONS} --grub2-boot-info --grub2-mbr /usr/lib/grub/i386-pc/boot_hybrid.img" 
+		XORRISO_OPTIONS="${XORRISO_OPTIONS} -efi-boot-part --efi-boot-image"
+	else
+		Echo_error "iso-hybrid images not supported with ${LB_BOOTLOADER_BIOS} as BIOS bootloader"
+		exit 1
+	fi
 fi
 
 if [ "${_QUIET}" = "true" ]
