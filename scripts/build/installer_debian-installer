@@ -300,10 +300,11 @@ fi
 #    ii  linux-image-amd64
 #    un  linux-image-generic
 #   -> extract the 5.17.0-1 for LINUX_KERNEL_ABI
+#      If there is more than one entry, take the largest (i.e. most recent)
 # MIRROR -> our snapshot URL, with disabled expiration
 # TARGETS -> only these targets are required
 # USE_UDEBS_FROM -> use the same distribution as the chroot
-export LINUX_KERNEL_ABI=\$(dpkg-query --showformat "\\\${db:Status-Abbrev} \\\${Package}\n" --show linux-image-* | awk '\$1=="ii" { c = split(\$2, a, "-"); if (c>4) { print a[3] "-" a[4] } }')
+export LINUX_KERNEL_ABI=\$(dpkg-query --showformat "\\\${db:Status-Abbrev} \\\${Package}\n" --show linux-image-* | awk '\$1=="ii" { c = split(\$2, a, "-"); if (c>4) { print a[3] "-" a[4] } }' | sort | tail -1)
 MIRROR="[check-valid-until=no] ${LB_PARENT_MIRROR_CHROOT}" TARGETS="build_cdrom_gtk build_cdrom_isolinux" USE_UDEBS_FROM=${LB_PARENT_DISTRIBUTION_CHROOT} bash ./daily-build build-only
 EOF
 				Chroot chroot "sh buildit.sh"
