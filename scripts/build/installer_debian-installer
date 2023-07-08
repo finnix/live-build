@@ -283,7 +283,9 @@ then
 	echo "P: using debian-installer from git version \$(git log -n 1 --pretty=format:%H_%aI)"
 fi
 
-# Install the build-dependencies
+# Install the build-dependencies, but remove explicit kernel versions,
+# because the current kernel version will be used
+sed -i '/linux-image-/d' debian/control
 mk-build-deps
 find -maxdepth 1 -name *.deb | xargs apt-get --yes install
 
