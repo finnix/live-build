@@ -185,12 +185,14 @@ gen_efi_boot_img(){
 	#   USB flash drive, while grubx64.efi.signed is for hard drive.
 	#   Therefore here gcdx64.efi.signed is used for amd64 and gcdaa64.efi.signed is
 	#   for arm64.
+	# - Ubuntu's shim binary is in the alternatives system so it could be a symlink,
+	#   so ensure we dereference it and copy the actual file
 	if [ -r ${_CHROOT_DIR}/usr/lib/grub/\$platform-signed/gcd\$efi_name.efi.signed -a \
 			-r ${_CHROOT_DIR}/usr/lib/shim/shim\$efi_name.efi.signed -a \
 			"${LB_UEFI_SECURE_BOOT}" != "disable" ]; then
 		cp -a ${_CHROOT_DIR}/usr/lib/grub/\$platform-signed/gcd\$efi_name.efi.signed \
 			${_CHROOT_DIR}/grub-efi-temp/EFI/boot/grub\$efi_name.efi
-		cp -a ${_CHROOT_DIR}/usr/lib/shim/shim\$efi_name.efi.signed \
+		cp -a --dereference ${_CHROOT_DIR}/usr/lib/shim/shim\$efi_name.efi.signed \
 			${_CHROOT_DIR}/grub-efi-temp/EFI/boot/boot\$efi_name.efi
 	fi
 }
