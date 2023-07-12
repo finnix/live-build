@@ -17,12 +17,12 @@ Vcs-Git: https://salsa.debian.org/live-team/live-build.git
 Package: live-build
 Architecture: all
 Depends:
+ cpio,
  debootstrap,
  ${misc:Depends},
 Recommends:
  apt-utils,
  bzip2,
- cpio,
  cryptsetup,
  file,
  live-boot-doc,

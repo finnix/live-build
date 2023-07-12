@@ -32,13 +32,13 @@ Check_stagefile
 # Acquire lock file
 Acquire_lockfile
 
+# Copying includes
+cd config/includes.binary
+find . | cpio -dmpu --no-preserve-owner "${OLDPWD}"/binary
+cd "${OLDPWD}"
+
 if Find_files config/includes.binary/
 then
-	# Copying includes
-	cd config/includes.binary
-	find . | cpio -dmpu --no-preserve-owner "${OLDPWD}"/binary
-	cd "${OLDPWD}"
-
 	# Removing symlinks
 	if [ "${LB_IMAGE_TYPE}" = "hdd" ]; then
 		find binary -type l | xargs rm -f

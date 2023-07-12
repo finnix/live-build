@@ -52,7 +52,7 @@ VERSION="${VERSION:-none}"
 case "${LB_MODE}" in
 	debian)
 		TITLE="Debian GNU/Linux"
-		STRING="Official Snapshot ${ARCHITECTURE}"
+		STRING="Snapshot ${ARCHITECTURE}"
 		TRACE="project/trace/ftp-master.debian.org"
 		;;
 
