@@ -70,7 +70,7 @@ fi
 XORRISO_OPTIONS="-R -r -J -joliet-long -l -cache-inodes -iso-level 3"
 
 # Handle xorriso live-build specific options
-if [ "${LB_IMAGE_TYPE}" = "iso-hybrid" ]
+if [ "${LB_IMAGE_TYPE}" = "iso-hybrid" ] && [ -n "${LB_BOOTLOADER_BIOS}" ];
 then
 	if [ "${LB_BOOTLOADER_BIOS}" = "syslinux" ]
 	then
