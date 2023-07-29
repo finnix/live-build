@@ -6,17 +6,6 @@
 # Copyright 2021-2023 Roland Clobus <rclobus@rclobus.nl>
 # released under the GPLv2
 
-# Command line arguments:
-# 1) Image type
-# 2) Debian version
-# 3) [optional] argument for the timestamp:
-#    - 'archive' (default): fetches the timestamp from the Debian archive
-#    - 'snapshot': fetches the latest timestamp from the snapshot server
-#    - A timestamp (format: YYYYMMDD'T'HHMMSS'Z'): a specific timestamp on the snapshot server
-# 4) [optional] argument for the origin of the d-i:
-#    - 'git' (default): rebuild the installer from git
-#    - 'archive': take the installer from the Debian archive
-
 # Environment variables:
 # http_proxy: The proxy that is used by live-build and wget
 # https_proxy: The proxy that is used by git
@@ -62,13 +51,121 @@ Live-build path: ${LIVE_BUILD}
 Build result: ${BUILD_RESULT}
 Alternative timestamp: ${PROPOSED_SNAPSHOT_TIMESTAMP}
 Checksum: ${SHA256SUM}
+Script commandline: ${REBUILD_COMMANDLINE}
+Script hash: ${REBUILD_SHA256SUM}
 EOF
 	touch summary.txt -d@${SOURCE_DATE_EPOCH}
 }
 
+show_help() {
+	echo "--help, --usage: This help text"
+	echo "--configuration: Mandatory, specifies the configuration (desktop environment)"
+	echo "--debian-version: Mandatory, e.g. trixie, sid"
+	echo "--debian-version-number: The version number, e.g. 13.0.1"
+	echo "--debug: Enable debugging output"
+	echo "--disk-info: Override the default content for the file .disk/info"
+	echo "--generate-source: Enable the building of a source image"
+	echo "--installer-origin:"
+	echo "    'git' (default): rebuild the installer from git"
+	echo "    'archive': take the installer from the Debian archive"
+	echo "--timestamp:"
+	echo "    'archive' (default): fetches the timestamp from the Debian archive"
+	echo "    'snapshot': fetches the latest timestamp from the snapshot server"
+	echo "    A timestamp (format: YYYYMMDD'T'HHMMSS'Z'): a specific timestamp on the snapshot server"
+}
+
 parse_commandline_arguments() {
-	# Argument 1 = image type
-	case $1 in
+
+	# In alphabetical order
+	local LONGOPTS="configuration:,debian-version:,debian-version-number:,debug,disk-info,generate-source,help,installer-origin:,timestamp:,usage"
+
+	local ARGUMENTS
+	local ERR=0
+	# Add an extra -- to mark the last option
+	ARGUMENTS="$(getopt --shell sh --name "${BASH_SOURCE}" --longoptions $LONGOPTS -- -- "${@}")" || ERR=$?
+
+	REBUILD_COMMANDLINE="${@}"
+	if [ $ERR -eq 1 ]; then
+		output_echo "Error: invalid argument(s)"
+		exit 1
+	elif [ $ERR -ne 0 ]; then
+		output_echo "Error: getopt failure"
+		exit 1
+	fi
+	eval set -- "${ARGUMENTS}"
+
+	while true; do
+		local ARG="${1}"
+		# In alphabetical order
+		case "${ARG}" in
+			--configuration)
+				shift
+				CONFIGURATION=$1
+				shift
+				;;
+			--debian-version)
+				shift
+				DEBIAN_VERSION=$1
+				shift
+				;;
+			--debian-version-number)
+				shift
+				DEBIAN_VERSION_NUMBER=$1
+				shift
+				;;
+			--debug)
+				shift
+				DEBUG=true
+				;;
+			--disk-info)
+				shift
+				DISK_INFO="${1}"
+				shift
+				;;
+			--generate-source)
+				shift
+				GENERATE_SOURCE="--source true"
+				;;
+			--help|--usage)
+				show_help
+				exit 0
+				;;
+			--installer-origin)
+				shift
+				INSTALLER_ORIGIN=$1
+				shift
+				;;
+			--timestamp)
+				shift
+				TIMESTAMP=$1
+				shift
+				;;
+			--)
+				# The last option
+				break
+				;;
+
+			*)
+				# An earlier version of this script had 2 mandatory arguments and 2 optional arguments
+				CONFIGURATION=$1
+				shift
+				DEBIAN_VERSION=$1
+				shift
+				if [ "${1}" != "--" ]
+				then
+					TIMESTAMP=$1
+					shift
+					if [ "${1}" != "--" ]
+					then
+						INSTALLER_ORIGIN=$1
+						shift
+					fi
+				fi
+				;;
+		esac
+	done
+
+	case ${CONFIGURATION} in
 	"smallest-build")
 		INSTALLER="none"
 		PACKAGES=""
@@ -105,26 +202,34 @@ parse_commandline_arguments() {
 		INSTALLER="live"
 		PACKAGES="live-task-xfce"
 		;;
+	"")
+		output_echo "Error: Missing --configuration"
+		exit 1
+		;;
 	*)
-		output_echo "Error: Bad argument 1, image type: $1"
+		output_echo "Error: Unknown value for --configuration: ${CONFIGURATION}"
 		exit 1
 		;;
 	esac
-	CONFIGURATION="$1"
 
-	# Argument 2 = Debian version
 	# Use 'stable', 'testing' or 'unstable' or code names like 'sid'
-	if [ -z "$2" ]; then
-		output_echo "Error: Bad argument 2, Debian version: it is empty"
+	if [ -z "${DEBIAN_VERSION}" ]; then
+		output_echo "Error: Missing --debian-version"
 		exit 2
 	fi
-	DEBIAN_VERSION="$2"
+	case "$DEBIAN_VERSION" in
+	"bullseye")
+		FIRMWARE_ARCHIVE_AREA="non-free contrib"
+		;;
+	*)
+		FIRMWARE_ARCHIVE_AREA="non-free-firmware"
+		;;
+	esac
 
-	# Argument 3 = optional timestamp
 	BUILD_LATEST="archive"
 	BUILD_LATEST_DESC="yes, from the main Debian archive"
-	if [ ! -z "$3" ]; then
-		case $3 in
+	if [ ! -z "${TIMESTAMP}" ]; then
+		case "${TIMESTAMP}" in
 		"archive")
 			BUILD_LATEST="archive"
 			BUILD_LATEST_DESC="yes, from the main Debian archive"
@@ -134,27 +239,54 @@ parse_commandline_arguments() {
 			BUILD_LATEST_DESC="yes, from the snapshot server"
 			;;
 		*)
-			SNAPSHOT_TIMESTAMP=$3
+			SNAPSHOT_TIMESTAMP=${TIMESTAMP}
 			BUILD_LATEST="no"
 			BUILD_LATEST_DESC="no"
 			;;
 		esac
 	fi
 
-	INSTALLER_ORIGIN="git"
-	if [ ! -z "$4" ]; then
-		case $4 in
-		"git")
-			INSTALLER_ORIGIN="git"
-			;;
-		"archive")
-			INSTALLER_ORIGIN="${DEBIAN_VERSION}"
-			;;
-		*)
-			output_echo "Error: Bad argument 4, unknown value '$4' provided"
-			exit 4
-			;;
-		esac
+	case "${INSTALLER_ORIGIN}" in
+	"git"|"")
+		INSTALLER_ORIGIN="git"
+		;;
+	"archive")
+		INSTALLER_ORIGIN="${DEBIAN_VERSION}"
+		;;
+	*)
+		output_echo "Error: Unknown value '${INSTALLER_ORIGIN}' for --installer-origin"
+		exit 4
+		;;
+	esac
+
+	if [ -z "${DEBIAN_VERSION_NUMBER}" ]
+	then
+		DEBIAN_VERSION_NUMBER=${DEBIAN_VERSION}
+	fi
+
+	local CONFIGURATION_SHORT=$(echo ${CONFIGURATION} | cut -c1-2)
+	if [ "${CONFIGURATION_SHORT}" == "lx" ]
+	then
+		# Differentiate between lxqt and lxde
+		CONFIGURATION_SHORT=$(echo ${CONFIGURATION} | cut -c1,3)
+	fi
+	ISO_VOLUME="d-live ${DEBIAN_VERSION_NUMBER} ${CONFIGURATION_SHORT} amd64"
+
+	# Tracing this generator script
+	REBUILD_SHA256SUM=$(sha256sum ${BASH_SOURCE} | cut -f1 -d" ")
+
+	if [ $DEBUG ]
+	then
+		echo "CONFIGURATION = ${CONFIGURATION}"
+		echo "DEBIAN_VERSION = ${DEBIAN_VERSION}"
+		echo "DEBIAN_VERSION_NUMBER = ${DEBIAN_VERSION_NUMBER}"
+		echo "TIMESTAMP = ${TIMESTAMP}"
+		echo "SNAPSHOT_TIMESTAMP = ${SNAPSHOT_TIMESTAMP}"
+		echo "BUILD_LATEST = ${BUILD_LATEST}"
+		echo "BUILD_LATEST_DESC = ${BUILD_LATEST_DESC}"
+		echo "INSTALLER_ORIGIN = ${INSTALLER_ORIGIN}"
+		echo "ISO_VOLUME = ${ISO_VOLUME}"
+		echo "DISK_INFO = ${DISK_INFO}"
 	fi
 }
 
@@ -274,8 +406,11 @@ fi
 
 # Configuration for the live image:
 # - For /etc/apt/sources.list: Use the mirror from ${MIRROR}, no security, no updates
-# - The debian-installer is built from its git repository
+# - The debian-installer is built from its git repository, if configured
 # - Don't cache the downloaded content
+# - Access to non-free-firmware
+# - Use an ISO volume label similar to live-wrapper
+# - Generate a source image, if configured
 # - To reduce some network traffic a proxy is implicitly used
 output_echo "Running lb config."
 lb config \
@@ -287,6 +422,9 @@ lb config \
 	--debian-installer ${INSTALLER} \
 	--debian-installer-distribution ${INSTALLER_ORIGIN} \
 	--cache-packages false \
+	--archive-areas "main ${FIRMWARE_ARCHIVE_AREA}" \
+	--iso-volume "${ISO_VOLUME}" \
+	${GENERATE_SOURCE} \
 	2>&1 | tee $LB_OUTPUT
 
 # Insider knowledge of live-build:
@@ -297,8 +435,41 @@ if [ ! -z "${PACKAGES}" ]; then
 	echo "${PACKAGES}" >config/package-lists/desktop.list.chroot
 fi
 
+# Set meta information about the image
+mkdir config/includes.binary/.disk
+cat << EOF > config/includes.binary/.disk/generator
+This image was generated by $(basename ${BASH_SOURCE})
+Script commandline: ${REBUILD_COMMANDLINE}
+Script hash: ${REBUILD_SHA256SUM}
+EOF
+ISO8601_TIMESTAMP=$(date --utc -d@${SOURCE_DATE_EPOCH} +%Y-%m-%dT%H:%M:%SZ)
+if [ -z "${DISK_INFO}" ]
+then
+	DISK_INFO="Auto-generated Debian GNU/Linux Live ${DEBIAN_VERSION_NUMBER} ${CONFIGURATION}"
+fi
+echo -n "${DISK_INFO} ${ISO8601_TIMESTAMP}" > config/includes.binary/.disk/info
+
 # Add additional hooks, that work around known issues regarding reproducibility
 cp -a ${LIVE_BUILD}/examples/hooks/reproducible/* config/hooks/normal
+
+# For stable and soon-to-be-stable use the same boot splash screen as the Debian installer
+case "$DEBIAN_VERSION" in
+"bullseye")
+	mkdir -p config/bootloaders/syslinux_common
+	wget --quiet https://salsa.debian.org/installer-team/debian-installer/-/raw/master/build/boot/artwork/11-homeworld/homeworld.svg -O config/bootloaders/syslinux_common/splash.svg
+	mkdir -p config/bootloaders/grub-pc
+	ln -s ../../isolinux/splash.png config/bootloaders/grub-pc/splash.png
+	;;
+"bookworm")
+	mkdir -p config/bootloaders/syslinux_common
+	wget --quiet https://salsa.debian.org/installer-team/debian-installer/-/raw/master/build/boot/artwork/12-emerald/emerald.svg -O config/bootloaders/syslinux_common/splash.svg
+	mkdir -p config/bootloaders/grub-pc
+	ln -s ../../isolinux/splash.png config/bootloaders/grub-pc/splash.png
+	;;
+*)
+	# Use the default 'under construction' image
+	;;
+esac
 
 # Build the image
 output_echo "Running lb build."

@@ -20,7 +20,7 @@ then
 fi
 
 # Don't run if there is no font in the initrd.img file
-if ! zless /initrd.img | cpio --list --quiet | grep "^var/cache/fontconfig" | grep ".cache-7$" > /dev/null;
+if ! lsinitramfs /initrd.img | grep "^var/cache/fontconfig" | grep ".cache-7$" > /dev/null;
 then
   exit 0
 fi

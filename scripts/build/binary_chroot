@@ -45,11 +45,13 @@ fi
 
 if [ "${LB_BUILD_WITH_CHROOT}" = "false" ]
 then
+	Create_stagefile
 	exit 0
 fi
 
 if [ "${LB_CACHE}" = "true" ] && Find_files cache/binary_rootfs/filesystem*
 then
+	Create_stagefile
 	exit 0
 fi
 

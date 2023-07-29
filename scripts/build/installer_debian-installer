@@ -283,7 +283,9 @@ then
 	echo "P: using debian-installer from git version \$(git log -n 1 --pretty=format:%H_%aI)"
 fi
 
-# Install the build-dependencies
+# Install the build-dependencies, but remove explicit kernel versions,
+# because the current kernel version will be used
+sed -i '/linux-image-/d' debian/control
 mk-build-deps
 find -maxdepth 1 -name *.deb | xargs apt-get --yes install
 
@@ -300,10 +302,11 @@ fi
 #    ii  linux-image-amd64
 #    un  linux-image-generic
 #   -> extract the 5.17.0-1 for LINUX_KERNEL_ABI
+#      If there is more than one entry, take the largest (i.e. most recent)
 # MIRROR -> our snapshot URL, with disabled expiration
 # TARGETS -> only these targets are required
 # USE_UDEBS_FROM -> use the same distribution as the chroot
-export LINUX_KERNEL_ABI=\$(dpkg-query --showformat "\\\${db:Status-Abbrev} \\\${Package}\n" --show linux-image-* | awk '\$1=="ii" { c = split(\$2, a, "-"); if (c>4) { print a[3] "-" a[4] } }')
+export LINUX_KERNEL_ABI=\$(dpkg-query --showformat "\\\${db:Status-Abbrev} \\\${Package}\n" --show linux-image-* | awk '\$1=="ii" { c = split(\$2, a, "-"); if (c>4) { print a[3] "-" a[4] } }' | sort | tail -1)
 MIRROR="[check-valid-until=no] ${LB_PARENT_MIRROR_CHROOT}" TARGETS="build_cdrom_gtk build_cdrom_isolinux" USE_UDEBS_FROM=${LB_PARENT_DISTRIBUTION_CHROOT} bash ./daily-build build-only
 EOF
 				Chroot chroot "sh buildit.sh"
@@ -367,7 +370,7 @@ then
 		amd64)
 			DI_REQ_PACKAGES="grub-pc" # BIOS
 			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi-amd64 efibootmgr grub-efi-amd64-signed shim-signed" # UEFI (required for d-i, includes suggested packages)
-			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} efibootmgr grub-efi-amd64 grub-efi-amd64-bin grub-efi-amd64-signed grub2-common mokutil shim-helpers-amd64-signed shim-signed shim-signed-common shim-unsigned cryptsetup keyutils" # UEFI (required by Calamares)
+			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} efibootmgr grub-efi-amd64 grub-efi-amd64-bin grub-efi-amd64-signed grub2-common mokutil shim-helpers-amd64-signed shim-signed shim-signed-common shim-unsigned cryptsetup cryptsetup-initramfs keyutils" # UEFI (required by Calamares)
 			DI_PACKAGES="linux-image-amd64"
 			;;
 
@@ -401,9 +404,18 @@ then
 
 		FIRMWARE_PACKAGES=""
 
-		# Manually add firmware-linux/non-free meta package
-		if [ "${LB_DERIVATIVE}" = "false" ] && In_list "non-free" ${LB_PARENT_ARCHIVE_AREAS}; then
-			FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} firmware-linux"
+		# Manually add firmware-linux meta package if available
+		if [ "${LB_BUILD_WITH_CHROOT}" = "true" ]
+		then
+			if [ $(Chroot chroot apt-cache show "^firmware-linux$" 2> /dev/null | grep "^Package:" | wc -l) -eq 1 ]
+			then
+				FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} firmware-linux"
+			fi
+		else
+			if [ $(apt-cache show "^firmware-linux$" 2> /dev/null | grep "^Package:" | wc -l) -eq 1 ]
+			then
+				FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} firmware-linux"
+			fi
 		fi
 
 		Firmware_List_From_Contents "${LB_PARENT_MIRROR_CHROOT}" "${LB_PARENT_DISTRIBUTION_CHROOT}" "${LB_PARENT_ARCHIVE_AREAS}"
