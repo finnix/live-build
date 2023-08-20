@@ -464,7 +464,11 @@ case "$DEBIAN_VERSION" in
 	mkdir -p config/bootloaders/syslinux_common
 	wget --quiet https://salsa.debian.org/installer-team/debian-installer/-/raw/master/build/boot/artwork/12-emerald/emerald.svg -O config/bootloaders/syslinux_common/splash.svg
 	mkdir -p config/bootloaders/grub-pc
-	ln -s ../../isolinux/splash.png config/bootloaders/grub-pc/splash.png
+	# To have a 800x600 image and the title 'Live Boot Menu with GRUB', manually do some of the tweaks from binary_syslinux
+	# 1) Use the sharper 800x600 image instead of 640x480
+	# 2) Because the image is provided, the timestamp of theme.txt must be adjusted, otherwise it would be the date from the provide live-build folder
+	ln -s ../../isolinux/splash800x600.png config/bootloaders/grub-pc/splash.png
+	touch ${LIVE_BUILD}/share/bootloaders/grub-pc/live-theme/theme.txt -d@${SOURCE_DATE_EPOCH}
 	;;
 *)
 	# Use the default 'under construction' image
