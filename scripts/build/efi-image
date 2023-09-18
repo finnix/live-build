@@ -64,7 +64,7 @@ for i in /usr/lib/grub/$platform/part_*.mod; do
 done
 mkdir -p "$outdir/boot/grub/$platform"
 cat >"$outdir/boot/grub/$platform/grub.cfg" <<EOF
-if [ x$grub_platform == xefi -a x$lockdown != xy ] ; then
+if [ x\$grub_platform == xefi -a x\$lockdown != xy ] ; then
 $(printf "    insmod %s\n" $PARTITIONLIST)
 fi
 source /boot/grub/grub.cfg
