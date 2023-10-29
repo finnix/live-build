@@ -466,8 +466,9 @@ case "$DEBIAN_VERSION" in
 	mkdir -p config/bootloaders/grub-pc
 	# To have a 800x600 image and the title 'Live Boot Menu with GRUB', manually do some of the tweaks from binary_syslinux
 	# 1) Use the sharper 800x600 image instead of 640x480
-	# 2) Because the image is provided, the timestamp of theme.txt must be adjusted, otherwise it would be the date from the provide live-build folder
+	# 2) Because the image is provided, the timestamp of theme.txt must be adjusted, otherwise it would be the date from the provided live-build folder
 	ln -s ../../isolinux/splash800x600.png config/bootloaders/grub-pc/splash.png
+	touch ${LIVE_BUILD}/share/bootloaders/grub-pc/live-theme -d@${SOURCE_DATE_EPOCH}
 	touch ${LIVE_BUILD}/share/bootloaders/grub-pc/live-theme/theme.txt -d@${SOURCE_DATE_EPOCH}
 	;;
 *)
