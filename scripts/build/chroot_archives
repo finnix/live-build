@@ -134,11 +134,11 @@ case "${_ACTION}" in
 		# Configure local package repository
 		if Find_files config/packages.chroot/*.deb || Find_files config/packages/*.deb
 		then
-			rm -rf chroot/root/packages
-			mkdir -p chroot/root/packages
+			rm -rf chroot/packages
+			mkdir -p chroot/packages
 
-			if [ "$(stat --printf %d config/packages.chroot/)" = "$(stat --printf %d chroot/root/packages/)" ] ||
-			   [ "$(stat --printf %d config/packages/)" = "$(stat --printf %d chroot/root/packages/)" ]
+			if [ "$(stat --printf %d config/packages.chroot/)" = "$(stat --printf %d chroot/packages/)" ] ||
+			   [ "$(stat --printf %d config/packages/)" = "$(stat --printf %d chroot/packages/)" ]
 			then
 				CP_OPTIONS="-l"
 			fi
@@ -150,10 +150,10 @@ case "${_ACTION}" in
 				do
 					if [ -L "${FILE}" ]
 					then
-						cp -L "${FILE}" chroot/root/packages
+						cp -L "${FILE}" chroot/packages
 					elif [ -e "${FILE}" ]
 					then
-						cp ${CP_OPTIONS} "${FILE}" chroot/root/packages
+						cp ${CP_OPTIONS} "${FILE}" chroot/packages
 					fi
 				done
 			fi
@@ -164,15 +164,15 @@ case "${_ACTION}" in
 				do
 					if [ -L "${FILE}" ]
 					then
-						cp -L "${FILE}" chroot/root/packages
+						cp -L "${FILE}" chroot/packages
 					elif [ -e "${FILE}" ]
 					then
-						cp ${CP_OPTIONS} "${FILE}" chroot/root/packages
+						cp ${CP_OPTIONS} "${FILE}" chroot/packages
 					fi
 				done
 			fi
 
-			if Find_files chroot/root/packages/*.deb
+			if Find_files chroot/packages/*.deb
 			then
 				# If we bootstrapped a minimal chroot, we need
 				# to install apt-utils before we have
@@ -189,16 +189,16 @@ case "${_ACTION}" in
 				Install_packages
 
 				# Generate Packages and Packages.gz
-				echo "cd /root/packages && apt-ftparchive packages . > Packages" | Chroot chroot sh
-				gzip -9 -c chroot/root/packages/Packages > chroot/root/packages/Packages.gz
+				echo "cd /packages && apt-ftparchive packages . > Packages" | Chroot chroot sh
+				gzip -9 -c chroot/packages/Packages > chroot/packages/Packages.gz
 
 				# Generate Release
-				echo "cd /root/packages && apt-ftparchive \
+				echo "cd /packages && apt-ftparchive \
 					-o APT::FTPArchive::Release::Origin=config/packages.chroot \
 					release . > Release" | Chroot chroot sh
 
 				# Add to sources.list.d
-				echo "deb [ trusted=yes ] file:/root/packages ./" > chroot/etc/apt/sources.list.d/packages.list
+				echo "deb [ trusted=yes ] file:/packages ./" > chroot/etc/apt/sources.list.d/packages.list
 
 				# Move top-level sources away, otherwise apt always preferes it (#644148)
 				if [ -e chroot/etc/apt/sources.list ]
@@ -213,9 +213,9 @@ case "${_ACTION}" in
 			fi
 		fi
 
-		if Find_files chroot/root/packages/*.deb
+		if Find_files chroot/packages/*.deb
 		then
-			gunzip < chroot/root/packages/Packages.gz | awk '/^Package: / { print $2 }' \
+			gunzip < chroot/packages/Packages.gz | awk '/^Package: / { print $2 }' \
 			>> chroot/root/packages.chroot
 		fi
 
@@ -477,8 +477,8 @@ case "${_ACTION}" in
 
 		# Remove local package repository
 		rm -f chroot/etc/apt/sources.list.d/packages.list
-		rm -rf chroot/root/packages
-		rm -f chroot/var/lib/apt/lists/_root_packages_._*
+		rm -rf chroot/packages
+		rm -f chroot/var/lib/apt/lists/_packages_._*
 
 		# Ensure package list is removed
 		rm -f chroot/root/packages.chroot
