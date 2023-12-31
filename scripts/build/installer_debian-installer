@@ -289,6 +289,12 @@ sed -i '/linux-image-/d' debian/control
 mk-build-deps
 find -maxdepth 1 -name *.deb | xargs apt-get --yes install
 
+# In kernels since 6.6.8 only a versioned vmlinuz is created
+# For older kernels, modify the Makefile to use an existing vmlinuz, if present
+# The patch only matches when debian-installer!43 (https://salsa.debian.org/installer-team/debian-installer/-/merge_requests/43) is not merged yet
+sed -i -e '/^\\tVMLINUXZ=/s|VMLINUXZ=|if [ ! -e \$(TREE)/boot/vmlinuz ]; then \\\\\\n\\tVMLINUXZ=|' build/Makefile
+sed -i -e '/^\\tmv -v \$\$VMLINUXZ/s|; \\\\|; \\\\\\n\\tfi \\\\|' build/Makefile
+
 # Build the installer
 cd build
 if [ "${_QUIET}" != "true" ]
@@ -374,7 +380,7 @@ then
 
 	case "${LB_ARCHITECTURE}" in
 		amd64)
-			DI_REQ_PACKAGES="grub-pc grub-common libefiboot1 libefivar1 libfuse3-3" # BIOS
+			DI_REQ_PACKAGES="grub-pc grub-common libefiboot1 libefivar1 libfuse2 libfuse3-3" # BIOS
 			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi-amd64 efibootmgr grub-efi-amd64-signed shim-signed" # UEFI (required for d-i, includes suggested packages)
 			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} efibootmgr grub-efi-amd64 grub-efi-amd64-bin grub-efi-amd64-signed grub2-common mokutil shim-helpers-amd64-signed shim-signed shim-signed-common shim-unsigned cryptsetup cryptsetup-initramfs keyutils" # UEFI (required by Calamares)
 			DI_PACKAGES="linux-image-amd64"
