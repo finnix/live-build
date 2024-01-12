@@ -209,6 +209,10 @@ parse_commandline_arguments() {
 		INSTALLER="live"
 		PACKAGES="live-task-xfce"
 		;;
+	"debian-junior")
+		INSTALLER="live"
+		PACKAGES="live-task-debian-junior"
+		;;
 	"")
 		output_echo "Error: Missing --configuration"
 		exit 1
@@ -306,6 +310,9 @@ parse_commandline_arguments() {
 	then
 		# Differentiate between lxqt and lxde
 		CONFIGURATION_SHORT=$(echo ${CONFIGURATION} | cut -c1,3)
+	elif [ "${CONFIGURATION}" == "debian-junior" ]
+	then
+		CONFIGURATION_SHORT="jr"
 	fi
 	ISO_VOLUME="d-live ${DEBIAN_VERSION_NUMBER} ${CONFIGURATION_SHORT} ${ARCHITECTURE}"
 
