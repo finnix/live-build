@@ -179,27 +179,27 @@ parse_commandline_arguments() {
 		;;
 	"cinnamon")
 		INSTALLER="live"
-		PACKAGES="live-task-cinnamon"
+		PACKAGES="live-task-cinnamon spice-vdagent"
 		;;
 	"gnome")
 		INSTALLER="live"
-		PACKAGES="live-task-gnome"
+		PACKAGES="live-task-gnome spice-vdagent"
 		;;
 	"kde")
 		INSTALLER="live"
-		PACKAGES="live-task-kde"
+		PACKAGES="live-task-kde spice-vdagent"
 		;;
 	"lxde")
 		INSTALLER="live"
-		PACKAGES="live-task-lxde"
+		PACKAGES="live-task-lxde spice-vdagent"
 		;;
 	"lxqt")
 		INSTALLER="live"
-		PACKAGES="live-task-lxqt"
+		PACKAGES="live-task-lxqt spice-vdagent"
 		;;
 	"mate")
 		INSTALLER="live"
-		PACKAGES="live-task-mate"
+		PACKAGES="live-task-mate spice-vdagent"
 		;;
 	"standard")
 		INSTALLER="live"
@@ -207,11 +207,11 @@ parse_commandline_arguments() {
 		;;
 	"xfce")
 		INSTALLER="live"
-		PACKAGES="live-task-xfce"
+		PACKAGES="live-task-xfce spice-vdagent"
 		;;
 	"debian-junior")
 		INSTALLER="live"
-		PACKAGES="live-task-debian-junior"
+		PACKAGES="live-task-debian-junior spice-vdagent"
 		;;
 	"")
 		output_echo "Error: Missing --configuration"
