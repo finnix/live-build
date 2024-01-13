@@ -75,7 +75,7 @@ then
 fi
 
 # Copying grub
-cp ${FILES} binary/boot/grub/i386-pc
+cp -a ${FILES} binary/boot/grub/i386-pc
 
 # Create eltorito image for ISO cases
 if [ "${LIVE_IMAGE_TYPE}" = "iso" ] || [ "${LIVE_IMAGE_TYPE}" = "iso-hybrid" ]; then
