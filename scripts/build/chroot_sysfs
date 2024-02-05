@@ -59,6 +59,12 @@ case "${_ACTION}" in
 		# Acquire lock file
 		Acquire_lockfile
 
+		# Unmounting /sys/firmware/efi/efivars
+		if mountpoint -q chroot/sys/firmware/efi/efivars
+		then
+			umount chroot/sys/firmware/efi/efivars
+		fi
+
 		# Unmounting /sys
 		if [ -e chroot/sys/class ]
 		then

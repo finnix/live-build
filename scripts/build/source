@@ -44,6 +44,9 @@ lb source_disk "${@}"
 lb source_hooks "${@}"
 lb source_checksums "${@}"
 
+# Apply SOURCE_DATE_EPOCH to all modified and created files
+find source -newermt "$(date -d@${SOURCE_DATE_EPOCH} '+%Y-%m-%d %H:%M:%S')" -printf "%y %p\n" -exec touch '{}' -d@${SOURCE_DATE_EPOCH} --no-dereference ';' > source.modified_timestamps
+
 # Building images
 lb source_iso "${@}"
 lb source_tar "${@}"

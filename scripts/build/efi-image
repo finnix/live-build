@@ -56,17 +56,19 @@ EOF
 # Set the timestamps
 find $workdir -newermt "$(date -d@${SOURCE_DATE_EPOCH} '+%Y-%m-%d %H:%M:%S')" -exec touch '{}' -d@${SOURCE_DATE_EPOCH} ';'
 
-mkdir -p "$outdir/boot/grub/$platform"
 # All partition modules will be activated, unless UEFI secure boot is active (they are not signed)
 PARTITIONLIST=""
-(echo "if [ x$grub_platform == xefi -a x$lockdown != xy ] ; then "; \
- for i in /usr/lib/grub/$platform/part_*.mod; do
-	i=`echo $i | sed 's?^.*/??g;s?\.mod$??g;'`
-	echo "insmod $i"
-	PARTITIONLIST="${PARTITIONLIST} $i"
- done; \
- echo "fi"; \
- echo "source /boot/grub/grub.cfg") >"$outdir/boot/grub/$platform/grub.cfg"
+for i in /usr/lib/grub/$platform/part_*.mod; do
+	i=$(echo $i | sed 's?^.*/??g;s?\.mod$??g;')
+	PARTITIONLIST="$PARTITIONLIST $i"
+done
+mkdir -p "$outdir/boot/grub/$platform"
+cat >"$outdir/boot/grub/$platform/grub.cfg" <<EOF
+if [ x\$grub_platform == xefi -a x\$lockdown != xy ] ; then
+$(printf "    insmod %s\n" $PARTITIONLIST)
+fi
+source /boot/grub/grub.cfg
+EOF
 
 # Build the core image.
 (cd "$workdir"; tar -cf - boot) >"$memdisk_img"

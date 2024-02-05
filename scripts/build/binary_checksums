@@ -56,7 +56,7 @@ do
 		\! -path './*SUMS' \
 		\! -path './*sum.txt' \
 		\! -path './*sum.README' \
-	-print0 | sort -z | xargs -0 ${CHECKSUM}sum > ${CHECKSUMS}
+	-print0 | LC_ALL=C sort -z | xargs -0 ${CHECKSUM}sum > ${CHECKSUMS}
 
 cat > ${CHECKSUM}sum.README << EOF
 The file ${CHECKSUMS} contains the ${CHECKSUM} checksums of all files on this medium.
@@ -70,7 +70,7 @@ done
 
 # File list
 cd binary
-find . | sed -e 's|^.||g' | grep "^/" | sort > ../${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.contents
+find . | sed -e 's|^.||g' | grep "^/" | LC_ALL=C sort > ../${LB_IMAGE_NAME}-${LB_ARCHITECTURE}.contents
 cd "${OLDPWD}"
 
 # Creating stage file

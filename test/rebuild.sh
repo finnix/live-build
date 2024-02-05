@@ -452,6 +452,124 @@ echo -n "${DISK_INFO} ${ISO8601_TIMESTAMP}" > config/includes.binary/.disk/info
 # Add additional hooks, that work around known issues regarding reproducibility
 cp -a ${LIVE_BUILD}/examples/hooks/reproducible/* config/hooks/normal
 
+# The hook script needs to be escaped once
+# The replaced file needs to be escaped twice
+cat << EOFHOOK > config/hooks/live/5000-no-password-for-calamares.hook.chroot
+#!/bin/sh
+set -e
+
+# With live-config < 11.0.4 a password is required for running e.g. Calamares
+# See https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1037295
+
+# Don't run if live-config is not installed
+if [ ! -e /usr/lib/live/config/1080-policykit ];
+then
+  exit 0
+fi
+
+# Don't run if the version of 1080-policykit is sufficiently new
+if grep -q "/usr/share/polkit-1/rules.d" /usr/lib/live/config/1080-policykit;
+then
+  exit 0
+fi
+
+# Completely replace the content to match the content of 11.0.4
+cat << EOFNEWCONTENT > /usr/lib/live/config/1080-policykit
+#!/bin/sh
+
+. /lib/live/config.sh
+
+## live-config(7) - System Configuration Components
+## Copyright (C) 2016-2023 The Debian Live team
+## Copyright (C) 2006-2015 Daniel Baumann <mail@daniel-baumann.ch>
+##
+## This program comes with ABSOLUTELY NO WARRANTY; for details see COPYING.
+## This is free software, and you are welcome to redistribute it
+## under certain conditions; see COPYING for details.
+
+
+#set -e
+
+Cmdline ()
+{
+	# Reading kernel command line
+	for _PARAMETER in \\\${LIVE_CONFIG_CMDLINE}
+	do
+		case "\\\${_PARAMETER}" in
+			live-config.noroot|noroot)
+				LIVE_CONFIG_NOROOT="true"
+				;;
+
+			live-config.username=*|username=*)
+				LIVE_USERNAME="\\\${_PARAMETER#*username=}"
+				;;
+		esac
+	done
+}
+
+Init ()
+{
+	# Disable root access, no matter what mechanism
+	case "\\\${LIVE_CONFIG_NOROOT}" in
+		true)
+			exit 0
+			;;
+	esac
+
+	# Checking if package is installed
+	if (! pkg_is_installed "polkitd" &&
+		! pkg_is_installed "policykit-1") || \\\\
+	   component_was_executed "policykit"
+	then
+		exit 0
+	fi
+
+	echo -n " policykit"
+}
+
+Config ()
+{
+	# Configure PolicyKit in live session
+	mkdir -p /usr/share/polkit-1/rules.d
+
+	if [ -n "\\\${LIVE_USERNAME}" ]
+	then
+		cat > /usr/share/polkit-1/rules.d/sudo_on_live.rules << EOF
+// Grant the live user access without a prompt
+polkit.addRule(function(action, subject) {
+	if (subject.local &&
+		subject.active &&
+		subject.user === "\\\${LIVE_USERNAME}" &&
+		subject.isInGroup("sudo")) {
+		return polkit.Result.YES;
+	}
+});
+EOF
+	else
+		cat > /usr/share/polkit-1/rules.d/sudo_on_live.rules << EOF
+// Grant the sudo users access without a prompt
+polkit.addRule(function(action, subject) {
+	if (subject.local &&
+		subject.active &&
+		subject.isInGroup("sudo")) {
+		return polkit.Result.YES;
+	}
+});
+EOF
+	fi
+
+	# Creating state file
+	touch /var/lib/live/config/policykit
+}
+
+Cmdline
+Init
+Config
+EOFNEWCONTENT
+
+echo "P: \$(basename \$0) Bugfix hook has been applied"
+EOFHOOK
+
 # For stable and soon-to-be-stable use the same boot splash screen as the Debian installer
 case "$DEBIAN_VERSION" in
 "bullseye")
@@ -463,8 +581,11 @@ case "$DEBIAN_VERSION" in
 "bookworm")
 	mkdir -p config/bootloaders/syslinux_common
 	wget --quiet https://salsa.debian.org/installer-team/debian-installer/-/raw/master/build/boot/artwork/12-emerald/emerald.svg -O config/bootloaders/syslinux_common/splash.svg
-	mkdir -p config/bootloaders/grub-pc
-	ln -s ../../isolinux/splash.png config/bootloaders/grub-pc/splash.png
+	# To have a 800x600 image and the title 'Live Boot Menu with GRUB', manually undo the title-text modification from binary_syslinux
+	cat > config/hooks/live/5010-restore-grub-title.hook.binary << EOF
+#!/bin/sh
+sed -i -e 's|^title-text:.*|title-text: "Live Boot Menu with GRUB"|' boot/grub/live-theme/theme.txt
+EOF
 	;;
 *)
 	# Use the default 'under construction' image

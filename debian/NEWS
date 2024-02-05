@@ -1,4 +1,4 @@
-live-build (UNRELEASED) unstable; urgency=medium
+live-build (1:20220505) unstable; urgency=medium
 
   The support for FTP proxies has ended. You are advised to use http or https
   while configuring the debian package mirror, instead of ftp.

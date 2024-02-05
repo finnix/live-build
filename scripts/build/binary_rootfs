@@ -106,7 +106,7 @@ case "${LB_CHROOT_FILESYSTEM}" in
 				dd if=/dev/zero of=chroot/filesystem.${LB_CHROOT_FILESYSTEM} bs=1024k count=0 seek=${REAL_DIM}
 
 				FAKE_MTAB=false
-				if ! Chroot chroot "test -s /etc/mtab"
+				if ! Chroot chroot "test -e /etc/mtab"
 				then
 					Chroot chroot "ln -s /proc/mounts/mtab /etc/mtab"
 					FAKE_MTAB=true
