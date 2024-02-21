@@ -16,3 +16,5 @@ rm -f /etc/gshadow-
 
 rm -f /var/cache/debconf/*-old
 rm -f /var/lib/dpkg/*-old
+
+rm -f /usr/share/info/dir.old
