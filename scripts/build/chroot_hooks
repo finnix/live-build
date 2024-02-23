@@ -76,7 +76,7 @@ then
 		case "${HOOK}" in
 			*.container)
 				umount chroot/proc
-				systemd-nspawn --capability=all -D chroot "/root/$(basename ${HOOK})" || { Echo_error "${HOOK} failed (exit non-zero). You should check for errors."; exit 1 ;}
+				systemd-nspawn --capability=all --register=no --keep-unit -D chroot "/root/$(basename ${HOOK})" || { Echo_error "${HOOK} failed (exit non-zero). You should check for errors."; exit 1 ;}
 				mount proc-live -t proc chroot/proc
 				;;
 			*)
