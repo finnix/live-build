@@ -353,7 +353,7 @@ DOWNLOAD_GTK_INSTALLER=false
 if [ "${LB_DEBIAN_INSTALLER_GUI}" = "true" ]
 then
 	case "${LB_ARCHITECTURE}" in
-		amd64|i386)
+		amd64|i386|arm64)
 			DOWNLOAD_GTK_INSTALLER=true
 			;;
 
