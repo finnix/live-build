@@ -427,6 +427,12 @@ then
 			DI_PACKAGES="linux-image-686-pae"
 			;;
 
+		arm64)
+			DI_REQ_PACKAGES="grub-efi-arm64 efibootmgr grub-efi-arm64-signed shim-signed" # UEFI (required for d-i, includes suggested packages)
+			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi grub-efi-arm64-bin grub2-common mokutil shim-helpers-arm64-signed shim-signed-common shim-unsigned grub-efi-arm64-unsigned" # UEFI (required by Calamares)
+			DI_PACKAGES="linux-image-arm64"
+			;;
+
 		powerpc)
 			DI_REQ_PACKAGES="yaboot"
 			DI_PACKAGES="linux-image-powerpc linux-image-powerpc64 linux-image-powerpc-smp"
