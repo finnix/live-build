@@ -607,22 +607,18 @@ EOFNEWCONTENT
 echo "P: \$(basename \$0) Bugfix hook has been applied"
 EOFHOOK
 
-# For stable and soon-to-be-stable use the same boot splash screen as the Debian installer
+# For oldstable and stable use the same boot splash screen as the Debian installer
 case "$DEBIAN_VERSION" in
 "bullseye")
-	mkdir -p config/bootloaders/syslinux_common
-	wget --quiet https://salsa.debian.org/installer-team/debian-installer/-/raw/master/build/boot/artwork/11-homeworld/homeworld.svg -O config/bootloaders/syslinux_common/splash.svg
+	mkdir -p config/bootloaders
+	wget --quiet https://salsa.debian.org/installer-team/debian-installer/-/raw/master/build/boot/artwork/11-homeworld/homeworld.svg -O config/bootloaders/splash.svg
 	mkdir -p config/bootloaders/grub-pc
+	# Use the old resolution of 640x480 for grub
 	ln -s ../../isolinux/splash.png config/bootloaders/grub-pc/splash.png
 	;;
 "bookworm")
-	mkdir -p config/bootloaders/syslinux_common
-	wget --quiet https://salsa.debian.org/installer-team/debian-installer/-/raw/master/build/boot/artwork/12-emerald/emerald.svg -O config/bootloaders/syslinux_common/splash.svg
-	# To have a 800x600 image and the title 'Live Boot Menu with GRUB', manually undo the title-text modification from binary_syslinux
-	cat > config/hooks/live/5010-restore-grub-title.hook.binary << EOF
-#!/bin/sh
-sed -i -e 's|^title-text:.*|title-text: "Live Boot Menu with GRUB"|' boot/grub/live-theme/theme.txt
-EOF
+	mkdir -p config/bootloaders
+	wget --quiet https://salsa.debian.org/installer-team/debian-installer/-/raw/master/build/boot/artwork/12-emerald/emerald.svg -O config/bootloaders/splash.svg
 	;;
 *)
 	# Use the default 'under construction' image
