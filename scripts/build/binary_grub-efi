@@ -89,23 +89,39 @@ case "${LB_ARCHITECTURE}" in
 		;;
 esac
 
-_PRE_SB_PACKAGES="${_LB_PACKAGES}"
-_LB_PACKAGES="shim-signed grub-efi-${_SB_EFI_DEB}-signed"
+# Restoring cache
+Restore_package_cache binary
+
+# Installing depends
+Install_packages
+
 case "${LB_UEFI_SECURE_BOOT}" in
 	auto)
-		# Use Check_installed, as Check_package will error out immediately
+		# Try to install the shim and signed grub package separately,
+		# as the grub-efi-*-signed package might be uninstallable (e.g. due to binNMUs)
+		# Uses the (intentionally) undocumented _LB_PACKAGES variable
+		echo "!!! The following error/warning messages can be ignored !!!"
 		set +e
+		_LB_PACKAGES="shim-signed"
+		Install_packages
+		_LB_PACKAGES="grub-efi-${_SB_EFI_DEB}-signed"
 		Install_packages
 		set -e
+		# Use Check_installed, as Check_package will error out immediately
 		Check_installed chroot /usr/lib/grub/${_SB_EFI_PLATFORM}-efi-signed/gcd${_SB_EFI_NAME}.efi.signed \
 			grub-efi-${_SB_EFI_DEB}-signed
 		_GRUB_INSTALL_STATUS="${INSTALL_STATUS}"
 		Check_installed chroot /usr/lib/shim/shim${_SB_EFI_NAME}.efi.signed \
 			shim-signed
+		echo "!!! The above error/warning messages can be ignored !!!"
 
-		if [ "${INSTALL_STATUS}" -ne 0 -o "${_GRUB_INSTALL_STATUS}" -ne 0 ]
+		if [ "${INSTALL_STATUS}" -ne 0 ]
 		then
-			Echo_warning "UEFI Secure Boot disabled due to missing signed Grub/Shim."
+			Echo_warning "UEFI Secure Boot disabled due to missing Shim."
+		elif [ "${_GRUB_INSTALL_STATUS}" -ne 0 ]
+		then
+			# Each user needs to enroll the hash for grub*.efi in their UEFI setup
+			Echo_warning "Limited UEFI Secure Boot support enabled: only the Shim is available."
 		else
 			Echo_message "UEFI Secure Boot support enabled."
 		fi
@@ -122,13 +138,6 @@ case "${LB_UEFI_SECURE_BOOT}" in
 		Echo_message "UEFI Secure Boot support disabled."
 		;;
 esac
-_LB_PACKAGES="${_PRE_SB_PACKAGES}"
-
-# Restoring cache
-Restore_package_cache binary
-
-# Installing depends
-Install_packages
 
 # Cleanup files that we generate
 rm -rf binary/boot/efi.img binary/boot/grub/i386-efi/ binary/boot/grub/x86_64-efi binary/boot/grub/arm64-efi binary/boot/grub/arm-efi
@@ -194,6 +203,17 @@ gen_efi_boot_img(){
 			${_CHROOT_DIR}/grub-efi-temp/EFI/boot/grub\$efi_name.efi
 		cp -a --dereference ${_CHROOT_DIR}/usr/lib/shim/shim\$efi_name.efi.signed \
 			${_CHROOT_DIR}/grub-efi-temp/EFI/boot/boot\$efi_name.efi
+	elif [ ! -r ${_CHROOT_DIR}/usr/lib/grub/\$platform-signed/gcd\$efi_name.efi.signed -a \
+			-r ${_CHROOT_DIR}/usr/lib/shim/shim\$efi_name.efi.signed -a \
+			"${LB_UEFI_SECURE_BOOT}" = "auto" ]; then
+		# Allow a shim-only scenario
+		cp -a --dereference ${_CHROOT_DIR}/usr/lib/shim/shim\$efi_name.efi.signed \
+			${_CHROOT_DIR}/grub-efi-temp/EFI/boot/boot\$efi_name.efi
+		cp -a ${_CHROOT_DIR}/usr/lib/grub/\$platform/monolithic/gcd\$efi_name.efi \
+			${_CHROOT_DIR}/grub-efi-temp/EFI/boot/grub\$efi_name.efi
+		# Needed to allow the user to enroll the hash of grub*.efi
+		cp -a ${_CHROOT_DIR}/usr/lib/shim/mm\$efi_name.efi.signed \
+			${_CHROOT_DIR}/grub-efi-temp/EFI/boot/mm\$efi_name.efi
 	fi
 }
 
@@ -207,8 +227,15 @@ fi
 PATH="${PATH}:\${LIVE_BUILD_PATH}" # Make sure grub-cpmodules is used as if it was installed in the system
 
 case "${LB_ARCHITECTURE}" in
-	amd64|i386)
+	amd64)
 		gen_efi_boot_img "x86_64-efi" "x64" "debian-live/amd64"
+		if [ -r ${_CHROOT_DIR}/usr/lib/grub/\$platform-signed/gcd\$efi_name.efi.signed ]; then
+			# When a signed grub is available, add 32-bit UEFI support too
+			gen_efi_boot_img "i386-efi" "ia32" "debian-live/i386"
+		fi
+		PATH="\${PRE_EFI_IMAGE_PATH}"
+		;;
+	i386)
 		gen_efi_boot_img "i386-efi" "ia32" "debian-live/i386"
 		PATH="\${PRE_EFI_IMAGE_PATH}"
 		;;
