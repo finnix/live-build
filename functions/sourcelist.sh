@@ -112,6 +112,17 @@ Create_apt_sources_list ()
 		fi
 	fi
 
+	# Set proposed-updates repo
+	if [ "${LB_PROPOSED_UPDATES}" = "true" ]; then
+		echo "deb ${PARENT_MIRROR} ${PARENT_DISTRIBUTION}-proposed-updates ${LB_PARENT_ARCHIVE_AREAS}" >> "${PARENT_LIST_FILE}"
+		echo "deb-src ${PARENT_MIRROR} ${PARENT_DISTRIBUTION}-proposed-updates ${LB_PARENT_ARCHIVE_AREAS}" >> "${PARENT_LIST_FILE}"
+
+		if [ "${LB_DERIVATIVE}" = "true" ]; then
+			echo "deb ${MIRROR} ${_DISTRIBUTION}-proposed-updates ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
+			echo "deb-src ${MIRROR} ${_DISTRIBUTION}-proposed-updates ${LB_ARCHIVE_AREAS}" >> "${LIST_FILE}"
+		fi
+	fi
+
 	# Set backports repo
 	if [ "${LB_BACKPORTS}" = "true" ]; then
 		case "${LB_MODE}" in

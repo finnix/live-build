@@ -280,20 +280,14 @@ Prepare_config ()
 	case "${LB_PARENT_DISTRIBUTION_BINARY}" in
 		sid|unstable)
 			LB_SECURITY="${LB_SECURITY:-false}"
+			LB_UPDATES="${LB_UPDATES:-false}"
+			LB_PROPOSED_UPDATES="${LB_PROPOSED_UPDATES:-false}"
 			;;
 
 		*)
 			LB_SECURITY="${LB_SECURITY:-true}"
-			;;
-	esac
-
-	case "${LB_PARENT_DISTRIBUTION_BINARY}" in
-		sid|unstable)
-			LB_UPDATES="${LB_UPDATES:-false}"
-			;;
-
-		*)
 			LB_UPDATES="${LB_UPDATES:-true}"
+			LB_PROPOSED_UPDATES="${LB_PROPOSED_UPDATES:-false}"
 			;;
 	esac
 
@@ -566,6 +560,10 @@ Validate_config_permitted_values ()
 	fi
 	if [ "${LB_ONIE}" != "true" ] && [ "${LB_ONIE}" != "false" ]; then
 		Echo_error "Value for LB_ONIE (--onie) can only be 'true' or 'false'!"
+		exit 1
+	fi
+	if [ "${LB_PROPOSED_UPDATES}" != "true" ] && [ "${LB_PROPOSED_UPDATES}" != "false" ]; then
+		Echo_error "Value for LB_PROPOSED_UPDATES (--proposed-updates) can only be 'true' or 'false'!"
 		exit 1
 	fi
 	if [ "${LB_SECURITY}" != "true" ] && [ "${LB_SECURITY}" != "false" ]; then
