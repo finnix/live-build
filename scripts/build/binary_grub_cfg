@@ -38,10 +38,6 @@ Check_stagefile
 # Acquire lock file
 Acquire_lockfile
 
-# Check architecture
-Check_architectures amd64 i386 arm64
-Check_crossarchitectures
-
 _TARGET="binary/boot/grub"
 
 # Local functions

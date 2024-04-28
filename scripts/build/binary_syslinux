@@ -36,10 +36,6 @@ Check_stagefile
 # Acquire lock file
 Acquire_lockfile
 
-# Check architecture
-Check_architectures amd64 i386
-Check_crossarchitectures
-
 case "${LB_INITRAMFS}" in
 	live-boot)
 		_INITRAMFS="live"

@@ -27,9 +27,6 @@ then
 	exit 1
 fi
 
-# Check architecture
-Check_crossarchitectures
-
 Echo_message "Begin bootstrapping system..."
 
 Check_package host /usr/sbin/debootstrap debootstrap

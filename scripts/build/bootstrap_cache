@@ -24,9 +24,6 @@ Init_config_data "${@}"
 _ACTION="${1}"
 shift
 
-# Check architecture
-Check_crossarchitectures
-
 if ! In_list "bootstrap" ${LB_CACHE_STAGES}; then
 	exit 0
 fi
