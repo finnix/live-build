@@ -145,3 +145,28 @@ Check_installed ()
 	fi
 }
 
+# $1 = Packagename
+# Echoes:
+#  1 if the package is available
+#  0 otherwise
+Check_package_available ()
+{
+	local _PACKAGE="${1}"
+
+	if [ "${LB_BUILD_WITH_CHROOT}" = "true" ]
+	then
+		if [ $(Chroot chroot apt-cache show "^${_PACKAGE}$" 2> /dev/null | grep "^Package:" | wc -l) -eq 1 ]
+		then
+			echo 1
+			return
+		fi
+	else
+		if [ $(apt-cache show "^${_PACKAGE}$" 2> /dev/null | grep "^Package:" | wc -l) -eq 1 ]
+		then
+			echo 1
+			return
+		fi
+	fi
+	echo 0
+}
+

@@ -380,7 +380,26 @@ then
 
 	case "${LB_ARCHITECTURE}" in
 		amd64)
-			DI_REQ_PACKAGES="grub-pc grub-common libefiboot1 libefiboot1t64 libefivar1 libefivar1t64 libfuse2 libfuse2t64 libfuse3-3" # BIOS
+			DI_REQ_PACKAGES="grub-pc grub-common libfuse3-3" # BIOS
+			# Starting in trixie, the t64-packages have a 64-bit timestamp
+			if [ $(Check_package_available "libefiboot1t64") -eq 1 ]
+			then
+				DI_REQ_PACKAGES="${DI_REQ_PACKAGES} libefiboot1t64"
+			else
+				DI_REQ_PACKAGES="${DI_REQ_PACKAGES} libefiboot1"
+			fi
+			if [ $(Check_package_available "libefivar1t64") -eq 1 ]
+			then
+				DI_REQ_PACKAGES="${DI_REQ_PACKAGES} libefivar1t64"
+			else
+				DI_REQ_PACKAGES="${DI_REQ_PACKAGES} libefivar1"
+			fi
+			if [ $(Check_package_available "libfuse2t64") -eq 1 ]
+			then
+				DI_REQ_PACKAGES="${DI_REQ_PACKAGES} libfuse2t64"
+			else
+				DI_REQ_PACKAGES="${DI_REQ_PACKAGES} libfuse2"
+			fi
 			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi-amd64 efibootmgr grub-efi-amd64-signed shim-signed" # UEFI (required for d-i, includes suggested packages)
 			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} efibootmgr grub-efi-amd64 grub-efi-amd64-bin grub-efi-amd64-signed grub2-common mokutil shim-helpers-amd64-signed shim-signed shim-signed-common shim-unsigned cryptsetup cryptsetup-initramfs keyutils" # UEFI (required by Calamares)
 			DI_PACKAGES="linux-image-amd64"
@@ -417,17 +436,9 @@ then
 		FIRMWARE_PACKAGES=""
 
 		# Manually add firmware-linux meta package if available
-		if [ "${LB_BUILD_WITH_CHROOT}" = "true" ]
+		if [ $(Check_package_available "firmware-linux") -eq 1 ]
 		then
-			if [ $(Chroot chroot apt-cache show "^firmware-linux$" 2> /dev/null | grep "^Package:" | wc -l) -eq 1 ]
-			then
-				FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} firmware-linux"
-			fi
-		else
-			if [ $(apt-cache show "^firmware-linux$" 2> /dev/null | grep "^Package:" | wc -l) -eq 1 ]
-			then
-				FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} firmware-linux"
-			fi
+			FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} firmware-linux"
 		fi
 
 		Firmware_List_From_Contents "${LB_PARENT_MIRROR_CHROOT}" "${LB_PARENT_DISTRIBUTION_CHROOT}" "${LB_PARENT_ARCHIVE_AREAS}"
