@@ -401,7 +401,7 @@ then
 				DI_REQ_PACKAGES="${DI_REQ_PACKAGES} libfuse2"
 			fi
 			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi-amd64 efibootmgr grub-efi-amd64-signed shim-signed" # UEFI (required for d-i, includes suggested packages)
-			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} efibootmgr grub-efi-amd64 grub-efi-amd64-bin grub-efi-amd64-signed grub2-common mokutil shim-helpers-amd64-signed shim-signed shim-signed-common shim-unsigned cryptsetup cryptsetup-initramfs keyutils" # UEFI (required by Calamares)
+			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} efibootmgr grub-efi grub-efi-amd64 grub-efi-amd64-bin grub-efi-amd64-signed grub2-common mokutil shim-helpers-amd64-signed shim-signed shim-signed-common shim-unsigned cryptsetup cryptsetup-initramfs keyutils" # UEFI (required by Calamares)
 			DI_PACKAGES="linux-image-amd64"
 			;;
 
