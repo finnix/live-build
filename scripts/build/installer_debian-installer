@@ -873,7 +873,15 @@ EOF
 	mv chroot/root/binary ./
 
 	# Add to sources.list with the path that is used inside the live environment
-	echo "deb [trusted=yes] file:/run/live/medium ${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION} ${LB_PARENT_ARCHIVE_AREAS}" >> chroot/chroot/etc/apt/sources.list
+	case "${LB_INITRAMFS}" in
+		live-boot)
+			echo "deb [trusted=yes] file:/run/live/medium ${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION} ${LB_PARENT_ARCHIVE_AREAS}" >> chroot/chroot/etc/apt/sources.list
+			;;
+
+		dracut-live)
+			echo "deb [trusted=yes] file:/run/initramfs/live ${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION} ${LB_PARENT_ARCHIVE_AREAS}" >> chroot/chroot/etc/apt/sources.list
+			;;
+	esac
 
 	Echo_debug "Creating distribution directories/symlinks"
 

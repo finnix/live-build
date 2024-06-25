@@ -38,7 +38,7 @@ Check_stagefile
 Acquire_lockfile
 
 case "${LB_INITRAMFS}" in
-	live-boot)
+	live-boot|dracut-live)
 		DESTDIR="binary/live"
 		;;
 
@@ -69,6 +69,12 @@ case "${LB_INITRAMFS}" in
 		if [ -e chroot/usr/share/doc/live-boot/parameters.txt ]
 		then
 			cp chroot/usr/share/doc/live-boot/parameters.txt "${DESTDIR}"/parameters
+		fi
+		;;
+	dracut-live)
+		if [ -e chroot/usr/share/doc/live-boot/parameters.txt ]
+		then
+			Echo_message "The file parameters.txt will be ignored"
 		fi
 		;;
 esac

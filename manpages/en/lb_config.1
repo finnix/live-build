@@ -130,7 +130,7 @@
 .br
 	[\fB\-\-image\-name\fR \fINAME\fR]
 .br
-	[\fB\-\-initramfs\fR none|live\-boot]
+	[\fB\-\-initramfs\fR none|live\-boot|dracut\-live]
 .br
 	[\fB\-\-initramfs\-compression\fR bzip2|gzip|lzma]
 .br
@@ -362,8 +362,8 @@ defines the size for the HDD target. The unit is MiB. Defaults to 'auto', which 
 \fBlb config\fR by default reads system defaults from \fI/etc/live/build.conf\fR and \fI/etc/live/build/*\fR when generating a new live system config directory. This is useful if you want to set global settings, such as mirror locations, and don't want to specify them all of the time. This option allows you to ignore such global settings.
 .IP "\fB\-\-image\-name\fR \fINAME\fR" 4
 sets the base name of the image. Defaults to live-image.
-.IP "\fB\-\-initramfs\fR none|live\-boot" 4
-sets the name of the package that contains the live system specific initramfs modification and defaults to live\-boot. Using 'none' is useful if the resulting system image should not be a live image (experimental).
+.IP "\fB\-\-initramfs\fR none|live\-boot|dracut\-live" 4
+sets the name of the package that contains the live system specific initramfs modification and defaults to live\-boot. Using 'none' is useful if the resulting system image should not be a live image (experimental). Note that dracut requires the CD label in the kernel command line, so you might want to set \fB\-\-iso\-volume\fR explicitly.
 .IP "\fB\-\-initramfs\-compression\fR bzip2|gzip|lzma]
 defines the compression program to be used to compress the initramfs. Defaults to 'gzip'.
 .IP "\fB\-\-initsystem\fR sysvinit|systemd|none]

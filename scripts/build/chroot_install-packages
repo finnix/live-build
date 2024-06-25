@@ -76,14 +76,20 @@ then
 	# Restoring cache
 	Restore_package_cache chroot
 
+	if [ "${LB_INITRAMFS}" = "dracut-live" ]; then
+		# Install each package separately, because the list contains conflicts
+		_INSTALL_ONE_BY_ONE="--max-args 1"
+	else
+		_INSTALL_ONE_BY_ONE=""
+	fi
 	# Installing packages
 	case "${LB_APT}" in
 		apt|apt-get)
-			Chroot chroot "xargs --arg-file=/root/packages.chroot apt-get ${APT_OPTIONS} install"
+			Chroot chroot "xargs ${_INSTALL_ONE_BY_ONE} --arg-file=/root/packages.chroot apt-get ${APT_OPTIONS} install"
 			;;
 
 		aptitude)
-			Chroot chroot "xargs --arg-file=/root/packages.chroot aptitude ${APTITUDE_OPTIONS} install"
+			Chroot chroot "xargs ${_INSTALL_ONE_BY_ONE} --arg-file=/root/packages.chroot aptitude ${APTITUDE_OPTIONS} install"
 			;;
 	esac
 

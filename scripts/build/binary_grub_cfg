@@ -98,6 +98,12 @@ case "${LB_INITRAMFS}" in
 		INITFS="live"
 		;;
 
+	dracut-live)
+		INITFS="live"
+		LB_BOOTAPPEND_LIVE="$(echo "${LB_BOOTAPPEND_LIVE}" | sed "s|@ISOVOLUME_TS@|$(date $DATE_UTC_OPTION -d@${SOURCE_DATE_EPOCH} +%Y%m%d-%H:%M)|")"
+		LB_BOOTAPPEND_LIVE_FAILSAFE="$(echo "${LB_BOOTAPPEND_LIVE_FAILSAFE}" | sed "s|@ISOVOLUME_TS@|$(date $DATE_UTC_OPTION -d@${SOURCE_DATE_EPOCH} +%Y%m%d-%H:%M)|")"
+		;;
+
 	*)
 		INITFS="boot"
 		;;
