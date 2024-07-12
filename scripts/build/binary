@@ -62,6 +62,7 @@ lb binary_loadlin "${@}"
 lb binary_win32-loader "${@}"
 lb binary_includes "${@}"
 lb binary_grub-efi "${@}"
+lb binary_bootloader_splash "${@}"
 lb binary_hooks "${@}"
 lb binary_checksums "${@}"
 

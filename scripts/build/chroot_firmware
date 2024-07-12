@@ -54,17 +54,9 @@ Check_package host /usr/bin/wget wget
 FIRMWARE_PACKAGES=""
 
 # Manually add firmware-linux meta package if available
-if [ "${LB_BUILD_WITH_CHROOT}" = "true" ]
+if [ $(Check_package_available "firmware-linux") -eq 1 ]
 then
-	if [ $(Chroot chroot apt-cache show "^firmware-linux$" 2> /dev/null | grep "^Package:" | wc -l) -eq 1 ]
-	then
-		FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} firmware-linux"
-	fi
-else
-	if [ $(apt-cache show "^firmware-linux$" 2> /dev/null | grep "^Package:" | wc -l) -eq 1 ]
-	then
-		FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} firmware-linux"
-	fi
+	FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} firmware-linux"
 fi
 
 Firmware_List_From_Contents "${LB_PARENT_MIRROR_CHROOT}" "${LB_PARENT_DISTRIBUTION_CHROOT}" "${LB_PARENT_ARCHIVE_AREAS}"

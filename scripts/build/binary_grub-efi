@@ -42,10 +42,6 @@ Check_stagefile
 # Acquire lock file
 Acquire_lockfile
 
-# Check architecture
-Check_architectures amd64 i386 arm64 armhf
-Check_crossarchitectures
-
 # Checking depends
 case "${LB_ARCHITECTURE}" in
 	amd64|i386)

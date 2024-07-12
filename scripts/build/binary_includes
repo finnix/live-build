@@ -21,6 +21,11 @@ USAGE="${PROGRAM} [--force]"
 # Processing arguments and configuration files
 Init_config_data "${@}"
 
+if [ ! -d config/includes.binary ]; then
+	# Nothing to do
+	exit 0
+fi
+
 Echo_message "Begin copying binary includes..."
 
 # Requiring stage file

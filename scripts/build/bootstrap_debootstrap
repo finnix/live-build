@@ -27,9 +27,6 @@ then
 	exit 1
 fi
 
-# Check architecture
-Check_crossarchitectures
-
 Echo_message "Begin bootstrapping system..."
 
 Check_package host /usr/sbin/debootstrap debootstrap
@@ -100,7 +97,7 @@ Print_breakage
 Echo_message "Running debootstrap..."
 
 # Run appropriate bootstrap, i.e. foreign or regular bootstrap
-if [ "${LB_BOOTSTRAP_QEMU_ARCHITECTURE}" = "${LB_ARCHITECTURE}" ]; then
+if [ -n "${LB_BOOTSTRAP_QEMU_ARCHITECTURE}" ]; then
 
 	if [ -n "${LB_BOOTSTRAP_QEMU_EXCLUDE}" ]
 	then
@@ -111,7 +108,6 @@ if [ "${LB_BOOTSTRAP_QEMU_ARCHITECTURE}" = "${LB_ARCHITECTURE}" ]; then
 	debootstrap ${DEBOOTSTRAP_OPTIONS} --foreign "${LB_PARENT_DISTRIBUTION_CHROOT}" chroot "${LB_PARENT_MIRROR_BOOTSTRAP}" ${DEBOOTSTRAP_SCRIPT}
 
 	Echo_message "Running debootstrap second stage under QEMU"
-	cp ${LB_BOOTSTRAP_QEMU_STATIC} chroot/usr/bin
 	Chroot chroot /bin/sh /debootstrap/debootstrap --second-stage ${FOREIGN_DEBOOTSTRAP_OPTIONS}
 else
 	debootstrap ${DEBOOTSTRAP_OPTIONS} "${LB_PARENT_DISTRIBUTION_CHROOT}" chroot "${LB_PARENT_MIRROR_BOOTSTRAP}" ${DEBOOTSTRAP_SCRIPT}

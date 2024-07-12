@@ -3,7 +3,8 @@
 # Rebuild an ISO image for a given timestamp
 #
 # Copyright 2021-2022 Holger Levsen <holger@layer-acht.org>
-# Copyright 2021-2023 Roland Clobus <rclobus@rclobus.nl>
+# Copyright 2021-2024 Roland Clobus <rclobus@rclobus.nl>
+# Copyright 2024 Emanuele Rocca <ema@debian.org>
 # released under the GPLv2
 
 # Environment variables:
@@ -59,6 +60,7 @@ EOF
 
 show_help() {
 	echo "--help, --usage: This help text"
+	echo "--architecture: Optional, specifies the architecture (e.g. for cross-building)"
 	echo "--configuration: Mandatory, specifies the configuration (desktop environment)"
 	echo "--debian-version: Mandatory, e.g. trixie, sid"
 	echo "--debian-version-number: The version number, e.g. 13.0.1"
@@ -77,7 +79,7 @@ show_help() {
 parse_commandline_arguments() {
 
 	# In alphabetical order
-	local LONGOPTS="configuration:,debian-version:,debian-version-number:,debug,disk-info,generate-source,help,installer-origin:,timestamp:,usage"
+	local LONGOPTS="architecture:,configuration:,debian-version:,debian-version-number:,debug,disk-info,generate-source,help,installer-origin:,timestamp:,usage"
 
 	local ARGUMENTS
 	local ERR=0
@@ -98,6 +100,11 @@ parse_commandline_arguments() {
 		local ARG="${1}"
 		# In alphabetical order
 		case "${ARG}" in
+			--architecture)
+				shift
+				ARCHITECTURE=$1
+				shift
+				;;
 			--configuration)
 				shift
 				CONFIGURATION=$1
@@ -226,6 +233,36 @@ parse_commandline_arguments() {
 		;;
 	esac
 
+	if command -v dpkg >/dev/null; then
+		HOST_ARCH="$(dpkg --print-architecture)"
+	else
+		HOST_ARCH="$(uname -m)"
+	fi
+	# Use host architecture as default, if no architecture is provided
+	if [ -z "${ARCHITECTURE}" ]; then
+		ARCHITECTURE=${HOST_ARCH}
+	fi
+
+	if [ "${ARCHITECTURE}" != "${HOST_ARCH}" ]; then
+		output_echo "Cross-building ${ARCHITECTURE} image on ${HOST_ARCH}"
+		case "${ARCHITECTURE}" in
+		"amd64")
+			QEMU_STATIC_EXECUTABLE=qemu-x86_64-static
+			;;
+		"i386")
+			QEMU_STATIC_EXECUTABLE=qemu-i386-static
+			;;
+		"arm64")
+			QEMU_STATIC_EXECUTABLE=qemu-aarch64-static
+			;;
+		*)
+			output_echo "Error: Unknown architecture ${ARCHITECTURE}"
+			exit 5
+			;;
+		esac
+		ARCHITECTURE_OPTIONS="--bootstrap-qemu-arch ${ARCHITECTURE} --bootstrap-qemu-static /usr/bin/${QEMU_STATIC_EXECUTABLE}"
+	fi
+
 	BUILD_LATEST="archive"
 	BUILD_LATEST_DESC="yes, from the main Debian archive"
 	if [ ! -z "${TIMESTAMP}" ]; then
@@ -270,24 +307,22 @@ parse_commandline_arguments() {
 		# Differentiate between lxqt and lxde
 		CONFIGURATION_SHORT=$(echo ${CONFIGURATION} | cut -c1,3)
 	fi
-	ISO_VOLUME="d-live ${DEBIAN_VERSION_NUMBER} ${CONFIGURATION_SHORT} amd64"
+	ISO_VOLUME="d-live ${DEBIAN_VERSION_NUMBER} ${CONFIGURATION_SHORT} ${ARCHITECTURE}"
 
 	# Tracing this generator script
 	REBUILD_SHA256SUM=$(sha256sum ${BASH_SOURCE} | cut -f1 -d" ")
 
-	if [ $DEBUG ]
-	then
-		echo "CONFIGURATION = ${CONFIGURATION}"
-		echo "DEBIAN_VERSION = ${DEBIAN_VERSION}"
-		echo "DEBIAN_VERSION_NUMBER = ${DEBIAN_VERSION_NUMBER}"
-		echo "TIMESTAMP = ${TIMESTAMP}"
-		echo "SNAPSHOT_TIMESTAMP = ${SNAPSHOT_TIMESTAMP}"
-		echo "BUILD_LATEST = ${BUILD_LATEST}"
-		echo "BUILD_LATEST_DESC = ${BUILD_LATEST_DESC}"
-		echo "INSTALLER_ORIGIN = ${INSTALLER_ORIGIN}"
-		echo "ISO_VOLUME = ${ISO_VOLUME}"
-		echo "DISK_INFO = ${DISK_INFO}"
-	fi
+	echo "ARCHITECTURE = ${ARCHITECTURE}"
+	echo "CONFIGURATION = ${CONFIGURATION}"
+	echo "DEBIAN_VERSION = ${DEBIAN_VERSION}"
+	echo "DEBIAN_VERSION_NUMBER = ${DEBIAN_VERSION_NUMBER}"
+	echo "TIMESTAMP = ${TIMESTAMP}"
+	echo "SNAPSHOT_TIMESTAMP = ${SNAPSHOT_TIMESTAMP}"
+	echo "BUILD_LATEST = ${BUILD_LATEST}"
+	echo "BUILD_LATEST_DESC = ${BUILD_LATEST_DESC}"
+	echo "INSTALLER_ORIGIN = ${INSTALLER_ORIGIN}"
+	echo "ISO_VOLUME = ${ISO_VOLUME}"
+	echo "DISK_INFO = ${DISK_INFO}"
 }
 
 get_snapshot_from_archive() {
@@ -424,6 +459,8 @@ lb config \
 	--cache-packages false \
 	--archive-areas "main ${FIRMWARE_ARCHIVE_AREA}" \
 	--iso-volume "${ISO_VOLUME}" \
+	--architecture ${ARCHITECTURE} \
+	${ARCHITECTURE_OPTIONS} \
 	${GENERATE_SOURCE} \
 	2>&1 | tee $LB_OUTPUT
 
@@ -570,22 +607,18 @@ EOFNEWCONTENT
 echo "P: \$(basename \$0) Bugfix hook has been applied"
 EOFHOOK
 
-# For stable and soon-to-be-stable use the same boot splash screen as the Debian installer
+# For oldstable and stable use the same boot splash screen as the Debian installer
 case "$DEBIAN_VERSION" in
 "bullseye")
-	mkdir -p config/bootloaders/syslinux_common
-	wget --quiet https://salsa.debian.org/installer-team/debian-installer/-/raw/master/build/boot/artwork/11-homeworld/homeworld.svg -O config/bootloaders/syslinux_common/splash.svg
+	mkdir -p config/bootloaders
+	wget --quiet https://salsa.debian.org/installer-team/debian-installer/-/raw/master/build/boot/artwork/11-homeworld/homeworld.svg -O config/bootloaders/splash.svg
 	mkdir -p config/bootloaders/grub-pc
+	# Use the old resolution of 640x480 for grub
 	ln -s ../../isolinux/splash.png config/bootloaders/grub-pc/splash.png
 	;;
 "bookworm")
-	mkdir -p config/bootloaders/syslinux_common
-	wget --quiet https://salsa.debian.org/installer-team/debian-installer/-/raw/master/build/boot/artwork/12-emerald/emerald.svg -O config/bootloaders/syslinux_common/splash.svg
-	# To have a 800x600 image and the title 'Live Boot Menu with GRUB', manually undo the title-text modification from binary_syslinux
-	cat > config/hooks/live/5010-restore-grub-title.hook.binary << EOF
-#!/bin/sh
-sed -i -e 's|^title-text:.*|title-text: "Live Boot Menu with GRUB"|' boot/grub/live-theme/theme.txt
-EOF
+	mkdir -p config/bootloaders
+	wget --quiet https://salsa.debian.org/installer-team/debian-installer/-/raw/master/build/boot/artwork/12-emerald/emerald.svg -O config/bootloaders/splash.svg
 	;;
 *)
 	# Use the default 'under construction' image
@@ -611,7 +644,7 @@ if [ ${BUILD_RESULT} -ne 0 ]; then
 fi
 
 # Calculate the checksum
-SHA256SUM=$(sha256sum live-image-amd64.hybrid.iso | cut -f 1 -d " ")
+SHA256SUM=$(sha256sum live-image-${ARCHITECTURE}.hybrid.iso | cut -f 1 -d " ")
 
 if [ ${BUILD_LATEST} == "archive" ]; then
 	SNAPSHOT_TIMESTAMP_OLD=${SNAPSHOT_TIMESTAMP}
