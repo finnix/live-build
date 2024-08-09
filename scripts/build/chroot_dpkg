@@ -38,8 +38,14 @@ case "${_ACTION}" in
 		Acquire_lockfile
 
 		# Create custom start-stop-daemon program
-		Chroot chroot dpkg-divert --rename --quiet --add /sbin/start-stop-daemon
-		ln -fs /bin/true chroot/sbin/start-stop-daemon
+		Chroot chroot dpkg-divert --rename --quiet --add /usr/sbin/start-stop-daemon
+		# begin-remove-after: released:forky
+		# In the bookworm to trixie upgrade, dpkg moves
+		# start-stop-daemon from /sbin to /usr/sbin. Duplicate the
+		# diversion to cover both. DEP17 P3 M18
+		Chroot chroot dpkg-divert --rename --quiet --add --divert /sbin/start-stop-daemon.distrib.usr-is-merged /sbin/start-stop-daemon
+		# end-remove-after
+		ln -fs /bin/true chroot/usr/sbin/start-stop-daemon
 
 		# Disable dpkg syncing
 
@@ -79,8 +85,11 @@ EOF
 		Chroot chroot dpkg-divert --rename --quiet --remove /usr/sbin/flash-kernel
 
 		# Remove custom start-stop-daemon program
-		rm -f chroot/sbin/start-stop-daemon
+		rm -f chroot/usr/sbin/start-stop-daemon
+		# begin-remove-after: released:forky
 		Chroot chroot dpkg-divert --rename --quiet --remove /sbin/start-stop-daemon
+		# end-remove-after
+		Chroot chroot dpkg-divert --rename --quiet --remove /usr/sbin/start-stop-daemon
 
 		# Remove dpkg sync configuration
 		rm -f chroot/etc/dpkg/dpkg.cfg.d/live-build
