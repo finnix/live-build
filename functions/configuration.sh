@@ -344,7 +344,7 @@ Prepare_config ()
 
 	LB_COMPRESSION="${LB_COMPRESSION:-none}"
 
-	LB_ZSYNC="${LB_ZSYNC:-true}"
+	LB_ZSYNC="${LB_ZSYNC:-false}"
 
 	LB_BUILD_WITH_CHROOT="${LB_BUILD_WITH_CHROOT:-true}"
 
