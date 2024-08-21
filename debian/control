@@ -34,6 +34,7 @@ Recommends:
  xz-utils,
 Suggests:
  e2fsprogs,
+ git,
  parted,
  mtd-utils,
 Description: Live System Build Components
