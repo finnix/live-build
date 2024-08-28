@@ -607,6 +607,24 @@ EOFNEWCONTENT
 echo "P: \$(basename \$0) Bugfix hook has been applied"
 EOFHOOK
 
+if [ "${DEBIAN_VERSION}" = "bookworm" -a "${CONFIGURATION}" = "kde" ];
+then
+	cat << EOFHOOK > config/hooks/live/5010-kde-icon-for-calamares.hook.chroot
+#!/bin/sh
+set -e
+
+# Fix for #1057853: Missing Calamares icon for KDE on bookworm
+if [ ! -e /etc/xdg/autostart/calamares-desktop-icon.desktop ];
+then
+  exit 0
+fi
+
+sed -i -e '/X-GNOME-Autostart-Phase=/d' /etc/xdg/autostart/calamares-desktop-icon.desktop
+
+echo "P: \$(basename \$0) Bugfix hook has been applied"
+EOFHOOK
+fi
+
 # For oldstable and stable use the same boot splash screen as the Debian installer
 case "$DEBIAN_VERSION" in
 "bullseye")
