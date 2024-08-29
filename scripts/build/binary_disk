@@ -128,10 +128,6 @@ do
 				if [ -r "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE}_netinst_udeb_include" ]
 				then
 					cp -a "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE}_netinst_udeb_include" binary/.disk/udeb_include
-					if [ "${LB_DEBIAN_INSTALLER}" = "live" ]
-					then
-						echo "live-installer" >> binary/.disk/udeb_include
-					fi
 				fi
 				;;
 			businesscard)
@@ -143,6 +139,11 @@ do
 		esac
 	fi
 done
+
+if [ "${LB_DEBIAN_INSTALLER}" = "live" ]
+then
+	echo "live-installer" >> binary/.disk/udeb_include
+fi
 
 # Creating stage file
 Create_stagefile
