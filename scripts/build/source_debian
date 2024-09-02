@@ -47,7 +47,7 @@ fi
 
 cat >> chroot/source-selection.sh << EOF
 #!/bin/sh
-dpkg-query -W -f='\${binary:Package}=\${Version}\n' > source-selection.txt
+dpkg-query -W -f='\${source:Package}=\${source:Version}\n' | sort -u > source-selection.txt
 EOF
 
 Chroot chroot "sh source-selection.sh"
@@ -118,7 +118,7 @@ cat > chroot/source-download.sh << EOF
 #!/bin/sh
 cd source.pkgs
 PACKAGE="\${1}"
-if ! apt-get ${APT_OPTIONS} --download-only source \${PACKAGE}
+if ! apt-get ${APT_OPTIONS} --only-source --download-only source \${PACKAGE}
 then
 	dpkg -l \${PACKAGE} | tail -n1 >> ../missing-source.txt
 	touch ../missing-source-some
