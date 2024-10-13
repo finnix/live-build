@@ -1,3 +1,108 @@
+live-build (1:20240810) unstable; urgency=medium
+
+  [ Roland Clobus ]
+  * Workaround for #1023472
+  * Revert previous commit to test/rebuild.sh
+
+  [ Thore Sommer ]
+  * ISO generation: add support for hybrid ISOs with grub-pc
+
+  [ Roland Clobus ]
+  * non-free firmware detection: in chroot, not on host
+  * If there is more than one kernel for the installer, use the newest
+  * Installer: ignore the configured kernel version
+  * Filter the firmware list (Closes: 1035382)
+  * Set additional meta information
+
+  [ David Hewitt ]
+  * Follow symlinks while copying shim files
+
+  [ Roland Clobus ]
+  * rebuild: update --disk-info
+
+  [ Marcel Partap ]
+  * Create binary_chroot stagefiles when skipping, too
+  * Remove ancient hook 9030-remove-apt-sources-lists that was never run
+
+  [ jfliu ]
+  * binary_iso: fix iso-hybrid images with EFI bootloader
+
+  [ Roland Clobus ]
+  * Use LC_ALL=C for sort
+  * Fix and correctly suppress lintian warnings
+  * Apply predictable timestamps in the source image
+  * binary_syslinux: Ensure the availability of the font of splash.svg
+  * binary_rootfs: Fixed test for /etc/mtab (Closes: #1032408)
+  * binary_disk: Don't create .disk/archive_trace any more
+  * rebuild.sh: Consistent timestamp of theme.txt
+
+  [ Arnaud Rebillout ]
+  * efi-image: Fix missing part_* modules in boot<platform>.efi
+  * efi-image: Fix <platform>/grub.cfg, variables must NOT be expanded
+
+  [ Roland Clobus ]
+  * Remove unneeded cached files from appstream
+  * Reproducible: fixes the last two issues for Debian 12.3
+
+  [ Emanuele Rocca ]
+  * chroot_sysfs: umount efivarfs if mounted
+
+  [ Roland Clobus ]
+  * Apply policykit fix when needed.
+  * rebuild: Don't use a symlink for the splash screen
+
+  [ Unit 193 ]
+  * firmwarelists.sh: Account for usrmerged firmware packages.
+
+  [ Roland Clobus ]
+  * Workaround for #1058994
+  * installer: The kernel version does not need to have a Debian-version
+  * The installer now requires grub-common and dependencies
+  * Installer: Support trixie
+  * Installer: fix for previous commit
+
+  [ Patrick Schleizer ]
+  * fix: check correct dependency package grub-common instead of grub-pc
+  * also check if grub-pc-bin dependency is available
+  * reproducible builds: use cp -a when copying binary/boot/grub/i386-pc
+
+  [ Roland Clobus ]
+  * Reproducible: Fix for vlc (used by the Bookworm KDE image)
+  * Fixed udeb handling
+  * Reproducible install-info
+
+  [ Marcel Partap ]
+  * container hooks: make nspawn work inside nspawn
+
+  [ Roland Clobus ]
+  * Allow for shim-only secure UEFI boot
+  * Remove 'nolapic' from the safe boot options.
+  * Rebuild: Always show the active settings
+  * Cross-build: arm64 support
+  * binary_bootloader_splash: New script
+  * hooks: Remove /etc/.pwd.lock and /run/mount/utab
+  * Architecture checking is not required any more
+  * installer: Also add the t64 versions of the libraries
+  * binary_includes: Activate when the directory exists (Closes: #1069349)
+
+  [ Luca Boccassi ]
+  * d/control: bump Standards-Version to 4.7.0, no changes
+
+  [ Roland Clobus ]
+  * Restore support for bullseye and bookworm
+  * installer: offline installation with calamares
+  * Fixed: select the package name for firmware packages
+  * Fix git installer build for arm64
+  * arm64: Only add .disk/udeb_include when the source file exists
+
+  [ Luca Boccassi ]
+  * Create local /etc/os-release with metadata about the live image
+
+  [ Helmut Grohne ]
+  * duplicate aliased diversions for DEP17 (Closes: #1064408)
+
+ -- Luca Boccassi <bluca@debian.org>  Sat, 10 Aug 2024 00:08:10 +0100
+
 live-build (1:20230502) unstable; urgency=medium
 
   * Team upload

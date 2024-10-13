@@ -125,7 +125,10 @@ do
 				cp -a "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE}_udeb_include" binary/.disk/udeb_include
 				;;
 			netinst|live)
-				cp -a "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE}_netinst_udeb_include" binary/.disk/udeb_include
+				if [ -r "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE}_netinst_udeb_include" ]
+				then
+					cp -a "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE}_netinst_udeb_include" binary/.disk/udeb_include
+				fi
 				;;
 			businesscard)
 				cp -a "${LOCATION}/${LB_PARENT_DISTRIBUTION_BINARY}/${LB_ARCHITECTURE}_businesscard_udeb_include" binary/.disk/udeb_include

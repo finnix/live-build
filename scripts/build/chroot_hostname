@@ -43,15 +43,21 @@ case "${_ACTION}" in
 		# Create custom hostname
 		Echo_message "Configuring file /bin/hostname"
 
-		Chroot chroot dpkg-divert --rename --quiet --add /bin/hostname
+		Chroot chroot dpkg-divert --rename --quiet --add /usr/bin/hostname
+		# begin-remove-after: released:forky
+		# In the bookworm to trixie upgrade, hostname moves hostname
+		# from /bin to /usr/bin. Duplicate the diversion to cover both.
+		# DEP17 P3 M18
+		Chroot chroot dpkg-divert --rename --quiet --add --divert /bin/hostname.distrib.usr-is-merged /bin/hostname
+		# end-remove-after
 
-cat > chroot/bin/hostname << EOF
+cat > chroot/usr/bin/hostname << EOF
 #!/bin/sh
 
 echo "localhost.localdomain"
 EOF
 
-		chmod 755 chroot/bin/hostname
+		chmod 755 chroot/usr/bin/hostname
 
 		# Creating stage file
 		Create_stagefile
@@ -84,7 +90,10 @@ EOF
 
 		# Remove custom hostname
 		rm -f chroot/bin/hostname
+		# begin-remove-after: released:forky
 		Chroot chroot dpkg-divert --rename --quiet --remove /bin/hostname
+		# end-remove-after
+		Chroot chroot dpkg-divert --rename --quiet --remove /usr/bin/hostname
 
 		# Removing stage file
 		Remove_stagefile

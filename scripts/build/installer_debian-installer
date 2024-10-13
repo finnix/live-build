@@ -265,8 +265,20 @@ case "${LB_DERIVATIVE}" in
 				Check_package chroot /usr/bin/gcc gcc
 				Install_packages
 
+				# Set architecture-specific variables
+				case "${LB_ARCHITECTURE}" in
+					arm64)
+						TARGETS="build_cdrom_gtk build_cdrom_grub"
+						;;
+
+					*)
+						TARGETS="build_cdrom_gtk build_cdrom_isolinux"
+						;;
+				esac
+
 				# These variables do not need to be passed inside the chroot, they can be resolved earlier:
 				#   SOURCE_DATE_EPOCH, _QUIET, LB_PARENT_MIRROR_CHROOT, LB_PARENT_DISTRIBUTION_CHROOT
+				#   TARGETS
 				cat << EOF > chroot/buildit.sh
 #!/bin/sh
 # Get the version of the git repo that matches SOURCE_DATE_EPOCH
@@ -319,7 +331,7 @@ fi
 # USE_UDEBS_FROM -> use the same distribution as the chroot
 # ROOTCMD -> Workaround for #1058994. Fakeroot is not present in the chroot (and not required)
 export LINUX_KERNEL_ABI=\$(dpkg-query --showformat "\\\${db:Status-Abbrev} \\\${Package}\n" --show linux-image-* | awk '\$1=="ii" { c = split(\$2, a, "-"); if (c>3) { if (a[4] ~ /^[0-9]+/) { print a[3] "-" a[4] } else { print a[3] } } }' | sort | tail -1)
-MIRROR="[check-valid-until=no] ${LB_PARENT_MIRROR_CHROOT}" TARGETS="build_cdrom_gtk build_cdrom_isolinux" USE_UDEBS_FROM=${LB_PARENT_DISTRIBUTION_CHROOT} ROOTCMD=" " bash ./daily-build build-only
+MIRROR="[check-valid-until=no] ${LB_PARENT_MIRROR_CHROOT}" TARGETS="${TARGETS}" USE_UDEBS_FROM=${LB_PARENT_DISTRIBUTION_CHROOT} ROOTCMD=" " bash ./daily-build build-only
 EOF
 				Chroot chroot "sh buildit.sh"
 				# Place the files in the cache. Download_file will use the cache instead of downloading
@@ -402,12 +414,23 @@ then
 			fi
 			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi-amd64 efibootmgr grub-efi-amd64-signed shim-signed" # UEFI (required for d-i, includes suggested packages)
 			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} efibootmgr grub-efi grub-efi-amd64 grub-efi-amd64-bin grub-efi-amd64-signed grub2-common mokutil shim-helpers-amd64-signed shim-signed shim-signed-common shim-unsigned cryptsetup cryptsetup-initramfs keyutils" # UEFI (required by Calamares)
+			# grub-efi-amd64-unsigned was introduced in trixie
+			if [ $(Check_package_available "grub-efi-amd64-unsigned") -eq 1 ]
+			then
+				DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi-amd64-unsigned"
+			fi
 			DI_PACKAGES="linux-image-amd64"
 			;;
 
 		i386)
 			DI_REQ_PACKAGES="grub-pc"
 			DI_PACKAGES="linux-image-686-pae"
+			;;
+
+		arm64)
+			DI_REQ_PACKAGES="grub-efi-arm64 efibootmgr grub-efi-arm64-signed shim-signed" # UEFI (required for d-i, includes suggested packages)
+			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi grub-efi-arm64-bin grub2-common mokutil shim-helpers-arm64-signed shim-signed-common shim-unsigned grub-efi-arm64-unsigned" # UEFI (required by Calamares)
+			DI_PACKAGES="linux-image-arm64"
 			;;
 
 		powerpc)

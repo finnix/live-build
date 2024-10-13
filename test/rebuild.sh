@@ -209,6 +209,10 @@ parse_commandline_arguments() {
 		INSTALLER="live"
 		PACKAGES="live-task-xfce"
 		;;
+	"debian-junior")
+		INSTALLER="live"
+		PACKAGES="live-task-debian-junior"
+		;;
 	"")
 		output_echo "Error: Missing --configuration"
 		exit 1
@@ -306,6 +310,9 @@ parse_commandline_arguments() {
 	then
 		# Differentiate between lxqt and lxde
 		CONFIGURATION_SHORT=$(echo ${CONFIGURATION} | cut -c1,3)
+	elif [ "${CONFIGURATION}" == "debian-junior" ]
+	then
+		CONFIGURATION_SHORT="jr"
 	fi
 	ISO_VOLUME="d-live ${DEBIAN_VERSION_NUMBER} ${CONFIGURATION_SHORT} ${ARCHITECTURE}"
 
@@ -606,6 +613,24 @@ EOFNEWCONTENT
 
 echo "P: \$(basename \$0) Bugfix hook has been applied"
 EOFHOOK
+
+if [ "${DEBIAN_VERSION}" = "bookworm" -a "${CONFIGURATION}" = "kde" ];
+then
+	cat << EOFHOOK > config/hooks/live/5010-kde-icon-for-calamares.hook.chroot
+#!/bin/sh
+set -e
+
+# Fix for #1057853: Missing Calamares icon for KDE on bookworm
+if [ ! -e /etc/xdg/autostart/calamares-desktop-icon.desktop ];
+then
+  exit 0
+fi
+
+sed -i -e '/X-GNOME-Autostart-Phase=/d' /etc/xdg/autostart/calamares-desktop-icon.desktop
+
+echo "P: \$(basename \$0) Bugfix hook has been applied"
+EOFHOOK
+fi
 
 # For oldstable and stable use the same boot splash screen as the Debian installer
 case "$DEBIAN_VERSION" in

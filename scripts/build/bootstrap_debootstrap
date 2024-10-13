@@ -113,6 +113,25 @@ else
 	debootstrap ${DEBOOTSTRAP_OPTIONS} "${LB_PARENT_DISTRIBUTION_CHROOT}" chroot "${LB_PARENT_MIRROR_BOOTSTRAP}" ${DEBOOTSTRAP_SCRIPT}
 fi
 
+# If there's an os-release file, copy it to /etc/ and add some extra fields that identify the live image
+if [ -e chroot/usr/lib/os-release ]; then
+	# Ensure a potential update doesn't clobber our changes
+	if ! Chroot chroot dpkg-divert --list /etc/os-release | grep -q /etc/os-release; then
+		Chroot chroot dpkg-divert --quiet --local --add --no-rename --divert /etc/os-release.debootstrap /etc/os-release
+	fi
+	rm -f chroot/etc/os-release
+	cp chroot/usr/lib/os-release chroot/etc/os-release
+	# Ensure the metadata is sensible, even for unstable images
+	if [ "${LB_PARENT_DISTRIBUTION_CHROOT}" = "sid" ] || [ "${LB_PARENT_DISTRIBUTION_CHROOT}" = "unstable" ]; then
+		sed -i "s/VERSION_CODENAME=.*/VERSION_CODENAME=sid/g" chroot/etc/os-release
+		echo "RELEASE_TYPE=development" >> chroot/etc/os-release
+	fi
+	cat <<EOF >> chroot/etc/os-release
+IMAGE_ID=live
+BUILD_ID=$(date ${DATE_UTC_OPTION} -d @${SOURCE_DATE_EPOCH} +%Y%m%dT%H%M%SZ)
+EOF
+fi
+
 # Deconfiguring debootstrap configurations
 rm -f chroot/etc/hosts
 
