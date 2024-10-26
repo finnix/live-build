@@ -90,6 +90,14 @@ Firmware_List_From_Contents () {
 	then
 		BLOCKLIST_FIRMWARE="${BLOCKLIST_FIRMWARE} amd64-microcode firmware-intel-sound firmware-sof-signed intel-microcode"
 	fi
+	# Work around #1084791 (File conflict between firmware-realtek and firmware-realtek-rtl8723cs-bt)
+	# TODO: This work around must be removed as soon as the bug is fixed
+	if In_list non-free-firmware/kernel/firmware-realtek ${FIRMWARE_PACKAGES} \
+		&& In_list non-free-firmware/kernel/firmware-realtek-rtl8723cs-bt ${FIRMWARE_PACKAGES} \
+		&& In_list ${DISTRO_CHROOT} sid unstable
+	then
+		BLOCKLIST_FIRMWARE="${BLOCKLIST_FIRMWARE} firmware-realtek-rtl8723cs-bt"
+	fi
 
 	# Deduplicate the list and prepare for easier manipulation by having each package on its own line
 	local _FIRMWARE_PACKAGES_FILE=tmp_firmware_packages.txt
