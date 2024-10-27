@@ -29,17 +29,17 @@ apt-get autoremove --yes
 # Adjust the path for Calamares
 if [ -e /etc/calamares/modules/unpackfs.conf ]
 then
-	sed -i -e 's|/run/live/medium|/run/initramfs/live|' /etc/calamares/modules/unpackfs.conf
+	sed --follow-symlinks -i -e 's|/run/live/medium|/run/initramfs/live|' /etc/calamares/modules/unpackfs.conf
 fi
 # Use dracut instead of initramfs-tools
 if [ -e /etc/calamares/settings.conf ]
 then
-	sed -i -e '/initramfscfg/d;s/initramfs/dracut/' /etc/calamares/settings.conf
+	sed --follow-symlinks -i -e '/initramfscfg/d;s/initramfs/dracut/' /etc/calamares/settings.conf
 fi
 # Add dracut-live to the list of packages to uninstall
 if [ -e /etc/calamares/modules/packages.conf ]
 then
-	sed -i -e "s/'live-boot'/'dracut-live'/" /etc/calamares/modules/packages.conf
+	sed --follow-symlinks -i -e "s/'live-boot'/'dracut-live'/" /etc/calamares/modules/packages.conf
 fi
 # Calamares script for /etc/apt/sources.list during the installation
 SOURCES_MEDIA=/usr/share/calamares/helpers/calamares-sources-media
