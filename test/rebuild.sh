@@ -213,6 +213,12 @@ parse_commandline_arguments() {
 		INSTALLER="live"
 		PACKAGES="live-task-debian-junior spice-vdagent"
 		;;
+	"hamradio")
+		INSTALLER="none"
+		# Skipping the localisation packages
+		# Skipping: calamares-settings-debian -> it's not the time yet for the installer
+		PACKAGES="hamradio-all svxlink-calibration-tools- svxlink-gpio- svxlink-server- svxreflector- live-task-lxqt live-task-localisation- live-task-localisation-desktop- task-english calamares-settings-debian-"
+		;;
 	"")
 		output_echo "Error: Missing --configuration"
 		exit 1
@@ -313,6 +319,9 @@ parse_commandline_arguments() {
 	elif [ "${CONFIGURATION}" == "debian-junior" ]
 	then
 		CONFIGURATION_SHORT="jr"
+	elif [ "${CONFIGURATION}" == "hamradio" ]
+	then
+		CONFIGURATION_SHORT="hr"
 	fi
 	ISO_VOLUME="d-live ${DEBIAN_VERSION_NUMBER} ${CONFIGURATION_SHORT} ${ARCHITECTURE}"
 
