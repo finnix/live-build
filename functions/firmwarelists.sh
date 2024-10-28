@@ -92,11 +92,15 @@ Firmware_List_From_Contents () {
 	fi
 	# Work around #1084791 (File conflict between firmware-realtek and firmware-realtek-rtl8723cs-bt)
 	# TODO: This work around must be removed as soon as the bug is fixed
-	if In_list non-free-firmware/kernel/firmware-realtek ${FIRMWARE_PACKAGES} \
-		&& In_list non-free-firmware/kernel/firmware-realtek-rtl8723cs-bt ${FIRMWARE_PACKAGES} \
-		&& In_list ${DISTRO_CHROOT} sid unstable
+	if In_list ${DISTRO_CHROOT} sid unstable
 	then
-		BLOCKLIST_FIRMWARE="${BLOCKLIST_FIRMWARE} firmware-realtek-rtl8723cs-bt"
+		if In_list non-free-firmware/kernel/firmware-realtek,non-free-firmware/kernel/firmware-realtek-rtl8723cs-bt ${FIRMWARE_PACKAGES}
+		then
+			BLOCKLIST_FIRMWARE="${BLOCKLIST_FIRMWARE} firmware-realtek-rtl8723cs-bt"
+			Echo_message "Workaround for #1084791 has been applied by preferring the newer package firmware-realtek"
+		else
+			Echo_warning "Workaround for #1084791 must be removed again"
+		fi
 	fi
 
 	# Deduplicate the list and prepare for easier manipulation by having each package on its own line
