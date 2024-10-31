@@ -121,8 +121,21 @@ DEFAULT_INITRD="initrd.img-$(echo ${DEFAULT_KERNEL} | sed -e 's|vmlinuz-||')"
 
 KERNEL_LIVE="/${INITFS}/${DEFAULT_KERNEL}"
 INITRD_LIVE="/${INITFS}/${DEFAULT_INITRD}"
-APPEND_LIVE="${LB_BOOTAPPEND_LIVE} findiso=\${iso_path}"
 FLAVOUR_LIVE="${DEFAULT_FLAVOUR}"
+
+# live-boot and dracut use different kernel parameters for loopback
+# booting
+case "${LB_INITRAMFS}" in
+	live-boot)
+		APPEND_LIVE="${LB_BOOTAPPEND_LIVE} findiso=\${iso_path}"
+		;;
+	dracut-live)
+		APPEND_LIVE="${LB_BOOTAPPEND_LIVE} iso-scan/filename=\${iso_path}"
+		;;
+	none)
+		APPEND_LIVE="${LB_BOOTAPPEND_LIVE}"
+		;;
+esac
 
 # Ensure fresh live entries
 LIVE_ENTRIES_TMP="${_TARGET}/live.cfg.tmp"
