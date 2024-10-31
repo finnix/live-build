@@ -910,7 +910,7 @@ Validate_http_proxy ()
 	Validate_http_proxy_source "environment variable http_proxy" "${http_proxy}"
 	Validate_http_proxy_source "command line option --apt-http-proxy" "${LB_APT_HTTP_PROXY}"
 
-	# This is the value to use for the the other scripts in live-build
+	# This is the value to use for the other scripts in live-build
 	export http_proxy="${LAST_SEEN_PROXY_VALUE}"
 	if [ ! -z "${http_proxy}" ]; then
 		Echo_message "Using http proxy: ${http_proxy}"
