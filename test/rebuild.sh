@@ -348,6 +348,23 @@ get_snapshot_from_archive() {
 	rm latest
 }
 
+get_snapshot_from_snapshot_debian_org() {
+	# Pick the snapshot closest to 'now'
+	wget ${WGET_OPTIONS} http://snapshot.debian.org/archive/debian/$(date --utc +%Y%m%dT%H%M%SZ)/dists/${DEBIAN_VERSION}/InRelease --output-document latest
+	#
+	# Extract the timestamp from the InRelease file
+	#
+	# Input:
+	# ...
+	# Date: Sat, 23 Jul 2022 14:33:45 UTC
+	# ...
+	# Output:
+	# 20220723T143345Z
+	#
+	SNAPSHOT_TIMESTAMP=$(cat latest | awk '/^Date:/ { print substr($0, 7) }' | xargs -I this_date date --utc --date "this_date" +%Y%m%dT%H%M%SZ)
+	rm latest
+}
+
 #
 # main: follow https://wiki.debian.org/ReproducibleInstalls/LiveImages
 #
@@ -396,26 +413,12 @@ case ${BUILD_LATEST} in
 	;;
 "snapshot")
 	# Use the timestamp of the latest mirror snapshot
-	wget ${WGET_OPTIONS} http://snapshot.notset.fr/mr/timestamp/debian/latest --output-document latest
-	#
-	# Extract the timestamp from the JSON file
-	#
-	# Input:
-	# {
-	#   "_api": "0.3",
-	#   "_comment": "notset",
-	#   "result": "20210828T083909Z"
-	# }
-	# Output:
-	# 20210828T083909Z
-	#
-	SNAPSHOT_TIMESTAMP=$(cat latest | awk '/"result":/ { split($0, a, "\""); print a[4] }')
-	rm latest
-	MIRROR=http://snapshot.notset.fr/archive/debian/${SNAPSHOT_TIMESTAMP}
+	get_snapshot_from_snapshot_debian_org
+	MIRROR=http://snapshot.debian.org/archive/debian/${SNAPSHOT_TIMESTAMP}
 	;;
 "no")
 	# The value of SNAPSHOT_TIMESTAMP was provided on the command line
-	MIRROR=http://snapshot.notset.fr/archive/debian/${SNAPSHOT_TIMESTAMP}
+	MIRROR=http://snapshot.debian.org/archive/debian/${SNAPSHOT_TIMESTAMP}
 	;;
 *)
 	echo "E: A new option to BUILD_LATEST has been added"
@@ -664,8 +667,8 @@ BUILD_RESULT=$?
 set -e
 if [ ${BUILD_RESULT} -ne 0 ]; then
 	# Find the snapshot that matches 1 second before the current snapshot
-	wget ${WGET_OPTIONS} http://snapshot.notset.fr/mr/timestamp/debian/$(date --utc -d @$((${SOURCE_DATE_EPOCH} - 1)) +%Y%m%dT%H%M%SZ) --output-document but_latest
-	PROPOSED_SNAPSHOT_TIMESTAMP=$(cat but_latest | awk '/"result":/ { split($0, a, "\""); print a[4] }')
+	wget ${WGET_OPTIONS} http://snapshot.debian.org/archive/debian/$(date --utc -d @$((${SOURCE_DATE_EPOCH} - 1)) +%Y%m%dT%H%M%SZ)/dists/${DEBIAN_VERSION}/InRelease --output-document but_latest
+	PROPOSED_SNAPSHOT_TIMESTAMP=$(cat but_latest | awk '/^Date:/ { print substr($0, 7) }' | xargs -I this_date date --utc --date "this_date" +%Y%m%dT%H%M%SZ)
 	rm but_latest
 
 	output_echo "Warning: lb build failed with ${BUILD_RESULT}. The latest snapshot might not be complete (yet). Try re-running the script with SNAPSHOT_TIMESTAMP=${PROPOSED_SNAPSHOT_TIMESTAMP}."
