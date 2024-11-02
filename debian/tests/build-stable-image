@@ -4,6 +4,11 @@ set -eu
 set -o pipefail
 
 cd "${AUTOPKGTEST_TMP}"
-lb config --verbose --updates true --security true --distribution buster
+# A minimal command line
+lb config --verbose --distribution stable
+# Verify some default values
+lb config --dump | grep 'LB_UPDATES="true"'
+lb config --dump | grep 'LB_SECURITY="true"'
+lb config --dump | grep 'LB_PROPOSED_UPDATES="false"'
 lb build --verbose
 ls -l
