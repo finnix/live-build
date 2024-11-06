@@ -92,7 +92,7 @@ Firmware_List_From_Contents () {
 	fi
 	# Work around #1084791 (File conflict between firmware-realtek and firmware-realtek-rtl8723cs-bt)
 	# TODO: This work around must be removed as soon as the bug is fixed
-	if In_list ${DISTRO_CHROOT} sid unstable
+	if In_list ${DISTRO_CHROOT} sid unstable trixie testing
 	then
 		if In_list non-free-firmware/kernel/firmware-realtek,non-free-firmware/kernel/firmware-realtek-rtl8723cs-bt ${FIRMWARE_PACKAGES}
 		then
