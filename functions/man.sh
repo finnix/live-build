@@ -12,7 +12,11 @@
 Man ()
 {
 	if command -v man >/dev/null; then
-		man ${PROGRAM}
+		if [ -n "${LIVE_BUILD}" -a -e "${LIVE_BUILD}/manpages/en/lb_${PROGRAM#lb }.1" ]; then
+			man ${LIVE_BUILD}/manpages/en/lb_${PROGRAM#lb }.1
+		else
+			man ${PROGRAM}
+		fi
 	else
 		Echo_warning "man is not installed, falling back to usage output."
 		Usage
