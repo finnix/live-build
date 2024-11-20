@@ -36,10 +36,8 @@ Acquire_lockfile
 Restore_package_cache chroot
 
 # Mount local repository
-if echo "${LB_PARENT_MIRROR_CHROOT}" | grep -q '^file:/'
-then
-	Chroot_bind_path chroot "$(echo ${LB_PARENT_MIRROR_CHROOT} | sed -e 's|file:||')"
-fi
+Chroot_try_bind_path chroot "${LB_PARENT_MIRROR_CHROOT}"
+Chroot_try_bind_path chroot "${LB_MIRROR_CHROOT}"
 
 # Configure custom sources.list
 Create_apt_sources_list chroot
@@ -54,6 +52,7 @@ do
 		    -e "s|@ARCHIVE_AREAS@|${LB_ARCHIVE_AREAS}|g" \
 		    -e "s|@PARENT_ARCHIVE_AREAS@|${LB_PARENT_ARCHIVE_AREAS}|g" \
 		"${FILE}" > "chroot/etc/apt/sources.list.d/$(basename ${FILE} .chroot)"
+		Chroot_try_bind_path_from_list chroot ${FILE}
 	fi
 done
 
