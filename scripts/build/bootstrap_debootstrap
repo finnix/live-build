@@ -62,11 +62,11 @@ then
 	DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS} --arch=${LB_ARCHITECTURE}"
 fi
 
-if [ "${LB_ARCHIVE_AREAS}" != "main" ]
+if [ "${LB_PARENT_ARCHIVE_AREAS}" != "main" ]
 then
-	# Modify archive areas to remove leading/trailing whitespaces and replace other whitepspace with commas
-	DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS} --components=$(echo ${LB_ARCHIVE_AREAS} | sed -e 's| |,|g')"
-	FOREIGN_DEBOOTSTRAP_OPTIONS="--components=$(echo ${LB_ARCHIVE_AREAS} | sed -e 's| |,|g')"
+	# Modify archive areas to remove leading/trailing whitespaces and replace other whitespace with commas
+	DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS} --components=$(echo ${LB_PARENT_ARCHIVE_AREAS} | sed -e 's| |,|g')"
+	FOREIGN_DEBOOTSTRAP_OPTIONS="--components=$(echo ${LB_PARENT_ARCHIVE_AREAS} | sed -e 's| |,|g')"
 fi
 
 if [ "${_VERBOSE}" = "true" ]
