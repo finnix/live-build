@@ -2,37 +2,63 @@
 set -e
 
 # /etc/ssl/certs/java/cacerts is a keystore
-# When (re)generated, it embeds 'now' timestamps
+# Due to cryptographic requirements, it will be non-reproducible
+# as it embeds timestamps
+# It can be re-generated with low overhead
 
 # Don't run if ca-certificates-java is not installed
 if [ ! -e /etc/ssl/certs/java/cacerts ];
 then
-  exit 0
-fi
-
-# Use faketime to enforce a timestamp
-# NB: hooks don't know about the apt/aptitude selection, so use 'apt-get'
-export FAKETIME_ALREADY_INSTALLED=1
-if [ ! -e /usr/bin/faketime ];
-then
-  FAKETIME_ALREADY_INSTALLED=0
-  apt-get install faketime --yes -o Acquire::Check-Valid-Until=false
+	exit 0
 fi
 
 # Remove the file
 rm -f /etc/ssl/certs/java/cacerts
 
-# Generate it again
-touch /var/lib/ca-certificates-java/fresh
-# Java uses timestamps with millisecond resolution
-# -f is required, otherwise the milliseconds are non-zero (due to relative timestamps)
-faketime -f "$(date --utc -d@${SOURCE_DATE_EPOCH} +'%Y-%m-%d %H:%M:%SZ')" dpkg-reconfigure ca-certificates-java
+# Add a hook to live-config to recreate it
+cat << EOF > /usr/lib/live/config/5000-ca-certificates-java
+#!/bin/sh
 
-if [ ${FAKETIME_ALREADY_INSTALLED} -eq 0 ];
-then
-  apt-get remove --purge --yes faketime
-  apt-get autoremove --yes
-fi
+. /lib/live/config.sh
+
+## live-config(7) - System Configuration Components
+## Copyright (C) 2024 The Debian Live team
+##
+## This program comes with ABSOLUTELY NO WARRANTY; for details see COPYING.
+## This is free software, and you are welcome to redistribute it
+## under certain conditions; see COPYING for details.
+
+Init ()
+{
+	# Checking if package is installed
+	if ! pkg_is_installed "ca-certificates-java" || \\
+		component_was_executed "ca-certificates-java"
+	then
+		exit 0
+	fi
+	# If the keystore is embedded in the image, don't touch it
+	if [ -e /etc/ssl/certs/java/cacerts ]
+	then
+		exit 0
+	fi
+
+	echo -n " ca-certificates-java"
+}
+
+Config ()
+{
+	# Re-generate the keystore
+	touch /var/lib/ca-certificates-java/fresh
+	dpkg-reconfigure ca-certificates-java
+
+	# Creating state file
+	touch /var/lib/live/config/ca-certificates-java
+}
+
+Init
+Config
+EOF
+chmod u=rwx,go=rx /usr/lib/live/config/5000-ca-certificates-java
 
 echo "P: $(basename $0) Reproducible hook has been applied"
 
