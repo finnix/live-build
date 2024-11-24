@@ -155,8 +155,6 @@ function test_direct_inclusion_of_deb_binary() {
 	assertTrue "Main package should be in the pool" "[ -e iso/pool/main/l/live-testpackage-config-packages-binary-main/live-testpackage-config-packages-binary-main_1.0_all.deb ]"
 	assertTrue "Dependency package should be in the pool" "[ -e iso/pool/main/l/live-testpackage-config-packages-binary-dependency/live-testpackage-config-packages-binary-dependency_1.0_all.deb ]"
 	assertTrue "Package pool is listed in /etc/apt/sources.list" "grep -q 'file:/run/live/medium' squashfs/etc/apt/sources.list"
-
-	assertNotNull "Not implemented yet: The package pool should be listed in /var/lib/apt/lists, to allow for running 'apt-get install live-testpackage-config-packages-binary-main' without 'apt-get update' first" ""
 	assertTrue "Sources list meta info should be present" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_Release ]"
 	assertTrue "Sources list meta info should be present" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_main_binary-amd64_Packages ]"
 	unmountSquashfs
