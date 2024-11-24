@@ -587,6 +587,21 @@ then
 		done
 	fi
 
+	# The path to the package pool when running inside the live environment
+	case "${LB_INITRAMFS}" in
+		live-boot)
+			PATH_TO_POOL_INSIDE_LIVE_ENVIRONMENT="/run/live/medium"
+			;;
+
+		dracut-live)
+			PATH_TO_POOL_INSIDE_LIVE_ENVIRONMENT="/run/initramfs/live"
+			;;
+
+		*)
+			PATH_TO_POOL_INSIDE_LIVE_ENVIRONMENT=""
+			;;
+	esac
+
 	# Generating deb indices
 	Echo_debug "Generating deb indices"
 	for _ARCHIVE_AREA in $(cd binary/pool && ls); do
@@ -604,6 +619,12 @@ EOF
 		mv chroot/root/binary ./
 
 		touch "binary/${INDICE_DIR}/Packages" -d@${SOURCE_DATE_EPOCH}
+		if [ -n "${PATH_TO_POOL_INSIDE_LIVE_ENVIRONMENT}" ]
+		then
+			# Make the pool available without 'apt-get update'
+			VAR_LIB_APT_LISTS_FILENAME=$(echo "${PATH_TO_POOL_INSIDE_LIVE_ENVIRONMENT}/${INDICE_DIR}/Packages" | sed 's|/|_|g')
+			cp -a "binary/${INDICE_DIR}/Packages" "chroot/chroot/var/lib/apt/lists/${VAR_LIB_APT_LISTS_FILENAME}"
+		fi
 		gzip -9 -c "binary/${INDICE_DIR}/Packages" > "binary/${INDICE_DIR}/Packages.gz"
 
 		# Fetching release
@@ -872,16 +893,16 @@ EOF
 	rm -f chroot/binary.sh
 	mv chroot/root/binary ./
 
-	# Add to sources.list with the path that is used inside the live environment
-	case "${LB_INITRAMFS}" in
-		live-boot)
-			echo "deb [trusted=yes] file:/run/live/medium ${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION} ${LB_PARENT_ARCHIVE_AREAS}" >> chroot/chroot/etc/apt/sources.list
-			;;
-
-		dracut-live)
-			echo "deb [trusted=yes] file:/run/initramfs/live ${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION} ${LB_PARENT_ARCHIVE_AREAS}" >> chroot/chroot/etc/apt/sources.list
-			;;
-	esac
+	if [ -n "${PATH_TO_POOL_INSIDE_LIVE_ENVIRONMENT}" ]
+	then
+		# Add to sources.list with the path that is used inside the live environment
+		# Add in the first line, to give it precedence over the online versions of the same package
+		echo "deb [trusted=yes] file:${PATH_TO_POOL_INSIDE_LIVE_ENVIRONMENT} ${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION} ${LB_PARENT_ARCHIVE_AREAS}" > sources.list
+		cat chroot/chroot/etc/apt/sources.list >> sources.list
+		cp sources.list chroot/chroot/etc/apt/sources.list
+		VAR_LIB_APT_LISTS_FILENAME=$(echo "${PATH_TO_POOL_INSIDE_LIVE_ENVIRONMENT}/dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/Release" | sed 's|/|_|g')
+		cp -a binary/dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/Release chroot/chroot/var/lib/apt/lists/${VAR_LIB_APT_LISTS_FILENAME}
+	fi
 
 	Echo_debug "Creating distribution directories/symlinks"
 
