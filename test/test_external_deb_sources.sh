@@ -134,6 +134,107 @@ function test_snapshot_with_mirror_bootstrap() {
 	unmountSquashfs
 }
 
+function test_preexisting_package_inclusion_chroot() {
+	# Why this package?
+	# - It has only a few dependencies
+	# - It is not present in the small image
+	echo "hwdata" > config/package-lists/config-package-lists-chroot.list.chroot
+	build_image
+	assertTrue "Main package is installed (install)" "grep -q '^hwdata' chroot.packages.install"
+	assertTrue "Dependency package is installed (install)" "grep -q '^pci.ids' chroot.packages.install"
+	assertTrue "Main package is installed (live)" "grep -q '^hwdata' chroot.packages.live"
+	assertTrue "Dependency package is installed (live)" "grep -q '^pci.ids' chroot.packages.live"
+	mountSquashfs
+	assertFalse "Main package stays after installation" "grep -q '^hwdata' iso/live/filesystem.packages-remove"
+	assertFalse "Dependency package stays after installation" "grep -q '^pci\.ids' iso/live/filesystem.packages-remove"
+	assertFalse "No package pool should be generated" "[ -e iso/pool ]"
+	assertFalse "Package pool is not listed in /etc/apt/sources.list" "grep -q 'file:/run/live/medium' squashfs/etc/apt/sources.list"
+	unmountSquashfs
+}
+
+function test_preexisting_package_inclusion_chroot_live() {
+	# Why this package?
+	# - It has only a few dependencies
+	# - It is not present in the small image
+	echo "hwdata" > config/package-lists/config-package-lists-chroot-live.list.chroot_live
+	build_image
+	assertFalse "Main package is not installed (install)" "grep -q '^hwdata' chroot.packages.install"
+	assertFalse "Dependency package is not installed (install)" "grep -q '^pci.ids' chroot.packages.install"
+	assertTrue "Main package is installed (live)" "grep -q '^hwdata' chroot.packages.live"
+	assertTrue "Dependency package is installed (live)" "grep -q '^pci.ids' chroot.packages.live"
+	mountSquashfs
+	assertTrue "Main package will be removed after installation" "grep -q '^hwdata' iso/live/filesystem.packages-remove"
+	assertTrue "Dependency package will be removed after installation" "grep -q '^pci\.ids' iso/live/filesystem.packages-remove"
+	assertFalse "No package pool should be generated" "[ -e iso/pool ]"
+	assertFalse "Package pool is not listed in /etc/apt/sources.list" "grep -q 'file:/run/live/medium' squashfs/etc/apt/sources.list"
+	unmountSquashfs
+}
+
+# Effectively is a duplicate of test_preexisting_package_inclusion_chroot
+function test_preexisting_package_inclusion_chroot_install() {
+	# Why this package?
+	# - It has only a few dependencies
+	# - It is not present in the small image
+	echo "hwdata" > config/package-lists/config-package-lists-chroot-live.list.chroot_install
+	build_image
+	assertTrue "Main package is installed (install)" "grep -q '^hwdata' chroot.packages.install"
+	assertTrue "Dependency package is installed (install)" "grep -q '^pci.ids' chroot.packages.install"
+	assertTrue "Main package is installed (live)" "grep -q '^hwdata' chroot.packages.live"
+	assertTrue "Dependency package is installed (live)" "grep -q '^pci.ids' chroot.packages.live"
+	mountSquashfs
+	assertFalse "Main package stays after installation" "grep -q '^hwdata' iso/live/filesystem.packages-remove"
+	assertFalse "Dependency package stays after installation" "grep -q '^pci\.ids' iso/live/filesystem.packages-remove"
+	assertFalse "No package pool should be generated" "[ -e iso/pool ]"
+	assertFalse "Package pool is not listed in /etc/apt/sources.list" "grep -q 'file:/run/live/medium' squashfs/etc/apt/sources.list"
+	unmountSquashfs
+}
+
+function test_preexisting_package_inclusion_unspecified_chroot_or_binary() {
+	# Why this package?
+	# - It has only a few dependencies
+	# - It is not present in the small image
+	echo "hwdata" > config/package-lists/config-package-lists-chroot.list
+	build_image
+	assertTrue "Main package is installed (install)" "grep -q '^hwdata' chroot.packages.install"
+	assertTrue "Dependency package is installed (install)" "grep -q '^pci.ids' chroot.packages.install"
+	assertTrue "Main package is installed (live)" "grep -q '^hwdata' chroot.packages.live"
+	assertTrue "Dependency package is installed (live)" "grep -q '^pci.ids' chroot.packages.live"
+	mountSquashfs
+	assertFalse "Main package stays after installation" "grep -q '^hwdata' iso/live/filesystem.packages-remove"
+	assertFalse "Dependency package stays after installation" "grep -q '^pci\.ids' iso/live/filesystem.packages-remove"
+	assertTrue "Main package should be in the pool" "[ -e iso/pool/main/h/hwdata/hwdata_*_all.deb ]"
+	assertTrue "Dependency package should be in the pool" "[ -e iso/pool/main/p/pci.ids/pci.ids_*_all.deb ]"
+	assertTrue "Package pool is listed in /etc/apt/sources.list" "grep -q 'file:/run/live/medium' squashfs/etc/apt/sources.list"
+	assertTrue "Sources list meta info should be present: Release" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_Release ]"
+	assertTrue "Sources list meta info should be present: Packages" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_main_binary-amd64_Packages ]"
+	unmountSquashfs
+}
+
+function test_preexisting_package_inclusion_binary() {
+	# Why this package?
+	# - It has only a few dependencies
+	# - It is not present in the small image
+	echo "hwdata" > config/package-lists/config-package-lists-chroot.list.binary
+	build_image
+	assertFalse "Main package is not installed (install)" "grep -q '^hwdata' chroot.packages.install"
+	assertFalse "Dependency package is not installed (install)" "grep -q '^pci.ids' chroot.packages.install"
+	assertFalse "Main package is not installed (live)" "grep -q '^hwdata' chroot.packages.live"
+	assertFalse "Dependency package is not installed (live)" "grep -q '^pci.ids' chroot.packages.live"
+	mountSquashfs
+	assertFalse "Main package stays after installation" "grep -q '^hwdata' iso/live/filesystem.packages-remove"
+	assertFalse "Dependency package stays after installation" "grep -q '^pci\.ids' iso/live/filesystem.packages-remove"
+	assertTrue "Main package should be in the pool" "[ -e iso/pool/main/h/hwdata/hwdata_*_all.deb ]"
+	assertTrue "Dependency package should be in the pool" "[ -e iso/pool/main/p/pci.ids/pci.ids_*_all.deb ]"
+	assertTrue "Package pool is listed in /etc/apt/sources.list" "grep -q 'file:/run/live/medium' squashfs/etc/apt/sources.list"
+	assertTrue "Sources list meta info should be present: Release" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_Release ]"
+	assertTrue "Sources list meta info should be present: Packages" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_main_binary-amd64_Packages ]"
+	unmountSquashfs
+}
+
+# Untested:
+# 8.2.5 Generated package lists
+# 8.2.6 Using conditionals inside package lists
+
 function test_direct_inclusion_of_deb_unspecified_chroot_or_binary() {
 	create_packages config-packages
 	cp live-testpackage-config-packages-main_1.0_all.deb config/packages
@@ -164,8 +265,8 @@ function test_direct_inclusion_of_deb_binary() {
 	assertTrue "Main package should be in the pool" "[ -e iso/pool/main/l/live-testpackage-config-packages-binary-main/live-testpackage-config-packages-binary-main_1.0_all.deb ]"
 	assertTrue "Dependency package should be in the pool" "[ -e iso/pool/main/l/live-testpackage-config-packages-binary-dependency/live-testpackage-config-packages-binary-dependency_1.0_all.deb ]"
 	assertTrue "Package pool is listed in /etc/apt/sources.list" "grep -q 'file:/run/live/medium' squashfs/etc/apt/sources.list"
-	assertTrue "Sources list meta info should be present" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_Release ]"
-	assertTrue "Sources list meta info should be present" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_main_binary-amd64_Packages ]"
+	assertTrue "Sources list meta info should be present: Release" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_Release ]"
+	assertTrue "Sources list meta info should be present: Packages" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_main_binary-amd64_Packages ]"
 	unmountSquashfs
 }
 
@@ -323,8 +424,8 @@ EOF
 	assertTrue "Main package should be in the pool" "[ -e iso/pool/main/l/live-testpackage-config-archives-list-binary-main/live-testpackage-config-archives-list-binary-main_1.0_all.deb ]"
 	assertTrue "Dependency package should be in the pool" "[ -e iso/pool/main/l/live-testpackage-config-archives-list-binary-dependency/live-testpackage-config-archives-list-binary-dependency_1.0_all.deb ]"
 	assertTrue "Package pool is listed in /etc/apt/sources.list" "grep -q 'file:/run/live/medium' squashfs/etc/apt/sources.list"
-	assertTrue "Sources list meta info should be present" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_Release ]"
-	assertTrue "Sources list meta info should be present" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_main_binary-amd64_Packages ]"
+	assertTrue "Sources list meta info should be present: Release" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_Release ]"
+	assertTrue "Sources list meta info should be present: Packages" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_main_binary-amd64_Packages ]"
 	unmountSquashfs
 }
 
