@@ -14,6 +14,11 @@ if ! command -v shunit2 > /dev/null; then
 	exit 1
 fi
 
+if ! command -v faketime > /dev/null; then
+	echo "Install faketime"
+	exit 1
+fi
+
 function create_packages () {
 	# Create package generator files
 	cat << EOF > package
@@ -33,7 +38,7 @@ Description: Test package for testing the inclusion in live images
  Tests dependency chain
  Package live-testpackage-$1-dependency should be automatically installed and removed too
 EOF
-	equivs-build package
+	faketime -f "$(date --utc -d@${SOURCE_DATE_EPOCH} +'%Y-%m-%d %H:%M:%SZ')" equivs-build package
 
 	cat << EOF > package
 Source: live-testpackage-$1-dependency
@@ -51,7 +56,7 @@ Description: Test package for testing the inclusion in live images
  Tests dependency chain
  This package should be automatically installed and removed too
 EOF
-	equivs-build package
+	faketime -f "$(date --utc -d@${SOURCE_DATE_EPOCH} +'%Y-%m-%d %H:%M:%SZ')" equivs-build package
 	rm package
 }
 
@@ -96,8 +101,8 @@ function setUp() {
 	# Create a test configuration
 	lb clean --purge
 	rm -fr config
-	# Slight speedup: --zsync, --firmware-chroot
-	lb config --distribution unstable --zsync false --firmware-chroot false
+	# Slight speedup: --zsync, --firmware-chroot, --cache
+	lb config --distribution unstable --zsync false --firmware-chroot false --cache false
 }
 
 function build_image() {
@@ -105,14 +110,18 @@ function build_image() {
 	export MKSQUASHFS_OPTIONS=-no-compression
 	# Perform the build
 	lb build
+	if [ -e live-image-amd64.hybrid.iso ]
+	then
+		sha256sum --tag live-image-amd64.hybrid.iso
+	fi
 }
 
 function test_snapshot_with_mirror_bootstrap() {
 	# Rebuild the configuration, as many mirror settings depend on eachother
 	lb clean --purge
 	rm -fr config
-	# Slight speedup: --zsync, --firmware-chroot
-	lb config --distribution unstable --zsync false --firmware-chroot false --mirror-bootstrap http://snapshot.debian.org/archive/debian/20240701T000000Z/ --mirror-binary http://deb.debian.org/debian/
+	# Slight speedup: --zsync, --firmware-chroot, --cache
+	lb config --distribution unstable --zsync false --firmware-chroot false --cache false --mirror-bootstrap http://snapshot.debian.org/archive/debian/20240701T000000Z/ --mirror-binary http://deb.debian.org/debian/
 	# Insider knowledge of live-build:
 	#   Add '-o Acquire::Check-Valid-Until=false', to allow for rebuilds of older timestamps 
 	sed -i -e '/^APT_OPTIONS=/s/--yes/--yes -o Acquire::Check-Valid-Until=false/' config/common
@@ -351,8 +360,8 @@ function test_derivatives() {
 	# Rebuild the configuration, as many mirror settings depend on eachother
 	#lb clean --purge
 	#rm -fr config
-	# Slight speedup: --zsync, --firmware-chroot
-	#lb config --distribution unstable --zsync false --firmware-chroot false
+	# Slight speedup: --zsync, --firmware-chroot, --cache
+	#lb config --distribution unstable --zsync false --firmware-chroot false --cache false
 	# Let's not test --parent-distribution-chroot at the moment:
 	# --apt-secure false --parent-mirror-chroot file://localhost$(pwd)/testrepository --parent-distribution-chroot nondebian --parent-archive-areas mymain --mirror-chroot http://deb.debian.org/debian --distribution-chroot debian --archive-areas main --parent-mirror-bootstrap file://localhost$(pwd)/testrepository
 	# --apt-secure false --mirror-chroot file://localhost$(pwd)/testrepository-mirror-chroot --distribution-chroot nondebian --archive-areas mymain --parent-mirror-chroot http://deb.debian.org/debian --parent-distribution-chroot unstable --parent-archive-areas main
@@ -363,4 +372,7 @@ function test_derivatives() {
 	#unmountSquashfs
 }
 
-. shunit2
+SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-$(date --utc '+%s')}"
+ISO8601_TIMESTAMP=$(date --utc -d@${SOURCE_DATE_EPOCH} +%Y-%m-%dT%H:%M:%SZ)
+. shunit2 2> logfile_${ISO8601_TIMESTAMP}.stderr | tee logfile_${ISO8601_TIMESTAMP}.stdout
+egrep "ASSERT|FAILED|OK|shunit2|test_|SHA256" logfile_${ISO8601_TIMESTAMP}.stdout | tee logfile_${ISO8601_TIMESTAMP}.summary
