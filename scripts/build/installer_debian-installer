@@ -429,7 +429,12 @@ then
 
 		arm64)
 			DI_REQ_PACKAGES="grub-efi-arm64 efibootmgr grub-efi-arm64-signed shim-signed" # UEFI (required for d-i, includes suggested packages)
-			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi grub-efi-arm64-bin grub2-common mokutil shim-helpers-arm64-signed shim-signed-common shim-unsigned grub-efi-arm64-unsigned" # UEFI (required by Calamares)
+			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi grub-efi-arm64-bin grub2-common mokutil shim-helpers-arm64-signed shim-signed-common shim-unsigned" # UEFI (required by Calamares)
+			# grub-efi-arm64-unsigned was introduced in trixie
+			if [ $(Check_package_available "grub-efi-arm64-unsigned") -eq 1 ]
+			then
+				DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi-arm64-unsigned"
+			fi
 			DI_PACKAGES="linux-image-arm64"
 			;;
 
