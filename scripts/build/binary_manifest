@@ -38,7 +38,7 @@ Check_stagefile
 Acquire_lockfile
 
 case "${LB_INITRAMFS}" in
-	live-boot)
+	live-boot|dracut-live)
 		INITFS="live"
 		SUFFIX="packages"
 		;;

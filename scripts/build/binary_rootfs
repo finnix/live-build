@@ -43,7 +43,7 @@ case "${LB_ARCHITECTURE}" in
 esac
 
 case "${LB_INITRAMFS}" in
-	live-boot)
+	live-boot|dracut-live)
 		INITFS="live"
 		;;
 

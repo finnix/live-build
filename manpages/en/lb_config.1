@@ -130,7 +130,7 @@
 .br
 	[\fB\-\-image\-name\fR \fINAME\fR]
 .br
-	[\fB\-\-initramfs\fR none|live\-boot]
+	[\fB\-\-initramfs\fR none|live\-boot|dracut\-live]
 .br
 	[\fB\-\-initramfs\-compression\fR bzip2|gzip|lzma]
 .br
@@ -331,7 +331,7 @@ tells debootstrap to use an alternate bootstrap script (last parameter to deboot
 .IP "\fB\-\-debug\fR" 4
 turns on debugging informational messages.
 .IP "\fB\-d\fR|\fB\-\-distribution\fR \fICODENAME\fR" 4
-defines the distribution of the resulting live system. This currently defaults to 'buster'. The value 'sid' can be used for Debian unstable.
+defines the distribution of the resulting live system. This defaults to 'testing'. The value 'sid' can be used for Debian unstable.
 .IP "\fB\-\-distribution\-binary\fR \fICODENAME\fR" 4
 defines the distribution enabled in the resulting live system (defaults to the value set in \fB\-\-distribution\fR)
 .IP "\fB\-\-distribution\-chroot\fR \fICODENAME\fR" 4
@@ -362,11 +362,11 @@ defines the size for the HDD target. The unit is MiB. Defaults to 'auto', which 
 \fBlb config\fR by default reads system defaults from \fI/etc/live/build.conf\fR and \fI/etc/live/build/*\fR when generating a new live system config directory. This is useful if you want to set global settings, such as mirror locations, and don't want to specify them all of the time. This option allows you to ignore such global settings.
 .IP "\fB\-\-image\-name\fR \fINAME\fR" 4
 sets the base name of the image. Defaults to live-image.
-.IP "\fB\-\-initramfs\fR none|live\-boot" 4
-sets the name of the package that contains the live system specific initramfs modification and defaults to live\-boot. Using 'none' is useful if the resulting system image should not be a live image (experimental).
-.IP "\fB\-\-initramfs\-compression\fR bzip2|gzip|lzma]
+.IP "\fB\-\-initramfs\fR none|live\-boot|dracut\-live" 4
+sets the name of the package that contains the live system specific initramfs modification and defaults to live\-boot. Using 'none' is useful if the resulting system image should not be a live image (experimental). Note that dracut requires the CD label in the kernel command line, so you might want to set \fB\-\-iso\-volume\fR explicitly.
+.IP "\fB\-\-initramfs\-compression\fR bzip2|gzip|lzma" 4
 defines the compression program to be used to compress the initramfs. Defaults to 'gzip'.
-.IP "\fB\-\-initsystem\fR sysvinit|systemd|none]
+.IP "\fB\-\-initsystem\fR sysvinit|systemd|none" 4
 defines the init system. Defaults to 'systemd'.
 .IP "\fB\-\-interactive\fR true|shell|x11|xnest|false" 4
 defines if after the chroot stage and before the beginning of the binary stage, an interactive shell login should be spawned in the chroot in order to allow you to do manual customizations, or as an alternative to 'true' and 'false' a specific shell to use (note that 'true' corresponds to a value of 'shell'). Once you close the shell with logout or exit, the build will continue as usual. Note that it's strongly discouraged to use this for anything else than testing. Modifications that should be present in all builds of a live system should be properly made through hooks. Everything else destroys the beauty of being able to completely automate the build process and making it non-interactive. By default, this is of course 'false'.

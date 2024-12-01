@@ -47,6 +47,8 @@ ISO amd64:
 ISO arm64:
   extends:
     - .lb-build
+  rules:
+    - if: $CI_PROJECT_ROOT_NAMESPACE != "rclobus-guest"
   variables:
     BUILD_ARCH: 'arm64'
   tags:

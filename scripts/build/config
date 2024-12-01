@@ -1383,18 +1383,28 @@ done
 LIVE_PKG_LIST="config/package-lists/live.list.chroot"
 if [ ! -e "${LIVE_PKG_LIST}" ]; then
 	NEEDED_PACKAGES=""
-	if [ "${LB_INITRAMFS}" = "live-boot" ]; then
-		NEEDED_PACKAGES="live-boot live-config"
-		case "${LB_INITSYSTEM}" in
-			systemd)
-				NEEDED_PACKAGES="${NEEDED_PACKAGES} live-config-systemd systemd-sysv"
-				;;
+	case "${LB_INITRAMFS}" in
+		live-boot)
+			NEEDED_PACKAGES="live-boot live-config"
+			case "${LB_INITSYSTEM}" in
+				systemd)
+					NEEDED_PACKAGES="${NEEDED_PACKAGES} live-config-systemd systemd-sysv"
+					;;
 
-			sysvinit)
-				NEEDED_PACKAGES="${NEEDED_PACKAGES} live-config-sysvinit sysvinit-core"
-				;;
-		esac
-	fi
+				sysvinit)
+					NEEDED_PACKAGES="${NEEDED_PACKAGES} live-config-sysvinit sysvinit-core"
+					;;
+			esac
+			;;
+
+		dracut-live)
+			NEEDED_PACKAGES="live-config live-config-systemd systemd-sysv dracut-live dracut-config-generic dracut"
+			# Ensure that the settings are present before dracut is installed
+			mkdir -p config/includes.chroot_before_packages/etc/dracut.conf.d
+			echo "reproducible=yes" > config/includes.chroot_before_packages/etc/dracut.conf.d/50-reproducible.conf
+			# dracut-live (module dmsquash-live) will be enabled in chroot_hacks
+			;;
+	esac
 	for PKG in $NEEDED_PACKAGES; do
 		echo "${PKG}" >> "${LIVE_PKG_LIST}"
 	done

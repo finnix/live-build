@@ -41,7 +41,7 @@ Prepare_config ()
 
 	LB_MODE="${LB_MODE:-debian}"
 	LB_DERIVATIVE="false"
-	LB_DISTRIBUTION="${LB_DISTRIBUTION:-bullseye}"
+	LB_DISTRIBUTION="${LB_DISTRIBUTION:-testing}"
 	LB_DISTRIBUTION_CHROOT="${LB_DISTRIBUTION_CHROOT:-${LB_DISTRIBUTION}}"
 	LB_DISTRIBUTION_BINARY="${LB_DISTRIBUTION_BINARY:-${LB_DISTRIBUTION_CHROOT}}"
 
@@ -303,7 +303,11 @@ Prepare_config ()
 
 	case "${LB_ARCHITECTURE}" in
 		amd64|i386)
-			LB_BOOTLOADER_BIOS="${LB_BOOTLOADER_BIOS:-syslinux}"
+			if [ "${LB_INITRAMFS}" = "dracut-live" ]; then
+				LB_BOOTLOADER_BIOS="${LB_BOOTLOADER_BIOS:-grub-pc}"
+			else
+				LB_BOOTLOADER_BIOS="${LB_BOOTLOADER_BIOS:-syslinux}"
+			fi
 			if ! In_list "${LB_IMAGE_TYPE}" hdd netboot; then
 				LB_BOOTLOADER_EFI="${LB_BOOTLOADER_EFI:-grub-efi}"
 			fi
@@ -385,10 +389,23 @@ Prepare_config ()
 		fi
 	fi
 
+	LB_ISO_APPLICATION="${LB_ISO_APPLICATION:-Debian Live}"
+	LB_ISO_PREPARER="${LB_ISO_PREPARER:-live-build @LB_VERSION@; https://salsa.debian.org/live-team/live-build}"
+	LB_ISO_PUBLISHER="${LB_ISO_PUBLISHER:-Debian Live project; https://wiki.debian.org/DebianLive; debian-live@lists.debian.org}"
+	# The string @ISOVOLUME_TS@ must have the same length as the output of `date +%Y%m%d-%H:%M`
+	LB_ISO_VOLUME="${LB_ISO_VOLUME:-Debian ${LB_DISTRIBUTION} @ISOVOLUME_TS@}"
+
 	case "${LB_INITRAMFS}" in
 		live-boot)
 			LB_BOOTAPPEND_LIVE="${LB_BOOTAPPEND_LIVE:-boot=live components quiet splash}"
 			LB_BOOTAPPEND_LIVE_FAILSAFE="${LB_BOOTAPPEND_LIVE_FAILSAFE:-boot=live components memtest noapic noapm nodma nomce nosmp nosplash vga=788}"
+			;;
+
+		dracut-live)
+			# Replace all spaces with underscore for the CD label
+			LB_ISO_VOLUME="$(echo "${LB_ISO_VOLUME}" | tr " " "_")"
+			LB_BOOTAPPEND_LIVE="${LB_BOOTAPPEND_LIVE:-boot=live components quiet splash rd.live.image root=live:CDLABEL=${LB_ISO_VOLUME} rd.live.dir=live rd.live.squashimg=filesystem.squashfs}"
+			LB_BOOTAPPEND_LIVE_FAILSAFE="${LB_BOOTAPPEND_LIVE_FAILSAFE:-boot=live components memtest noapic noapm nodma nomce nosmp nosplash vga=788 rd.live.image root=live:CDLABEL=${LB_ISO_VOLUME} rd.live.dir=live rd.live.squashimg=filesystem.squashfs}"
 			;;
 
 		none)
@@ -432,12 +449,6 @@ Prepare_config ()
 	fi
 
 	LB_BOOTAPPEND_INSTALL="$(echo ${LB_BOOTAPPEND_INSTALL} | sed -e 's/[ \t]*$//')"
-
-	LB_ISO_APPLICATION="${LB_ISO_APPLICATION:-Debian Live}"
-	LB_ISO_PREPARER="${LB_ISO_PREPARER:-live-build @LB_VERSION@; https://salsa.debian.org/live-team/live-build}"
-	LB_ISO_PUBLISHER="${LB_ISO_PUBLISHER:-Debian Live project; https://wiki.debian.org/DebianLive; debian-live@lists.debian.org}"
-	# The string @ISOVOLUME_TS@ must have the same length as the output of `date +%Y%m%d-%H:%M`
-	LB_ISO_VOLUME="${LB_ISO_VOLUME:-Debian ${LB_DISTRIBUTION} @ISOVOLUME_TS@}"
 
 	LB_HDD_LABEL="${LB_HDD_LABEL:-DEBIAN_LIVE}"
 	LB_HDD_SIZE="${LB_HDD_SIZE:-auto}"
@@ -697,9 +708,41 @@ Validate_config_permitted_values ()
 		exit 1
 	fi
 
-	if ! In_list "${LB_INITRAMFS}" none live-boot; then
+	if ! In_list "${LB_INITRAMFS}" none live-boot dracut-live; then
 		Echo_error "You have specified an invalid value for LB_INITRAMFS (--initramfs)."
 		exit 1
+	fi
+
+	if [ "${LB_INITRAMFS}" = "dracut-live" ]; then
+		if [ "${LB_DM_VERITY}"  = "true" ]; then
+			Echo_error "Currently unsupported/untested: dm_verity and dracut."
+			exit 1
+		fi
+		if [ "${LB_BOOTLOADER_BIOS}" = "grub-legacy" ]; then
+			Echo_error "Currently unsupported/untested: grub-legacy and dracut."
+			exit 1
+		fi
+		if [ "${LB_BOOTLOADER_BIOS}" = "syslinux" ]; then
+			Echo_error "Currently unsupported/untested: syslinux and dracut."
+			exit 1
+		fi
+		if ! In_list "${LB_IMAGE_TYPE}" iso iso-hybrid; then
+			# The boot=live:CDLABEL requires a CD medium
+			Echo_error "Currently unsupported/untested: image type ${LB_IMAGE_TYPE} and dracut."
+			exit 1
+		fi
+		if [ "${LB_INITRAMFS_COMPRESSION}" != "gzip" ]; then
+			Echo_error "Currently unsupported/untested: compression ${LB_INITRAMFS_COMPRESSION} and dracut."
+			exit 1
+		fi
+		if [ "${LB_CHROOT_FILESYSTEM}" != "squashfs" ]; then
+			Echo_error "Currently unsupported/untested: chroot filesystem ${LB_CHROOT_FILESYSTEM} and dracut."
+			exit 1
+		fi
+		if [ "${LB_INITSYSTEM}" != systemd ]; then
+			Echo_error "Currently unsupported/untested: init system ${LB_INITSYSTEM} and dracut."
+			exit 1
+		fi
 	fi
 
 	if ! In_list "${LB_INITRAMFS_COMPRESSION}" bzip2 gzip lzma; then
@@ -867,7 +910,7 @@ Validate_http_proxy ()
 	Validate_http_proxy_source "environment variable http_proxy" "${http_proxy}"
 	Validate_http_proxy_source "command line option --apt-http-proxy" "${LB_APT_HTTP_PROXY}"
 
-	# This is the value to use for the the other scripts in live-build
+	# This is the value to use for the other scripts in live-build
 	export http_proxy="${LAST_SEEN_PROXY_VALUE}"
 	if [ ! -z "${http_proxy}" ]; then
 		Echo_message "Using http proxy: ${http_proxy}"

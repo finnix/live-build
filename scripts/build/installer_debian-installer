@@ -278,7 +278,7 @@ case "${LB_DERIVATIVE}" in
 
 				# These variables do not need to be passed inside the chroot, they can be resolved earlier:
 				#   SOURCE_DATE_EPOCH, _QUIET, LB_PARENT_MIRROR_CHROOT, LB_PARENT_DISTRIBUTION_CHROOT
-				#   TARGETS
+				#   TARGETS, http_proxy
 				cat << EOF > chroot/buildit.sh
 #!/bin/sh
 # Get the version of the git repo that matches SOURCE_DATE_EPOCH
@@ -331,7 +331,7 @@ fi
 # USE_UDEBS_FROM -> use the same distribution as the chroot
 # ROOTCMD -> Workaround for #1058994. Fakeroot is not present in the chroot (and not required)
 export LINUX_KERNEL_ABI=\$(dpkg-query --showformat "\\\${db:Status-Abbrev} \\\${Package}\n" --show linux-image-* | awk '\$1=="ii" { c = split(\$2, a, "-"); if (c>3) { if (a[4] ~ /^[0-9]+/) { print a[3] "-" a[4] } else { print a[3] } } }' | sort | tail -1)
-MIRROR="[check-valid-until=no] ${LB_PARENT_MIRROR_CHROOT}" TARGETS="${TARGETS}" USE_UDEBS_FROM=${LB_PARENT_DISTRIBUTION_CHROOT} ROOTCMD=" " bash ./daily-build build-only
+http_proxy=${http_proxy} MIRROR="[check-valid-until=no] ${LB_PARENT_MIRROR_CHROOT}" TARGETS="${TARGETS}" USE_UDEBS_FROM=${LB_PARENT_DISTRIBUTION_CHROOT} ROOTCMD=" " bash ./daily-build build-only
 EOF
 				Chroot chroot "sh buildit.sh"
 				# Place the files in the cache. Download_file will use the cache instead of downloading
@@ -429,7 +429,12 @@ then
 
 		arm64)
 			DI_REQ_PACKAGES="grub-efi-arm64 efibootmgr grub-efi-arm64-signed shim-signed" # UEFI (required for d-i, includes suggested packages)
-			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi grub-efi-arm64-bin grub2-common mokutil shim-helpers-arm64-signed shim-signed-common shim-unsigned grub-efi-arm64-unsigned" # UEFI (required by Calamares)
+			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi grub-efi-arm64-bin grub2-common mokutil shim-helpers-arm64-signed shim-signed-common shim-unsigned" # UEFI (required by Calamares)
+			# grub-efi-arm64-unsigned was introduced in trixie
+			if [ $(Check_package_available "grub-efi-arm64-unsigned") -eq 1 ]
+			then
+				DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi-arm64-unsigned"
+			fi
 			DI_PACKAGES="linux-image-arm64"
 			;;
 
@@ -587,6 +592,21 @@ then
 		done
 	fi
 
+	# The path to the package pool when running inside the live environment
+	case "${LB_INITRAMFS}" in
+		live-boot)
+			PATH_TO_POOL_INSIDE_LIVE_ENVIRONMENT="/run/live/medium"
+			;;
+
+		dracut-live)
+			PATH_TO_POOL_INSIDE_LIVE_ENVIRONMENT="/run/initramfs/live"
+			;;
+
+		*)
+			PATH_TO_POOL_INSIDE_LIVE_ENVIRONMENT=""
+			;;
+	esac
+
 	# Generating deb indices
 	Echo_debug "Generating deb indices"
 	for _ARCHIVE_AREA in $(cd binary/pool && ls); do
@@ -604,6 +624,12 @@ EOF
 		mv chroot/root/binary ./
 
 		touch "binary/${INDICE_DIR}/Packages" -d@${SOURCE_DATE_EPOCH}
+		if [ -n "${PATH_TO_POOL_INSIDE_LIVE_ENVIRONMENT}" ]
+		then
+			# Make the pool available without 'apt-get update'
+			VAR_LIB_APT_LISTS_FILENAME=$(echo "${PATH_TO_POOL_INSIDE_LIVE_ENVIRONMENT}/${INDICE_DIR}/Packages" | sed 's|/|_|g')
+			cp -a "binary/${INDICE_DIR}/Packages" "chroot/chroot/var/lib/apt/lists/${VAR_LIB_APT_LISTS_FILENAME}"
+		fi
 		gzip -9 -c "binary/${INDICE_DIR}/Packages" > "binary/${INDICE_DIR}/Packages.gz"
 
 		# Fetching release
@@ -861,10 +887,10 @@ cd /root/binary && apt-ftparchive \
 	-o APT::FTPArchive::Release::Suite="${_SUITE}" \
 	${_LB_APT_VERSION_OPT} \
 	-o APT::FTPArchive::Release::Codename="${LB_PARENT_DISTRIBUTION_BINARY}" \
-	-o APT::FTPArchive::Release::Date="$(date -R ${DATE_UTC_OPTION} -d@${SOURCE_DATE_EPOCH})" \
+	-o APT::FTPArchive::Release::Date="$(date -R --utc -d@${SOURCE_DATE_EPOCH})" \
 	-o APT::FTPArchive::Release::Architectures="${LB_ARCHITECTURE}" \
 	-o APT::FTPArchive::Release::Components="${LB_PARENT_ARCHIVE_AREAS}" \
-	-o APT::FTPArchive::Release::Description="Last updated: $(date -R ${DATE_UTC_OPTION} -d@${SOURCE_DATE_EPOCH})" \
+	-o APT::FTPArchive::Release::Description="Last updated: $(date -R --utc -d@${SOURCE_DATE_EPOCH})" \
 	release dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION} > dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/Release
 EOF
 
@@ -872,8 +898,16 @@ EOF
 	rm -f chroot/binary.sh
 	mv chroot/root/binary ./
 
-	# Add to sources.list with the path that is used inside the live environment
-	echo "deb [trusted=yes] file:/run/live/medium ${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION} ${LB_PARENT_ARCHIVE_AREAS}" >> chroot/chroot/etc/apt/sources.list
+	if [ -n "${PATH_TO_POOL_INSIDE_LIVE_ENVIRONMENT}" ]
+	then
+		# Add to sources.list with the path that is used inside the live environment
+		# Add in the first line, to give it precedence over the online versions of the same package
+		echo "deb [trusted=yes] file:${PATH_TO_POOL_INSIDE_LIVE_ENVIRONMENT} ${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION} ${LB_PARENT_ARCHIVE_AREAS}" > sources.list
+		cat chroot/chroot/etc/apt/sources.list >> sources.list
+		cp sources.list chroot/chroot/etc/apt/sources.list
+		VAR_LIB_APT_LISTS_FILENAME=$(echo "${PATH_TO_POOL_INSIDE_LIVE_ENVIRONMENT}/dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/Release" | sed 's|/|_|g')
+		cp -a binary/dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/Release chroot/chroot/var/lib/apt/lists/${VAR_LIB_APT_LISTS_FILENAME}
+	fi
 
 	Echo_debug "Creating distribution directories/symlinks"
 
