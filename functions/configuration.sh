@@ -845,6 +845,11 @@ Validate_config_dependencies ()
 		fi
 	fi
 
+	if [ "${LB_CHECKSUMS}" != "none" ] && [ "${LB_CHECKSUMS}" != "md5" ] && [ "${LB_INITRAMFS}" = "dracut-live" ]; then
+		Echo_error "You have selected values of LB_CHECKSUMS and LB_INITRAMFS that are incompatible - dracut-live works only with no checksums or md5 checksums."
+		exit 1
+	fi
+
 	Validate_http_proxy
 }
 

@@ -59,6 +59,12 @@ case "${LB_IMAGE_TYPE}" in
 		;;
 esac
 
+# Dracut checksum support requires isomd5sum
+if [ "${LB_CHECKSUMS}" != "none" ] && [ "${LB_INITRAMFS}" = "dracut-live" ]
+then
+	Apt chroot install isomd5sum
+fi
+
 # Update initramfs (always, because of udev rules in initrd)
 case "${LB_INITRAMFS}" in
 	live-boot)

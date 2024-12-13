@@ -212,6 +212,13 @@ case "${LB_BUILD_WITH_CHROOT}" in
 		;;
 esac
 
+# Handle checksumming for dracut-live
+if [ "${LB_CHECKSUMS}" != "none" ] && [ "${LB_INITRAMFS}" = "dracut-live" ]
+then
+	Echo_message "Embedding md5sum into ISO for dracut verification"
+	implantisomd5 ${IMAGE}
+fi
+
 # Set the timestamp of the image
 touch -d@${SOURCE_DATE_EPOCH} ${IMAGE}
 echo "f ${IMAGE}" >> binary.modified_timestamps

@@ -128,12 +128,18 @@ FLAVOUR_LIVE="${DEFAULT_FLAVOUR}"
 case "${LB_INITRAMFS}" in
 	live-boot)
 		APPEND_LIVE="${LB_BOOTAPPEND_LIVE} findiso=\${iso_path}"
+		APPEND_CHECKSUM_LIVE="${APPEND_LIVE} verify-checksums"
+		APPEND_CHECKSUM_LIVE_FAILSAFE="${LB_BOOTAPPEND_LIVE_FAILSAFE} verify-checksums"
 		;;
 	dracut-live)
 		APPEND_LIVE="${LB_BOOTAPPEND_LIVE} iso-scan/filename=\${iso_path}"
+		APPEND_CHECKSUM_LIVE="${APPEND_LIVE} rd.live.check"
+		APPEND_CHECKSUM_LIVE_FAILSAFE="${LB_BOOTAPPEND_LIVE_FAILSAFE} rd.live.check"
 		;;
 	none)
 		APPEND_LIVE="${LB_BOOTAPPEND_LIVE}"
+		APPEND_CHECKSUM_LIVE="${APPEND_LIVE} verify-checksums"
+		APPEND_CHECKSUM_LIVE_FAILSAFE="${LB_BOOTAPPEND_LIVE_FAILSAFE} verify-checksums"
 		;;
 esac
 
@@ -164,6 +170,15 @@ if [ "${_AMD64_686_NUMBER}" -ge 2 ] ; then
 		"/${INITFS}/${_686_INITRD}" \
 		"${APPEND_LIVE}"
 
+	if [ "${LB_CHECKSUMS}" != "none" ]; then
+		Grub_live_autodetect_menu_entry "Live system (autodetect) (verify checksums)" \
+			"/${INITFS}/${AMD64_KERNEL}" \
+			"/${INITFS}/${AMD64_INITRD}" \
+			"/${INITFS}/${_686_KERNEL}" \
+			"/${INITFS}/${_686_INITRD}" \
+			"${APPEND_CHECKSUM_LIVE}"
+	fi
+
 	if [ "${LB_BOOTAPPEND_LIVE_FAILSAFE}" != "none" ]; then
 		Grub_live_autodetect_menu_entry "Live system (autodetect) (fail-safe mode)" \
 			"/${INITFS}/${AMD64_KERNEL}" \
@@ -171,6 +186,15 @@ if [ "${_AMD64_686_NUMBER}" -ge 2 ] ; then
 			"/${INITFS}/${_686_KERNEL}" \
 			"/${INITFS}/${_686_INITRD}" \
 			"${LB_BOOTAPPEND_LIVE_FAILSAFE}"
+
+		if [ "${LB_CHECKSUMS}" != "none" ]; then
+			Grub_live_autodetect_menu_entry "Live system (autodetect) (fail-safe-mode) (verify checksums)" \
+				"/${INITFS}/${AMD64_KERNEL}" \
+				"/${INITFS}/${AMD64_INITRD}" \
+				"/${INITFS}/${_686_KERNEL}" \
+				"/${INITFS}/${_686_INITRD}" \
+				"${APPEND_CHECKSUM_LIVE_FAILSAFE}"
+		fi
 	fi
 else
 	Grub_live_menu_entry "Live system (${_FLAVOUR})" \
@@ -178,11 +202,26 @@ else
 		"/${INITFS}/${DEFAULT_INITRD}" \
 		"${APPEND_LIVE}" \
 		"l"
+
+	if [ "${LB_CHECKSUMS}" != "none" ]; then
+		Grub_live_menu_entry "Live system (${_FLAVOUR}) (verify checksums)" \
+			"/${INITFS}/${DEFAULT_KERNEL}" \
+			"/${INITFS}/${DEFAULT_INITRD}" \
+			"${APPEND_CHECKSUM_LIVE}"
+	fi
+
 	if [ "${LB_BOOTAPPEND_LIVE_FAILSAFE}" != "none" ]; then
 		Grub_live_menu_entry "Live system (${_FLAVOUR} fail-safe mode)" \
 			"/${INITFS}/${DEFAULT_KERNEL}" \
 			"/${INITFS}/${DEFAULT_INITRD}" \
 			"${LB_BOOTAPPEND_LIVE_FAILSAFE}"
+
+		if [ "${LB_CHECKSUMS}" != "none" ]; then
+			Grub_live_menu_entry "Live system (${_FLAVOUR} fail-safe mode) (verify checksums)" \
+				"/${INITFS}/${DEFAULT_KERNEL}" \
+				"/${INITFS}/${DEFAULT_INITRD}" \
+				"${APPEND_CHECKSUM_LIVE_FAILSAFE}"
+		fi
 	fi
 fi
 
@@ -200,11 +239,25 @@ if [ $_COUNT -gt 1 ]; then
 			"/${INITFS}/initrd.img-${VERSION}" \
 			"${APPEND_LIVE}"
 
+		if [ "${LB_CHECKSUMS}" != "none" ]; then
+			Grub_live_menu_entry "Live system, kernel ${VERSION} (verify checksums)" \
+				"/${INITFS}/$(basename "${KERNEL}")" \
+				"/${INITFS}/initrd.img-${VERSION}" \
+				"${APPEND_CHECKSUM_LIVE}"
+		fi
+
 		if [ "${LB_BOOTAPPEND_LIVE_FAILSAFE}" != "none" ]; then
 			Grub_live_menu_entry "Live system, kernel ${VERSION} (fail-safe mode)" \
 				"/${INITFS}/$(basename ${KERNEL})" \
 				"/${INITFS}/initrd.img-${VERSION}" \
 				"${LB_BOOTAPPEND_LIVE_FAILSAFE}"
+
+			if [ "${LB_CHECKSUMS}" != "none" ]; then
+				Grub_live_menu_entry "Live system, kernel ${VERSION} (fail-safe mode) (verify checksums)" \
+					"/${INITFS}/$(basename "${KERNEL}")" \
+					"/${INITFS}/initrd.img-${VERSION}" \
+					"${APPEND_CHECKSUM_LIVE_FAILSAFE}"
+			fi
 		fi
 	done
 fi
