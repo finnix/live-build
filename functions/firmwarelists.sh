@@ -58,7 +58,7 @@ Firmware_List_From_Contents () {
 				# Note: for firmware/Contents-firmware (used by check-missing-firmware.sh from hw-detect),
 				#       the second argument must be the filename of the package.
 				#       That information is not available here and will be added by installer_debian-installer
-				gunzip -c "${CONTENTS_FILE}" | awk --assign AREA=${_ARCHIVE_AREA} '/^(usr\/)?lib\/firmware/ { printf "/%-54s %s %s\n", $1, $2, AREA }' >> ${FIRMWARE_DETAILS_FILE}
+				gunzip -c "${CONTENTS_FILE}" | awk -v AREA=${_ARCHIVE_AREA} '/^(usr\/)?lib\/firmware/ { printf "/%-54s %s %s\n", $1, $2, AREA }' >> ${FIRMWARE_DETAILS_FILE}
 			fi
 
 			# Don't waste disk space, if not making use of caching
