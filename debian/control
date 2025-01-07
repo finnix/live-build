@@ -8,6 +8,7 @@ Build-Depends:
  debhelper-compat (= 13),
  po4a,
  gettext,
+ devscripts,
 Standards-Version: 4.7.0
 Rules-Requires-Root: no
 Homepage: https://wiki.debian.org/DebianLive
