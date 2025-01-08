@@ -410,15 +410,21 @@ case ${BUILD_LATEST} in
 	# Use the timestamp of the current Debian archive
 	get_snapshot_from_archive
 	MIRROR=http://deb.debian.org/debian/
+	MIRROR_BINARY=${MIRROR}
+	MODIFY_APT_OPTIONS=0
 	;;
 "snapshot")
 	# Use the timestamp of the latest mirror snapshot
 	get_snapshot_from_snapshot_debian_org
 	MIRROR=http://snapshot.debian.org/archive/debian/${SNAPSHOT_TIMESTAMP}
+	MIRROR_BINARY="[check-valid-until=no] ${MIRROR}"
+	MODIFY_APT_OPTIONS=1
 	;;
 "no")
 	# The value of SNAPSHOT_TIMESTAMP was provided on the command line
 	MIRROR=http://snapshot.debian.org/archive/debian/${SNAPSHOT_TIMESTAMP}
+	MIRROR_BINARY="[check-valid-until=no] ${MIRROR}"
+	MODIFY_APT_OPTIONS=1
 	;;
 *)
 	echo "E: A new option to BUILD_LATEST has been added"
@@ -460,7 +466,7 @@ fi
 output_echo "Running lb config."
 lb config \
 	--mirror-bootstrap ${MIRROR} \
-	--mirror-binary ${MIRROR} \
+	--mirror-binary "${MIRROR_BINARY}" \
 	--security false \
 	--updates false \
 	--distribution ${DEBIAN_VERSION} \
@@ -474,9 +480,11 @@ lb config \
 	${GENERATE_SOURCE} \
 	2>&1 | tee $LB_OUTPUT
 
-# Insider knowledge of live-build:
-#   Add '-o Acquire::Check-Valid-Until=false', to allow for rebuilds of older timestamps
-sed -i -e '/^APT_OPTIONS=/s/--yes/--yes -o Acquire::Check-Valid-Until=false/' config/common
+if [ ${MODIFY_APT_OPTIONS} -ne 0 ]; then
+	# Insider knowledge of live-build:
+	#   Add '-o Acquire::Check-Valid-Until=false', to allow for rebuilds of older timestamps
+	sed -i -e '/^APT_OPTIONS=/s/--yes/--yes -o Acquire::Check-Valid-Until=false/' config/common
+fi
 
 if [ ! -z "${PACKAGES}" ]; then
 	echo "${PACKAGES}" >config/package-lists/desktop.list.chroot
