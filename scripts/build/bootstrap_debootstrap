@@ -30,6 +30,15 @@ fi
 Echo_message "Begin bootstrapping system..."
 
 Check_package host /usr/sbin/debootstrap debootstrap
+Check_installed host /usr/bin/eatmydata eatmydata
+if [ "${INSTALL_STATUS}" -eq 0 ]
+then
+	Echo_message "eatmydata found. It will be used do disable the sync command in the second stage of debootstrap"
+	_EATMYDATA="eatmydata"
+else
+	# eatmydata is optional
+	_EATMYDATA=""
+fi
 
 # Checking stage file
 Check_stagefile "bootstrap"
@@ -110,7 +119,7 @@ if [ -n "${LB_BOOTSTRAP_QEMU_ARCHITECTURE}" ]; then
 	Echo_message "Running debootstrap second stage under QEMU"
 	Chroot chroot /bin/sh /debootstrap/debootstrap --second-stage ${FOREIGN_DEBOOTSTRAP_OPTIONS}
 else
-	debootstrap ${DEBOOTSTRAP_OPTIONS} "${LB_PARENT_DISTRIBUTION_CHROOT}" chroot "${LB_PARENT_MIRROR_BOOTSTRAP}" ${DEBOOTSTRAP_SCRIPT}
+	${_EATMYDATA} debootstrap ${DEBOOTSTRAP_OPTIONS} "${LB_PARENT_DISTRIBUTION_CHROOT}" chroot "${LB_PARENT_MIRROR_BOOTSTRAP}" ${DEBOOTSTRAP_SCRIPT}
 fi
 
 # If there's an os-release file, copy it to /etc/ and add some extra fields that identify the live image

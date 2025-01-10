@@ -35,6 +35,7 @@ Recommends:
  xz-utils,
 Suggests:
  e2fsprogs,
+ eatmydata,
  git,
  parted,
  mtd-utils,
