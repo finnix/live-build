@@ -283,67 +283,77 @@ function test_direct_inclusion_of_deb_chroot() {
 	assertTrue "Dependency package is installed (live)" "grep -q '^live-testpackage-config-packages-chroot-dependency' chroot.packages.live"
 }
 
-function test_remote_repository_unspecified_choot_or_binary() {
-	cat << EOF > config/archives/remote-config-archives-list.list
-deb [signed-by=/etc/apt/trusted.gpg.d/ubuntu-archive-keyring.gpg.key.gpg] http://archive.ubuntu.com/ubuntu noble main
+function prepare_remote_repository() {
+	# $1 = scenario
+	# $2 = extension (or an empty string)
+	local SCENARIO=${1}
+	local EXTENSION=${2}
+
+	cat << EOF > config/archives/${SCENARIO}.list${EXTENSION}
+deb [signed-by=/etc/apt/trusted.gpg.d/ubuntu-archive-keyring.gpg.key${EXTENSION}.gpg] http://archive.ubuntu.com/ubuntu noble main
 EOF
 	# We need something that is not in Debian.
 	# Let's use the live image building tool from Ubuntu ;-)
-	echo "casper" > config/package-lists/remote-config-archives-list.list
+	echo "casper" > config/package-lists/${SCENARIO}.list${EXTENSION}
 
 	# Manually fetch the key for Ubuntu
-	wget --quiet https://salsa.debian.org/debian/ubuntu-keyring/-/raw/master/keyrings/ubuntu-archive-keyring.gpg?ref_type=heads -O config/archives/ubuntu-archive-keyring.gpg.key
+	wget --quiet https://salsa.debian.org/debian/ubuntu-keyring/-/raw/master/keyrings/ubuntu-archive-keyring.gpg?ref_type=heads -O config/archives/ubuntu-archive-keyring.gpg.key${EXTENSION}
+
+	# Pin Ubuntu's packages below Debian's
+	cat << EOF > config/archives/${SCENARIO}.pref${EXTENSION}
+Package: *
+Pin: release n=noble
+Pin-Priority: 50
+EOF
+}
+
+function test_remote_repository_unspecified_chroot_or_binary() {
+	local SCENARIO=remote-config-archives-list
+	prepare_remote_repository ${SCENARIO} ""
 
 	build_image
 	assertTrue "Package is installed (install)" "grep -q '^casper' chroot.packages.install"
 	assertTrue "Package is installed (live)" "grep -q '^casper' chroot.packages.live"
 
 	mountSquashfs
-	assertTrue "Sources list should be present" "[ -e squashfs/etc/apt/sources.list.d/remote-config-archives-list.list ]"
+	assertTrue "Sources list should be present" "[ -e squashfs/etc/apt/sources.list.d/${SCENARIO}.list ]"
 	assertTrue "Sources list meta info should be present" "[ -e squashfs/var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_noble_main_binary-amd64_Packages ]"
+	assertTrue "Package should be in the pool" "find iso | grep 'iso/pool/main/c/casper/casper_.*_amd64\.deb'"
+	assertTrue "Signing key should be present" "[ -e squashfs/etc/apt/trusted.gpg.d/ubuntu-archive-keyring.gpg.key.gpg ]"
+	assertTrue "Pinning preference should be present" "[ -e squashfs/etc/apt/preferences.d/${SCENARIO}.pref ]"
 	unmountSquashfs
 }
 
 function test_remote_repository_chroot() {
-	cat << EOF > config/archives/remote-config-archives-list-chroot.list
-deb [signed-by=/etc/apt/trusted.gpg.d/ubuntu-archive-keyring.gpg.key.chroot.gpg] http://archive.ubuntu.com/ubuntu noble main
-EOF
-	# We need something that is not in Debian.
-	# Let's use the live image building tool from Ubuntu ;-)
-	echo "casper" > config/package-lists/remote-config-archives-list-chroot.list.chroot
-
-	# Manually fetch the key for Ubuntu
-	wget --quiet https://salsa.debian.org/debian/ubuntu-keyring/-/raw/master/keyrings/ubuntu-archive-keyring.gpg?ref_type=heads -O config/archives/ubuntu-archive-keyring.gpg.key.chroot
+	local SCENARIO=remote-config-archives-list-chroot
+	prepare_remote_repository ${SCENARIO} ".chroot"
 
 	build_image
 	assertTrue "Package is installed (install)" "grep -q '^casper' chroot.packages.install"
 	assertTrue "Package is installed (live)" "grep -q '^casper' chroot.packages.live"
 
 	mountSquashfs
-	assertTrue "Sources list should be present" "[ -e squashfs/etc/apt/sources.list.d/remote-config-archives-list-chroot.list ]"
-	assertTrue "Sources list meta info should be present" "[ -e squashfs/var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_noble_main_binary-amd64_Packages ]"
+	assertFalse "Sources list should not be present" "[ -e squashfs/etc/apt/sources.list.d/${SCENARIO}.list ]"
+	assertFalse "Sources list meta info should not be present" "[ -e squashfs/var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_noble_main_binary-amd64_Packages ]"
+	assertFalse "Signing key should not be present" "[ -e squashfs/etc/apt/trusted.gpg.d/ubuntu-archive-keyring.gpg.key.chroot.gpg ]"
+	assertFalse "Pinning preference should not be present" "[ -e squashfs/etc/apt/preferences.d/${SCENARIO}.pref ]"
 	unmountSquashfs
 }
 
 function test_remote_repository_binary() {
-	cat << EOF > config/archives/remote-config-archives-list-binary.list.binary
-deb [signed-by=/etc/apt/trusted.gpg.d/ubuntu-archive-keyring.gpg.key.binary.gpg] http://archive.ubuntu.com/ubuntu noble main
-EOF
-	# We need something that is not in Debian.
-	# Let's use the live image building tool from Ubuntu ;-)
-	echo "casper" > config/package-lists/remote-config-archives-list-binary.list.binary
-
-	# Manually fetch the key for Ubuntu
-	wget --quiet https://salsa.debian.org/debian/ubuntu-keyring/-/raw/master/keyrings/ubuntu-archive-keyring.gpg?ref_type=heads -O config/archives/ubuntu-archive-keyring.gpg.key.binary
+	local SCENARIO=remote-config-archives-list-binary
+	prepare_remote_repository ${SCENARIO} ".binary"
 
 	build_image
 	assertFalse "Package is not installed (install)" "grep -q '^casper' chroot.packages.install"
 	assertFalse "Package is not installed (live)" "grep -q '^casper' chroot.packages.live"
 
 	mountSquashfs
-	assertTrue "Sources list should be present" "[ -e squashfs/etc/apt/sources.list.d/remote-config-archives-list-binary.list ]"
+	assertTrue "Sources list should be present" "[ -e squashfs/etc/apt/sources.list.d/${SCENARIO}.list ]"
 	assertTrue "Sources list meta info should be present" "[ -e squashfs/var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_noble_main_binary-amd64_Packages ]"
 	assertTrue "Package should be in the pool" "find iso | grep 'iso/pool/main/c/casper/casper_.*_amd64\.deb'"
+	assertTrue "Signing key should be present" "[ -e squashfs/etc/apt/trusted.gpg.d/ubuntu-archive-keyring.gpg.key.binary.gpg ]"
+	assertTrue "Pinning preference should be present" "[ -e squashfs/etc/apt/preferences.d/${SCENARIO}.pref ]"
 	unmountSquashfs
 }
 
