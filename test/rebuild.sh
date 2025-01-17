@@ -659,7 +659,7 @@ case "$DEBIAN_VERSION" in
 "trixie"|"testing")
 	# Trixie artwork: https://wiki.debian.org/DebianArt/Themes/Ceratopsian
 	mkdir -p config/bootloaders
-	wget --quiet https://raw.githubusercontent.com/pccouper/trixie/refs/heads/main/grub/grub.svg -O config/bootloaders/splash.svg
+	wget --quiet https://raw.githubusercontent.com/pccouper/trixie/refs/heads/main/bootscreen/grub/grub.svg -O config/bootloaders/splash.svg
 	;;
 *)
 	# Use the default 'under construction' image
