@@ -68,7 +68,11 @@ case "${LB_INITRAMFS}" in
 		;;
 	dracut-live)
 		# Enable the live module (with a unique name)
-		echo "add_dracutmodules+=\" dmsquash-live \"" > chroot/etc/dracut.conf.d/20-live-module-${SOURCE_DATE_EPOCH}.conf
+		if [ "${LB_IMAGE_TYPE}"='netboot' ]; then
+			echo "add_dracutmodules+=\" livenet nfs \"" > chroot/etc/dracut.conf.d/20-live-module-${SOURCE_DATE_EPOCH}.conf
+		else
+			echo "add_dracutmodules+=\" dmsquash-live \"" > chroot/etc/dracut.conf.d/20-live-module-${SOURCE_DATE_EPOCH}.conf
+		fi
 		# This ensures that dracut uses the same filename as initramfs-tools
 		Chroot chroot dpkg-reconfigure dracut
 		rm -f chroot/etc/dracut.conf.d/20-live-module-${SOURCE_DATE_EPOCH}.conf

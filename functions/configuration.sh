@@ -303,7 +303,8 @@ Prepare_config ()
 
 	case "${LB_ARCHITECTURE}" in
 		amd64|i386)
-			if [ "${LB_INITRAMFS}" = "dracut-live" ]; then
+			if [ "${LB_INITRAMFS}" = "dracut-live" ] && \
+				[ "${LB_IMAGE_TYPE}" != "netboot" ]; then
 				LB_BOOTLOADER_BIOS="${LB_BOOTLOADER_BIOS:-grub-pc}"
 			else
 				LB_BOOTLOADER_BIOS="${LB_BOOTLOADER_BIOS:-syslinux}"
@@ -722,11 +723,12 @@ Validate_config_permitted_values ()
 			Echo_error "Currently unsupported/untested: grub-legacy and dracut."
 			exit 1
 		fi
-		if [ "${LB_BOOTLOADER_BIOS}" = "syslinux" ]; then
-			Echo_error "Currently unsupported/untested: syslinux and dracut."
+		if [ "${LB_BOOTLOADER_BIOS}" = "syslinux" ] && \
+				[ "${LB_IMAGE_TYPE}" != "netboot" ]; then
+			Echo_error "Currently unsupported/untested: syslinux and dracut without netboot."
 			exit 1
 		fi
-		if ! In_list "${LB_IMAGE_TYPE}" iso iso-hybrid; then
+		if ! In_list "${LB_IMAGE_TYPE}" iso iso-hybrid netboot; then
 			# The boot=live:CDLABEL requires a CD medium
 			Echo_error "Currently unsupported/untested: image type ${LB_IMAGE_TYPE} and dracut."
 			exit 1
