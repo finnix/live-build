@@ -137,7 +137,7 @@ if [ -e chroot/usr/lib/os-release ]; then
 	fi
 	cat <<EOF >> chroot/etc/os-release
 IMAGE_ID=live
-BUILD_ID=$(date ${DATE_UTC_OPTION} -d @${SOURCE_DATE_EPOCH} +%Y%m%dT%H%M%SZ)
+BUILD_ID=$(date --utc -d @${SOURCE_DATE_EPOCH} +%Y%m%dT%H%M%SZ)
 EOF
 fi
 
