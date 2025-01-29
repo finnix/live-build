@@ -61,6 +61,38 @@ EOF
 }
 
 function create_repository () {
+	# First create a signing key without password
+	# then create the repository
+
+	# The generation of the signing key is based on
+	# https://www.gnupg.org/documentation/manuals/gnupg/Unattended-GPG-key-generation.html
+	#
+	# Don't modify the keyring of the current user.
+	# Use instead the key from the directory of this script, to have reproducible images
+	# (e.g. the file 'InRelease', which contains the signature, might be embedded in the ISO file)
+	export GNUPGHOME="$(dirname ${BASH_SOURCE[0]})/testrepository-signing-key"
+	if [ ! -e ${GNUPGHOME}/trustdb.gpg ]
+	then
+		# Generate a new signing key
+		mkdir -p ${GNUPGHOME}
+		cat << EOF > ${GNUPGHOME}/batch.txt
+%echo Generating a basic OpenPGP key
+Key-Type: DSA
+Key-Length: 2048
+Name-Real: Debian Live
+Name-Comment: Not for production use, only for testing
+Name-Email:  debian-live@lists.debian.org
+Expire-Date: 0
+# Really! No password, as it allows for fully automated generation and usage
+%no-protection
+# Do a commit here, so that we can later print "done" :-)
+%commit
+%echo done
+EOF
+		gpg --batch --generate-key ${GNUPGHOME}/batch.txt
+	fi
+	export SIGNING_KEY=$(gpg --list-secret-keys | sed --regexp-extended '/[ ]+([0-9A-F]){40}/s/[ ]+//p;d' | head -1)
+
 	# See https://wiki.debian.org/DebianRepository/SetupWithReprepro
 	# Collect in a repository
 	rm -fr testrepository-$1
@@ -73,6 +105,8 @@ Codename: nondebian
 Architectures: amd64 source
 Components: mymain
 Description: Test repository for testing external sources
+SignWith: ${SIGNING_KEY}
+Signed-By: ${GNUPGHOME}/public_key.gpg
 EOF
 	create_packages $1
 	reprepro -b testrepository-$1 includedeb nondebian live-testpackage-$1-main_1.0_all.deb
@@ -357,85 +391,83 @@ function test_remote_repository_binary() {
 	unmountSquashfs
 }
 
-function test_local_repository_unspecified_chroot_or_binary() {
-	create_repository config-archives-list
-	cat << EOF > config/archives/my_repro-config-archives-list.list
-deb [trusted=yes] file://$(pwd)/testrepository-config-archives-list nondebian mymain
+function prepare_local_repository() {
+	# $1 = scenario
+	# $2 = extension (or an empty string)
+	local SCENARIO=${1}
+	local EXTENSION=${2}
+
+	create_repository ${SCENARIO}
+	gpg --armor --output config/archives/testrepository-${SCENARIO}.gpg.key${EXTENSION} --export-options export-minimal --export ${SIGNING_KEY}
+	cat << EOF > config/archives/my_repro-${SCENARIO}.list${EXTENSION}
+deb [signed-by=/etc/apt/trusted.gpg.d/testrepository-${SCENARIO}.gpg.key${EXTENSION}.asc] file://$(pwd)/testrepository-${SCENARIO} nondebian mymain
 EOF
-	echo "live-testpackage-config-archives-list-main" > config/package-lists/my_repro-config-archives-list.list
+	echo "live-testpackage-${SCENARIO}-main" > config/package-lists/my_repro-${SCENARIO}.list${EXTENSION}
+}
+
+function test_local_repository_unspecified_chroot_or_binary() {
+	local SCENARIO=config-archives-list
+	prepare_local_repository ${SCENARIO} ""
 
 	build_image
-	assertNotNull "Not implemented yet: fails at bootstrap_archives at the moment" ""
-	assertTrue "Packaged file for main package should be present" "grep -q '^-rw-r--r--.* testpackage-config-archives-list-main-file$' chroot.files"
-	assertTrue "Packaged file for dependency package should be present" "grep -q '^-rw-r--r--.* testpackage-config-archives-list-dependency-file$' chroot.files"
-	assertTrue "Main package is installed (install)" "grep -q '^live-testpackage-config-archives-list-main' chroot.packages.install"
-	assertTrue "Dependency package is installed (install)" "grep -q '^live-testpackage-config-archives-list-dependency' chroot.packages.install"
-	assertTrue "Main package is installed (live)" "grep -q '^live-testpackage-config-archives-list-main' chroot.packages.live"
-	assertTrue "Dependency package is installed (live)" "grep -q '^live-testpackage-config-archives-list-dependency' chroot.packages.live"
+	assertTrue "Packaged file for main package should be present" "grep -q '^-rw-r--r--.* testpackage-${SCENARIO}-main-file$' chroot.files"
+	assertTrue "Packaged file for dependency package should be present" "grep -q '^-rw-r--r--.* testpackage-${SCENARIO}-dependency-file$' chroot.files"
+	assertTrue "Main package is installed (install)" "grep -q '^live-testpackage-${SCENARIO}-main' chroot.packages.install"
+	assertTrue "Dependency package is installed (install)" "grep -q '^live-testpackage-${SCENARIO}-dependency' chroot.packages.install"
+	assertTrue "Main package is installed (live)" "grep -q '^live-testpackage-${SCENARIO}-main' chroot.packages.live"
+	assertTrue "Dependency package is installed (live)" "grep -q '^live-testpackage-${SCENARIO}-dependency' chroot.packages.live"
 
 	mountSquashfs
-	# The following files should not be present
-	# -> however, they currently are, because there is not detection whether the repo is reachable from within the running live environment
-	# -> this will result in an error message when 'apt-get update' is run in the live environment
-	#  /etc/apt/sources.list.d/my_repro-config-archives-list.list
-	#  /var/lib/apt/lists/_*_testrepository-config-archives-list-*_Release
-	#  /var/lib/apt/lists/_*_testrepository-config-archives-list-*_Packages
-	assertFalse "Sources list should not be present" "[ -e squashfs/etc/apt/sources.list.d/my_repro-config-archives-list.list ]"
-	assertFalse "Sources list meta info should not be present" "find squashfs/var/lib/apt/lists | grep -q 'squashfs/var/lib/apt/lists/_*_testrepository-config-archives-list-'"
+	assertTrue "Sources list should be present" "[ -e squashfs/etc/apt/sources.list.d/my_repro-${SCENARIO}.list ]"
+	assertTrue "Main package should be in the pool" "[ -e iso/pool/main/l/live-testpackage-${SCENARIO}-main/live-testpackage-${SCENARIO}-main_1.0_all.deb ]"
+	assertTrue "Dependency package should be in the pool" "[ -e iso/pool/main/l/live-testpackage-${SCENARIO}-dependency/live-testpackage-${SCENARIO}-dependency_1.0_all.deb ]"
+	assertTrue "Package pool is listed in /etc/apt/sources.list" "grep -q 'file:/run/live/medium' squashfs/etc/apt/sources.list"
+	assertTrue "Sources list meta info should be present: Release" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_Release ]"
+	assertTrue "Sources list meta info should be present: Packages" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_main_binary-amd64_Packages ]"
+	assertTrue "Signing key should be present" "[ -e squashfs/etc/apt/trusted.gpg.d/testrepository-${SCENARIO}.gpg.key.asc ]"
 	unmountSquashfs
+
 }
 
 function test_local_repository_chroot() {
-	create_repository config-archives-list-chroot
-	cat << EOF > config/archives/my_repro-config-archives-list-chroot.list.chroot
-deb [trusted=yes] file://$(pwd)/testrepository-config-archives-list-chroot nondebian mymain
-EOF
-	echo "live-testpackage-config-archives-list-chroot-main" > config/package-lists/my_repro-config-archives-list-chroot.list.chroot
+	local SCENARIO=config-archives-list-chroot
+	prepare_local_repository ${SCENARIO} ".chroot"
 
 	build_image
-	assertNotNull "Not implemented yet: fails at bootstrap_archives at the moment" ""
-	assertTrue "Packaged file for main package should be present" "grep -q '^-rw-r--r--.* testpackage-config-archives-list-chroot-main-file$' chroot.files"
-	assertTrue "Packaged file for dependency package should be present" "grep -q '^-rw-r--r--.* testpackage-config-archives-list-chroot-dependency-file$' chroot.files"
-	assertTrue "Main package is installed (install)" "grep -q '^live-testpackage-config-archives-list-chroot-main' chroot.packages.install"
-	assertTrue "Dependency package is installed (install)" "grep -q '^live-testpackage-config-archives-list-chroot-dependency' chroot.packages.install"
-	assertTrue "Main package is installed (live)" "grep -q '^live-testpackage-config-archives-list-chroot-main' chroot.packages.live"
-	assertTrue "Dependency package is installed (live)" "grep -q '^live-testpackage-config-archives-list-chroot-dependency' chroot.packages.live"
+	assertTrue "Packaged file for main package should be present" "grep -q '^-rw-r--r--.* testpackage-${SCENARIO}-main-file$' chroot.files"
+	assertTrue "Packaged file for dependency package should be present" "grep -q '^-rw-r--r--.* testpackage-${SCENARIO}-dependency-file$' chroot.files"
+	assertTrue "Main package is installed (install)" "grep -q '^live-testpackage-${SCENARIO}-main' chroot.packages.install"
+	assertTrue "Dependency package is installed (install)" "grep -q '^live-testpackage-${SCENARIO}-dependency' chroot.packages.install"
+	assertTrue "Main package is installed (live)" "grep -q '^live-testpackage-${SCENARIO}-main' chroot.packages.live"
+	assertTrue "Dependency package is installed (live)" "grep -q '^live-testpackage-${SCENARIO}-dependency' chroot.packages.live"
 
 	mountSquashfs
-	# The following files should not be present
-	# -> however, they currently are, because there is not detection whether the repo is reachable from within the running live environment
-	# -> this will result in an error message when 'apt-get update' is run in the live environment
-	#  /etc/apt/sources.list.d/my_repro-config-archives-list-chroot.list
-	#  /var/lib/apt/lists/_*_testrepository-config-archives-list-chroot-*_Release
-	#  /var/lib/apt/lists/_*_testrepository-config-archives-list-chroot-*_Packages
-	assertFalse "Sources list should not be present" "[ -e squashfs/etc/apt/sources.list.d/my_repro-config-archives-list-chroot.list ]"
-	assertFalse "Sources list meta info should not be present" "find squashfs/var/lib/apt/lists | grep -q 'squashfs/var/lib/apt/lists/_*_testrepository-config-archives-list-chroot-'"
+	assertFalse "Sources list should not be present" "[ -e squashfs/etc/apt/sources.list.d/my_repro-${SCENARIO}.list ]"
+	assertFalse "Sources list meta info should not be present" "find squashfs/var/lib/apt/lists | grep -q 'squashfs/var/lib/apt/lists/_*_testrepository-${SCENARIO}-'"
+	assertFalse "Signing key should not be present" "[ -e squashfs/etc/apt/trusted.gpg.d/testrepository-${SCENARIO}.gpg.key.chroot.asc ]"
 	unmountSquashfs
 }
 
 function test_local_repository_binary() {
-	# Skip the .list.binary scenario for now
-	# -> the bind mount is not activated properly
-	create_repository config-archives-list-binary
-	cat << EOF > config/archives/my_repro-config-archives.list-binary.list.binary
-deb [trusted=yes] file://$(pwd)/testrepository-config-archives-list-binary nondebian mymain
-EOF
-	echo "live-testpackage-config-archives-list-binary-main" > config/package-lists/my_repro-config-archives-list-binary.list.binary
+	local SCENARIO=config-archives-list-binary
+	prepare_local_repository ${SCENARIO} ".binary"
 
 	build_image
-	assertNotNull "Not implemented yet: fails at lb chroot_prep remove all mode-archives-chroot with step lb chroot_archives chroot remove at the moment" ""
-	assertFalse "Packaged file for main package should not be present" "grep -q '^-rw-r--r--.* testpackage-config-archives-list-binary-main-file$' chroot.files"
-	assertFalse "Packaged file for dependency package should not be present" "grep -q '^-rw-r--r--.* testpackage-config-archives-list-binary-dependency-file$' chroot.files"
-	assertFalse "Main package is not installed (install)" "grep -q '^live-testpackage-config-archives-list-binary-main' chroot.packages.install"
-	assertFalse "Dependency package is not installed (install)" "grep -q '^live-testpackage-config-archives-list-binary-dependency' chroot.packages.install"
-	assertFalse "Main package is not installed (live)" "grep -q '^live-testpackage-config-archives-list-binary-main' chroot.packages.live"
-	assertFalse "Dependency package is not installed (live)" "grep -q '^live-testpackage-config-archives-list-binary-dependency' chroot.packages.live"
+	assertNotNull "Not implemented yet: fails at lb chroot_archives binary install at the moment" ""
+	assertFalse "Packaged file for main package should not be present" "grep -q '^-rw-r--r--.* testpackage-${SCENARIO}-main-file$' chroot.files"
+	assertFalse "Packaged file for dependency package should not be present" "grep -q '^-rw-r--r--.* testpackage-${SCENARIO}-dependency-file$' chroot.files"
+	assertFalse "Main package is not installed (install)" "grep -q '^live-testpackage-${SCENARIO}-main' chroot.packages.install"
+	assertFalse "Dependency package is not installed (install)" "grep -q '^live-testpackage-${SCENARIO}-dependency' chroot.packages.install"
+	assertFalse "Main package is not installed (live)" "grep -q '^live-testpackage-${SCENARIO}-main' chroot.packages.live"
+	assertFalse "Dependency package is not installed (live)" "grep -q '^live-testpackage-${SCENARIO}-dependency' chroot.packages.live"
 	mountSquashfs
-	assertTrue "Main package should be in the pool" "[ -e iso/pool/main/l/live-testpackage-config-archives-list-binary-main/live-testpackage-config-archives-list-binary-main_1.0_all.deb ]"
-	assertTrue "Dependency package should be in the pool" "[ -e iso/pool/main/l/live-testpackage-config-archives-list-binary-dependency/live-testpackage-config-archives-list-binary-dependency_1.0_all.deb ]"
+	assertTrue "Sources list should be present" "[ -e squashfs/etc/apt/sources.list.d/my_repro-${SCENARIO}.list ]"
+	assertTrue "Main package should be in the pool" "[ -e iso/pool/main/l/live-testpackage-${SCENARIO}-main/live-testpackage-${SCENARIO}-main_1.0_all.deb ]"
+	assertTrue "Dependency package should be in the pool" "[ -e iso/pool/main/l/live-testpackage-${SCENARIO}-dependency/live-testpackage-${SCENARIO}-dependency_1.0_all.deb ]"
 	assertTrue "Package pool is listed in /etc/apt/sources.list" "grep -q 'file:/run/live/medium' squashfs/etc/apt/sources.list"
 	assertTrue "Sources list meta info should be present: Release" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_Release ]"
 	assertTrue "Sources list meta info should be present: Packages" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_main_binary-amd64_Packages ]"
+	assertTrue "Signing key should be present" "[ -e squashfs/etc/apt/trusted.gpg.d/testrepository-${SCENARIO}.gpg.key.binary.asc ]"
 	unmountSquashfs
 }
 
