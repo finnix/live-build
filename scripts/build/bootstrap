@@ -32,12 +32,4 @@ lb bootstrap_cache restore "${@}"
 lb bootstrap_debootstrap "${@}"
 lb bootstrap_cache save "${@}"
 
-# Configuring chroot
-lb chroot_prep install all-except-archives "${@}"
-
-lb bootstrap_archives "${@}"
-
-# Deconfiguring chroot
-lb chroot_prep remove all-except-archives "${@}"
-
 Echo_message "Bootstrap stage completed"
