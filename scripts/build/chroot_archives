@@ -395,6 +395,20 @@ case "${_ACTION}" in
 			fi
 		done
 
+		# Remove chroot-only local archive keys
+		for FILE in config/archives/*.key.chroot
+		do
+			if [ -e "${FILE}" ]
+			then
+				if grep -q "PGP PUBLIC KEY BLOCK" "${FILE}"
+				then
+					rm "chroot/etc/apt/trusted.gpg.d/$(basename ${FILE}).asc"
+				else
+					rm "chroot/etc/apt/trusted.gpg.d/$(basename ${FILE}).gpg"
+				fi
+			fi
+		done
+
 		# Adding local apt sources (binary)
 		for FILE in config/archives/*.list config/archives/*.list.binary
 		do
