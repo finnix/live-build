@@ -25,7 +25,7 @@ Recommends: apt-utils,
             systemd-container,
             wget,
             xz-utils
-Suggests: e2fsprogs, eatmydata, git, isomd5sum, mtd-utils, parted
+Suggests: e2fsprogs, eatmydata, git, mtd-utils, parted
 Description: Live System Build Components
  The Debian Live project maintains the components to build Debian based Live
  systems and the official Debian Live images themselves.
