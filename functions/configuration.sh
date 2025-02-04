@@ -339,7 +339,11 @@ Prepare_config ()
 		done
 	fi
 
-	LB_CHECKSUMS="${LB_CHECKSUMS:-sha256}"
+	if [ "${LB_INITRAMFS}" = "dracut-live" ]; then
+		LB_CHECKSUMS="${LB_CHECKSUMS:-md5}"
+	else
+		LB_CHECKSUMS="${LB_CHECKSUMS:-sha256}"
+	fi
 
 	LB_COMPRESSION="${LB_COMPRESSION:-none}"
 
