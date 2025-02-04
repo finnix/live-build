@@ -1399,6 +1399,10 @@ if [ ! -e "${LIVE_PKG_LIST}" ]; then
 
 		dracut-live)
 			NEEDED_PACKAGES="live-config live-config-systemd systemd-sysv dracut-live dracut-config-generic dracut"
+			if [ "${LB_CHECKSUMS}" = "md5" ]
+			then
+				NEEDED_PACKAGES="${NEEDED_PACKAGES} isomd5sum"
+			fi
 			# Ensure that the settings are present before dracut is installed
 			mkdir -p config/includes.chroot_before_packages/etc/dracut.conf.d
 			echo "reproducible=yes" > config/includes.chroot_before_packages/etc/dracut.conf.d/50-reproducible.conf
