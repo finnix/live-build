@@ -62,6 +62,7 @@ install:
 		install -D -m 0644 $${MANPAGE} $(DESTDIR)/usr/share/man/man$${SECTION}/$$(basename $${MANPAGE}); \
 	done
 
+	make -C manpages
 	for LANGUAGE in $(LANGUAGES); \
 	do \
 		for MANPAGE in manpages/$${LANGUAGE}/*; \
