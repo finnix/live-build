@@ -215,7 +215,7 @@ case "${_ACTION}" in
 
 		if Find_files chroot/packages/*.deb
 		then
-			gunzip < chroot/packages/Packages.gz | awk '/^Package: / { print $2 }' \
+			gunzip < chroot/packages/Packages.gz | awk '/^Package: / { print tolower($2) }' \
 			>> chroot/root/packages.chroot
 		fi
 
