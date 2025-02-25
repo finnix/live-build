@@ -1,3 +1,110 @@
+live-build (1:20250225) unstable; urgency=medium
+
+  [ Roland Clobus ]
+  * Change default for zsync to false
+  * Installer: Calamares also needs the unsigned GRUB packages for offline
+    installation
+  * Installer: fix for bookworm and bullseye
+  * Fix for #1057853: Missing Calamares icon for KDE on bookworm
+
+  [ Emanuele Rocca ]
+  * Always add live-installer to udeb_include
+  * Add arm64 packages for post-installation
+
+  [ Roland Clobus ]
+  * rebuild.sh: Support Debian-Junior
+
+  [ Emanuele Rocca ]
+  * lb source: fetch source packages once
+  * Test ISO building on Salsa
+  * Add git to Suggests
+
+  [ Nick Brown ]
+  * Add support for proposed-update archives (Closes: #1069045)
+
+  [ Roland Clobus ]
+  * Add support for dracut (Closes: #1031903)
+  * Typo: fixed layout for some commandline options
+  * Pipeline: turn off the arm64 pipeline for non-DDs
+  * Workaround for #1084791
+  * Workaround for #1084791 part 2
+
+  [ Aaron Rainbolt ]
+  * Handle loopback booting with dracut-live properly
+
+  [ Roland Clobus ]
+  * Installer: use the http proxy
+  * dracut: Support diverted configuration files of Calamares
+  * lb config: --distribution defaults to testing
+  * autopkgtest: Use 'stable' and 'testing'
+  * man: Use $LIVE_BUILD if set
+  * Workaround for #1084791 part 3
+  * Workaround for #1084791 removed.
+  * Reproducible: ca-certificates-java
+  * test: New test for external deb sources
+  * Reproducible: Regenerate Java cacerts differently
+  * installer: Use UTC timestamps in the Release file
+  * installer: Cached apt indices for local pool
+  * test: Cached apt indices for local pool is implemented
+  * Fixes error message for local .deb files in config/packages.chroot.
+  * Installer: fix for arm64 for builds before trixie
+
+  [ Aaron Rainbolt ]
+  * Fix memtest support when using dracut-live
+
+  [ Roland Clobus ]
+  * Generate /firmware/Contents-firmware
+  * Firmwarelist: use POSIX commandline option for awk
+  * Reproducible: fixes unstable output in dictionaries-common
+  * Fix FTBFS for 'make test'
+  * Packaging: Add devscripts as build dependency
+  * rebuild.sh: Add theme for Trixie
+  * Support for qemu: Use spice-vdagent (Closes: 869569)
+  * rebuild.sh: Re-enable snapshot.debian.org
+  * snapshot builds: Add check-valid-until=no in sources.list
+  * test: Support reproducible images
+  * test: pre-existing packages
+  * debootstrap: Optionally use 'eatmydata'
+  * Apply 'wrap-and-sort' on the debian directory
+  * chroot_dpkg: correctly rename duplicated diversions
+  * Trixie: fix the URL to the GRUB image
+
+  [ Andreas B. Mundt ]
+  * Implement netbooting with dracut initramfs
+
+  [ Roland Clobus ]
+  * Blends: Support for hamradio
+  * test_external_deb_sources: Fix test_remote_repository_XX
+  * test_external_deb_sources: test_local_repository_chroot -> use
+    signatures
+  * bootstrap: Should use the 'parent' options
+  * bootstrap: Use UTC in /etc/os-release
+  * chroot_bind_path: Add support for local repositories
+  * bootstrap_archives: Removed, as it is not needed
+  * chroot_archives: Cleanup chroot-only local archive keys
+  * binary_package-lists: Reproducible timestamp
+
+  [ Aaron Rainbolt ]
+  * Add checksum support for dracut-live, add checksum verification menu
+    entries
+
+  [ Roland Clobus ]
+  * Don't require isomd5sum on the host
+  * Use a different checksum strategy for dracut-based live images
+  * dracut-live: require isomd5sum
+  * Move verification to the Utilities sub menu
+
+  [ Aaron Rainbolt ]
+  * Fix syntax issue with if-then statement
+
+  [ Roland Clobus ]
+  * GRUB: Show result of image verification
+  * Support packages that have non-compliant package names
+  * gitignore: Added some more generated files to ignore
+  * Makefile: Fixed 'install' target
+
+ -- Luca Boccassi <bluca@debian.org>  Tue, 25 Feb 2025 10:05:46 +0000
+
 live-build (1:20240810) unstable; urgency=medium
 
   [ Roland Clobus ]
