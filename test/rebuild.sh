@@ -652,6 +652,18 @@ echo "P: \$(basename \$0) Bugfix hook has been applied"
 EOFHOOK
 fi
 
+cat << EOFHOOK > config/hooks/normal/5060-support-vga-in-qemu.hook.chroot
+#!/bin/sh
+set -e
+
+# When qemu uses the 'VGA' option, this kernel module is required for the
+# console output, otherwise the output will be garbled.
+# The kernel option 'verify-checksums' is activated before systemd runs
+# 'modprobe@drm.service', so the module needs to be in the initramfs.
+# See also https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1872863
+echo "bochs" >> /etc/initramfs-tools/modules
+EOFHOOK
+
 # For oldstable and stable use the same boot splash screen as the Debian installer
 case "$DEBIAN_VERSION" in
 "bullseye"|"oldstable")
