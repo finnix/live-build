@@ -128,8 +128,8 @@ FLAVOUR_LIVE="${DEFAULT_FLAVOUR}"
 case "${LB_INITRAMFS}" in
 	live-boot)
 		APPEND_LIVE="${LB_BOOTAPPEND_LIVE} findiso=\${iso_path}"
-		# Turn off 'quiet', otherwise the progress and result are not shown
-		APPEND_VERIFY_CHECKSUMS=$(echo ${APPEND_LIVE} verify-checksums | sed -e 's|quiet||')
+		# Turn off 'quiet' and 'splash', otherwise the progress and result are not shown
+		APPEND_VERIFY_CHECKSUMS=$(echo ${APPEND_LIVE} verify-checksums | sed -e 's|quiet||;s|splash||')
 		;;
 	dracut-live)
 		APPEND_LIVE="${LB_BOOTAPPEND_LIVE} iso-scan/filename=\${iso_path}"
