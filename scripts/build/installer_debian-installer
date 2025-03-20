@@ -400,7 +400,14 @@ then
 
 	case "${LB_ARCHITECTURE}" in
 		amd64)
-			DI_REQ_PACKAGES="grub-pc grub-common libfuse3-3" # BIOS
+			DI_REQ_PACKAGES="grub-pc grub-common" # BIOS
+			# Starting in trixie, a newer version of libfuse is required
+			if [ $(Check_package_available "libfuse3-4") -eq 1 ]
+			then
+				DI_REQ_PACKAGES="${DI_REQ_PACKAGES} libfuse3-4"
+			else
+				DI_REQ_PACKAGES="${DI_REQ_PACKAGES} libfuse3-3"
+			fi
 			# Starting in trixie, the t64-packages have a 64-bit timestamp
 			if [ $(Check_package_available "libefiboot1t64") -eq 1 ]
 			then
