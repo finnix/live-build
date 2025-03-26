@@ -672,11 +672,13 @@ EOF
 					# Create Contents-firmware similar to tools/make-firmware-image from debian-cd
 					# This file is used by check-missing-firmware.sh from hw-detect
 					# Note: the second argument is replaced by the filename of the package
-					sed --silent -e "s/ [^ ]*\/${_PACKAGE}/ "$(basename ${_FILE})"/p" ../../${FIRMWARE_DETAILS_FILE} >> Contents-firmware
+					sed --silent -e "s/ [^ ]*\/${_PACKAGE} / "$(basename ${_FILE})" /p" ../../${FIRMWARE_DETAILS_FILE} >> Contents-firmware.unsorted
 				fi
 			done
 		done
 
+		LC_ALL=C sort < Contents-firmware.unsorted > Contents-firmware
+		rm -f Contents-firmware.unsorted
 		cd "${OLDPWD}"
 	fi
 
