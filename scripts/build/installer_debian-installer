@@ -373,6 +373,20 @@ mkdir -p "${DESTDIR_DI}"
 Download_file "${DESTDIR}"/"${VMLINUZ_DI}" ${URL}/${DI_REMOTE_BASE}/${DI_REMOTE_KERNEL}
 Download_file "${DESTDIR}"/"${INITRD_DI}" ${URL}/${DI_REMOTE_BASE}/initrd.gz
 
+# Determine the kernel version from the kernel file
+# Sample output:
+# Linux kernel x86 boot executable bzImage, version 5.19.0-1-amd64 (debian-kernel@lists.debian.org) #1 SMP PREEMPT_DYNAMIC Debian 5.19.6-1 (2022-09-01), RO-rootFS, swap_dev 0X7, Normal VGA
+# Linux kernel x86 boot executable bzImage, version 6.12.6-amd64 (debian-kernel@lists.debian.org) #1 SMP PREEMPT_DYNAMIC Debian 6.12.6-1 (2024-12-21), RO-rootFS, swap_dev 0X9, Normal VGA
+# Linux kernel x86 boot executable bzImage, version 6.10.9-686 (debian-kernel@lists.debian.org) #1 SMP PREEMPT_DYNAMIC Debian 6.10.9-1 (2024-09-08), RO-rootFS, swap_dev 0X5, Normal VGA
+# Linux kernel ARM64 boot executable Image, little-endian, 4K pages
+# PE32+ executable (EFI application) RISC-V 64-bit (stripped to external PDB), for MS Windows, 2 sections
+if [ "${LB_ARCHITECTURE}" = "amd64" ]
+then
+	_LINUX_KERNEL_ABI=$(file --brief "${DESTDIR}"/"${VMLINUZ_DI}" | cut -f 8 -d " " | sed -e "s/-${LB_ARCHITECTURE}//")
+else
+	_LINUX_KERNEL_ABI=""
+fi
+
 # Downloading graphical-installer
 DOWNLOAD_GTK_INSTALLER=false
 if [ "${LB_DEBIAN_INSTALLER_GUI}" = "true" ]
@@ -696,7 +710,8 @@ EOF
 						else
 							for _ALIAS in $(dpkg-query -L ${_LINUX_KERNEL_PACKAGE} | egrep '(kernel/sound/soc/sof/.*\.ko(.xz)?|/snd-soc-.*sof.*\.ko(.xz)?)$'); do /usr/sbin/modinfo ${_ALIAS} | awk '/^alias:/ { print $2 }'; done | sort -u | awk '{ gsub(/[*]/, ".*", $1); printf "^%s$\n", $1 }' > ${_FW_DEP11_DIR}/${_PACKAGE}.patterns
 						fi
-					else
+					elif [ -n "${_COMPONENT}" ]
+					then
 						# Find the 'Package:' part, followed by optional 'Provides/modaliases'.
 						# If modaliases are found, write 'component' and 'patterns' files
 						# This mirrors the functionality from debian-cd (generate_firmware_patterns):
@@ -725,125 +740,62 @@ EOF
 	# No longer needed
 	rm -f ${FIRMWARE_DETAILS_FILE}
 
-	# Udeb handling
-	mkdir -p binary.udeb/pool-udeb/main
-	cd binary.udeb
+	Echo_debug "Generating list of udebs"
 
-	# Downloading udeb indices
-	Echo_debug "Downloading udeb indices"
-	Download_file Packages.gz "${LB_PARENT_MIRROR_CHROOT}"/dists/"${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}"/main/debian-installer/binary-"${LB_ARCHITECTURE}"/Packages.gz
-	gunzip -c Packages.gz > Packages
+	# Prepare a sub directory in the chroot, which can be removed easily at the end
+	UDEB_APT_TOPDIR="localArchive"
+	APTCONF="aptconf"
+	APTDIR="aptdir"
 
+	mkdir -p chroot/${UDEB_APT_TOPDIR}/${APTCONF}/sources.list.d
+	mkdir -p chroot/${UDEB_APT_TOPDIR}/${APTCONF}/apt.conf.d
+	mkdir -p chroot/${UDEB_APT_TOPDIR}/${APTCONF}/preferences.d
+	mkdir -p chroot/${UDEB_APT_TOPDIR}/${APTDIR}/state/lists/partial
+	mkdir -p chroot/${UDEB_APT_TOPDIR}/${APTDIR}/cache/archives/partial
+
+	cat > chroot/${UDEB_APT_TOPDIR}/${APTCONF}/sources.list.d/udeb.sources <<-EOF
+		Types: deb
+		URIs: ${LB_PARENT_MIRROR_CHROOT}
+		Suites: ${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}
+		Components: main/debian-installer ${LB_PARENT_ARCHIVE_AREAS}
+		Signed-by: /usr/share/keyrings/debian-archive-keyring.gpg
+		EOF
+
+	# TODO: Untested path, LB_DERIVATIVE is always false
 	if [ "${LB_DERIVATIVE}" = "true" ]
 	then
-		Download_file Packages.derivative.gz "${LB_MIRROR_CHROOT}"/dists/"${LB_DEBIAN_INSTALLER_DISTRIBUTION}"/main/debian-installer/binary-"${LB_ARCHITECTURE}"/Packages.gz
-		gunzip -c Packages.derivative.gz > Packages.derivative
+		cat > chroot/${UDEB_APT_TOPDIR}/${APTCONF}/sources.list.d/udeb.sources <<-EOF
+			Types: deb
+			URIs: ${LB_MIRROR_CHROOT}
+			Suites: ${LB_DEBIAN_INSTALLER_DISTRIBUTION}
+			Components: main/debian-installer ${LB_ARCHIVE_AREAS}
+			Signed-by: /usr/share/keyrings/debian-archive-keyring.gpg
+			EOF
 	fi
 
-	Echo_debug "Extracting udeb package list"
+	cat > chroot/${UDEB_APT_TOPDIR}/apt.conf <<-EOF
+		Dir "${UDEB_APT_TOPDIR}";
+		Dir::Etc "${APTCONF}";
+		Dir::Cache "${APTDIR}/cache";
+		Dir::State "${APTDIR}/state";
+		Debug::NoLocking "true";
+		Debug::pkgDepCache::AutoInstall "true";
+		Acquire::Retries "3";
+		APT::Install-Recommends "false";
+		Apt::Architecture "${LB_ARCHITECTURE}";
+		Apt::Architectures "${LB_ARCHITECTURE}";
+		Acquire::Languages "none";
+		EOF
 
-	UDEBS="$(awk '/Filename: / { print $2 }' Packages)"
-	UDEBS_DERIVED=""
+	cat > chroot/${UDEB_APT_TOPDIR}/get_udeb_list.sh <<-EOF
+		#!/bin/sh
+		export APT_CONFIG="/${UDEB_APT_TOPDIR}/apt.conf"
+		apt-get update
+		EOF
 
-	if [ "${LB_DERIVATIVE}" = "true" ]
-	then
-		UDEBS_DERIVED="$(awk '/Filename: / { print $2 }' Packages.derivative)"
-
-		Echo_debug "Derivative mode, filtering replaced packages from parent list"
-		Echo_debug "Parent (orig): %s" "${UDEBS}"
-		Echo_debug "Derived: %s" "${UDEBS_DERIVED}"
-		# Filter parent packages to exclude those replaced by derivative
-		# We need to compare package names from lists of paths and filenames that include versions
-		_UDEBS_FILTERED=""
-		_UDEBS_DERIVED_NAMES=""
-		for _UDEB in ${UDEBS_DERIVED}
-		do
-			_UDEBS_DERIVED_NAMES="${_UDEBS_DERIVED_NAMES} $(basename ${_UDEB} | awk -F_ '{ print $1 }')"
-		done
-		for _UDEB in ${UDEBS}
-		do
-			if ! In_list "$(basename ${_UDEB} | awk -F_ '{ print $1 }')" ${_UDEBS_DERIVED_NAMES}
-			then
-				_UDEBS_FILTERED="${_UDEBS_FILTERED} ${_UDEB}"
-			fi
-		done
-		UDEBS="${_UDEBS_FILTERED}"
-		_UDEBS_FILTERED=""
-		_UDEBS_DERIVED_NAMES=""
-		Echo_debug "Parent (filtered): %s" "${UDEBS}"
-	fi
-
-	# Downloading udeb packages
-	Echo_message "Downloading udebs..."
-
-	UDEB_CACHE_DIR="../cache/packages.installer_debian-installer.udeb"
-
-	for UDEB in ${UDEBS}
-	do
-		_UDEB_FILENAME="$(basename ${UDEB})"
-		# Copy from cache if available, otherwise download
-		if [ -f "${UDEB_CACHE_DIR}/${_UDEB_FILENAME}" ]; then
-			Echo_debug "Copying %s from cache" "${UDEB}"
-			cp -a "${UDEB_CACHE_DIR}/${_UDEB_FILENAME}" ./
-		else
-			Echo_debug "Downloading %s" "${UDEB}"
-			wget ${WGET_OPTIONS} "${LB_PARENT_MIRROR_CHROOT}/${UDEB}"
-		fi
-	done
-
-	if [ "${LB_DERIVATIVE}" = "true" ]
-	then
-		Echo_debug "Moving on to derivative set"
-		for UDEB in ${UDEBS_DERIVED}
-		do
-			_UDEB_FILENAME="$(basename ${UDEB})"
-			# Copy from cache if available, otherwise download
-			if [ -f "${UDEB_CACHE_DIR}/${_UDEB_FILENAME}" ]; then
-				Echo_debug "Copying %s from cache" "${UDEB}"
-				cp -a "${UDEB_CACHE_DIR}/${_UDEB_FILENAME}" ./
-			else
-				Echo_debug "Downloading %s" "${UDEB}"
-				wget ${WGET_OPTIONS} "${LB_MIRROR_CHROOT}/${UDEB}"
-			fi
-		done
-	fi
-
-	# Caching udebs
-	Echo_debug "Refreshing udeb cache"
-	rm -rf "${UDEB_CACHE_DIR}"
-	mkdir -p "${UDEB_CACHE_DIR}"
-	cp -a *.udeb "${UDEB_CACHE_DIR}"
-
-	Echo_debug "Including local udebs"
-
-	# Including local udebs
-	if Find_files ../config/packages.binary/*_"${LB_ARCHITECTURE}".udeb || Find_files ../config/packages/*_"${LB_ARCHITECTURE}".udeb
-	then
-		for FILE in ../config/packages.binary/*_"${LB_ARCHITECTURE}".udeb ../config/packages/*_"${LB_ARCHITECTURE}".udeb
-		do
-			if [ -e "${FILE}" ]
-			then
-				Install_file "${FILE}" "pool-udeb"
-
-				# Prefer local udebs over downloaded udebs
-				rm -f "$(basename ${FILE} | awk -F_ '{ print $1 }')"_*.udeb
-			fi
-		done
-	fi
-
-	if Find_files ../config/packages.binary/*_all.udeb || Find_files ../config/packages/*_all.udeb
-	then
-		for FILE in ../config/packages.binary/*_all.udeb ../config/packages/*_all.udeb
-		do
-			if [ -e "${FILE}" ]
-			then
-				Install_file "${FILE}" "pool-udeb"
-
-				# Prefer local udebs over downloaded udebs
-				rm -f "$(basename ${FILE} | awk -F_ '{ print $1 }')"_*.udeb
-			fi
-		done
-	fi
+	# Find all available udeb packages
+	Chroot chroot "sh ${UDEB_APT_TOPDIR}/get_udeb_list.sh"
+	grep "^Package: " chroot/${UDEB_APT_TOPDIR}/${APTDIR}/state/lists/*_debian-installer_*_Packages | cut -d" " -f 2 | sort -u > chroot/${UDEB_APT_TOPDIR}/available_udebs
 
 	Echo_debug "Generating exclude list"
 
@@ -877,41 +829,94 @@ EOF
 		if [ "${LB_DEBIAN_INSTALLER}" = "live" ]; then
 			sed -i -e 's|live-installer||' exclude
 		fi
-
-		# Remove all udebs to be excluded from inclusion
-		Echo_debug "Removing excluded udebs"
-		while read EXCLUDE; do
-			rm -f ${EXCLUDE}_*.udeb
-		done < exclude
 	else
 		Echo_message "No udeb-exclusion list used"
 	fi
 
+	cp chroot/${UDEB_APT_TOPDIR}/available_udebs chroot/${UDEB_APT_TOPDIR}/desired_udebs
+	if [ -e exclude ]
+	then
+		# Save bandwidth and space: Don't download what will be thrown away
+		if [ -n "${_LINUX_KERNEL_ABI}" ]
+		then
+			# Filter kernels and modules not matching the current kernel
+			grep -E "(modules-.*-di$|^kernel-image-.*-di$)" chroot/${UDEB_APT_TOPDIR}/desired_udebs | grep -v ${_LINUX_KERNEL_ABI} >> exclude
+		fi
+		LC_ALL=C sort -u < exclude > chroot/${UDEB_APT_TOPDIR}/exclude.sorted
+		# First: excludes without wildcard at the end
+		grep -v "\*$" chroot/${UDEB_APT_TOPDIR}/exclude.sorted | xargs -IREPLACEME --max-args 1 sed -i -e '/^REPLACEME$/d;' chroot/${UDEB_APT_TOPDIR}/desired_udebs
+		# Second: excludes with wildcard at the end
+		grep "\*$" chroot/${UDEB_APT_TOPDIR}/exclude.sorted | cut -f 1 -d"*" | xargs -IREPLACEME --max-args 1 sed -i -e '/^REPLACEME/d;' chroot/${UDEB_APT_TOPDIR}/desired_udebs
+	fi
+
+	# Download the remaining packages (including dependencies)
+	cat > chroot/${UDEB_APT_TOPDIR}/download_udebs.sh <<-EOF
+		#!/bin/sh
+		export APT_CONFIG="/${UDEB_APT_TOPDIR}/apt.conf"
+		cat /${UDEB_APT_TOPDIR}/desired_udebs | xargs apt-get -d -y install
+		EOF
+	Chroot chroot "sh ${UDEB_APT_TOPDIR}/download_udebs.sh"
+
+	_UDEB_POOL="binary.udeb/pool-udeb"
+	mkdir -p "${_UDEB_POOL}/main"
+
+	Echo_debug "Including local udebs"
+
+	# Including local udebs
+	if Find_files config/packages.binary/*_"${LB_ARCHITECTURE}".udeb || Find_files config/packages/*_"${LB_ARCHITECTURE}".udeb
+	then
+		for FILE in config/packages.binary/*_"${LB_ARCHITECTURE}".udeb config/packages/*_"${LB_ARCHITECTURE}".udeb
+		do
+			if [ -e "${FILE}" ]
+			then
+				Install_file "${FILE}" "${_UDEB_POOL}"
+
+				# Prefer local udebs over downloaded udebs
+				sed -i -e "/^$(dpkg -f ${FILE} Package)$/d" chroot/${UDEB_APT_TOPDIR}/desired_udebs
+			fi
+		done
+	fi
+
+	if Find_files config/packages.binary/*_all.udeb || Find_files config/packages/*_all.udeb
+	then
+		for FILE in config/packages.binary/*_all.udeb config/packages/*_all.udeb
+		do
+			if [ -e "${FILE}" ]
+			then
+				Install_file "${FILE}" "${_UDEB_POOL}"
+
+				# Prefer local udebs over downloaded udebs
+				sed -i -e "/^$(dpkg -f ${FILE} Package)$/d" chroot/${UDEB_APT_TOPDIR}/desired_udebs
+			fi
+		done
+	fi
+
 	# Sort udebs into alphabetised pool structure
 	Echo_debug "Organising into pool structure"
-	for UDEB in ${UDEBS} ${UDEBS_DERIVED}; do
-		_UDEB_FILENAME="$(basename ${UDEB})"
-		if [ -f "${_UDEB_FILENAME}" ]; then
-			Install_file "${_UDEB_FILENAME}" "pool-udeb"
-			rm "${_UDEB_FILENAME}"
+	for UDEB in $(cat chroot/${UDEB_APT_TOPDIR}/desired_udebs)
+	do
+		FILE="$(realpath chroot/${UDEB_APT_TOPDIR}/${APTDIR}/cache/archives/${UDEB}*.udeb)"
+		if [ -e "${FILE}" ]; then
+			Install_file "${FILE}" "${_UDEB_POOL}"
 		fi
 	done
+
+	# Cleanup downloaded udebs
+	rm -fr chroot/${UDEB_APT_TOPDIR}
 
 	# Creating udeb indices
 	Echo_debug "Generating udeb indices"
 
 	UDEB_INDICE_DIR="dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/main/debian-installer/binary-${LB_ARCHITECTURE}"
 
-	mkdir -p "${UDEB_INDICE_DIR}"
-
-	cd "${OLDPWD}"
+	mkdir -p "binary.udeb/${UDEB_INDICE_DIR}"
 
 	mv binary.udeb chroot/root
-cat > chroot/binary.sh << EOF
-#!/bin/sh
-cd /root/binary.udeb
-apt-ftparchive packages "pool-udeb/main" > "${UDEB_INDICE_DIR}/Packages"
-EOF
+	cat > chroot/binary.sh <<-EOF
+		#!/bin/sh
+		cd /root/binary.udeb
+		apt-ftparchive packages "pool-udeb/main" > "${UDEB_INDICE_DIR}/Packages"
+		EOF
 	Chroot chroot "sh binary.sh"
 	rm -f chroot/binary.sh
 	mv chroot/root/binary.udeb ./
@@ -920,10 +925,10 @@ EOF
 	touch "${UDEB_INDICE_DIR}/Packages" -d@${SOURCE_DATE_EPOCH}
 	gzip -9 -c "${UDEB_INDICE_DIR}/Packages" > "${UDEB_INDICE_DIR}/Packages.gz"
 
-	rm -f Packages* exclude
 	find . | cpio -dmpu "${OLDPWD}"/binary
 	cd "${OLDPWD}"
 
+	rm -f exclude
 	rm -rf binary.udeb
 	rm -rf binary.deb
 
@@ -975,7 +980,7 @@ EOF
 		# Add in the first line, to give it precedence over the online versions of the same package
 		echo "deb [trusted=yes] file:${PATH_TO_POOL_INSIDE_LIVE_ENVIRONMENT} ${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION} ${LB_PARENT_ARCHIVE_AREAS}" > sources.list
 		cat chroot/chroot/etc/apt/sources.list >> sources.list
-		cp sources.list chroot/chroot/etc/apt/sources.list
+		mv sources.list chroot/chroot/etc/apt/sources.list
 		VAR_LIB_APT_LISTS_FILENAME=$(echo "${PATH_TO_POOL_INSIDE_LIVE_ENVIRONMENT}/dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/Release" | sed 's|/|_|g')
 		cp -a binary/dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/Release chroot/chroot/var/lib/apt/lists/${VAR_LIB_APT_LISTS_FILENAME}
 	fi
