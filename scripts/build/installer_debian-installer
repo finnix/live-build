@@ -895,7 +895,7 @@ EOF
 	Echo_debug "Organising into pool structure"
 	for UDEB in $(cat chroot/${UDEB_APT_TOPDIR}/desired_udebs)
 	do
-		FILE="$(realpath chroot/${UDEB_APT_TOPDIR}/${APTDIR}/cache/archives/${UDEB}*.udeb)"
+		FILE="$(realpath chroot/${UDEB_APT_TOPDIR}/${APTDIR}/cache/archives/${UDEB}_*.udeb)"
 		if [ -e "${FILE}" ]; then
 			Install_file "${FILE}" "${_UDEB_POOL}"
 		fi
