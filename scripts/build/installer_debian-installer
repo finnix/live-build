@@ -836,6 +836,9 @@ EOF
 	cp chroot/${UDEB_APT_TOPDIR}/available_udebs chroot/${UDEB_APT_TOPDIR}/desired_udebs
 	if [ -e exclude ]
 	then
+		# grep -v returns 1 when nothing is selected -> that is OK
+		set +e
+
 		# Save bandwidth and space: Don't download what will be thrown away
 		if [ -n "${_LINUX_KERNEL_ABI}" ]
 		then
@@ -847,6 +850,9 @@ EOF
 		grep -v "\*$" chroot/${UDEB_APT_TOPDIR}/exclude.sorted | xargs -IREPLACEME --max-args 1 sed -i -e '/^REPLACEME$/d;' chroot/${UDEB_APT_TOPDIR}/desired_udebs
 		# Second: excludes with wildcard at the end
 		grep "\*$" chroot/${UDEB_APT_TOPDIR}/exclude.sorted | cut -f 1 -d"*" | xargs -IREPLACEME --max-args 1 sed -i -e '/^REPLACEME/d;' chroot/${UDEB_APT_TOPDIR}/desired_udebs
+
+		# treat non-zero return codes as error again
+		set -e
 	fi
 
 	# Download the remaining packages (including dependencies)
