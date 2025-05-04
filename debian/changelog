@@ -1,3 +1,24 @@
+live-build (1:20250226) UNRELEASED; urgency=medium
+
+  [ Roland Clobus ]
+  * QEMU Support: Fix garbled output during text boot
+  * GRUB: Show result of image verification
+  * debian-installer: Dump the logs on error
+  * CI: Disable missing-breaks CI test
+  * installer: Use the newer version of libfuse3-4
+  * debian-installer: Fix 'Contents-firmware' double entries
+  * installer: Generate dep11 patterns files
+  * config: Prevent additional spaces in auto/config
+  * config: Remove undocumented behaviour
+  * installer_debian-installer: Rewrite of udeb handling
+  * installer_debian-installer: Fix missing udebs
+  * installer_debian-installer: Fix trixie
+
+  [ Johannes Schauer Marin Rodrigues ]
+  * debian/control: add myself to uploaders with ACK from Roland Clobus
+
+ -- Johannes Schauer Marin Rodrigues <josch@debian.org>  Sun, 04 May 2025 13:41:07 +0200
+
 live-build (1:20250225) unstable; urgency=medium
 
   [ Roland Clobus ]
