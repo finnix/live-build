@@ -3,7 +3,8 @@ Section: misc
 Priority: optional
 Maintainer: Debian Live <debian-live@lists.debian.org>
 Uploaders: Raphaël Hertzog <raphael@offensive-security.com>,
-           Luca Boccassi <bluca@debian.org>
+           Luca Boccassi <bluca@debian.org>,
+           Johannes Schauer Marin Rodrigues <josch@debian.org>
 Build-Depends: debhelper-compat (= 13), devscripts, gettext, po4a
 Standards-Version: 4.7.0
 Rules-Requires-Root: no
