@@ -1,4 +1,4 @@
-live-build (1:20250226) UNRELEASED; urgency=medium
+live-build (1:20250505) unstable; urgency=medium
 
   [ Roland Clobus ]
   * QEMU Support: Fix garbled output during text boot
@@ -17,7 +17,7 @@ live-build (1:20250226) UNRELEASED; urgency=medium
   [ Johannes Schauer Marin Rodrigues ]
   * debian/control: add myself to uploaders with ACK from Roland Clobus
 
- -- Johannes Schauer Marin Rodrigues <josch@debian.org>  Sun, 04 May 2025 13:41:07 +0200
+ -- Johannes Schauer Marin Rodrigues <josch@debian.org>  Mon, 05 May 2025 14:55:03 +0200
 
 live-build (1:20250225) unstable; urgency=medium
 
