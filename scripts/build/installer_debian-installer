@@ -686,6 +686,7 @@ EOF
 		mkdir -p ${_FW_DEP11_DIR}
 		echo "These files help Debian Installer detect helpful firmware packages (via hw-detect)." > ${_FW_DEP11_DIR}/README.txt
 
+		_LINUX_KERNEL_PACKAGE=$(dpkg-query --showformat "\${db:Status-Abbrev} \${Package}\n" --show linux-image-* | grep "^ii" | grep -v "linux-image-${LB_ARCHITECTURE}" | sort | tail -1 | awk '{ print $2 }')
 		for _PACKAGE in ${DI_FIRMWARE_PACKAGES}
 		do
 			for _FILE in $(find ../pool -name "${_PACKAGE}_*.deb")
@@ -703,12 +704,19 @@ EOF
 					then
 						# The script generate_firmware_patterns from debian-cd manually maintains the patterns
 						# https://sources.debian.org/src/debian-cd/3.2.1/tools/generate_firmware_patterns/?hl=94#L94
-						_LINUX_KERNEL_PACKAGE=$(dpkg-query --showformat "\${db:Status-Abbrev} \${Package}\n" --show linux-image-* | grep "^ii" | grep -v "linux-image-${LB_ARCHITECTURE}" | sort | tail -1 | awk '{ print $2 }')
 						if [ -z "${_LINUX_KERNEL_PACKAGE}" ]
 						then
 							Echo_warning "Could not extract the current kernel version, skipping firmware pattern for ${_PACKAGE}"
 						else
 							for _ALIAS in $(dpkg-query -L ${_LINUX_KERNEL_PACKAGE} | egrep '(kernel/sound/soc/sof/.*\.ko(.xz)?|/snd-soc-.*sof.*\.ko(.xz)?)$'); do /usr/sbin/modinfo ${_ALIAS} | awk '/^alias:/ { print $2 }'; done | sort -u | awk '{ gsub(/[*]/, ".*", $1); printf "^%s$\n", $1 }' > ${_FW_DEP11_DIR}/${_PACKAGE}.patterns
+						fi
+					elif [ "${_PACKAGE}" = "firmware-intel-sound" ]
+					then
+						if [ -z "${_LINUX_KERNEL_PACKAGE}" ]
+						then
+							Echo_warning "Could not extract the current kernel version, skipping firmware pattern for ${_PACKAGE}"
+						else
+							for _ALIAS in $(dpkg-query -L ${_LINUX_KERNEL_PACKAGE} | egrep 'kernel/sound/soc/intel/.*\.ko(.xz)?$'); do /usr/sbin/modinfo ${_ALIAS} | awk '/^alias:/ { print $2 }'; done | sort -u | awk '{ gsub(/[*]/, ".*", $1); printf "^%s$\n", $1 }' > ${_FW_DEP11_DIR}/${_PACKAGE}.patterns
 						fi
 					elif [ -n "${_COMPONENT}" ]
 					then
