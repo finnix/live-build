@@ -89,6 +89,8 @@ Firmware_List_From_Contents () {
 
 	# Filter out firmware packages that are only useful with non-free drivers
 	BLOCKLIST_FIRMWARE="firmware-nvidia-gsp firmware-nvidia-tesla-gsp firmware-nvidia-tesla-[0-9a-z]*-gsp"
+	# Filter out firmware packages that are huge and need special kernel options
+	BLOCKLIST_FIRMWARE="${BLOCKLIST_FIRMWARE} firmware-marvell-prestera"
 
 	# Exclude ARM firmware when no ARM is requested
 	if [ ${HAS_ARM_ARCH} -eq 0 ]
