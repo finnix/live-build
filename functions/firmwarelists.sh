@@ -87,7 +87,7 @@ Firmware_List_From_Contents () {
 	# See https://salsa.debian.org/images-team/debian-cd/-/blob/master/tasks/bookworm/exclude-firmware
 
 	# Filter out firmware packages that are only useful with non-free drivers
-	BLOCKLIST_FIRMWARE="firmware-nvidia-gsp firmware-nvidia-tesla-gsp"
+	BLOCKLIST_FIRMWARE="firmware-nvidia-gsp firmware-nvidia-tesla-gsp firmware-nvidia-tesla-.*-gsp"
 	# Exclude ARM firmware when no ARM is requested
 	if [ ${HAS_ARM_ARCH} -eq 0 ]
 	then
