@@ -348,8 +348,22 @@ then
 	for file in \$(dpkg-query -L firmware-sof-signed;dpkg-query -L firmware-intel-sound;dpkg-query -L linux-image-\${LINUX_KERNEL_ABI}-amd64|egrep "/(drm|i915|drm_display_helper|drm_buddy|cec|rc-core)\.ko"); do if [ -f \${file} ]; then EXTRAFILES="\${EXTRAFILES} \${file}"; fi; done
 	for file in \$(dpkg-query -L firmware-sof-signed;dpkg-query -L firmware-intel-sound;dpkg-query -L linux-image-\${LINUX_KERNEL_ABI}-amd64|egrep "/(drm|i915|drm_display_helper|drm_buddy|cec|rc-core)\.ko"); do if [ -L \${file} ]; then EXTRAFILES="\${EXTRAFILES} \${file}"; fi; done
 fi
+rmdir /localudebs --ignore-fail-on-non-empty
+if [ -d /localudebs ]
+then
+	mv /localudebs/* /debian-installer/build/localudebs
+fi
 http_proxy=${http_proxy} MIRROR="[check-valid-until=no] ${LB_PARENT_MIRROR_CHROOT}" TARGETS="${TARGETS}" USE_UDEBS_FROM=${LB_PARENT_DISTRIBUTION_CHROOT} ROOTCMD=" " bash ./daily-build build-only
 EOF
+				mkdir -p chroot/localudebs
+				for FILE in config/packages.binary/*_"${LB_ARCHITECTURE}".udeb config/packages/*_"${LB_ARCHITECTURE}".udeb config/packages.binary/*_all.udeb config/packages/*_all.udeb
+				do
+					if [ -e "${FILE}" ]
+					then
+						cp -a "${FILE}" chroot/localudebs
+					fi
+				done
+
 				Chroot chroot "sh buildit.sh"
 				if [ ! -e chroot/debian-installer/build/dest/cdrom/"${VMLINUZ_DI}" ];
 				then
@@ -365,6 +379,7 @@ EOF
 				Prepare_installer_cache cdrom/"${VMLINUZ_GI}"
 				Prepare_installer_cache cdrom/"${INITRD_GI}"
 				rm -rf chroot/debian-installer
+				rm -fr chroot/localudebs
 				rm -f chroot/buildit.sh
 			else
 				Echo_debug "Not rebuilding the installer, using copy from cache..."
