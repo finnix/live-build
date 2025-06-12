@@ -664,6 +664,14 @@ set -e
 echo "bochs" >> /etc/initramfs-tools/modules
 EOFHOOK
 
+# Work around for conflicting wget-udeb and busybox-wget in trixie
+if [ "${DEBIAN_VERSION}" = "trixie" -a "${INSTALLER_ORIGIN}" = "git" ];
+then
+	cd config/packages.binary
+	wget http://ftp.de.debian.org/debian/pool/main/b/busybox/busybox-udeb_1.37.0-6_amd64.udeb
+	cd ../..
+fi
+
 # For oldstable and stable use the same boot splash screen as the Debian installer
 case "$DEBIAN_VERSION" in
 "bullseye"|"oldstable")
