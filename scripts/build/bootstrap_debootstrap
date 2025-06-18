@@ -82,6 +82,11 @@ else
 	DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS} --force-check-gpg"
 fi
 
+if [ "${LB_INITRAMFS}" = "live-boot" -a "${LB_INITSYSTEM}" = "sysvinit" ]
+then
+	DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS} --include=live-config-sysvinit"
+fi
+
 if [ "${LB_CACHE_PACKAGES}" = "true" ]
 then
 	if ls cache/packages.bootstrap/*.deb > /dev/null 2>&1
