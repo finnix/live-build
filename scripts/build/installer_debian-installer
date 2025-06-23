@@ -788,15 +788,17 @@ EOF
 	mkdir -p chroot/${UDEB_APT_TOPDIR}/${APTCONF}/sources.list.d
 	mkdir -p chroot/${UDEB_APT_TOPDIR}/${APTCONF}/apt.conf.d
 	mkdir -p chroot/${UDEB_APT_TOPDIR}/${APTCONF}/preferences.d
+	mkdir -p chroot/${UDEB_APT_TOPDIR}/${APTCONF}/trusted.gpg.d
 	mkdir -p chroot/${UDEB_APT_TOPDIR}/${APTDIR}/state/lists/partial
 	mkdir -p chroot/${UDEB_APT_TOPDIR}/${APTDIR}/cache/archives/partial
+
+	cp -L chroot/etc/apt/trusted.gpg.d/* chroot/${UDEB_APT_TOPDIR}/${APTCONF}/trusted.gpg.d
 
 	cat > chroot/${UDEB_APT_TOPDIR}/${APTCONF}/sources.list.d/udeb.sources <<-EOF
 		Types: deb
 		URIs: ${LB_PARENT_MIRROR_CHROOT}
 		Suites: ${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}
 		Components: main/debian-installer ${LB_PARENT_ARCHIVE_AREAS}
-		Signed-by: /usr/share/keyrings/debian-archive-keyring.gpg
 		EOF
 
 	# TODO: Untested path, LB_DERIVATIVE is always false
@@ -807,7 +809,6 @@ EOF
 			URIs: ${LB_MIRROR_CHROOT}
 			Suites: ${LB_DEBIAN_INSTALLER_DISTRIBUTION}
 			Components: main/debian-installer ${LB_ARCHIVE_AREAS}
-			Signed-by: /usr/share/keyrings/debian-archive-keyring.gpg
 			EOF
 	fi
 
