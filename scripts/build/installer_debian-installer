@@ -753,7 +753,10 @@ EOF
 						# - Surround by ^ $
 						# - Replace * by .*
 						_COMPONENTS_DEP11_FILE=$(echo "${LB_PARENT_MIRROR_DEBIAN_INSTALLER}dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/${_COMPONENT}/dep11/Components-${LB_ARCHITECTURE}.yml.gz" | sed -E 's|https?://||g' | sed 's|/|_|g')
-						zcat ../../chroot/var/lib/apt/lists/${_COMPONENTS_DEP11_FILE} | sed -e '/^Package: '${_PACKAGE}'$/,/^---$/p;d' | awk 'BEGIN { modalias_found = 0 } /  modaliases:/ { modalias_found = 1; next } /  [^-]/ { modalias_found = 0; } modalias_found==1 && $2 != "" { gsub(/[*]/, ".*", $2); printf "^%s$\n", $2 }' > ${_FW_DEP11_DIR}/${_PACKAGE}.patterns
+						if [ -e  ../../chroot/var/lib/apt/lists/${_COMPONENTS_DEP11_FILE} ]
+						then
+							zcat ../../chroot/var/lib/apt/lists/${_COMPONENTS_DEP11_FILE} | sed -e '/^Package: '${_PACKAGE}'$/,/^---$/p;d' | awk 'BEGIN { modalias_found = 0 } /  modaliases:/ { modalias_found = 1; next } /  [^-]/ { modalias_found = 0; } modalias_found==1 && $2 != "" { gsub(/[*]/, ".*", $2); printf "^%s$\n", $2 }' > ${_FW_DEP11_DIR}/${_PACKAGE}.patterns
+						fi
 					fi
 					if [ ! -s ${_FW_DEP11_DIR}/${_PACKAGE}.patterns ]
 					then
