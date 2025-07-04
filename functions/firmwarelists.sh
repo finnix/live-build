@@ -52,6 +52,14 @@ Firmware_List_From_Contents () {
 			local PACKAGES
 			PACKAGES="$(gunzip -c "${CONTENTS_FILE}" | awk '/^(usr\/)?lib\/firmware/ { print $NF }' | sort -u )"
 			FIRMWARE_PACKAGES="${FIRMWARE_PACKAGES} ${PACKAGES}"
+			if [ -n "${FIRMWARE_DETAILS_FILE}" ]
+			then
+				# Use similar formatting as tools/make-firmware-image from debian-cd
+				# Note: for firmware/Contents-firmware (used by check-missing-firmware.sh from hw-detect),
+				#       the second argument must be the filename of the package.
+				#       That information is not available here and will be added by installer_debian-installer
+				gunzip -c "${CONTENTS_FILE}" | awk -v AREA=${_ARCHIVE_AREA} '/^(usr\/)?lib\/firmware/ { printf "/%-54s %s %s\n", $1, $2, AREA }' >> ${FIRMWARE_DETAILS_FILE}
+			fi
 
 			# Don't waste disk space, if not making use of caching
 			if [ "${LB_CACHE}" != "true" ]
@@ -77,9 +85,13 @@ Firmware_List_From_Contents () {
 
 	# Blocklist firmware which does not match the requested architectures #1035382
 	# See https://salsa.debian.org/images-team/debian-cd/-/blob/master/tasks/bookworm/exclude-firmware
+	# and https://salsa.debian.org/images-team/debian-cd/-/blob/master/tasks/trixie/exclude-firmware
 
 	# Filter out firmware packages that are only useful with non-free drivers
-	BLOCKLIST_FIRMWARE="firmware-nvidia-gsp firmware-nvidia-tesla-gsp"
+	BLOCKLIST_FIRMWARE="firmware-nvidia-gsp firmware-nvidia-tesla-gsp firmware-nvidia-tesla-[0-9a-z]*-gsp"
+	# Filter out firmware packages that are huge and need special kernel options
+	BLOCKLIST_FIRMWARE="${BLOCKLIST_FIRMWARE} firmware-marvell-prestera"
+
 	# Exclude ARM firmware when no ARM is requested
 	if [ ${HAS_ARM_ARCH} -eq 0 ]
 	then

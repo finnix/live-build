@@ -179,27 +179,27 @@ parse_commandline_arguments() {
 		;;
 	"cinnamon")
 		INSTALLER="live"
-		PACKAGES="live-task-cinnamon"
+		PACKAGES="live-task-cinnamon spice-vdagent"
 		;;
 	"gnome")
 		INSTALLER="live"
-		PACKAGES="live-task-gnome"
+		PACKAGES="live-task-gnome spice-vdagent"
 		;;
 	"kde")
 		INSTALLER="live"
-		PACKAGES="live-task-kde"
+		PACKAGES="live-task-kde spice-vdagent"
 		;;
 	"lxde")
 		INSTALLER="live"
-		PACKAGES="live-task-lxde"
+		PACKAGES="live-task-lxde spice-vdagent"
 		;;
 	"lxqt")
 		INSTALLER="live"
-		PACKAGES="live-task-lxqt"
+		PACKAGES="live-task-lxqt spice-vdagent"
 		;;
 	"mate")
 		INSTALLER="live"
-		PACKAGES="live-task-mate"
+		PACKAGES="live-task-mate spice-vdagent"
 		;;
 	"standard")
 		INSTALLER="live"
@@ -207,11 +207,17 @@ parse_commandline_arguments() {
 		;;
 	"xfce")
 		INSTALLER="live"
-		PACKAGES="live-task-xfce"
+		PACKAGES="live-task-xfce spice-vdagent"
 		;;
 	"debian-junior")
 		INSTALLER="live"
-		PACKAGES="live-task-debian-junior"
+		PACKAGES="live-task-debian-junior spice-vdagent"
+		;;
+	"hamradio")
+		INSTALLER="none"
+		# Skipping the localisation packages
+		# Skipping: calamares-settings-debian -> it's not the time yet for the installer
+		PACKAGES="hamradio-all svxlink-calibration-tools- svxlink-gpio- svxlink-server- svxreflector- live-task-lxqt live-task-localisation- live-task-localisation-desktop- task-english calamares-settings-debian-"
 		;;
 	"")
 		output_echo "Error: Missing --configuration"
@@ -313,6 +319,9 @@ parse_commandline_arguments() {
 	elif [ "${CONFIGURATION}" == "debian-junior" ]
 	then
 		CONFIGURATION_SHORT="jr"
+	elif [ "${CONFIGURATION}" == "hamradio" ]
+	then
+		CONFIGURATION_SHORT="hr"
 	fi
 	ISO_VOLUME="d-live ${DEBIAN_VERSION_NUMBER} ${CONFIGURATION_SHORT} ${ARCHITECTURE}"
 
@@ -334,6 +343,23 @@ parse_commandline_arguments() {
 
 get_snapshot_from_archive() {
 	wget ${WGET_OPTIONS} http://deb.debian.org/debian/dists/${DEBIAN_VERSION}/InRelease --output-document latest
+	#
+	# Extract the timestamp from the InRelease file
+	#
+	# Input:
+	# ...
+	# Date: Sat, 23 Jul 2022 14:33:45 UTC
+	# ...
+	# Output:
+	# 20220723T143345Z
+	#
+	SNAPSHOT_TIMESTAMP=$(cat latest | awk '/^Date:/ { print substr($0, 7) }' | xargs -I this_date date --utc --date "this_date" +%Y%m%dT%H%M%SZ)
+	rm latest
+}
+
+get_snapshot_from_snapshot_debian_org() {
+	# Pick the snapshot closest to 'now'
+	wget ${WGET_OPTIONS} http://snapshot.debian.org/archive/debian/$(date --utc +%Y%m%dT%H%M%SZ)/dists/${DEBIAN_VERSION}/InRelease --output-document latest
 	#
 	# Extract the timestamp from the InRelease file
 	#
@@ -393,29 +419,21 @@ case ${BUILD_LATEST} in
 	# Use the timestamp of the current Debian archive
 	get_snapshot_from_archive
 	MIRROR=http://deb.debian.org/debian/
+	MIRROR_BINARY=${MIRROR}
+	MODIFY_APT_OPTIONS=0
 	;;
 "snapshot")
 	# Use the timestamp of the latest mirror snapshot
-	wget ${WGET_OPTIONS} http://snapshot.notset.fr/mr/timestamp/debian/latest --output-document latest
-	#
-	# Extract the timestamp from the JSON file
-	#
-	# Input:
-	# {
-	#   "_api": "0.3",
-	#   "_comment": "notset",
-	#   "result": "20210828T083909Z"
-	# }
-	# Output:
-	# 20210828T083909Z
-	#
-	SNAPSHOT_TIMESTAMP=$(cat latest | awk '/"result":/ { split($0, a, "\""); print a[4] }')
-	rm latest
-	MIRROR=http://snapshot.notset.fr/archive/debian/${SNAPSHOT_TIMESTAMP}
+	get_snapshot_from_snapshot_debian_org
+	MIRROR=http://snapshot.debian.org/archive/debian/${SNAPSHOT_TIMESTAMP}
+	MIRROR_BINARY="[check-valid-until=no] ${MIRROR}"
+	MODIFY_APT_OPTIONS=1
 	;;
 "no")
 	# The value of SNAPSHOT_TIMESTAMP was provided on the command line
-	MIRROR=http://snapshot.notset.fr/archive/debian/${SNAPSHOT_TIMESTAMP}
+	MIRROR=http://snapshot.debian.org/archive/debian/${SNAPSHOT_TIMESTAMP}
+	MIRROR_BINARY="[check-valid-until=no] ${MIRROR}"
+	MODIFY_APT_OPTIONS=1
 	;;
 *)
 	echo "E: A new option to BUILD_LATEST has been added"
@@ -457,7 +475,7 @@ fi
 output_echo "Running lb config."
 lb config \
 	--mirror-bootstrap ${MIRROR} \
-	--mirror-binary ${MIRROR} \
+	--mirror-binary "${MIRROR_BINARY}" \
 	--security false \
 	--updates false \
 	--distribution ${DEBIAN_VERSION} \
@@ -471,9 +489,11 @@ lb config \
 	${GENERATE_SOURCE} \
 	2>&1 | tee $LB_OUTPUT
 
-# Insider knowledge of live-build:
-#   Add '-o Acquire::Check-Valid-Until=false', to allow for rebuilds of older timestamps
-sed -i -e '/^APT_OPTIONS=/s/--yes/--yes -o Acquire::Check-Valid-Until=false/' config/common
+if [ ${MODIFY_APT_OPTIONS} -ne 0 ]; then
+	# Insider knowledge of live-build:
+	#   Add '-o Acquire::Check-Valid-Until=false', to allow for rebuilds of older timestamps
+	sed -i -e '/^APT_OPTIONS=/s/--yes/--yes -o Acquire::Check-Valid-Until=false/' config/common
+fi
 
 if [ ! -z "${PACKAGES}" ]; then
 	echo "${PACKAGES}" >config/package-lists/desktop.list.chroot
@@ -632,18 +652,35 @@ echo "P: \$(basename \$0) Bugfix hook has been applied"
 EOFHOOK
 fi
 
+cat << EOFHOOK > config/hooks/normal/5060-support-vga-in-qemu.hook.chroot
+#!/bin/sh
+set -e
+
+# When qemu uses the 'VGA' option, this kernel module is required for the
+# console output, otherwise the output will be garbled.
+# The kernel option 'verify-checksums' is activated before systemd runs
+# 'modprobe@drm.service', so the module needs to be in the initramfs.
+# See also https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1872863
+echo "bochs" >> /etc/initramfs-tools/modules
+EOFHOOK
+
 # For oldstable and stable use the same boot splash screen as the Debian installer
 case "$DEBIAN_VERSION" in
-"bullseye")
+"bullseye"|"oldstable")
 	mkdir -p config/bootloaders
 	wget --quiet https://salsa.debian.org/installer-team/debian-installer/-/raw/master/build/boot/artwork/11-homeworld/homeworld.svg -O config/bootloaders/splash.svg
 	mkdir -p config/bootloaders/grub-pc
 	# Use the old resolution of 640x480 for grub
 	ln -s ../../isolinux/splash.png config/bootloaders/grub-pc/splash.png
 	;;
-"bookworm")
+"bookworm"|"stable")
 	mkdir -p config/bootloaders
 	wget --quiet https://salsa.debian.org/installer-team/debian-installer/-/raw/master/build/boot/artwork/12-emerald/emerald.svg -O config/bootloaders/splash.svg
+	;;
+"trixie"|"testing")
+	# Trixie artwork: https://wiki.debian.org/DebianArt/Themes/Ceratopsian
+	mkdir -p config/bootloaders
+	wget --quiet https://raw.githubusercontent.com/pccouper/trixie/refs/heads/main/bootscreen/grub/grub.svg -O config/bootloaders/splash.svg
 	;;
 *)
 	# Use the default 'under construction' image
@@ -659,8 +696,8 @@ BUILD_RESULT=$?
 set -e
 if [ ${BUILD_RESULT} -ne 0 ]; then
 	# Find the snapshot that matches 1 second before the current snapshot
-	wget ${WGET_OPTIONS} http://snapshot.notset.fr/mr/timestamp/debian/$(date --utc -d @$((${SOURCE_DATE_EPOCH} - 1)) +%Y%m%dT%H%M%SZ) --output-document but_latest
-	PROPOSED_SNAPSHOT_TIMESTAMP=$(cat but_latest | awk '/"result":/ { split($0, a, "\""); print a[4] }')
+	wget ${WGET_OPTIONS} http://snapshot.debian.org/archive/debian/$(date --utc -d @$((${SOURCE_DATE_EPOCH} - 1)) +%Y%m%dT%H%M%SZ)/dists/${DEBIAN_VERSION}/InRelease --output-document but_latest
+	PROPOSED_SNAPSHOT_TIMESTAMP=$(cat but_latest | awk '/^Date:/ { print substr($0, 7) }' | xargs -I this_date date --utc --date "this_date" +%Y%m%dT%H%M%SZ)
 	rm but_latest
 
 	output_echo "Warning: lb build failed with ${BUILD_RESULT}. The latest snapshot might not be complete (yet). Try re-running the script with SNAPSHOT_TIMESTAMP=${PROPOSED_SNAPSHOT_TIMESTAMP}."

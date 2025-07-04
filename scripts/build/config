@@ -888,36 +888,27 @@ fi
 # Otherwise, handling --config request, copying specified config
 if [ -n "${_CONFIG}" ]
 then
-	if [ -e "${_CONFIG}" ] || [ -e "/usr/share/live/images/${_CONFIG}" ]
+	_GIT_REPOSITORY="$(echo ${_CONFIG} | sed -e 's|::.*$||')"
+
+	Echo_message "Cloning ${_GIT_REPOSITORY}"
+	git clone ${_GIT_REPOSITORY} ./
+
+	if [ "${_GIT_REPOSITORY}" != "${_CONFIG}" ]
 	then
-		if [ ! -e "${_CONFIG}" ] && [ -e "/usr/share/live/images/${_CONFIG}" ]
-		then
-			_CONFIG="/usr/share/live/images/${_CONFIG}"
-		fi
+		_GIT_BRANCH="$(echo ${_CONFIG} | awk -F\:\: '{ print $NF }')"
 
-		Echo_message "Copying ${_CONFIG}"
-		tar -C "${_CONFIG}" -c . | tar -C ./ -x
-	else
-		_GIT_REPOSITORY="$(echo ${_CONFIG} | sed -e 's|::.*$||')"
-
-		Echo_message "Cloning ${_GIT_REPOSITORY}"
-		git clone ${_GIT_REPOSITORY} ./
-
-		if [ "${_GIT_REPOSITORY}" != "${_CONFIG}" ]
-		then
-			_GIT_BRANCH="$(echo ${_CONFIG} | awk -F\:\: '{ print $NF }')"
-
-			Echo_message "Checking out ${_GIT_BRANCH}"
-			git checkout ${_GIT_BRANCH}
-		fi
+		Echo_message "Checking out ${_GIT_BRANCH}"
+		git checkout ${_GIT_BRANCH}
 	fi
 
 	if [ -e auto/config ]
 	then
-		_EXTRA_OPTIONS="$(echo ${@} | sed -e "s|--config ${_GIT_REPOSITORY}::${_GIT_BRANCH}||g" -e "s|--config ${_GIT_REPOSITORY}||g")"
-
-		Echo_message "The following extra options specified to lb config are going to be added to auto/config: ${_EXTRA_OPTIONS}"
-		sed -i -e "s|\"\${@}\"|${_EXTRA_OPTIONS} \"\${@}\"|" auto/config
+		_EXTRA_OPTIONS="$(echo ${@} | sed -E -e "s|--config ${_GIT_REPOSITORY}(::${_GIT_BRANCH})? ?||g;s|^ ||g;s| $||g")"
+		if [ -n "${_EXTRA_OPTIONS}" ]
+		then
+			Echo_message "The following extra options specified to lb config are going to be added to auto/config: ${_EXTRA_OPTIONS}"
+			sed -i -e "s|\"\${@}\"|${_EXTRA_OPTIONS} \"\${@}\"|" auto/config
+		fi
 	fi
 fi
 
@@ -1399,6 +1390,10 @@ if [ ! -e "${LIVE_PKG_LIST}" ]; then
 
 		dracut-live)
 			NEEDED_PACKAGES="live-config live-config-systemd systemd-sysv dracut-live dracut-config-generic dracut"
+			if [ "${LB_CHECKSUMS}" = "md5" ]
+			then
+				NEEDED_PACKAGES="${NEEDED_PACKAGES} isomd5sum"
+			fi
 			# Ensure that the settings are present before dracut is installed
 			mkdir -p config/includes.chroot_before_packages/etc/dracut.conf.d
 			echo "reproducible=yes" > config/includes.chroot_before_packages/etc/dracut.conf.d/50-reproducible.conf

@@ -6,6 +6,7 @@ include:
 variables:
   SALSA_CI_DISABLE_BUILD_PACKAGE_ANY: 1
   SALSA_CI_DISABLE_BUILD_PACKAGE_I386: 1
+  SALSA_CI_DISABLE_MISSING_BREAKS: 1
 
 .lb-build:
   stage: test

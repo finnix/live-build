@@ -128,12 +128,16 @@ FLAVOUR_LIVE="${DEFAULT_FLAVOUR}"
 case "${LB_INITRAMFS}" in
 	live-boot)
 		APPEND_LIVE="${LB_BOOTAPPEND_LIVE} findiso=\${iso_path}"
+		# Turn off 'quiet' and 'splash', otherwise the progress and result are not shown
+		APPEND_VERIFY_CHECKSUMS=$(echo ${APPEND_LIVE} verify-checksums | sed -e 's|quiet||;s|splash||')
 		;;
 	dracut-live)
 		APPEND_LIVE="${LB_BOOTAPPEND_LIVE} iso-scan/filename=\${iso_path}"
+		APPEND_VERIFY_CHECKSUMS="${APPEND_LIVE} rd.live.check"
 		;;
 	none)
 		APPEND_LIVE="${LB_BOOTAPPEND_LIVE}"
+		APPEND_VERIFY_CHECKSUMS="${APPEND_LIVE} verify-checksums"
 		;;
 esac
 
@@ -261,6 +265,12 @@ else
 	rm -f "${_TARGET}"/memtest.cfg
 fi
 
+if [ "${LB_CHECKSUMS}" != "none" ]; then
+	ENABLE_VERIFY_CHECKSUMS="true"
+else
+	ENABLE_VERIFY_CHECKSUMS="false"
+fi
+
 # These must be held in variables to avoid mistake by checkbashisms
 LINUX_INSTALL="source /boot/grub/install_start.cfg"
 LINUX_ADVANCED_INSTALL="source /boot/grub/install.cfg"
@@ -282,6 +292,8 @@ sed -i \
     -e "s|@APPEND_INSTALL@|${LB_BOOTAPPEND_INSTALL}|" \
     -e "s|@ENABLE_INSTALL_MENU@|${ENABLE_INSTALL_MENU}|" \
     -e "s|@ENABLE_MEMTEST@|${ENABLE_MEMTEST}|" \
+    -e "s|@ENABLE_VERIFY_CHECKSUMS@|${ENABLE_VERIFY_CHECKSUMS}|" \
+    -e "s|@APPEND_VERIFY_CHECKSUMS@|${APPEND_VERIFY_CHECKSUMS}|" \
     -e "s|@MEMTEST_DIR@|${MEMTEST_DIR}|" \
     -e "s|@MEMTEST_BIN@|${MEMTEST_BIN}|" \
     -e "s|@MEMTEST_VERSION@|${LB_MEMTEST}|" \

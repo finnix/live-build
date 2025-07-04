@@ -38,12 +38,19 @@ case "${_ACTION}" in
 		Acquire_lockfile
 
 		# Create custom start-stop-daemon program
-		Chroot chroot dpkg-divert --rename --quiet --add /usr/sbin/start-stop-daemon
 		# begin-remove-after: released:forky
 		# In the bookworm to trixie upgrade, dpkg moves
 		# start-stop-daemon from /sbin to /usr/sbin. Duplicate the
 		# diversion to cover both. DEP17 P3 M18
-		Chroot chroot dpkg-divert --rename --quiet --add --divert /sbin/start-stop-daemon.distrib.usr-is-merged /sbin/start-stop-daemon
+		if Chroot chroot dpkg -S /sbin/start-stop-daemon >/dev/null 2>&1; then
+			Chroot chroot dpkg-divert --rename --quiet --add --divert /sbin/start-stop-daemon.distrib.usr-is-merged /sbin/start-stop-daemon
+			Chroot chroot dpkg-divert --no-rename --quiet --add /usr/sbin/start-stop-daemon
+		else
+		# end-remove-after: released:forky
+		Chroot chroot dpkg-divert --rename --quiet --add /usr/sbin/start-stop-daemon
+		# begin-remove-after: released:forky
+			Chroot chroot dpkg-divert --no-rename --quiet --add --divert /sbin/start-stop-daemon.distrib.usr-is-merged /sbin/start-stop-daemon
+		fi
 		# end-remove-after
 		ln -fs /bin/true chroot/usr/sbin/start-stop-daemon
 

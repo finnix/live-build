@@ -37,7 +37,7 @@ Check_stagefile
 Acquire_lockfile
 
 case "${LB_INITRAMFS}" in
-	live-boot)
+	live-boot|dracut-live)
 		_INITRAMFS="live"
 		;;
 	*)

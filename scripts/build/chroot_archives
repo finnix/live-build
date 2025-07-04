@@ -47,10 +47,9 @@ case "${_ACTION}" in
 		Restore_package_cache chroot
 
 		# Mount local repository
-		if echo "${LB_PARENT_MIRROR_CHROOT}" | grep -q '^file:/'
-		then
-			Chroot_bind_path chroot "$(echo ${LB_PARENT_MIRROR_CHROOT} | sed -e 's|file:||')"
-		fi
+		Chroot_try_bind_path chroot "${LB_PARENT_MIRROR_CHROOT}"
+		Chroot_try_bind_path chroot "${LB_MIRROR_CHROOT}"
+
 
 		# Configure custom sources.list
 		Create_apt_sources_list chroot "${_PASS}"
@@ -65,6 +64,7 @@ case "${_ACTION}" in
 				    -e "s|@ARCHIVE_AREAS@|${LB_ARCHIVE_AREAS}|g" \
 				    -e "s|@PARENT_ARCHIVE_AREAS@|${LB_PARENT_ARCHIVE_AREAS}|g" \
 				"${FILE}" > "chroot/etc/apt/sources.list.d/$(basename ${FILE} .chroot)"
+				Chroot_try_bind_path_from_list chroot ${FILE}
 
 				if [ "${_PASS}" != "source" ] && [ "${LB_APT_SOURCE_ARCHIVES}" = "false" ]
 				then
@@ -215,7 +215,7 @@ case "${_ACTION}" in
 
 		if Find_files chroot/packages/*.deb
 		then
-			gunzip < chroot/packages/Packages.gz | awk '/^Package: / { print $2 }' \
+			gunzip < chroot/packages/Packages.gz | awk '/^Package: / { print tolower($2) }' \
 			>> chroot/root/packages.chroot
 		fi
 
@@ -363,6 +363,7 @@ case "${_ACTION}" in
 			if [ -e "${FILE}" ]
 			then
 				rm -f "chroot/etc/apt/sources.list.d/$(basename ${FILE} .chroot)"
+				Chroot_try_unbind_path_from_list chroot ${FILE}
 			fi
 		done
 
@@ -384,13 +385,27 @@ case "${_ACTION}" in
 			fi
 		done
 
-		# Remve chroot-only apt auth
+		# Remove chroot-only apt auth
 		# Note: .conf is assumed to be apt.conf, so use new suffix .auth
 		for FILE in config/archives/*.auth.chroot
 		do
 			if [ -e "${FILE}" ]
 			then
 				rm "chroot/etc/apt/auth.conf.d/$(basename ${FILE} .auth.chroot).conf"
+			fi
+		done
+
+		# Remove chroot-only local archive keys
+		for FILE in config/archives/*.key.chroot
+		do
+			if [ -e "${FILE}" ]
+			then
+				if grep -q "PGP PUBLIC KEY BLOCK" "${FILE}"
+				then
+					rm "chroot/etc/apt/trusted.gpg.d/$(basename ${FILE}).asc"
+				else
+					rm "chroot/etc/apt/trusted.gpg.d/$(basename ${FILE}).gpg"
+				fi
 			fi
 		done
 
@@ -404,6 +419,7 @@ case "${_ACTION}" in
 				    -e "s|@ARCHIVE_AREAS@|${LB_ARCHIVE_AREAS}|g" \
 				    -e "s|@PARENT_ARCHIVE_AREAS@|${LB_PARENT_ARCHIVE_AREAS}|g" \
 				"${FILE}" > "chroot/etc/apt/sources.list.d/$(basename ${FILE} .binary)"
+				Chroot_try_bind_path_from_list chroot ${FILE}
 
 				if [ "${_PASS}" != "source" ] && [ "${LB_APT_SOURCE_ARCHIVES}" = "false" ]
 				then
@@ -459,10 +475,17 @@ case "${_ACTION}" in
 		Apt chroot update
 
 		# Unmount local repository - after apt update or it will fail due to missing files
-		if echo "${LB_PARENT_MIRROR_CHROOT}" | grep -q '^file:/'
-		then
-			Chroot_unbind_path chroot "$(echo ${LB_PARENT_MIRROR_CHROOT} | sed -e 's|file:||')"
-		fi
+		Chroot_try_unbind_path chroot "${LB_PARENT_MIRROR_CHROOT}"
+		Chroot_try_unbind_path chroot "${LB_MIRROR_CHROOT}"
+
+		# Unmount local apt sources (binary)
+		for FILE in config/archives/*.list config/archives/*.list.binary
+		do
+			if [ -e "${FILE}" ]
+			then
+				Chroot_try_unbind_path_from_list chroot ${FILE}
+			fi
+		done
 
 		# Cleaning apt package cache
 		rm -rf chroot/var/cache/apt

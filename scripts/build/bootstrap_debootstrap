@@ -30,6 +30,15 @@ fi
 Echo_message "Begin bootstrapping system..."
 
 Check_package host /usr/sbin/debootstrap debootstrap
+Check_installed host /usr/bin/eatmydata eatmydata
+if [ "${INSTALL_STATUS}" -eq 0 ]
+then
+	Echo_message "eatmydata found. It will be used do disable the sync command in the second stage of debootstrap"
+	_EATMYDATA="eatmydata"
+else
+	# eatmydata is optional
+	_EATMYDATA=""
+fi
 
 # Checking stage file
 Check_stagefile "bootstrap"
@@ -53,11 +62,11 @@ then
 	DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS} --arch=${LB_ARCHITECTURE}"
 fi
 
-if [ "${LB_ARCHIVE_AREAS}" != "main" ]
+if [ "${LB_PARENT_ARCHIVE_AREAS}" != "main" ]
 then
-	# Modify archive areas to remove leading/trailing whitespaces and replace other whitepspace with commas
-	DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS} --components=$(echo ${LB_ARCHIVE_AREAS} | sed -e 's| |,|g')"
-	FOREIGN_DEBOOTSTRAP_OPTIONS="--components=$(echo ${LB_ARCHIVE_AREAS} | sed -e 's| |,|g')"
+	# Modify archive areas to remove leading/trailing whitespaces and replace other whitespace with commas
+	DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS} --components=$(echo ${LB_PARENT_ARCHIVE_AREAS} | sed -e 's| |,|g')"
+	FOREIGN_DEBOOTSTRAP_OPTIONS="--components=$(echo ${LB_PARENT_ARCHIVE_AREAS} | sed -e 's| |,|g')"
 fi
 
 if [ "${_VERBOSE}" = "true" ]
@@ -71,6 +80,11 @@ then
 	DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS} --no-check-gpg"
 else
 	DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS} --force-check-gpg"
+fi
+
+if [ "${LB_INITRAMFS}" = "live-boot" -a "${LB_INITSYSTEM}" = "sysvinit" ]
+then
+	DEBOOTSTRAP_OPTIONS="${DEBOOTSTRAP_OPTIONS} --include=live-config-sysvinit"
 fi
 
 if [ "${LB_CACHE_PACKAGES}" = "true" ]
@@ -110,7 +124,7 @@ if [ -n "${LB_BOOTSTRAP_QEMU_ARCHITECTURE}" ]; then
 	Echo_message "Running debootstrap second stage under QEMU"
 	Chroot chroot /bin/sh /debootstrap/debootstrap --second-stage ${FOREIGN_DEBOOTSTRAP_OPTIONS}
 else
-	debootstrap ${DEBOOTSTRAP_OPTIONS} "${LB_PARENT_DISTRIBUTION_CHROOT}" chroot "${LB_PARENT_MIRROR_BOOTSTRAP}" ${DEBOOTSTRAP_SCRIPT}
+	${_EATMYDATA} debootstrap ${DEBOOTSTRAP_OPTIONS} "${LB_PARENT_DISTRIBUTION_CHROOT}" chroot "${LB_PARENT_MIRROR_BOOTSTRAP}" ${DEBOOTSTRAP_SCRIPT}
 fi
 
 # If there's an os-release file, copy it to /etc/ and add some extra fields that identify the live image
@@ -128,7 +142,7 @@ if [ -e chroot/usr/lib/os-release ]; then
 	fi
 	cat <<EOF >> chroot/etc/os-release
 IMAGE_ID=live
-BUILD_ID=$(date ${DATE_UTC_OPTION} -d @${SOURCE_DATE_EPOCH} +%Y%m%dT%H%M%SZ)
+BUILD_ID=$(date --utc -d @${SOURCE_DATE_EPOCH} +%Y%m%dT%H%M%SZ)
 EOF
 fi
 

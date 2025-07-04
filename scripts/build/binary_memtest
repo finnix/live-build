@@ -95,7 +95,7 @@ esac
 
 # Setting destination directory
 case "${LB_INITRAMFS}" in
-	live-boot)
+	live-boot|dracut-live)
 		DESTDIR="binary/live"
 		;;
 
