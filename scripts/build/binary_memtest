@@ -88,7 +88,13 @@ case "${LB_MEMTEST}" in
 		esac
 		if [ -e "${_PREFIX}/boot/${LB_MEMTEST}${_MEMTEST_ARCH}.bin" ]
 		then
+                        # memtest86+ 7.20-1 (trixie) and ~earlier
 			_MEMTEST_BIN="${LB_MEMTEST}${_MEMTEST_ARCH}"
+			_MEMTEST_BIOS_FN="memtest.bin"
+		elif [ -e "${_PREFIX}/boot/mt86+${_MEMTEST_ARCH}" ]
+		then
+                        # memtest86+ 8.0-1
+			_MEMTEST_BIN="mt86+${_MEMTEST_ARCH}"
 			_MEMTEST_BIOS_FN="memtest.bin"
 		fi
 esac
@@ -108,8 +114,15 @@ esac
 mkdir -p "${DESTDIR}"
 
 # Installing memtest
-cp -a "${_PREFIX}/boot/${_MEMTEST_BIN}.bin" "${DESTDIR}/${_MEMTEST_BIOS_FN}"
-[ -e "${_PREFIX}/boot/${_MEMTEST_BIN}.efi" ] && cp -a "${_PREFIX}/boot/${_MEMTEST_BIN}.efi" "${DESTDIR}/memtest.efi"
+if [ -e "${_PREFIX}/boot/${_MEMTEST_BIN}" ]
+then
+	# _MEMTEST_BIN without a suffix is a combined BIOS/UEFI image
+	cp -a "${_PREFIX}/boot/${_MEMTEST_BIN}" "${DESTDIR}/${_MEMTEST_BIOS_FN}"
+	cp -a "${_PREFIX}/boot/${_MEMTEST_BIN}" "${DESTDIR}/memtest.efi"
+else
+	cp -a "${_PREFIX}/boot/${_MEMTEST_BIN}.bin" "${DESTDIR}/${_MEMTEST_BIOS_FN}"
+	[ -e "${_PREFIX}/boot/${_MEMTEST_BIN}.efi" ] && cp -a "${_PREFIX}/boot/${_MEMTEST_BIN}.efi" "${DESTDIR}/memtest.efi"
+fi
 
 # Saving cache
 Save_package_cache binary
