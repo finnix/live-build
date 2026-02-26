@@ -1,0 +1,30 @@
+#!/bin/sh
+set -e
+
+# If the live image is generated on a system that is not booted via UEFI,
+# include the UEFI kernel module to avoid a message when booting with
+# UEFI enabled.
+# If the live image is generated on a system that is booted via UEFI,
+# still include this line, to make it easier to reproduce the live image
+# independent of the system that generated it.
+#
+# See also https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1110729
+
+# It is mdadm that attempts to mount efivarfs
+# mdadm only adds the efivarfs modules when booted via UEFI
+if [ ! -e /usr/share/initramfs-tools/hooks/mdadm ];
+then
+  exit 0
+fi
+
+# Only apply the fix when the file is as expected
+# - the first line inside an if-statement
+if grep  "force_load efivarfs" -B 1 /usr/share/initramfs-tools/hooks/mdadm | grep -q "then";
+then
+  # This patch always adds the efivarfs modules:
+  # - Delete the existing line to load the module
+  # - Load the module before the comment
+  sed -i -e '/force_load efivarfs/d;s/# load efivars for Intel RST/force_load efivarfs || true\n&/' /usr/share/initramfs-tools/hooks/mdadm
+
+  echo "P: $(basename $0) Reproducible hook has been applied"
+fi

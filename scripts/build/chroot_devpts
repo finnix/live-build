@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ## live-build(7) - System Build Scripts
-## Copyright (C) 2016-2020 The Debian Live team
+## Copyright (C) 2016-2025 The Debian Live team
 ## Copyright (C) 2006-2015 Daniel Baumann <mail@daniel-baumann.ch>
 ##
 ## This program comes with ABSOLUTELY NO WARRANTY; for details see COPYING.
@@ -15,7 +15,7 @@ set -e
 [ -e "${LIVE_BUILD}/scripts/build.sh" ] && . "${LIVE_BUILD}/scripts/build.sh" || . /usr/lib/live/build.sh
 
 # Setting static variables
-DESCRIPTION="Mount /dev/pts"
+DESCRIPTION="Mount /dev"
 USAGE="${PROGRAM} {install|remove} [--force]"
 
 # Processing arguments and configuration files
@@ -29,7 +29,7 @@ Require_stagefiles config bootstrap
 
 case "${_ACTION}" in
 	install)
-		Echo_message "Begin mounting /dev/pts..."
+		Echo_message "Begin mounting /dev..."
 
 		# Checking stage file
 		Check_stagefile
@@ -43,12 +43,28 @@ case "${_ACTION}" in
 		# Mounting /dev/pts
 		mount -t devpts -o gid=5,mode=620,x-gvfs-hide devpts-live chroot/dev/pts || true
 
+		# Bind-mount other devices in /dev
+		for dev in null zero full random urandom tty console
+		do
+			# 1. nothing to be done if character device already exists
+			# 2. cannot bind-mount if device does not exist on the outside
+			if [ ! -c "chroot/dev/$dev" -a -e "/dev/$dev" ]
+			then
+				# Create an empty file if neccessary
+				if [ ! -e "chroot/dev/$dev" ]
+				then
+					touch "chroot/dev/$dev"
+				fi
+				mount -o bind "/dev/$dev" "chroot/dev/$dev"
+			fi
+		done
+
 		# Creating stage file
 		Create_stagefile
 		;;
 
 	remove)
-		Echo_message "Begin unmounting /dev/pts..."
+		Echo_message "Begin unmounting /dev..."
 
 		# Checking stage file
 		Ensure_stagefile_exists
@@ -56,13 +72,16 @@ case "${_ACTION}" in
 		# Acquire lock file
 		Acquire_lockfile
 
-		# Unmounting /dev/pts
-		if grep -qs "$(pwd)/chroot/dev/pts" /proc/mounts || Find_files chroot/dev/pts/*
-		then
-			umount chroot/dev/pts
-		else
-			umount -f chroot/dev/pts > /dev/null 2>&1 || true
-		fi
+		# Unmount and remove the devices in /dev
+		# (devtmpfs creates the devices upon booting)
+		for dev in pts null zero full random urandom tty console
+		do
+			if mountpoint -q "chroot/dev/$dev"
+			then
+				umount "chroot/dev/$dev"
+			fi
+		done
+		rm -fr chroot/dev/*
 
 		# Removing stage file
 		Remove_stagefile

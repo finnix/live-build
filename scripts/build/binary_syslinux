@@ -275,7 +275,10 @@ sed -i \
     -e "s|@INITRD_DI@|${INITRD_DI}|" \
     "${_TARGET}"/install.cfg
 
-if [ -e "binary/${_INITRAMFS}/memtest.bin" ]
+if [ -e "binary/${_INITRAMFS}/memtest16" ]
+then
+	MEMTEST_PATH="${_INITRAMFS}/memtest16"
+elif [ -e "binary/${_INITRAMFS}/memtest.bin" ]
 then
 	MEMTEST_PATH="${_INITRAMFS}/memtest.bin"
 else

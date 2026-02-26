@@ -1,3 +1,27 @@
+live-build (1:20250814) unstable; urgency=medium
+
+  [ Roland Clobus ]
+  * installer: Generate patterns file for firmware-intel-sound
+  * firmwarelist: stronger filtering for firmware-nvdia-tesla
+  * firmwarelist: filter firmware-marvell-prestera
+  * installer: more espeakup support
+  * debian-installer: Use local udebs for build from git
+  * rebuild: Apply workaround for trixie
+  * Revert "rebuild: Apply workaround for trixie"
+  * Fix building with `--initsystem sysvinit`
+  * Prepare for forky
+
+  [ Arnaud Rebillout ]
+  * Firmwarelist: filter out firmware-nvidia-tesla-.*-gsp
+  * installer: Don't fail if there's no DEP-11 metadata
+  * installer: Don't hardcode Debian keyring
+
+  [ Luca Boccassi ]
+  * Remove os-release diversions once rootfs creation is finished
+  * Install live-specific os-release only with --system live
+
+ -- Luca Boccassi <bluca@debian.org>  Thu, 14 Aug 2025 20:23:48 +0100
+
 live-build (1:20250505) unstable; urgency=medium
 
   [ Roland Clobus ]

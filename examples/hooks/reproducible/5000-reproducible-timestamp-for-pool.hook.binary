@@ -1,0 +1,42 @@
+#!/bin/sh
+set -e
+
+Normalise_timestamps()
+{
+	local DIRECTORY="${1}"
+
+	if [ ! -d ${DIRECTORY} ]
+	then
+		return
+	fi
+
+	# Normalise the timestamp of the packages in the given directory
+	# Use the timestamp of control.tar.xz, which should be the timestamp of the latest entry in debian/changelog
+	for FILE in $(find ${DIRECTORY} -type f)
+	do
+		if [ ! -e "${FILE}" ]; then
+			break # File not found?
+		fi
+
+		ar xof "${FILE}" control.tar.xz || true
+		if [ -e control.tar.xz ]
+		then
+			touch --reference=control.tar.xz "${FILE}"
+			rm -f control.tar.xz
+		fi
+	done
+
+	# Normalise the timestamp of the given directory, to match the newest content
+	DIRECTORIES="$(find ${DIRECTORY} -type d)"
+	DIRECTORIES="$(echo ${DIRECTORIES} | tr " " "\n" | LC_ALL=C sort -r)"
+	for DIRECTORY in ${DIRECTORIES}
+	do
+		# The directory is guaranteed to be non-empty
+		touch --reference="${DIRECTORY}/$(ls -t -1 ${DIRECTORY} | head -n1)" ${DIRECTORY}
+	done
+
+	echo "P: $(basename $0) Reproducible hook has been applied to ${DIRECTORY}"
+}
+
+Normalise_timestamps pool
+Normalise_timestamps pool-udeb

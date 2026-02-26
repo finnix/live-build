@@ -41,9 +41,14 @@ case "${_ACTION}" in
 		mkdir -p chroot/sys
 
 		# Mounting /sys
-		if ! mount -t sysfs -o x-gvfs-hide sysfs-live chroot/sys
+		if mount -t sysfs -o x-gvfs-hide sysfs-live chroot/sys
 		then
-			Echo_warning "Cannot mount /sys (running in container?)"
+			Echo_debug "Mounted chroot /sys via sysfs"
+		elif mount -o rbind /sys chroot/sys
+		then
+			Echo_debug "Mounted chroot /sys via rbind"
+		else
+			Echo_warning "Cannot mount chroot /sys (running in container?)"
 		fi
 
 		# Creating stage file
@@ -66,7 +71,7 @@ case "${_ACTION}" in
 		fi
 
 		# Unmounting /sys
-		if [ -e chroot/sys/class ]
+		if mountpoint -q chroot/sys
 		then
 			umount chroot/sys
 		fi

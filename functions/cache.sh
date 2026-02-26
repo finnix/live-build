@@ -39,7 +39,17 @@ Save_package_cache ()
 		# Cleaning current cache
 		# In case of interrupted or incomplete builds, this may return an error,
 		# but we still do want to save the cache.
+		if [ ! -e chroot/dev/null ]
+		then
+			CLEAN_DEV_NULL_AGAIN=true
+		fi
+
 		Chroot chroot "apt-get autoclean" || true
+
+		if [ -n "${CLEAN_DEV_NULL_AGAIN}" ]
+		then
+			rm chroot/dev/null
+		fi
 
 		if ls chroot/var/cache/apt/archives/*.deb > /dev/null 2>&1
 		then

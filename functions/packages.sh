@@ -155,13 +155,13 @@ Check_package_available ()
 
 	if [ "${LB_BUILD_WITH_CHROOT}" = "true" ]
 	then
-		if [ $(Chroot chroot apt-cache show "^${_PACKAGE}$" 2> /dev/null | grep "^Package:" | wc -l) -eq 1 ]
+		if [ $(Chroot chroot apt-cache show "^${_PACKAGE}$" 2> /dev/null | grep "^Package:" | wc -l) -ge 1 ]
 		then
 			echo 1
 			return
 		fi
 	else
-		if [ $(apt-cache show "^${_PACKAGE}$" 2> /dev/null | grep "^Package:" | wc -l) -eq 1 ]
+		if [ $(apt-cache show "^${_PACKAGE}$" 2> /dev/null | grep "^Package:" | wc -l) -ge 1 ]
 		then
 			echo 1
 			return

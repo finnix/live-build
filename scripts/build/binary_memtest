@@ -58,8 +58,6 @@ then
 fi
 
 # Checking depends
-_MEMTEST_BIN="${LB_MEMTEST}"
-_MEMTEST_BIOS_FN="memtest"
 case "${LB_MEMTEST}" in
 	memtest86)
 		Check_package chroot /boot/memtest86.bin memtest86
@@ -76,29 +74,6 @@ Restore_package_cache binary
 # Installing depends
 Install_packages
 
-case "${LB_MEMTEST}" in
-	memtest86+)
-		case "${LB_ARCHITECTURE}" in
-			amd64)
-				_MEMTEST_ARCH=x64
-				;;
-			i386)
-				_MEMTEST_ARCH=ia32
-				;;
-		esac
-		if [ -e "${_PREFIX}/boot/${LB_MEMTEST}${_MEMTEST_ARCH}.bin" ]
-		then
-                        # memtest86+ 7.20-1 (trixie) and ~earlier
-			_MEMTEST_BIN="${LB_MEMTEST}${_MEMTEST_ARCH}"
-			_MEMTEST_BIOS_FN="memtest.bin"
-		elif [ -e "${_PREFIX}/boot/mt86+${_MEMTEST_ARCH}" ]
-		then
-                        # memtest86+ 8.0-1
-			_MEMTEST_BIN="mt86+${_MEMTEST_ARCH}"
-			_MEMTEST_BIOS_FN="memtest.bin"
-		fi
-esac
-
 # Setting destination directory
 case "${LB_INITRAMFS}" in
 	live-boot|dracut-live)
@@ -114,15 +89,41 @@ esac
 mkdir -p "${DESTDIR}"
 
 # Installing memtest
-if [ -e "${_PREFIX}/boot/${_MEMTEST_BIN}" ]
-then
-	# _MEMTEST_BIN without a suffix is a combined BIOS/UEFI image
-	cp -a "${_PREFIX}/boot/${_MEMTEST_BIN}" "${DESTDIR}/${_MEMTEST_BIOS_FN}"
-	cp -a "${_PREFIX}/boot/${_MEMTEST_BIN}" "${DESTDIR}/memtest.efi"
-else
-	cp -a "${_PREFIX}/boot/${_MEMTEST_BIN}.bin" "${DESTDIR}/${_MEMTEST_BIOS_FN}"
-	[ -e "${_PREFIX}/boot/${_MEMTEST_BIN}.efi" ] && cp -a "${_PREFIX}/boot/${_MEMTEST_BIN}.efi" "${DESTDIR}/memtest.efi"
-fi
+case "${LB_MEMTEST}" in
+	memtest86)
+		cp -a "${_PREFIX}/boot/memtest86.bin" "${DESTDIR}/memtest16"
+		;;
+
+	memtest86+)
+		case "${LB_ARCHITECTURE}" in
+			amd64)
+				_MEMTEST_ARCH=x64
+				;;
+			i386)
+				_MEMTEST_ARCH=ia32
+				;;
+		esac
+		# memtest86+ << 6: only one binary
+		if [ -e "${_PREFIX}/boot/memtest86+.bin" ]
+		then
+			cp -a "${_PREFIX}/boot/memtest86+.bin" "${DESTDIR}/memtest16"
+		fi
+		# memtest86+ >= 6: 4 binaries: (32-bit, 64-bit) x (.bin, .efi)
+		if [ -e "${_PREFIX}/boot/memtest86+${_MEMTEST_ARCH}.bin" ]
+		then
+			cp -a "${_PREFIX}/boot/memtest86+${_MEMTEST_ARCH}.bin" "${DESTDIR}/memtest.bin"
+		fi
+		if [ -e "${_PREFIX}/boot/memtest86+${_MEMTEST_ARCH}.efi" ]
+		then
+			cp -a "${_PREFIX}/boot/memtest86+${_MEMTEST_ARCH}.efi" "${DESTDIR}/memtest.efi"
+		fi
+		# memtest86+ >= 8: 2 binaries: (32-bit, 64-bit)
+		if [ -e "${_PREFIX}/boot/mt86+${_MEMTEST_ARCH}" ]
+		then
+			cp -a "${_PREFIX}/boot/mt86+${_MEMTEST_ARCH}" "${DESTDIR}/memtest"
+		fi
+		;;
+esac
 
 # Saving cache
 Save_package_cache binary

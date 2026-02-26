@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+
+# Normalise the timestamp of the kernel for d-i and the initrd
+# Assume that the kernel version for the installer is the same as for the live system
+if [ -e install/vmlinuz ]
+then
+	touch --reference=live/vmlinuz install/vmlinuz
+	unmkinitramfs install/initrd.gz tmp.out
+	touch -d@$(find tmp.out -type f -printf "%T@\n" | sort | tail -n 1 | cut -d. -f1) install/initrd.gz
+	rm -fr tmp.out
+fi
+if [ -e install/gtk/vmlinuz ]
+then
+	touch --reference=live/vmlinuz install/gtk/vmlinuz
+	unmkinitramfs install/gtk/initrd.gz tmp.out
+	touch -d@$(find tmp.out -type f -printf "%T@\n" | sort | tail -n 1 | cut -d. -f1) install/gtk/initrd.gz
+	rm -fr tmp.out
+fi

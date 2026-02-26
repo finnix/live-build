@@ -128,7 +128,7 @@ else
 fi
 
 # If there's an os-release file, copy it to /etc/ and add some extra fields that identify the live image
-if [ -e chroot/usr/lib/os-release ]; then
+if [ "${LB_SYSTEM}" = "live" ] && [ -e chroot/usr/lib/os-release ]; then
 	# Ensure a potential update doesn't clobber our changes
 	if ! Chroot chroot dpkg-divert --list /etc/os-release | grep -q /etc/os-release; then
 		Chroot chroot dpkg-divert --quiet --local --add --no-rename --divert /etc/os-release.debootstrap /etc/os-release

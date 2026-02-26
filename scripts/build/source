@@ -32,7 +32,7 @@ fi
 # Setting up cleanup function
 Setup_clean_exit
 
-CHROOT_PREP="hosts resolv hostname archives"
+CHROOT_PREP="devpts hosts resolv hostname archives"
 
 # Configuring chroot (enabling networking)
 lb chroot_prep install "${CHROOT_PREP}" mode-archives-source "${@}"

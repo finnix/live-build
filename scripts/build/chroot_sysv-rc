@@ -27,6 +27,8 @@ shift
 # Requiring stage file
 Require_stagefiles config bootstrap
 
+policy_rcd_target_file="/usr/sbin/policy-rc.d.live-build"
+
 case "${_ACTION}" in
 	install)
 		Echo_message "Configuring file /usr/sbin/policy-rc.d"
@@ -37,20 +39,23 @@ case "${_ACTION}" in
 		# Acquire lock file
 		Acquire_lockfile
 
-		if [ -e chroot/usr/sbin/policy-rc.d ]
+		if [ -e chroot/usr/sbin/policy-rc.d ] && ! [ -e chroot/etc/alternatives/policy-rc.d ]
 		then
-			# Save policy-rc.d file
-			Chroot chroot dpkg-divert --rename --quiet --add /usr/sbin/policy-rc.d
+			Echo_error "Existing policy-rc.d script does not use update-alternatives!"
+			exit 1
 		fi
 
 		# Create policy-rc.d file
-cat > chroot/usr/sbin/policy-rc.d << EOF
+cat > "chroot/${policy_rcd_target_file}" << EOF
 #!/bin/sh
 echo "All runlevel operations denied by policy" >&2
 exit 101
 EOF
 
-		chmod 0755 chroot/usr/sbin/policy-rc.d
+		chmod 0755 "chroot/${policy_rcd_target_file}"
+
+		# Install an alternative for policy-rc.d
+		Chroot chroot update-alternatives --install /usr/sbin/policy-rc.d policy-rc.d "${policy_rcd_target_file}" 1000
 
 		# Creating stage file
 		Create_stagefile
@@ -65,14 +70,10 @@ EOF
 		# Acquire lock file
 		Acquire_lockfile
 
-		# Remove custom policy-rc.d file
-		rm -f chroot/usr/sbin/policy-rc.d
-
-		if [ -e chroot/usr/sbin/policy-rc.d.distrib ]
-		then
-			# Restore policy-rc.d file
-			Chroot chroot dpkg-divert --rename --quiet --remove /usr/sbin/policy-rc.d
-		fi
+		# Remove the live-build alternative for policy-rc.d
+		Chroot chroot update-alternatives --remove policy-rc.d "${policy_rcd_target_file}"
+		rm -f chroot/usr/sbin/policy-rc.d.live-build
+		truncate --no-create --size=0 chroot/var/log/alternatives.log
 
 		# Removing stage file
 		Remove_stagefile

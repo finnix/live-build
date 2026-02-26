@@ -59,6 +59,7 @@ esac
 
 # Checking depends
 Check_package host /usr/bin/wget wget
+Check_package chroot /usr/bin/file file
 Check_package chroot /usr/bin/apt-ftparchive apt-utils
 # Ensure availability of dep11 data
 Check_package chroot /etc/apt/apt.conf.d/50appstream appstream
@@ -344,7 +345,8 @@ export LINUX_KERNEL_ABI=\$(dpkg-query --showformat "\\\${db:Status-Abbrev} \\\${
 export EXTRAFILES=""
 if [ "${LB_ARCHITECTURE}" = "amd64" ]
 then
-	apt-get --yes install firmware-sof-signed firmware-intel-sound
+	# Don't fail if these packages are not found
+	apt-get --yes install firmware-sof-signed firmware-intel-sound || true
 	for file in \$(dpkg-query -L firmware-sof-signed;dpkg-query -L firmware-intel-sound;dpkg-query -L linux-image-\${LINUX_KERNEL_ABI}-amd64|egrep "/(drm|i915|drm_display_helper|drm_buddy|cec|rc-core)\.ko"); do if [ -f \${file} ]; then EXTRAFILES="\${EXTRAFILES} \${file}"; fi; done
 	for file in \$(dpkg-query -L firmware-sof-signed;dpkg-query -L firmware-intel-sound;dpkg-query -L linux-image-\${LINUX_KERNEL_ABI}-amd64|egrep "/(drm|i915|drm_display_helper|drm_buddy|cec|rc-core)\.ko"); do if [ -L \${file} ]; then EXTRAFILES="\${EXTRAFILES} \${file}"; fi; done
 fi
@@ -409,7 +411,9 @@ Download_file "${DESTDIR}"/"${INITRD_DI}" ${URL}/${DI_REMOTE_BASE}/initrd.gz
 # PE32+ executable (EFI application) RISC-V 64-bit (stripped to external PDB), for MS Windows, 2 sections
 if [ "${LB_ARCHITECTURE}" = "amd64" ]
 then
-	_LINUX_KERNEL_ABI=$(file --brief "${DESTDIR}"/"${VMLINUZ_DI}" | cut -f 8 -d " " | sed -e "s/-${LB_ARCHITECTURE}//")
+	cp "${DESTDIR}"/"${VMLINUZ_DI}" chroot/kernel-image
+	_LINUX_KERNEL_ABI=$(Chroot chroot file --brief /kernel-image | cut -f 8 -d " " | sed -e "s/-${LB_ARCHITECTURE}//")
+	rm chroot/kernel-image
 else
 	_LINUX_KERNEL_ABI=""
 fi
@@ -471,10 +475,19 @@ then
 			then
 				DI_REQ_PACKAGES="${DI_REQ_PACKAGES} libfuse2t64"
 			else
-				DI_REQ_PACKAGES="${DI_REQ_PACKAGES} libfuse2"
+				# Starting in forky, use fuse3 instead
+				if [ $(Check_package_available "libfuse2") -eq 1 ]
+				then
+					DI_REQ_PACKAGES="${DI_REQ_PACKAGES} libfuse2"
+				fi
 			fi
-			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi-amd64 efibootmgr grub-efi-amd64-signed shim-signed" # UEFI (required for d-i, includes suggested packages)
-			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} efibootmgr grub-efi grub-efi-amd64 grub-efi-amd64-bin grub-efi-amd64-signed grub2-common mokutil shim-helpers-amd64-signed shim-signed shim-signed-common shim-unsigned cryptsetup cryptsetup-initramfs keyutils" # UEFI (required by Calamares)
+			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi-amd64 efibootmgr shim-signed" # UEFI (required for d-i, includes suggested packages)
+			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} efibootmgr grub-efi grub-efi-amd64 grub-efi-amd64-bin grub2-common mokutil shim-helpers-amd64-signed shim-signed shim-signed-common shim-unsigned cryptsetup cryptsetup-initramfs keyutils" # UEFI (required by Calamares)
+			# grub-efi-amd64-signed might not be available on Debian derivatives
+			if [ $(Check_package_available "grub-efi-amd64-signed") -eq 1 ]
+			then
+				DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi-amd64-signed"
+			fi
 			# grub-efi-amd64-unsigned was introduced in trixie
 			if [ $(Check_package_available "grub-efi-amd64-unsigned") -eq 1 ]
 			then
@@ -489,8 +502,13 @@ then
 			;;
 
 		arm64)
-			DI_REQ_PACKAGES="grub-efi-arm64 efibootmgr grub-efi-arm64-signed shim-signed" # UEFI (required for d-i, includes suggested packages)
+			DI_REQ_PACKAGES="grub-efi-arm64 efibootmgr shim-signed" # UEFI (required for d-i, includes suggested packages)
 			DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi grub-efi-arm64-bin grub2-common mokutil shim-helpers-arm64-signed shim-signed-common shim-unsigned" # UEFI (required by Calamares)
+			# grub-efi-arm64-signed might not be available on Debian derivatives
+			if [ $(Check_package_available "grub-efi-arm64-signed") -eq 1 ]
+			then
+				DI_REQ_PACKAGES="${DI_REQ_PACKAGES} grub-efi-arm64-signed"
+			fi
 			# grub-efi-arm64-unsigned was introduced in trixie
 			if [ $(Check_package_available "grub-efi-arm64-unsigned") -eq 1 ]
 			then
@@ -713,7 +731,7 @@ EOF
 		mkdir -p ${_FW_DEP11_DIR}
 		echo "These files help Debian Installer detect helpful firmware packages (via hw-detect)." > ${_FW_DEP11_DIR}/README.txt
 
-		_LINUX_KERNEL_PACKAGE=$(dpkg-query --showformat "\${db:Status-Abbrev} \${Package}\n" --show linux-image-* | grep "^ii" | grep -v "linux-image-${LB_ARCHITECTURE}" | sort | tail -1 | awk '{ print $2 }')
+		_LINUX_KERNEL_PACKAGE=$(dpkg-query --admindir=../../chroot/chroot/var/lib/dpkg --showformat "\${db:Status-Abbrev} \${Package}\n" --show linux-image-* | grep "^ii" | grep -v "linux-image-${LB_ARCHITECTURE}" | sort | tail -1 | awk '{ print $2 }')
 		for _PACKAGE in ${DI_FIRMWARE_PACKAGES}
 		do
 			for _FILE in $(find ../pool -name "${_PACKAGE}_*.deb")
@@ -735,7 +753,7 @@ EOF
 						then
 							Echo_warning "Could not extract the current kernel version, skipping firmware pattern for ${_PACKAGE}"
 						else
-							for _ALIAS in $(dpkg-query -L ${_LINUX_KERNEL_PACKAGE} | egrep '(kernel/sound/soc/sof/.*\.ko(.xz)?|/snd-soc-.*sof.*\.ko(.xz)?)$'); do /usr/sbin/modinfo ${_ALIAS} | awk '/^alias:/ { print $2 }'; done | sort -u | awk '{ gsub(/[*]/, ".*", $1); printf "^%s$\n", $1 }' > ${_FW_DEP11_DIR}/${_PACKAGE}.patterns
+							for _ALIAS in $(dpkg-query --admindir=../../chroot/chroot/var/lib/dpkg -L ${_LINUX_KERNEL_PACKAGE} | egrep '(kernel/sound/soc/sof/.*\.ko(.xz)?|/snd-soc-.*sof.*\.ko(.xz)?)$'); do Chroot ../../chroot modinfo chroot/${_ALIAS} | awk '/^alias:/ { print $2 }'; done | sort -u | awk '{ gsub(/[*]/, ".*", $1); printf "^%s$\n", $1 }' > ${_FW_DEP11_DIR}/${_PACKAGE}.patterns
 						fi
 					elif [ "${_PACKAGE}" = "firmware-intel-sound" ]
 					then
@@ -743,7 +761,7 @@ EOF
 						then
 							Echo_warning "Could not extract the current kernel version, skipping firmware pattern for ${_PACKAGE}"
 						else
-							for _ALIAS in $(dpkg-query -L ${_LINUX_KERNEL_PACKAGE} | egrep 'kernel/sound/soc/intel/.*\.ko(.xz)?$'); do /usr/sbin/modinfo ${_ALIAS} | awk '/^alias:/ { print $2 }'; done | sort -u | awk '{ gsub(/[*]/, ".*", $1); printf "^%s$\n", $1 }' > ${_FW_DEP11_DIR}/${_PACKAGE}.patterns
+							for _ALIAS in $(dpkg-query --admindir=../../chroot/chroot/var/lib/dpkg -L ${_LINUX_KERNEL_PACKAGE} | egrep 'kernel/sound/soc/intel/.*\.ko(.xz)?$'); do Chroot ../../chroot modinfo chroot/${_ALIAS} | awk '/^alias:/ { print $2 }'; done | sort -u | awk '{ gsub(/[*]/, ".*", $1); printf "^%s$\n", $1 }' > ${_FW_DEP11_DIR}/${_PACKAGE}.patterns
 						fi
 					elif [ -n "${_COMPONENT}" ]
 					then
@@ -752,7 +770,11 @@ EOF
 						# This mirrors the functionality from debian-cd (generate_firmware_patterns):
 						# - Surround by ^ $
 						# - Replace * by .*
-						_COMPONENTS_DEP11_FILE=$(echo "${LB_PARENT_MIRROR_DEBIAN_INSTALLER}dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/${_COMPONENT}/dep11/Components-${LB_ARCHITECTURE}.yml.gz" | sed -E 's|https?://||g' | sed 's|/|_|g')
+						_EXTRA_SLASH=""
+						if [ $(printf "%s" "${LB_PARENT_MIRROR_DEBIAN_INSTALLER}" | tail -c 1) != "/" ]; then
+							_EXTRA_SLASH="/"
+						fi
+						_COMPONENTS_DEP11_FILE=$(echo "${LB_PARENT_MIRROR_DEBIAN_INSTALLER}${_EXTRA_SLASH}dists/${LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION}/${_COMPONENT}/dep11/Components-${LB_ARCHITECTURE}.yml.gz" | sed -E 's|https?://||g' | sed 's|/|_|g')
 						if [ -e  ../../chroot/var/lib/apt/lists/${_COMPONENTS_DEP11_FILE} ]
 						then
 							zcat ../../chroot/var/lib/apt/lists/${_COMPONENTS_DEP11_FILE} | sed -e '/^Package: '${_PACKAGE}'$/,/^---$/p;d' | awk 'BEGIN { modalias_found = 0 } /  modaliases:/ { modalias_found = 1; next } /  [^-]/ { modalias_found = 0; } modalias_found==1 && $2 != "" { gsub(/[*]/, ".*", $2); printf "^%s$\n", $2 }' > ${_FW_DEP11_DIR}/${_PACKAGE}.patterns
@@ -769,9 +791,10 @@ EOF
 				fi
 			done
 		done
-
-		LC_ALL=C sort < Contents-firmware.unsorted > Contents-firmware
-		rm -f Contents-firmware.unsorted
+		if [ -e Contents-firmware.unsorted ]; then
+			LC_ALL=C sort < Contents-firmware.unsorted > Contents-firmware
+			rm -f Contents-firmware.unsorted
+		fi
 		cd "${OLDPWD}"
 	fi
 

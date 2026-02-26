@@ -10,6 +10,12 @@ then
   exit 0
 fi
 
+# Don't run if the header file is not installed (libc6-dev)
+if [ ! -e /usr/include/stdlib.h ];
+then
+  exit 0
+fi
+
 cat > unrandomize_uuid_generate_random.c << END_OF_SOURCE
 #include <stdlib.h>
 #include <stdio.h>

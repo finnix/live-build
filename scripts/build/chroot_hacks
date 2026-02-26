@@ -59,6 +59,11 @@ case "${LB_IMAGE_TYPE}" in
 		;;
 esac
 
+# Now that all packages are installed, remove the os-release divert as it's safe to do so
+if Chroot chroot dpkg-divert --list /etc/os-release | grep -q os-release.debootstrap; then
+	Chroot chroot dpkg-divert --quiet --local --remove --no-rename /etc/os-release
+fi
+
 # Update initramfs (always, because of udev rules in initrd)
 case "${LB_INITRAMFS}" in
 	live-boot)
