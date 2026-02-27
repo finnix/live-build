@@ -54,6 +54,9 @@ case "${LB_ARCHITECTURE}" in
 	armhf)
 		Check_package chroot /usr/lib/grub/arm-efi/configfile.mod grub-efi-arm-bin
 		;;
+	riscv64)
+		Check_package chroot /usr/lib/grub/riscv64-efi/configfile.mod grub-efi-riscv64-bin
+		;;
 esac
 Check_package chroot /usr/bin/grub-mkimage grub-common
 Check_package chroot /usr/bin/mcopy mtools
@@ -83,6 +86,11 @@ case "${LB_ARCHITECTURE}" in
 		_SB_EFI_NAME="arm"
 		_SB_EFI_DEB="arm"
 		;;
+	riscv64)
+		_SB_EFI_PLATFORM="riscv64"
+		_SB_EFI_NAME="riscv64"
+		_SB_EFI_DEB="riscv64"
+		;;
 esac
 
 # Restoring cache
@@ -91,35 +99,33 @@ Restore_package_cache binary
 # Installing depends
 Install_packages
 
+Check_package_available
 case "${LB_UEFI_SECURE_BOOT}" in
 	auto)
 		# Try to install the shim and signed grub package separately,
 		# as the grub-efi-*-signed package might be uninstallable (e.g. due to binNMUs)
-		# Uses the (intentionally) undocumented _LB_PACKAGES variable
-		echo "!!! The following error/warning messages can be ignored !!!"
-		set +e
-		_LB_PACKAGES="shim-signed"
-		Install_packages
-		_LB_PACKAGES="grub-efi-${_SB_EFI_DEB}-signed"
-		Install_packages
-		set -e
-		# Use Check_installed, as Check_package will error out immediately
-		Check_installed chroot /usr/lib/grub/${_SB_EFI_PLATFORM}-efi-signed/gcd${_SB_EFI_NAME}.efi.signed \
-			grub-efi-${_SB_EFI_DEB}-signed
-		_GRUB_INSTALL_STATUS="${INSTALL_STATUS}"
-		Check_installed chroot /usr/lib/shim/shim${_SB_EFI_NAME}.efi.signed \
-			shim-signed
-		echo "!!! The above error/warning messages can be ignored !!!"
-
-		if [ "${INSTALL_STATUS}" -ne 0 ]
-		then
-			Echo_warning "UEFI Secure Boot disabled due to missing Shim."
-		elif [ "${_GRUB_INSTALL_STATUS}" -ne 0 ]
-		then
-			# Each user needs to enroll the hash for grub*.efi in their UEFI setup
-			Echo_warning "Limited UEFI Secure Boot support enabled: only the Shim is available."
+		SB_FULL_ENABLED=1
+		if [ $(Check_package_available "shim-signed") -eq 1 ]; then
+			Check_package chroot /usr/lib/shim/shim${_SB_EFI_NAME}.efi.signed \
+				shim-signed
 		else
-			Echo_message "UEFI Secure Boot support enabled."
+			Echo_warning "UEFI Secure Boot disabled due to missing Shim."
+			SB_FULL_ENABLED=0
+		fi
+		if [ $(Check_package_available "grub-efi-${_SB_EFI_DEB}-signed") -eq 1 ]; then
+			Check_package chroot /usr/lib/grub/${_SB_EFI_PLATFORM}-efi-signed/gcd${_SB_EFI_NAME}.efi.signed \
+				grub-efi-${_SB_EFI_DEB}-signed
+		else
+			if [ "${SB_FULL_ENABLED}" = 1 ]; then
+				Echo_warning "Limited UEFI Secure Boot support enabled: only the Shim is available."
+			else
+				Echo_warning "UEFI Secure Boot disabled due to missing signed GRUB."
+			fi
+			SB_FULL_ENABLED=0
+		fi
+		Install_packages
+		if [ "${SB_FULL_ENABLED}" = 1 ]; then
+			Echo_message "Full auto UEFI Secure Boot support enabled."
 		fi
 		;;
 	enable)
@@ -136,7 +142,13 @@ case "${LB_UEFI_SECURE_BOOT}" in
 esac
 
 # Cleanup files that we generate
-rm -rf binary/boot/efi.img binary/boot/grub/i386-efi/ binary/boot/grub/x86_64-efi binary/boot/grub/arm64-efi binary/boot/grub/arm-efi
+rm -rf \
+	binary/boot/efi.img \
+	binary/boot/grub/i386-efi \
+	binary/boot/grub/x86_64-efi \
+	binary/boot/grub/arm64-efi \
+	binary/boot/grub/arm-efi \
+	binary/boot/grub/riscv64-efi
 
 # This is workaround till both efi-image and grub-cpmodules are put into a binary package
 case "${LB_BUILD_WITH_CHROOT}" in
@@ -243,6 +255,10 @@ case "${LB_ARCHITECTURE}" in
 		gen_efi_boot_img "arm-efi" "arm" "debian-live/arm"
 		PATH="\${PRE_EFI_IMAGE_PATH}"
 		;;
+	riscv64)
+		gen_efi_boot_img "riscv64-efi" "riscv64" "debian-live/riscv64"
+		PATH="\${PRE_EFI_IMAGE_PATH}"
+		;;
 esac
 
 
@@ -331,6 +347,7 @@ rm -rf chroot/grub-efi-temp-x86_64-efi
 rm -rf chroot/grub-efi-temp-i386-efi
 rm -rf chroot/grub-efi-temp-arm64-efi
 rm -rf chroot/grub-efi-temp-arm-efi
+rm -rf chroot/grub-efi-temp-riscv64-efi
 rm -rf chroot/grub-efi-temp-cfg
 rm -rf chroot/grub-efi-temp
 
