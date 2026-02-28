@@ -109,6 +109,15 @@ case "${LB_INITRAMFS}" in
 		;;
 esac
 
+case "${LB_ARCHITECTURE}" in
+	riscv64)
+		LINUX="vmlinux"
+		;;
+	*)
+		LINUX="vmlinuz"
+		;;
+esac
+
 # Setting boot parameters
 if [ "${LB_UNION_FILESYSTEM}" != "overlay" ]; then
 	LB_BOOTAPPEND_LIVE="${LB_BOOTAPPEND_LIVE} union=${LB_UNION_FILESYSTEM}"
@@ -116,8 +125,8 @@ fi
 
 # Default entries
 DEFAULT_FLAVOUR="$(echo ${LB_LINUX_FLAVOURS} | awk '{ print $1 }')"
-DEFAULT_KERNEL="$(basename chroot/boot/vmlinuz-*${DEFAULT_FLAVOUR})"
-DEFAULT_INITRD="initrd.img-$(echo ${DEFAULT_KERNEL} | sed -e 's|vmlinuz-||')"
+DEFAULT_KERNEL="$(basename chroot/boot/${LINUX}-*${DEFAULT_FLAVOUR})"
+DEFAULT_INITRD="initrd.img-$(echo ${DEFAULT_KERNEL} | sed -e "s|${LINUX}-||")"
 
 KERNEL_LIVE="/${INITFS}/${DEFAULT_KERNEL}"
 INITRD_LIVE="/${INITFS}/${DEFAULT_INITRD}"
@@ -191,13 +200,15 @@ else
 fi
 
 _COUNT=0
-for KERNEL in chroot/boot/vmlinuz-*; do
+for KERNEL in chroot/boot/vmlinuz-* chroot/boot/vmlinux-*; do
+	[ -e "${KERNEL}" ] || continue
 	_COUNT=$(( $_COUNT + 1 ))
 done
 
 if [ $_COUNT -gt 1 ]; then
-	for KERNEL in chroot/boot/vmlinuz-*; do
-		VERSION="$(basename ${KERNEL} | sed -e 's|vmlinuz-||')"
+	for KERNEL in chroot/boot/vmlinuz-* chroot/boot/vmlinux-*; do
+		[ -e "${KERNEL}" ] || continue
+		VERSION="$(basename ${KERNEL} | sed -e 's|vmlinu[xz]-||')"
 
 		Grub_live_menu_entry "Live system, kernel ${VERSION}" \
 			"/${INITFS}/$(basename ${KERNEL})" \
@@ -222,11 +233,11 @@ rm -f "${LIVE_ENTRIES_TMP}"
 if [ "${LB_DEBIAN_INSTALLER}" != "none" ]; then
 	ENABLE_INSTALL_MENU="true"
 
-	KERNEL_DI="/install/vmlinuz"
+	KERNEL_DI="/install/${LINUX}"
 	INITRD_DI="/install/initrd.gz"
 	APPEND_DI="vga=normal ${LB_BOOTAPPEND_INSTALL} --- quiet"
 
-	KERNEL_GI="/install/gtk/vmlinuz"
+	KERNEL_GI="/install/gtk/${LINUX}"
 	INITRD_GI="/install/gtk/initrd.gz"
 	APPEND_GI="vga=788 ${LB_BOOTAPPEND_INSTALL} --- quiet"
 

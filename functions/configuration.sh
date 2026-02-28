@@ -313,7 +313,7 @@ Prepare_config ()
 				LB_BOOTLOADER_EFI="${LB_BOOTLOADER_EFI:-grub-efi}"
 			fi
 			;;
-		arm64)
+		arm64|riscv64)
 			if ! In_list "${LB_IMAGE_TYPE}" hdd netboot; then
 				LB_BOOTLOADER_EFI="${LB_BOOTLOADER_EFI:-grub-efi}"
 			fi

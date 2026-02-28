@@ -83,7 +83,7 @@ case "${LB_INITRAMFS}" in
 		rm -f chroot/etc/dracut.conf.d/20-live-module-${SOURCE_DATE_EPOCH}.conf
 		;;
 esac
-rm -f chroot/vmlinuz.old
+rm -f chroot/vmlinuz.old chroot/vmlinux.old
 rm -f chroot/initrd.img.old
 rm -f chroot/initrd.img_has_already_been_regenerated
 
