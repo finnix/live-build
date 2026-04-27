@@ -55,7 +55,10 @@ case "${_ACTION}" in
 				then
 					touch "chroot/dev/$dev"
 				fi
-				mount -o bind "/dev/$dev" "chroot/dev/$dev"
+				if ! mount -o bind "/dev/$dev" "chroot/dev/$dev"; then
+					# Likely running in a container which can't bind mount
+					rm -f "chroot/dev/$dev"
+				fi
 			fi
 		done
 
