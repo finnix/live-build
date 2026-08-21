@@ -916,7 +916,7 @@ EOF
 		if [ -n "${_LINUX_KERNEL_ABI}" ]
 		then
 			# Filter kernels and modules not matching the current kernel
-			grep -E "(modules-.*-di$|^kernel-image-.*-di$)" chroot/${UDEB_APT_TOPDIR}/desired_udebs | grep -v ${_LINUX_KERNEL_ABI} >> exclude
+			grep -E "(modules-.*-di$|^kernel-image-.*-di$|^linux-binary-.*-di$|^linux-base-.*-di$)" chroot/${UDEB_APT_TOPDIR}/desired_udebs | grep -v ${_LINUX_KERNEL_ABI} >> exclude
 		fi
 		LC_ALL=C sort -u < exclude > chroot/${UDEB_APT_TOPDIR}/exclude.sorted
 		# First: excludes without wildcard at the end
