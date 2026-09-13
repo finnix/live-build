@@ -11,6 +11,10 @@ DO_WEEKLY_VERSION=1
 # 0 = trixie (stable)
 # 1 = bookworm (oldstable)
 DO_BOOKWORM=0
+# This switch is active only for official released versions
+# 0 = official release
+# 1 = Only valid during release day (during the testing phase of the point release)
+AT_RELEASE_DAY=0
 
 # No user-configurable settings after this line
 
@@ -20,22 +24,31 @@ then
 	then
 		SUITE=oldstable
 		SUITECODENAME=bookworm
-		SUITENUMBER=12.13.0
+		SUITENUMBER=12.15.0
 		OPENQA_GROUPID=19
 		BASIS_URL=https://get.debian.org/mirror/cdimage/archive/${SUITENUMBER}-live/amd64/iso-hybrid
 		# No debian-junior or lomiri for bookworm
 		SEQUENCE_TOP=8
+		BUILD_SUFFIX="o"
+		ISO_INFIX="official"
 	else
-		BASIS_URL=https://get.debian.org/images/release/current-live/amd64/iso-hybrid
+		if [ ${AT_RELEASE_DAY} -eq 1 ]
+		then
+			BASIS_URL=https://cdimage.debian.org/images/.trixie_release/live-free/amd64/iso-hybrid
+			BUILD_SUFFIX="preview"
+			ISO_INFIX="preview"
+		else
+			BASIS_URL=https://get.debian.org/images/release/current-live/amd64/iso-hybrid
+			BUILD_SUFFIX="o"
+			ISO_INFIX="official"
+		fi
 		SUITE=stable
 		SUITECODENAME=trixie
-		SUITENUMBER=13.3.0
+		SUITENUMBER=13.7.0
 		OPENQA_GROUPID=18
 		# No lomiri for trixie
 		SEQUENCE_TOP=9
 	fi
-	BUILD_SUFFIX="o"
-	ISO_INFIX="official"
 else
 	BASIS_URL=https://get.debian.org/images/weekly-live-builds/amd64/iso-hybrid
 	SUITE=testing
@@ -47,7 +60,13 @@ else
 fi
 
 rm -f SHA256SUMS
-sq download --quiet --batch --signature-url ${BASIS_URL}/SHA256SUMS.sign --url ${BASIS_URL}/SHA256SUMS --output SHA256SUMS
+if [ ${DO_WEEKLY_VERSION} -eq 0 -a ${AT_RELEASE_DAY} -eq 1 ]
+then
+	# At release day, the previews do not have a signed checksum file yet
+	wget ${BASIS_URL}/SHA256SUMS
+else
+	sq download --quiet --batch --signature-url ${BASIS_URL}/SHA256SUMS.sign --url ${BASIS_URL}/SHA256SUMS --output SHA256SUMS
+fi
 
 for i in $(seq 1 ${SEQUENCE_TOP}); do
 	FLAVOR=""
