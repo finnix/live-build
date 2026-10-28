@@ -71,7 +71,7 @@ Restore_package_cache binary
 Install_packages
 
 # Retrieve dep11 data
-Chroot chroot "apt-get update"
+Chroot chroot "apt-get ${APT_OPTIONS} update"
 
 if [ "${_DEBUG}" = "true" ]
 then
@@ -282,6 +282,11 @@ case "${LB_DERIVATIVE}" in
 						;;
 				esac
 
+				# If the git repository is cached, use that
+				if [ -d cache/debian-installer_git ]
+				then
+					cp -a --no-target-directory cache/debian-installer_git chroot/debian-installer
+				fi
 				# These variables do not need to be passed inside the chroot, they can be resolved earlier:
 				#   SOURCE_DATE_EPOCH, _QUIET, LB_PARENT_MIRROR_CHROOT, LB_PARENT_DISTRIBUTION_CHROOT
 				#   TARGETS, http_proxy
@@ -292,8 +297,11 @@ case "${LB_DERIVATIVE}" in
 set -e
 
 DEBIAN_INSTALLER=/debian-installer
-mkdir -p \${DEBIAN_INSTALLER}
-git clone https://salsa.debian.org/installer-team/debian-installer.git \${DEBIAN_INSTALLER} --single-branch --no-tags --quiet
+if [ ! -d \${DEBIAN_INSTALLER} ]
+then
+	mkdir -p \${DEBIAN_INSTALLER}
+	git clone https://salsa.debian.org/installer-team/debian-installer.git \${DEBIAN_INSTALLER} --single-branch --no-tags --quiet
+fi
 cd \${DEBIAN_INSTALLER}
 git checkout \$(git rev-list -n 1 --min-age=${SOURCE_DATE_EPOCH} HEAD) --quiet
 if [ "${_QUIET}" != "true" ]
@@ -312,6 +320,9 @@ find -maxdepth 1 -name *.deb | xargs apt-get --yes install
 # The patch only matches when debian-installer!43 (https://salsa.debian.org/installer-team/debian-installer/-/merge_requests/43) is not merged yet
 sed -i -e '/^\\tVMLINUXZ=/s|VMLINUXZ=|if [ ! -e \$(TREE)/boot/vmlinuz ]; then \\\\\\n\\tVMLINUXZ=|' build/Makefile
 sed -i -e '/^\\t\\tmv -v \$\$VMLINUXZ/s|; \\\\|; \\\\\\n\\tfi \\\\|' build/Makefile
+
+# Disable the mknod command, this allows building with the unshare backend
+sed -i -e 's/mknod/#mknod/' build/Makefile
 
 # Build the installer
 cd build
@@ -852,7 +863,7 @@ EOF
 	cat > chroot/${UDEB_APT_TOPDIR}/get_udeb_list.sh <<-EOF
 		#!/bin/sh
 		export APT_CONFIG="/${UDEB_APT_TOPDIR}/apt.conf"
-		apt-get update
+		apt-get ${APT_OPTIONS} update
 		EOF
 
 	# Find all available udeb packages
@@ -905,7 +916,7 @@ EOF
 		if [ -n "${_LINUX_KERNEL_ABI}" ]
 		then
 			# Filter kernels and modules not matching the current kernel
-			grep -E "(modules-.*-di$|^kernel-image-.*-di$)" chroot/${UDEB_APT_TOPDIR}/desired_udebs | grep -v ${_LINUX_KERNEL_ABI} >> exclude
+			grep -E "(modules-.*-di$|^kernel-image-.*-di$|^linux-binary-.*-di$|^linux-base-.*-di$)" chroot/${UDEB_APT_TOPDIR}/desired_udebs | grep -v ${_LINUX_KERNEL_ABI} >> exclude
 		fi
 		LC_ALL=C sort -u < exclude > chroot/${UDEB_APT_TOPDIR}/exclude.sorted
 		# First: excludes without wildcard at the end

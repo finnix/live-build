@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Various scenarios to add packages to a live image
+# Call as `test_external_deb_sources.sh`
+# or for individual tests: `bash shunit2 $LIVE_BUILD/test/test_external_deb_sources.sh test_snapshot_with_mirror_bootstrap`
+
+# The '--tdd' option enables asserts for features that are not implemented yet
+export TEST_DRIVEN_DEVELOPMENT=false
+if [ "$1" = "--tdd" ]; then
+	export TEST_DRIVEN_DEVELOPMENT=true
+	shift
+fi
+
 if ! command -v equivs-build > /dev/null; then
 	echo "Install equivs"
 	exit 1
@@ -18,6 +29,19 @@ if ! command -v faketime > /dev/null; then
 	echo "Install faketime"
 	exit 1
 fi
+
+function start_test_driven_development () {
+	echo 11111
+	if ! ${TEST_DRIVEN_DEVELOPMENT}; then
+		startSkipping;
+	fi
+}
+
+function stop_test_driven_development () {
+	if ! ${TEST_DRIVEN_DEVELOPMENT}; then
+		endSkipping;
+	fi
+}
 
 function create_packages () {
 	# Create package generator files
@@ -238,9 +262,12 @@ function test_preexisting_package_inclusion_unspecified_chroot_or_binary() {
 	assertFalse "Dependency package stays after installation" "grep -q '^pci\.ids' iso/live/filesystem.packages-remove"
 	assertTrue "Main package should be in the pool" "[ -e iso/pool/main/h/hwdata/hwdata_*_all.deb ]"
 	assertTrue "Dependency package should be in the pool" "[ -e iso/pool/main/p/pci.ids/pci.ids_*_all.deb ]"
+	# The tests below can be activated when the pool is actually referenced within the live image
+	start_test_driven_development
 	assertTrue "Package pool is listed in /etc/apt/sources.list" "grep -q 'file:/run/live/medium' squashfs/etc/apt/sources.list"
 	assertTrue "Sources list meta info should be present: Release" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_Release ]"
 	assertTrue "Sources list meta info should be present: Packages" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_main_binary-amd64_Packages ]"
+	stop_test_driven_development
 	unmountSquashfs
 }
 
@@ -259,9 +286,12 @@ function test_preexisting_package_inclusion_binary() {
 	assertFalse "Dependency package stays after installation" "grep -q '^pci\.ids' iso/live/filesystem.packages-remove"
 	assertTrue "Main package should be in the pool" "[ -e iso/pool/main/h/hwdata/hwdata_*_all.deb ]"
 	assertTrue "Dependency package should be in the pool" "[ -e iso/pool/main/p/pci.ids/pci.ids_*_all.deb ]"
+	# The tests below can be activated when the pool is actually referenced within the live image
+	start_test_driven_development
 	assertTrue "Package pool is listed in /etc/apt/sources.list" "grep -q 'file:/run/live/medium' squashfs/etc/apt/sources.list"
 	assertTrue "Sources list meta info should be present: Release" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_Release ]"
 	assertTrue "Sources list meta info should be present: Packages" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_main_binary-amd64_Packages ]"
+	stop_test_driven_development
 	unmountSquashfs
 }
 
@@ -410,6 +440,7 @@ function test_local_repository_unspecified_chroot_or_binary() {
 	prepare_local_repository ${SCENARIO} ""
 
 	build_image
+	start_test_driven_development
 	assertTrue "Packaged file for main package should be present" "grep -q '^-rw-r--r--.* testpackage-${SCENARIO}-main-file$' chroot.files"
 	assertTrue "Packaged file for dependency package should be present" "grep -q '^-rw-r--r--.* testpackage-${SCENARIO}-dependency-file$' chroot.files"
 	assertTrue "Main package is installed (install)" "grep -q '^live-testpackage-${SCENARIO}-main' chroot.packages.install"
@@ -421,12 +452,13 @@ function test_local_repository_unspecified_chroot_or_binary() {
 	assertTrue "Sources list should be present" "[ -e squashfs/etc/apt/sources.list.d/my_repro-${SCENARIO}.list ]"
 	assertTrue "Main package should be in the pool" "[ -e iso/pool/main/l/live-testpackage-${SCENARIO}-main/live-testpackage-${SCENARIO}-main_1.0_all.deb ]"
 	assertTrue "Dependency package should be in the pool" "[ -e iso/pool/main/l/live-testpackage-${SCENARIO}-dependency/live-testpackage-${SCENARIO}-dependency_1.0_all.deb ]"
+	# The tests below can be activated when the feature has been implemented
 	assertTrue "Package pool is listed in /etc/apt/sources.list" "grep -q 'file:/run/live/medium' squashfs/etc/apt/sources.list"
 	assertTrue "Sources list meta info should be present: Release" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_Release ]"
 	assertTrue "Sources list meta info should be present: Packages" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_main_binary-amd64_Packages ]"
 	assertTrue "Signing key should be present" "[ -e squashfs/etc/apt/trusted.gpg.d/testrepository-${SCENARIO}.gpg.key.asc ]"
 	unmountSquashfs
-
+	stop_test_driven_development
 }
 
 function test_local_repository_chroot() {
@@ -434,6 +466,7 @@ function test_local_repository_chroot() {
 	prepare_local_repository ${SCENARIO} ".chroot"
 
 	build_image
+	start_test_driven_development
 	assertTrue "Packaged file for main package should be present" "grep -q '^-rw-r--r--.* testpackage-${SCENARIO}-main-file$' chroot.files"
 	assertTrue "Packaged file for dependency package should be present" "grep -q '^-rw-r--r--.* testpackage-${SCENARIO}-dependency-file$' chroot.files"
 	assertTrue "Main package is installed (install)" "grep -q '^live-testpackage-${SCENARIO}-main' chroot.packages.install"
@@ -446,6 +479,7 @@ function test_local_repository_chroot() {
 	assertFalse "Sources list meta info should not be present" "find squashfs/var/lib/apt/lists | grep -q 'squashfs/var/lib/apt/lists/_*_testrepository-${SCENARIO}-'"
 	assertFalse "Signing key should not be present" "[ -e squashfs/etc/apt/trusted.gpg.d/testrepository-${SCENARIO}.gpg.key.chroot.asc ]"
 	unmountSquashfs
+	stop_test_driven_development
 }
 
 function test_local_repository_binary() {
@@ -453,7 +487,9 @@ function test_local_repository_binary() {
 	prepare_local_repository ${SCENARIO} ".binary"
 
 	build_image
+	start_test_driven_development
 	assertNotNull "Not implemented yet: fails at lb chroot_archives binary install at the moment" ""
+	# The tests below can be activated when the feature has been implemented
 	assertFalse "Packaged file for main package should not be present" "grep -q '^-rw-r--r--.* testpackage-${SCENARIO}-main-file$' chroot.files"
 	assertFalse "Packaged file for dependency package should not be present" "grep -q '^-rw-r--r--.* testpackage-${SCENARIO}-dependency-file$' chroot.files"
 	assertFalse "Main package is not installed (install)" "grep -q '^live-testpackage-${SCENARIO}-main' chroot.packages.install"
@@ -469,6 +505,7 @@ function test_local_repository_binary() {
 	assertTrue "Sources list meta info should be present: Packages" "[ -e squashfs/var/lib/apt/lists/_run_live_medium_dists_unstable_main_binary-amd64_Packages ]"
 	assertTrue "Signing key should be present" "[ -e squashfs/etc/apt/trusted.gpg.d/testrepository-${SCENARIO}.gpg.key.binary.asc ]"
 	unmountSquashfs
+	stop_test_driven_development
 }
 
 function test_embedded_repository() {
@@ -489,7 +526,9 @@ EOF
 	echo "live-testpackage-config-opt-extra-repo-main" > config/package-lists/my_repro-config-opt-extra-repo.list
 
 	build_image
+	start_test_driven_development
 	assertNotNull "Not implemented yet: fails at bootstrap_archives at the moment" ""
+	# The tests below can be activated when the feature has been implemented
 	# Current issue: the /etc/apt/sources.list.d entry gets removed, but the index files and the packages are installed in the chroot
 	assertTrue "Packaged file for main package should be present" "grep -q '^-rw-r--r--.* testpackage-config-opt-extra-repo-main-file$' chroot.files"
 	assertTrue "Packaged file for dependency package should be present" "grep -q '^-rw-r--r--.* testpackage-config-opt-extra-repo-dependency-file$' chroot.files"
@@ -497,6 +536,7 @@ EOF
 	assertTrue "Dependency package is installed (install)" "grep -q '^live-testpackage-config-opt-extra-repo-dependency' chroot.packages.install"
 	assertTrue "Main package is installed (live)" "grep -q '^live-testpackage-config-opt-extra-repo-main' chroot.packages.live"
 	assertTrue "Dependency package is installed (live)" "grep -q '^live-testpackage-config-opt-extra-repo-dependency' chroot.packages.live"
+	stop_test_driven_development
 }
 
 function test_derivatives() {
@@ -511,11 +551,14 @@ function test_derivatives() {
 
 	#build_image
 	#mountSquashfs
+	start_test_driven_development
 	assertNotNull "Not implemented (yet): this can be quite complicated" ""
+	stop_test_driven_development
 	#unmountSquashfs
 }
 
 SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-$(date --utc '+%s')}"
 ISO8601_TIMESTAMP=$(date --utc -d@${SOURCE_DATE_EPOCH} +%Y-%m-%dT%H:%M:%SZ)
 . shunit2 2> logfile_${ISO8601_TIMESTAMP}.stderr | tee logfile_${ISO8601_TIMESTAMP}.stdout
-egrep "ASSERT|FAILED|OK|shunit2|test_|SHA256" logfile_${ISO8601_TIMESTAMP}.stdout | tee logfile_${ISO8601_TIMESTAMP}.summary
+echo "Running with SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH} (${ISO8601_TIMESTAMP})" > logfile_${ISO8601_TIMESTAMP}.summary
+egrep "ASSERT|FAILED|OK|shunit2|test_|SHA256" logfile_${ISO8601_TIMESTAMP}.stdout | tee --append logfile_${ISO8601_TIMESTAMP}.summary

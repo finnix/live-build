@@ -23,6 +23,7 @@
 # Coding convention: enforced by 'shfmt'
 
 DEBUG=false
+PREVIEW=false
 
 set -e
 set -o pipefail # see eg http://petereisentraut.blogspot.com/2010/11/pipefail.html
@@ -55,6 +56,13 @@ Checksum: ${SHA256SUM}
 Script commandline: ${REBUILD_COMMANDLINE}
 Script hash: ${REBUILD_SHA256SUM}
 EOF
+	if [ "${CONFIGURATION}" = "custom" ]
+	then
+		cat <<EOF >>summary.txt
+Custom installer: ${INSTALLER}
+Custom package list: ${PACKAGES}
+EOF
+	fi
 	touch summary.txt -d@${SOURCE_DATE_EPOCH}
 }
 
@@ -70,6 +78,7 @@ show_help() {
 	echo "--installer-origin:"
 	echo "    'git' (default): rebuild the installer from git"
 	echo "    'archive': take the installer from the Debian archive"
+	echo "--preview: Enable proposed-updates"
 	echo "--timestamp:"
 	echo "    'archive' (default): fetches the timestamp from the Debian archive"
 	echo "    'snapshot': fetches the latest timestamp from the snapshot server"
@@ -79,7 +88,7 @@ show_help() {
 parse_commandline_arguments() {
 
 	# In alphabetical order
-	local LONGOPTS="architecture:,configuration:,debian-version:,debian-version-number:,debug,disk-info,generate-source,help,installer-origin:,timestamp:,usage"
+	local LONGOPTS="architecture:,configuration:,debian-version:,debian-version-number:,debug,disk-info,generate-source,help,installer-origin:,preview,timestamp:,usage"
 
 	local ARGUMENTS
 	local ERR=0
@@ -142,6 +151,10 @@ parse_commandline_arguments() {
 				INSTALLER_ORIGIN=$1
 				shift
 				;;
+			--preview)
+				shift
+				PREVIEW=true
+				;;
 			--timestamp)
 				shift
 				TIMESTAMP=$1
@@ -180,26 +193,130 @@ parse_commandline_arguments() {
 	"cinnamon")
 		INSTALLER="live"
 		PACKAGES="live-task-cinnamon spice-vdagent"
+		# Workaround for #1139453: enforce libreoffice-core instead of libreoffice-core-nogui
+		PACKAGES="${PACKAGES} libreoffice-core-nogui-"
 		;;
 	"gnome")
 		INSTALLER="live"
 		PACKAGES="live-task-gnome spice-vdagent"
+
+		# The following changes are prepared for trixie only
+		if [ "${DEBIAN_VERSION}" = "trixie" ]
+		then
+			# https://salsa.debian.org/live-team/live-tasks/-/merge_requests/12
+			PACKAGES="${PACKAGES} spice-webdavd"
+
+			# https://salsa.debian.org/installer-team/tasksel/-/merge_requests/52
+			# task-japanese-gnome-desktop
+			PACKAGES="${PACKAGES} thunderbird- thunderbird-l10n-ja-"
+
+			# https://salsa.debian.org/live-team/live-build/-/merge_requests/467
+			# task-japanese-desktop (via anthy-common)
+			PACKAGES="${PACKAGES} kasumi-"
+
+			# https://salsa.debian.org/live-team/live-tasks/-/merge_requests/9
+			# task-italian
+			PACKAGES="${PACKAGES} debian-reference-it-"
+			# task-spanish
+			PACKAGES="${PACKAGES} debian-reference-es-"
+			# calamares-settings-debian (via kio6)
+			PACKAGES="${PACKAGES} systemsettings-"
+			# task-chinese-s-desktop
+			PACKAGES="${PACKAGES} goldendict-ng-"
+			# task-japanese-desktop: uim-gtk2.0- (via uim)
+			PACKAGES="${PACKAGES} uim-gtk2.0-"
+
+			# https://salsa.debian.org/installer-team/tasksel/-/merge_requests/54
+			# task-hebrew
+			PACKAGES="${PACKAGES} mlterm-"
+			# task-hebrew-gnome-desktop
+			PACKAGES="${PACKAGES} hdate-applet-"
+
+			# https://salsa.debian.org/installer-team/tasksel/-/merge_requests/55
+			# task-thai-desktop
+			PACKAGES="${PACKAGES} xiterm+thai-"
+
+			# Replace fcitx fcitx5
+			# https://salsa.debian.org/installer-team/tasksel/-/merge_requests/56
+			#
+			# task-telugu-desktop task-malayalam-desktop task-chinese-s-desktop
+			PACKAGES="${PACKAGES} fcitx5-"
+			# task-chinese-t-desktop
+			PACKAGES="${PACKAGES} fcitx- fcitx-frontend-all-"
+			# task-kannada-desktop
+			PACKAGES="${PACKAGES} fcitx-m17n-"
+			# task-kannada-desktop, task-amharic-desktop
+			PACKAGES="${PACKAGES} fcitx-config-gtk-"
+			# task-amharic-desktop
+			PACKAGES="${PACKAGES} fcitx-frontend-gtk2- fcitx-frontend-gtk3-"
+			# task-malayalam-gnome-desktop
+			PACKAGES="${PACKAGES} fcitx5-frontend-gtk2-"
+			# task-malayalam-gnome-desktop task-telugu-gnome-desktop
+			PACKAGES="${PACKAGES} fcitx5-frontend-gtk3- fcitx5-frontend-gtk4-"
+			# task-telugu-desktop
+			PACKAGES="${PACKAGES} fcitx5-m17n-"
+			#
+			# task-amharic-desktop
+			PACKAGES="${PACKAGES} ibus-m17n im-config"
+			# task-chinese-s-desktop
+			PACKAGES="${PACKAGES} ibus-libpinyin"
+			# task-chinese-t-desktop
+			PACKAGES="${PACKAGES} ibus-chewing"
+			# Also in https://salsa.debian.org/live-team/live-tasks/-/merge_requests/13
+			# task-japanese-desktop (ibus-mozc | ibus-anthy) -> use both
+			PACKAGES="${PACKAGES} ibus-anthy ibus-mozc"
+
+			# https://salsa.debian.org/installer-team/tasksel/-/merge_requests/42
+			# task-japanese
+			PACKAGES="${PACKAGES} manpages-ja-dev-"
+			# task-polish
+			PACKAGES="${PACKAGES} manpages-pl-dev-"
+
+			# https://salsa.debian.org/installer-team/tasksel/-/merge_requests/53
+			# task-italian
+			PACKAGES="${PACKAGES} fortunes-it-"
+			# task-hungarian
+			PACKAGES="${PACKAGES} fortunes-debian-hints-"
+
+			# Other packaging tweaks
+			# task-italian
+			PACKAGES="${PACKAGES} maint-guide-it-"
+		fi
+		# Workaround for #1139453: enforce libreoffice-core instead of libreoffice-core-nogui
+		PACKAGES="${PACKAGES} libreoffice-core-nogui-"
 		;;
 	"kde")
 		INSTALLER="live"
 		PACKAGES="live-task-kde spice-vdagent"
+		# Workaround for #1139453: enforce libreoffice-core instead of libreoffice-core-nogui
+		PACKAGES="${PACKAGES} libreoffice-core-nogui-"
+		;;
+	"lomiri")
+		INSTALLER="live"
+		# TODO: This package list is the same as for 'live-task-lomiri'
+		# see https://salsa.debian.org/live-team/live-tasks/-/merge_requests/14
+		PACKAGES="task-lomiri-desktop live-task-base calamares-settings-debian live-task-localisation live-task-localisation-desktop plymouth spice-vdagent spice-webdavd"
+		#PACKAGES="live-task-lomiri"
+		# Workaround for #1139453: enforce libreoffice-core instead of libreoffice-core-nogui
+		PACKAGES="${PACKAGES} libreoffice-core-nogui-"
 		;;
 	"lxde")
 		INSTALLER="live"
 		PACKAGES="live-task-lxde spice-vdagent"
+		# Workaround for #1139453: enforce libreoffice-core instead of libreoffice-core-nogui
+		PACKAGES="${PACKAGES} libreoffice-core-nogui-"
 		;;
 	"lxqt")
 		INSTALLER="live"
 		PACKAGES="live-task-lxqt spice-vdagent"
+		# Workaround for #1139453: enforce libreoffice-core instead of libreoffice-core-nogui
+		PACKAGES="${PACKAGES} libreoffice-core-nogui-"
 		;;
 	"mate")
 		INSTALLER="live"
 		PACKAGES="live-task-mate spice-vdagent"
+		# Workaround for #1139453: enforce libreoffice-core instead of libreoffice-core-nogui
+		PACKAGES="${PACKAGES} libreoffice-core-nogui-"
 		;;
 	"standard")
 		INSTALLER="live"
@@ -208,16 +325,26 @@ parse_commandline_arguments() {
 	"xfce")
 		INSTALLER="live"
 		PACKAGES="live-task-xfce spice-vdagent"
+		# Workaround for #1139453: enforce libreoffice-core instead of libreoffice-core-nogui
+		PACKAGES="${PACKAGES} libreoffice-core-nogui-"
 		;;
 	"debian-junior")
 		INSTALLER="live"
 		PACKAGES="live-task-debian-junior spice-vdagent"
+		# Workaround for #1139453: enforce libreoffice-core instead of libreoffice-core-nogui
+		PACKAGES="${PACKAGES} libreoffice-core-nogui-"
 		;;
 	"hamradio")
 		INSTALLER="none"
 		# Skipping the localisation packages
 		# Skipping: calamares-settings-debian -> it's not the time yet for the installer
 		PACKAGES="hamradio-all svxlink-calibration-tools- svxlink-gpio- svxlink-server- svxreflector- live-task-lxqt live-task-localisation- live-task-localisation-desktop- task-english calamares-settings-debian-"
+		# Workaround for #1139453: enforce libreoffice-core instead of libreoffice-core-nogui
+		PACKAGES="${PACKAGES} libreoffice-core-nogui-"
+		;;
+	"custom")
+		:
+		# Just accept anything that the user has set as INSTALLER and PACKAGES
 		;;
 	"")
 		output_echo "Error: Missing --configuration"
@@ -314,16 +441,19 @@ parse_commandline_arguments() {
 	fi
 
 	local CONFIGURATION_SHORT=$(echo ${CONFIGURATION} | cut -c1-2)
-	if [ "${CONFIGURATION_SHORT}" == "lx" ]
+	if [ "${CONFIGURATION_SHORT}" = "lx" ]
 	then
 		# Differentiate between lxqt and lxde
 		CONFIGURATION_SHORT=$(echo ${CONFIGURATION} | cut -c1,3)
-	elif [ "${CONFIGURATION}" == "debian-junior" ]
+	elif [ "${CONFIGURATION}" = "debian-junior" ]
 	then
 		CONFIGURATION_SHORT="jr"
-	elif [ "${CONFIGURATION}" == "hamradio" ]
+	elif [ "${CONFIGURATION}" = "hamradio" ]
 	then
 		CONFIGURATION_SHORT="hr"
+	elif [ "${CONFIGURATION}" = "custom" ]
+	then
+		CONFIGURATION_SHORT="xx"
 	fi
 	ISO_VOLUME="d-live ${DEBIAN_VERSION_NUMBER} ${CONFIGURATION_SHORT} ${ARCHITECTURE}"
 
@@ -343,8 +473,10 @@ parse_commandline_arguments() {
 	echo "DISK_INFO = ${DISK_INFO}"
 }
 
-get_snapshot_from_archive() {
-	wget ${WGET_OPTIONS} http://deb.debian.org/debian/dists/${DEBIAN_VERSION}/InRelease --output-document latest
+extract_timestamp_from_url() {
+	local URL=$1
+	local FORMAT=$2
+	wget ${WGET_OPTIONS} ${URL} --output-document latest
 	#
 	# Extract the timestamp from the InRelease file
 	#
@@ -355,26 +487,33 @@ get_snapshot_from_archive() {
 	# Output:
 	# 20220723T143345Z
 	#
-	SNAPSHOT_TIMESTAMP=$(cat latest | awk '/^Date:/ { print substr($0, 7) }' | xargs -I this_date date --utc --date "this_date" +%Y%m%dT%H%M%SZ)
+	TIMESTAMP=$(cat latest | awk '/^Date:/ { print substr($0, 7) }' | xargs -I this_date date --utc --date "this_date" +${FORMAT})
 	rm latest
+}
+
+get_snapshot_from_archive() {
+	extract_timestamp_from_url http://deb.debian.org/debian/dists/${DEBIAN_VERSION}/InRelease %Y%m%dT%H%M%SZ
+	SNAPSHOT_TIMESTAMP=${TIMESTAMP}
+	if ${PREVIEW}; then
+		extract_timestamp_from_url http://deb.debian.org/debian/dists/${DEBIAN_VERSION}-proposed-updates/InRelease %Y%m%dT%H%M%SZ
+		if [[ ${TIMESTAMP} > ${SNAPSHOT_TIMESTAMP} ]]; then
+			SNAPSHOT_TIMESTAMP=${TIMESTAMP}
+		fi
+	fi
 }
 
 get_snapshot_from_snapshot_debian_org() {
 	# Pick the snapshot closest to 'now'
-	wget ${WGET_OPTIONS} http://snapshot.debian.org/archive/debian/$(date --utc +%Y%m%dT%H%M%SZ)/dists/${DEBIAN_VERSION}/InRelease --output-document latest
-	#
-	# Extract the timestamp from the InRelease file
-	#
-	# Input:
-	# ...
-	# Date: Sat, 23 Jul 2022 14:33:45 UTC
-	# ...
-	# Output:
-	# 20220723T143345Z
-	#
 	# Set all timestamps in the image to this timestamp
-	export SOURCE_DATE_EPOCH=$(cat latest | awk '/^Date:/ { print substr($0, 7) }' | xargs -I this_date date --utc --date "this_date" +%s)
-	rm latest
+	extract_timestamp_from_url http://snapshot.debian.org/archive/debian/$(date --utc +%Y%m%dT%H%M%SZ)/dists/${DEBIAN_VERSION}/InRelease %s
+	# Set all timestamps in the image to this timestamp
+	export SOURCE_DATE_EPOCH=${TIMESTAMP}
+	if ${PREVIEW}; then
+		extract_timestamp_from_url http://snapshot.debian.org/archive/debian/$(date --utc +%Y%m%dT%H%M%SZ)/dists/${DEBIAN_VERSION}-proposed-updates/InRelease %s
+		if [[ ${TIMESTAMP} > ${SOURCE_DATE_EPOCH} ]]; then
+			export SOURCE_DATE_EPOCH=${TIMESTAMP}
+		fi
+	fi
 	# Use the closest (next) snapshot timestamp. Be optimistic and assume that within 24 hours a snapshot was made
 	wget ${WGET_OPTIONS} http://snapshot.debian.org/mr/timestamp/?after=$(date --utc --date @${SOURCE_DATE_EPOCH} +%Y%m%dT%H%M%SZ)\&before=$(date --utc --date "$(date --utc --date @${SOURCE_DATE_EPOCH} --iso-8601=seconds) next day" +%Y%m%dT%H%M%SZ)\&archive=debian --output-document latest
 	SNAPSHOT_TIMESTAMP=$(cat latest | jq -r .result.debian[0])
@@ -480,6 +619,10 @@ if [ -d config ]; then
 	rm -fr .build
 fi
 
+if ${PREVIEW}; then
+	GENERATE_SOURCE="${GENERATE_SOURCE} --proposed-updates true"
+fi
+
 # Configuration for the live image:
 # - For /etc/apt/sources.list: Use the mirror from ${MIRROR}, no security, no updates
 # - The debian-installer is built from its git repository, if configured
@@ -511,12 +654,22 @@ if [ ${MODIFY_APT_OPTIONS} -ne 0 ]; then
 	sed -i -e '/^APT_OPTIONS=/s/--yes/--yes -o Acquire::Check-Valid-Until=false/' config/common
 fi
 
+if [ "${DEBIAN_VERSION}" = "sid" ]; then
+	# Enable coredump and resolve the stack
+	echo "systemd-coredump gdb debuginfod" >config/package-lists/extra_debug_info.list.chroot
+	mkdir -p config/includes.chroot_after_packages/root
+	echo "set debuginfod enabled on" >config/includes.chroot_after_packages/root/.gdbinit
+	echo "set debuginfod urls https://debuginfod.debian.net" >>config/includes.chroot_after_packages/root/.gdbinit
+fi
+
 if [ ! -z "${PACKAGES}" ]; then
 	echo "${PACKAGES}" >config/package-lists/desktop.list.chroot
-	# Allow offline installation with speech enabled in the installed system #1112485
-	echo "espeakup" >config/package-lists/a11y_in_offline_installation.list.binary
-	# Allow offline installation with Braille support enabled in the installed system #1116525
-	echo "brltty" >>config/package-lists/a11y_in_offline_installation.list.binary
+	if [ "${INSTALLER}" != "none" ]; then
+		# Allow offline installation with speech enabled in the installed system #1112485
+		echo "espeakup" >config/package-lists/a11y_in_offline_installation.list.binary
+		# Allow offline installation with Braille support enabled in the installed system #1116525
+		echo "brltty" >>config/package-lists/a11y_in_offline_installation.list.binary
+	fi
 fi
 
 # Set meta information about the image
@@ -526,6 +679,13 @@ This image was generated by $(basename ${BASH_SOURCE})
 Script commandline: ${REBUILD_COMMANDLINE}
 Script hash: ${REBUILD_SHA256SUM}
 EOF
+if [ "${CONFIGURATION}" = "custom" ]
+then
+	cat << EOF >> config/includes.binary/.disk/generator
+Custom installer: ${INSTALLER}
+Custom package list: ${PACKAGES}
+EOF
+fi
 ISO8601_TIMESTAMP=$(date --utc -d@${SOURCE_DATE_EPOCH} +%Y-%m-%dT%H:%M:%SZ)
 if [ -z "${DISK_INFO}" ]
 then
@@ -699,6 +859,21 @@ case "$DEBIAN_VERSION" in
 	;;
 esac
 
+# If a git checkout of debian-installer is found next to $LIVE_BUILD, use it
+if [ -d $LIVE_BUILD/../debian-installer/.git ]
+then
+	mkdir -p cache
+	git clone file:///${LIVE_BUILD}/../debian-installer cache/debian-installer_git
+fi
+
+if [ "${CONFIGURATION}" = "lomiri" ]
+then
+	# Lomiri can run on tablets without external keyboards.
+	# GRUB does not have touch device support, so a timeout is added
+	mkdir -p config/bootloaders/grub-pc
+	sed -e 's/@LINUX_LIVE@/@LINUX_LIVE@\nset timeout=30/' ${LIVE_BUILD}/share/bootloaders/grub-pc/grub.cfg > config/bootloaders/grub-pc/grub.cfg
+fi
+
 # Build the image
 output_echo "Running lb build."
 
@@ -720,7 +895,7 @@ fi
 # Calculate the checksum
 SHA256SUM=$(sha256sum live-image-${ARCHITECTURE}.hybrid.iso | cut -f 1 -d " ")
 
-if [ ${BUILD_LATEST} == "archive" ]; then
+if [ "${BUILD_LATEST}" = "archive" ]; then
 	SNAPSHOT_TIMESTAMP_OLD=${SNAPSHOT_TIMESTAMP}
 	get_snapshot_from_archive
 	if [ ${SNAPSHOT_TIMESTAMP} != ${SNAPSHOT_TIMESTAMP_OLD} ]; then

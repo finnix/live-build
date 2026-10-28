@@ -309,12 +309,12 @@ Prepare_config ()
 			else
 				LB_BOOTLOADER_BIOS="${LB_BOOTLOADER_BIOS:-syslinux}"
 			fi
-			if ! In_list "${LB_IMAGE_TYPE}" hdd netboot; then
+			if ! In_list "${LB_IMAGE_TYPE}" netboot; then
 				LB_BOOTLOADER_EFI="${LB_BOOTLOADER_EFI:-grub-efi}"
 			fi
 			;;
 		arm64|riscv64)
-			if ! In_list "${LB_IMAGE_TYPE}" hdd netboot; then
+			if ! In_list "${LB_IMAGE_TYPE}" netboot; then
 				LB_BOOTLOADER_EFI="${LB_BOOTLOADER_EFI:-grub-efi}"
 			fi
 			;;
@@ -464,20 +464,7 @@ Prepare_config ()
 		Echo_warning "A value of 'false' for option LB_MEMTEST is deprecated, please use 'none' in future."
 	fi
 
-	case "${LB_ARCHITECTURE}" in
-		amd64|i386)
-			if [ "${LB_DEBIAN_INSTALLER}" != "none" ]; then
-				LB_LOADLIN="${LB_LOADLIN:-true}"
-			else
-				LB_LOADLIN="${LB_LOADLIN:-false}"
-			fi
-			;;
-
-		*)
-			LB_LOADLIN="${LB_LOADLIN:-false}"
-			;;
-	esac
-
+	LB_LOADLIN="${LB_LOADLIN:-false}"
 	LB_WIN32_LOADER="${LB_WIN32_LOADER:-false}"
 
 	LB_NET_TARBALL="${LB_NET_TARBALL:-true}"

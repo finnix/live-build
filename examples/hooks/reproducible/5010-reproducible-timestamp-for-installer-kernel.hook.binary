@@ -3,12 +3,30 @@ set -e
 
 # Normalise the timestamp of the kernel for d-i and the initrd
 # Assume that the kernel version for the installer is the same as for the live system
+
+# Don't run if the kernel is not where it is expected
+if [ ! -e live/vmlinuz ];
+then
+	echo "W: $(basename $0) Reproducible hook skipped: could not find the reference kernel image"
+	exit 0
+fi
+
+# Don't run if the unmkinitramfs is not installed
+if [ ! -e /usr/bin/unmkinitramfs ];
+then
+	echo "W: $(basename $0) Reproducible hook skipped: could not find unmkinitramfs"
+	exit 0
+fi
+
+_HOOK_WAS_NEEDED=no
+
 if [ -e install/vmlinuz ]
 then
 	touch --reference=live/vmlinuz install/vmlinuz
 	unmkinitramfs install/initrd.gz tmp.out
 	touch -d@$(find tmp.out -type f -printf "%T@\n" | sort | tail -n 1 | cut -d. -f1) install/initrd.gz
 	rm -fr tmp.out
+	_HOOK_WAS_NEEDED=yes
 fi
 if [ -e install/gtk/vmlinuz ]
 then
@@ -16,4 +34,10 @@ then
 	unmkinitramfs install/gtk/initrd.gz tmp.out
 	touch -d@$(find tmp.out -type f -printf "%T@\n" | sort | tail -n 1 | cut -d. -f1) install/gtk/initrd.gz
 	rm -fr tmp.out
+	_HOOK_WAS_NEEDED=yes
+fi
+
+if [ "${_HOOK_WAS_NEEDED}" = "yes" ];
+then
+	echo "P: $(basename $0) Reproducible hook has been applied"
 fi
